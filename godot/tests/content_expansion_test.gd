@@ -16,6 +16,7 @@ func ready(s,a) -> void:
  a.busy_until = s.now()
 
 func _initialize() -> void:
+ human_balance_rules()
  var s = Sim.new()
  s.start(4321)
  for a in s.actors:
@@ -288,3 +289,62 @@ func _initialize() -> void:
   check(new_game.player().job == occupation and new_game.player().human == (occupation != "Corpse"),"New-game occupation and form: "+occupation)
  print("CONTENT CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func human_balance_rules() -> void:
+ var s = Sim.new()
+ s.start(907)
+ var p = s.player()
+ var t = s.actors[1]
+ p.human_skills = []
+ p.inside = false
+ check(s.attack_stats(p,t,"attack").hit == 10 and s.attack_stats(p,t,"attack").damage == 1,"Untrained human fists hit at ten percent for one damage")
+ p.human_skills = ["hand_to_hand"]
+ check(s.attack_stats(p,t,"attack").hit == 25,"Hand-to-hand raises fists to twenty-five percent")
+ var flare = {"kind":"flare_gun"}
+ p.human_skills = []
+ check(s.attack_stats(p,t,"attack",flare).hit == 2.5,"Untrained flare accuracy preserves fractional two and a half percent")
+ p.human_skills = ["firearms","pistol_training","advanced_pistol","shotgun_training","advanced_shotgun"]
+ var stats = s.attack_stats(p,t,"attack",flare)
+ check(stats.hit == 15 and stats.damage == 15 and stats.ranged and C.ITEMS.flare_gun.single_use,"Basic firearms caps flare accuracy at fifteen percent without changing damage or single-use status")
+ p.inside = true
+ s.current_block(p).type = "cinema"
+ s.current_block(p).generator = false
+ p.human_skills = []
+ check(s.attack_stats(p,t,"attack",flare).hit == 1.25,"Darkness retains fractional flare accuracy rather than truncating it")
+ p.inside = false
+ var successes = 0
+ s.rng.seed = 4422
+ for attempt in range(40000):
+  if s.roll_attack_hit(2.5): successes += 1
+ check(float(successes)/40000 > 0.023 and float(successes)/40000 < 0.027,"Seeded fractional hit rolls land near two and a half percent rather than two or three")
+ p.human_skills = []
+ stats = s.attack_stats(p,t,"attack",{"kind":"hockey_stick"})
+ check(stats.hit == 10 and stats.damage == 3,"Hockey sticks deal three damage with ten percent base accuracy")
+ p.human_skills = ["hand_to_hand"]
+ check(s.attack_stats(p,t,"attack",{"kind":"hockey_stick"}).hit == 25,"Trained hockey sticks retain twenty-five percent accuracy")
+ check(s.melee_break_chance({"kind":"pool_cue"}) == 0.2,"Pool cue break chance remains twenty percent per successful hit")
+ # Verify real flare attacks use the fractional roll and still consume the weapon.
+ p.human_skills = []
+ p.inventory.clear()
+ t.human = false
+ t.hp = 100000
+ t.down = false
+ var probe = RandomNumberGenerator.new()
+ var flare_transactions = true
+ for attempt in range(250):
+  s.give_item(p,"flare_gun")
+  p.equipped = p.inventory.back().uid
+  var uid = p.equipped
+  var hp = t.hp
+  probe.state = s.rng.state
+  var expected_hit = probe.randf()*100.0 < 2.5
+  s.execute(p,"attack",t.id)
+  flare_transactions = flare_transactions and (t.hp < hp) == expected_hit and s.item_by_uid(p,uid).is_empty() and p.equipped == -1
+ check(flare_transactions,"Actual flare attacks use the fractional chance and consume the single-use gun even on misses")
+ var firefighter_game = Sim.new()
+ firefighter_game.start(907,"Firefighter")
+ var firefighter = firefighter_game.player()
+ var axe = firefighter_game.item_by_uid(firefighter,firefighter.equipped)
+ check(axe.kind == "fire_axe" and firefighter_game.has_skill(firefighter,"axe_proficiency") and not firefighter_game.has_skill(firefighter,"hand_to_hand") and firefighter_game.attack_stats(firefighter,firefighter_game.actors[1],"attack",axe).hit == 25,"New firefighters start with Axe Proficiency alone for twenty-five percent axe accuracy")
+ firefighter.xp = 1000
+ check(firefighter_game.learn("hand_to_hand").is_empty() and firefighter_game.attack_stats(firefighter,firefighter_game.actors[1],"attack",axe).hit == 40,"Firefighters can learn hand-to-hand later to reach forty percent axe accuracy")

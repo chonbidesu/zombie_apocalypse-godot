@@ -567,7 +567,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     elif def.get("single_use",false): consume(a,weapon)
     elif def.get("fragile",false): fragile = true
    metrics.attacks += 1
-   if rng.randi_range(1,100) <= stats.hit:
+   if roll_attack_hit(stats.hit):
     var damage = int(stats.damage)
     if stats.ranged and (not item_kind(t,"flak_jacket").is_empty() or has_skill(t,"flesh_rot")): damage = int(floor(damage*0.8))
     var actual = mini(t.hp,damage)
@@ -1655,8 +1655,13 @@ func set_pose(a: Dictionary, pose: String) -> void:
  a.pose_at = now()
  a.pose_sequence += 1
 
+func roll_attack_hit(hit: float) -> bool:
+ # Keep integer attack rolls stable while representing fractional chances exactly.
+ if hit == floor(hit): return rng.randi_range(1,100) <= hit
+ return rng.randf()*100.0 < hit
+
 func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Dictionary = {}) -> Dictionary:
- var hit = 25
+ var hit = 10.0
  var damage = 1
  var ranged = false
  if not a.human and command != "bite" and not weapon.is_empty() and weapon.kind in C.ZOMBIE_MELEE_ITEMS:
@@ -1674,15 +1679,16 @@ func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Di
    damage = def.damage
    ranged = def.has("capacity") or def.get("ranged",false)
   if ranged:
-   if has_skill(a,"firearms"): hit += 25
+   if has_skill(a,"firearms"): hit += 12.5 if weapon.kind == "flare_gun" else 25
    if weapon.kind == "pistol": hit += (25 if has_skill(a,"pistol_training") else 0)+(10 if has_skill(a,"advanced_pistol") else 0)
    if weapon.kind == "shotgun": hit += (25 if has_skill(a,"shotgun_training") else 0)+(10 if has_skill(a,"advanced_shotgun") else 0)
   else:
    if has_skill(a,"hand_to_hand"): hit += 15
    if not weapon.is_empty() and weapon.kind == "knife" and has_skill(a,"knife_combat"): hit += 15
    if not weapon.is_empty() and weapon.kind == "fire_axe" and has_skill(a,"axe_proficiency"): hit += 15
- if current_block(a).type in ["bank","cinema","nightclub","armoury"] and a.inside and not powered(current_block(a)): hit = int(floor(hit*0.5))
- return {"hit":clampi(hit,0,95),"damage":damage,"ranged":ranged}
+ if current_block(a).type in ["bank","cinema","nightclub","armoury"] and a.inside and not powered(current_block(a)):
+  hit = hit*0.5 if not weapon.is_empty() and weapon.kind == "flare_gun" else floor(hit*0.5)
+ return {"hit":clampf(hit,0.0,95.0),"damage":damage,"ranged":ranged}
 
 func fort_move_reason(a: Dictionary, origin: Dictionary, destination: Dictionary) -> String:
  if origin.fort == destination.fort:
@@ -1694,7 +1700,7 @@ func fort_move_reason(a: Dictionary, origin: Dictionary, destination: Dictionary
  return ""
 
 func _setup_player(a: Dictionary, occupation: String) -> void:
- var setups = {"Private":[["firearms"],["pistol","pistol_clip"]],"Medic":[["first_aid"],["pistol","first_aid_kit"]],"Scout":[["free_running"],["binoculars"]],"NecroTech Lab Assistant":[["necro_employment"],["dna_extractor"]],"Doctor":[["diagnosis"],["first_aid_kit","first_aid_kit"]],"Police Officer":[["firearms"],["pistol","pistol_clip","flak_jacket","radio"]],"Firefighter":[["hand_to_hand","axe_proficiency"],["fire_axe","first_aid_kit"]],"Consumer":[["shopping"],["baseball_bat","mobile_phone"]],"Corpse":[[],[]],"Volunteer":[["construction","necro_employment","lab_experience"],["baseball_bat","first_aid_kit","toolbox","syringe"]]}
+ var setups = {"Private":[["firearms"],["pistol","pistol_clip"]],"Medic":[["first_aid"],["pistol","first_aid_kit"]],"Scout":[["free_running"],["binoculars"]],"NecroTech Lab Assistant":[["necro_employment"],["dna_extractor"]],"Doctor":[["diagnosis"],["first_aid_kit","first_aid_kit"]],"Police Officer":[["firearms"],["pistol","pistol_clip","flak_jacket","radio"]],"Firefighter":[["axe_proficiency"],["fire_axe","first_aid_kit"]],"Consumer":[["shopping"],["baseball_bat","mobile_phone"]],"Corpse":[[],[]],"Volunteer":[["construction","necro_employment","lab_experience"],["baseball_bat","first_aid_kit","toolbox","syringe"]]}
  var setup = setups.get(occupation,setups.Volunteer)
  a.human_skills = setup[0].duplicate()
  a.human = occupation != "Corpse"

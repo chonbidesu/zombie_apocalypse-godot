@@ -49,7 +49,7 @@ The [Gameplay reference](https://wiki.urbandead.com/index.php/Gameplay) document
 
 These have been identified, not silently treated as implemented:
 
-1. **Exact combat tuning:** human unarmed base accuracy remains 25%; the item reference describes punching-equivalent attacks at 10%. This deserves a separate combat pass with weapon availability measurements. Barricade attacks use combat accuracy with the crowbar structural exception; construction uses the requested progressive rates, with darkness and zombie interference penalties.
+1. **Combat tuning:** human fists now use 10%/25% accuracy, flare guns 2.5%/15%, and hockey sticks deal three damage. New firefighters start with Axe Proficiency alone (25% axe accuracy). Pool cues retain a 20% break chance on each successful hit. Barricade attacks use combat accuracy with the crowbar structural exception; construction uses the requested progressive rates, with darkness and zombie interference penalties.
 2. **Ruin age:** building repair currently uses fixed local ruin levels/costs, without the online accumulation of long-term repair costs.
 3. **DNA scan lifetime:** tags currently use a time window rather than resetting eligibility on the tagged zombie's next action. NecroNet is a local report rather than the complete online interface.
 4. **Signals and binoculars:** flare signals currently have a ten-block radius and lack the original outdoor-only launch restriction. Binoculars provide a local summary rather than the original directional tall-building 3×3 view and separate outdoor landmark survey.

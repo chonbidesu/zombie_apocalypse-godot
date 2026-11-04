@@ -115,7 +115,7 @@ const ITEMS = {
  },
  "hockey_stick": {
   "name": "Hockey stick",
-  "damage": 2,
+  "damage": 3,
   "hit": 10,
   "encumbrance": 4
  },
@@ -179,7 +179,7 @@ const ITEMS = {
  "flare_gun": {
   "name": "Flare gun",
   "damage": 15,
-  "hit": 15,
+  "hit": 2.5,
   "ranged": true,
   "single_use": true,
   "encumbrance": 2
