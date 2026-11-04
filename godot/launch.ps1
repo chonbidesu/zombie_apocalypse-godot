@@ -44,6 +44,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/simulation_test.gd --log-file tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Simulation tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/barricade_test.gd --log-file barricade-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Barricade tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/survival_test.gd --log-file survival-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Survival tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/npc_balance_test.gd --log-file npc-balance-tests.log

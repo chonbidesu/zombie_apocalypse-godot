@@ -98,6 +98,35 @@ func run() -> void:
  scene.begin_rest(10)
  check(scene.resting,"Downed character at full AP can rest through standing cooldown")
  scene.resting = false
+ var barricade_player = scene.sim.player()
+ barricade_player.down = false
+ barricade_player.human = true
+ barricade_player.ap = 50
+ barricade_player.busy_until = scene.sim.now()
+ var construction_site = scene.sim.current_block(barricade_player)
+ construction_site.doors = false
+ scene.sim.set_barricade_strength(construction_site,0)
+ scene.refresh()
+ check(scene.action_controls.any(func(entry): return entry.command == "barricade"),"Open doors do not hide the Barricade action")
+ scene.dispatch("barricade")
+ check(construction_site.doors and scene.sim.barricade_strength(construction_site) == 1 and barricade_player.ap == 49,"UI barricading closes doors and adds the first point in one AP")
+ barricade_player.busy_until = scene.sim.now()
+ barricade_player.ap = 0
+ scene.sim.set_barricade_strength(construction_site,21)
+ scene.refresh()
+ var cap_actions = scene.action_controls.filter(func(entry): return entry.command == "barricade")
+ check(cap_actions.size() == 1 and not cap_actions[0].node.disabled,"Maximum-strength feedback is available even with no AP")
+ scene.dispatch("barricade")
+ check(scene.notice == "The barricade cannot be built any higher." and barricade_player.ap == 0,"UI maximum-strength attempt gives exact feedback without AP cost")
+ barricade_player.ap = 50
+ scene.sim.set_barricade_strength(scene.sim.current_block(barricade_player),10)
+ scene.sim.give_item(barricade_player,"pistol")
+ barricade_player.equipped = barricade_player.inventory.back().uid
+ scene.refresh()
+ check(not scene.action_controls.any(func(entry): return entry.command == "break"),"Ineffective firearms do not offer a barricade attack")
+ barricade_player.equipped = -1
+ scene.refresh()
+ check(scene.action_controls.any(func(entry): return entry.command == "break"),"Human fists offer a barricade attack")
  var undead_player = scene.sim.player()
  undead_player.down = false
  undead_player.human = false

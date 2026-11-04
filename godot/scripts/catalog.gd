@@ -9,8 +9,18 @@ const DEATH_SPEED = 32.0
 const DAILY_REANIMATION_CHANCE = 0.20
 const GENERATOR_HP = 6
 const FUEL_MINUTES = 1440
-const BARRICADE_SUBLEVELS = 3
-const BREACH_CHANCE = 0.25
+const BARRICADE_MAX_STRENGTH = [0, 1, 4, 7, 10, 13, 16, 21]
+const BARRICADE_STRUCTURE_CHANCE = 0.50
+# Indexed by current visible band; strength 21 is blocked separately.
+const BARRICADE_BUILD_CHANCES = [1.0, 0.995, 0.99, 0.978, 0.851, 0.615, 0.38, 0.205]
+const DARK_BARRICADE_BUILDINGS = ["bank", "cinema", "nightclub", "armoury", "warehouse", "mall"]
+const BARRICADE_MATERIALS = {
+ "hospital":["a gurney", "a wheelchair", "an empty bed"],
+ "cinema":["a row of seats", "a popcorn machine"],
+ "warehouse":["a wooden crate", "some loose planks"],
+ "mall":["a shopping trolley", "a mannequin", "a dining table"],
+ "junkyard":["some junk", "some loose bricks", "some tyres"]
+}
 const DARK_SEARCH_MULTIPLIER = 0.30
 const RUIN_SEARCH_MULTIPLIER = 0.025
 const CLOCK_STEPS_PER_MINUTE = 10

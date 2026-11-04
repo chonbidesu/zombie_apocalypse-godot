@@ -36,7 +36,7 @@ Public resource/clinic knowledge replaces external multiplayer maps and coordina
 |---|---|
 | Ruins and generators | Installed generators must be destroyed before ruin; ruined buildings must be repaired before generator installation. A lit ruin remains impossible, as requested. Later online rules allow a different combination. |
 | Fuel | A can tops off 24 game hours and wastes the excess. Original fuel lasts much longer; the shorter cycle supports offline resource trips. |
-| Barricade structure | Seven named levels, each with three hidden damage sublevels. Successful maintenance restores damage. This is not the online game's full 21-step distribution or exact construction/interference probabilities. |
+| Barricade structure | 21 strength points across seven visible bands: 1 / 2–4 / 5–7 / 8–10 / 11–13 / 14–16 / 17–21. Each damaging hit removes one point and each successful build restores one. Attacks roll combat accuracy then a separate 50% structural penalty, except crowbars. Outside survivor entry ends at strength 10. Progressive construction rates follow the requested table; loose uses 99.5% for the approximate 99%+ value. Dark buildings and 2+ living, standing indoor zombies each halve construction odds, multiplicatively. |
 | Zombie equipment | Claws and bites, plus crowbar, baseball bat and pipe at base 5–10% accuracy for two damage. Human combat bonuses do not apply. |
 | Skills | All 45 entries exist; form-specific effects and occupation XP prices are implemented. Purchasing either tree in either form remains an existing prototype convenience; original purchasing rules are stricter. |
 | Search and durability | Location-specific item tables, strong lighting benefit, extremely low nonzero ruin loot, permanent melee weapons except pool cues (20% break chance on successful hits). Bottles remain fragile. These are project balance tables, not an exact reconstruction of changing server rates. |
@@ -49,7 +49,7 @@ The [Gameplay reference](https://wiki.urbandead.com/index.php/Gameplay) document
 
 These have been identified, not silently treated as implemented:
 
-1. **Exact combat tuning:** human unarmed base accuracy remains 25%; the item reference describes punching-equivalent attacks at 10%. This deserves a separate combat pass with weapon availability measurements. Barricade attack/build probabilities and zombie interference also use the project's simplified model.
+1. **Exact combat tuning:** human unarmed base accuracy remains 25%; the item reference describes punching-equivalent attacks at 10%. This deserves a separate combat pass with weapon availability measurements. Barricade attacks use combat accuracy with the crowbar structural exception; construction uses the requested progressive rates, with darkness and zombie interference penalties.
 2. **Ruin age:** building repair currently uses fixed local ruin levels/costs, without the online accumulation of long-term repair costs.
 3. **DNA scan lifetime:** tags currently use a time window rather than resetting eligibility on the tagged zombie's next action. NecroNet is a local report rather than the complete online interface.
 4. **Signals and binoculars:** flare signals currently have a ten-block radius and lack the original outdoor-only launch restriction. Binoculars provide a local summary rather than the original directional tall-building 3×3 view and separate outdoor landmark survey.

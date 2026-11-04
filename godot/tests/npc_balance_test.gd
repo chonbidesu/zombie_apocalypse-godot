@@ -84,11 +84,11 @@ func _initialize():
  p.human_skills = []
  s.give_item(p,"length_of_pipe")
  ready(s,p)
- check(s.reason(p,"barricade").is_empty(),"A pipe allows crude barricading without Construction")
+ check(s.reason(p,"barricade").is_empty(),"A pipe allows crude barricading without Construction even with open doors")
  for attempt in range(40):
   if b.barricade > 0: break
   s.execute(p,"barricade")
- check(b.barricade == 1 and b.doors,"The first successful barricade closes normal doors")
+ check(b.barricade == 1 and b.doors,"The first successful barricade automatically closes normal doors")
  check(s.item_kind(p,"length_of_pipe").is_empty(),"A successful crude barricade consumes its pipe")
  check(not s.reason(p,"barricade").is_empty(),"Further barricading requires Construction")
  p.human_skills = ["construction"]

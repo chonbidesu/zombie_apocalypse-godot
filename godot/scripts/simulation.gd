@@ -355,6 +355,7 @@ func consume(a: Dictionary, item: Dictionary) -> void:
  a.inventory.erase(item)
 
 func cost(a: Dictionary, command: String) -> int:
+ if command == "barricade" and barricade_strength(current_block(a)) == 21: return 0
  var base = 1
  match command:
   "move": base = 2 if not a.human and not has_skill(a,"lurching_gait") else 1
@@ -446,13 +447,12 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if item_kind(a,def.ammo_kind).is_empty(): return "You need %s." % C.ITEMS[def.ammo_kind].name.to_lower()
   "barricade":
    if not can_barricade(b): return "This open ground has no entrance to barricade."
+   if barricade_strength(b) == 21: return "The barricade cannot be built any higher."
    if not has_skill(a,"construction") and (b.barricade > 0 or item_kind(a,"length_of_pipe").is_empty()): return "Construction or a length of pipe for a loose barricade is required."
    if b.ruin > 0: return "Repair the building first."
-   if b.barricade >= 7 and b.barricade_damage == 0: return "The barricade is at maximum strength."
-   for other in occupants(b, true):
-    if not other.human and not other.down: return "Remove the zombies inside first."
   "break":
    if not is_building(b) or b.barricade == 0: return "There are no barricades here."
+   if barricade_attack_stats(a,data).hit == 0: return "That attack is ineffective against barricades. Use fists, claws or a suitable melee weapon."
   "repair":
    if b.ruin == 0: return "The building needs no repairs."
    if item_kind(a,"toolbox").is_empty(): return "You need a toolbox to repair the building."
@@ -646,31 +646,43 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    text = "%s load a single shell into the shotgun." % name if weapon.kind == "shotgun" else "%s reload the pistol with a magazine." % name
   "barricade":
    var improvised = not has_skill(a,"construction")
-   if rng.randf() < (0.9 if b.barricade < 4 else 0.65):
+   var interference = barricade_interference(b)
+   if rng.randf() < barricade_build_chance(b):
     gain_local_trust(a,b,3)
     if improvised: consume(a,item_kind(a,"length_of_pipe"))
     if has_doors(b): b.doors = true
-    if b.barricade_damage > 0:
-     b.barricade_damage = 0
-     text = "%s shore up the damaged barricade. It is %s." % [name,C.barricade_description(b.barricade)]
-    else:
-     b.barricade = mini(7,b.barricade+1)
-     text = "%s reinforce the building. It is now %s." % [name,C.barricade_description(b.barricade)]
-     if b.barricade == 4: text += " Any more barricades will prevent survivors from climbing inside from outside."
-   else: text = "%s find no suitable material for the barricade." % name
+    set_barricade_strength(b,barricade_strength(b)+1)
+    if barricade_strength(b) == 10:
+     text = "Using %s, %s reinforce the barricade. It's looking very strong, now - any further barricading will prevent survivors from climbing in." % [barricade_material(b),"you" if a.id == 0 else name]
+    elif interference:
+     text = "Dragging %s past the zombies, %s reinforce the barricade." % [barricade_material(b),"you" if a.id == 0 else name]
+    else: text = "%s barricade the building." % name
+   elif interference:
+    text = "%s drag %s towards the doors, but the zombies lurch into %s way." % [name,barricade_material(b),"your" if a.id == 0 else "their"]
+   else: text = "%s look around for something to barricade the building with." % name
   "break":
    if a.human: gain_local_trust(a,b,-5)
    if not a.human and not a.inside: b.last_pounding = minute
-   if rng.randf() < C.BREACH_CHANCE+(0.10 if not a.human and has_skill(a,"death_grip") else 0.0):
-    b.barricade_damage += 1
-    if b.barricade_damage >= C.BARRICADE_SUBLEVELS:
-     b.barricade -= 1
-     b.barricade_damage = 0
-     critical = b.barricade == 0
-     if not a.human: a.xp += 1
-     text = "%s dislodge part of the barricade. The building is %s." % [name,C.barricade_description(b.barricade)]
-    else: text = "%s loosen the barricade, but it still holds." % name
-   else: text = "%s strike the barricade. It holds." % name
+   var stats = barricade_attack_stats(a,data)
+   var weapon = stats.weapon
+   var tool_name = C.ITEMS[weapon.kind].name.to_lower() if not weapon.is_empty() else "fists"
+   var possessive = "your" if a.id == 0 else "their"
+   var hit = rng.randi_range(1,100) <= stats.hit
+   if not hit:
+    text = "%s swing %s %s at the barricade." % [name,possessive,tool_name] if a.human else "%s swipe at the barricade." % name
+   elif stats.structural == 1.0 or rng.randf() < stats.structural:
+    var previous_level = b.barricade
+    set_barricade_strength(b,barricade_strength(b)-1)
+    critical = b.barricade == 0
+    if not a.human and b.barricade < previous_level: a.xp += 1
+    text = "%s hit the barricade with %s %s, damaging it." % [name,possessive,tool_name] if a.human else "%s smash at the barricade, damaging it." % name
+   else:
+    text = "%s hit the barricade with %s %s; it creaks." % [name,possessive,tool_name] if a.human else "%s smash at the barricade; it creaks." % name
+   if hit and not weapon.is_empty():
+    if C.ITEMS[weapon.kind].get("fragile",false): consume(a,weapon)
+    elif melee_break_chance(weapon) > 0.0 and rng.randf() < melee_break_chance(weapon):
+     consume(a,weapon)
+     text += " The pool cue splinters and breaks."
   "dump":
    var body = actors[target_id]
    body.inside = false
@@ -895,6 +907,7 @@ func _clock_step() -> void:
   stop_rest("Rest complete. %d AP available." % player().ap)
 
 func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> bool:
+ if command == "break" and not a.human: data = {"unarmed":true}
  if not reason(a, command, target_id, data).is_empty(): return false
  execute(a, command, target_id, data)
  metrics.npc_actions += 1
@@ -939,7 +952,7 @@ func _npc_turn(a: Dictionary) -> void:
    if _try(a,"repair"): return
    var away = actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == b.id and (not t.inside or t.x != b.x or t.y != b.y))
    var threatened = occupants(b,false).filter(func(t): return not t.human and not t.down and not t.wants_revive).size() >= 5 and not away
-   if (b.barricade_damage > 0 or b.barricade < (7 if threatened else 4)) and _try(a,"barricade"): return
+   if barricade_strength(b) < (21 if threatened else 10) and _try(a,"barricade"): return
    if _try(a,"close"): return
    if _try(a,"generator"): return
    if (not powered(b) or b.fuel_until-minute <= 360) and _try(a,"fuel"): return
@@ -1223,6 +1236,48 @@ func load_from(path: String) -> String:
  reindex()
  return ""
 
+# Strength is stored as a visible band and damage below that band's maximum.
+func barricade_strength(b: Dictionary) -> int:
+ var level = clampi(int(b.barricade),0,7)
+ if level == 0: return 0
+ return clampi(C.BARRICADE_MAX_STRENGTH[level]-int(b.get("barricade_damage",0)),C.BARRICADE_MAX_STRENGTH[level-1]+1,C.BARRICADE_MAX_STRENGTH[level])
+
+func set_barricade_strength(b: Dictionary, strength: int) -> void:
+ strength = clampi(strength,0,21)
+ var level = 0
+ while C.BARRICADE_MAX_STRENGTH[level] < strength: level += 1
+ b.barricade = level
+ b.barricade_damage = C.BARRICADE_MAX_STRENGTH[level]-strength
+
+func barricade_interference(b: Dictionary) -> bool:
+ return occupants(b,true).filter(func(t): return not t.human and not t.down and t.hp > 0).size() >= 2
+
+func barricade_build_chance(b: Dictionary) -> float:
+ if barricade_strength(b) >= 21: return 0.0
+ var chance = float(C.BARRICADE_BUILD_CHANCES[int(b.barricade)])
+ if b.type in C.DARK_BARRICADE_BUILDINGS and not powered(b): chance *= 0.5
+ if barricade_interference(b): chance *= 0.5
+ return chance
+
+func barricade_material(b: Dictionary) -> String:
+ var materials = C.BARRICADE_MATERIALS.get(b.type,["a chair", "a table", "some loose planks"])
+ return materials[rng.randi_range(0,materials.size()-1)]
+
+func barricade_attack_stats(a: Dictionary, data: Dictionary = {}) -> Dictionary:
+ var weapon = item_by_uid(a,a.equipped) if not data.get("unarmed",false) else {}
+ var ineffective = {"hit":0,"structural":0.0,"weapon":weapon}
+ if data.get("attack","") == "bite": return ineffective
+ if not weapon.is_empty():
+  var def = C.ITEMS[weapon.kind]
+  if not def.has("damage") or def.has("capacity") or def.get("ranged",false) or weapon.kind == "knife": return ineffective
+  if not a.human and weapon.kind not in C.ZOMBIE_MELEE_ITEMS: return ineffective
+ # An empty target prevents Tangling Grasp from boosting structural attacks.
+ var stats = attack_stats(a,{"id":-1,"grasped_by":-1},"attack",weapon)
+ if a.human and weapon.is_empty():
+  stats.hit = 10+(15 if has_skill(a,"hand_to_hand") else 0)
+  if current_block(a).type in ["bank","cinema","nightclub","armoury"] and a.inside and not powered(current_block(a)): stats.hit = int(floor(stats.hit*0.5))
+ return {"hit":stats.hit,"structural":1.0 if not weapon.is_empty() and weapon.kind == "crowbar" else C.BARRICADE_STRUCTURE_CHANCE,"weapon":weapon}
+
 func melee_break_chance(item: Dictionary) -> float:
  # Legacy durability/wear fields remain loadable but no longer affect combat.
  return float(C.ITEMS[item.kind].get("break_on_hit",0.0))
@@ -1230,6 +1285,7 @@ func melee_break_chance(item: Dictionary) -> float:
 func action_feedback(a: Dictionary, command: String, target: int = -1, data: Dictionary = {}, context_only: bool = false) -> String:
  var why = reason(a, command, target, data, context_only)
  # Entry remains an attempt the player can make, with feedback on rejection.
+ if command == "barricade" and why == "The barricade cannot be built any higher.": return ""
  if command == "enter" and why.begins_with("You try to find an entry point"): return ""
  if command == "phone" and why == "Select a contact.": return ""
  return why
@@ -1547,6 +1603,7 @@ func initialize_block(b: Dictionary) -> void:
   if not b.has(key): b[key] = defaults[key]
  b.unbarricadable = not is_building(b)
  if b.unbarricadable: b.barricade = 0; b.barricade_damage = 0
+ set_barricade_strength(b,barricade_strength(b))
  if not has_doors(b): b.doors = false
  b.radio_hp = int(b.radio_hp)
  b.frequency = float(b.frequency)

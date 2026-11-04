@@ -318,12 +318,12 @@ func entrance_rules() -> void:
  var s = isolated()
  var p = s.player()
  var b = s.current_block(p)
- b.barricade = 3
+ s.set_barricade_strength(b,9)
  for i in range(30):
   ready(s,p)
   s.act("barricade")
-  if b.barricade == 4: break
- check(b.barricade == 4 and s.messages.back().text.contains("Any more barricades will prevent survivors from climbing inside"),"Very strongly barricaded warns about the outside entry limit")
+  if s.barricade_strength(b) == 10: break
+ check(s.barricade_strength(b) == 10 and s.messages.back().text.contains("any further barricading will prevent survivors from climbing in"),"Very strongly barricaded warns about the outside entry limit")
  for item in p.inventory.duplicate():
   if item.kind == "toolbox": s.consume(p,item)
  b.ruin = 1

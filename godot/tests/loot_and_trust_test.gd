@@ -178,7 +178,7 @@ func _initialize() -> void:
  s.act("heal",p.id)
  check(s.trust_level(npc,p) == earned,"Self-healing does not farm NPC trust")
  b = s.current_block(p)
- b.barricade_damage = 2
+ b.barricade_damage = 1
  var reinforced = false
  for i in range(30):
   ready(s,p)
