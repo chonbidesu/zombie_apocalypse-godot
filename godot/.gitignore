@@ -1,0 +1,5 @@
+.godot/
+.runtime/
+*.log
+test-save.json
+prototype-save.json

@@ -1,0 +1,14 @@
+{
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept. Asset: replacement full-body zombie animation atlas for this survival game. References 1 and 2 establish the exact new human NPC sprite art style, cell grid and pixel scale. Create ONE consistent LEFT-FACING adult zombie in three-quarter side profile, pale grey-green skin, thinning dark hair, sunken eyes, slack jaw, torn weathered brown civilian jacket, dark charcoal trousers and worn shoes. Same compact chibi proportions, crisp pixel outlines, restrained shading and small detailed face as references, but menacing and lifeless rather than comic. TRUE transparent background, no backdrop or gradient. EXACTLY 24 equally sized cells, SIX columns by FOUR rows, landscape 3:2, no margins/gutters/grid lines/text. Consistent scale and ground pivot, subject fully inside each cell. Row-major frames 0–7: eight slow asymmetrical shuffle/lurch poses with dragging foot, hunched shoulders, uneven arms; 8–14: seven LEFT-directed hand/claw attack windup, reach, strike, recover poses; 15–20: six progressive death/collapse poses, knees buckle, body sinks and rolls onto its side, ending in frame20 as a FLAT HORIZONTAL lifeless corpse on its side/front with slack arms and legs extended naturally along the ground. Corpse low and wide, no raised knees or feet, no buttocks facing camera, no upside-down body, no funny round crouched heap. 21–23: three standing hurt/recoil poses. Layout: row1 six shuffle; row2 last two shuffle plus first four attack; row3 last three attack plus first three collapse; row4 last three collapse plus three hurt. Sparse subdued dark stains only, no gore emphasis. No weapons, props, labels, watermarks, extra characters or duplicate grids. Approximately 75% cell-height standing, as references.",
+  "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-87ae7cbd-3d71-4fb2-8c38-43606636bc94.png",
+  "dest": "godot/assets/sprite_sheets/zombie_sprite_sheet.png",
+  "references": [
+    "godot/assets/sprite_sheets/private_sprite_sheet.png",
+    "godot/assets/sprite_sheets/vagrant_sprite_sheet.png"
+  ],
+  "streetRestoration": {
+    "source": "godot/.art-backup/blocks/streets.png",
+    "dest": "godot/assets/blocks/streets.png"
+  }
+}

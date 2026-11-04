@@ -1,0 +1,816 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "key": "office",
+      "type": "map",
+      "dest": "godot/assets/blocks/office.png",
+      "prompt": "Use case: stylized-concept. Create a replacement isometric minimap building sprite for the attached game's new location-art style. Subject: an ordinary weathered British five-storey red-brick and pale-stone office building, flat roof, rows of identical windows, plain entrance. Completely ordinary office: NO scientific apparatus, NO logos, NO letters, NO signs, NO N marking. This exact image will also represent a concealed NecroTech office. Match the detailed crisp pixel-art illustration of the cathedral reference: warm muted weathered masonry, fine dark outlines, moss, restrained neglect, opaque solid muted teal-grey square backdrop. Complete isometric building on a small diamond pavement base, fills tile with margin. No people, vehicles, text, UI, borders or watermarks. Do not show interior. Square image.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-1be9a114-6fdb-4d44-b806-dc0eedef20b9.png"
+    },
+    {
+      "key": "private",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/private_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the Private's face and costume. Generate ONE consistent small chibi pixel-art male soldier with short brown hair, olive uniform and boots, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/private.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5f44ded3-af2a-410a-818a-0fffaf634605.png"
+    },
+    {
+      "key": "auto_repair",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a low British brick auto repair garage, wide roll-up service bays, tyre racks, oil-stained concrete and derelict cars; interior service workshop with lifts and tool cabinets. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/auto_repair_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dd6c48e3-98db-4514-8da3-32e234d5605a.png"
+    },
+    {
+      "key": "bank",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a grand stone high-street bank with columns, secured windows and bronze entry; interior abandoned banking hall, counters, desks and vault door. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/bank.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0aa68888-b927-4476-8bb6-ac6458136610.png"
+    },
+    {
+      "key": "church",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a small single-nave English parish church, stone walls, modest bell tower, arched entrance and stained glass; interior pews and simple altar. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/church.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ee8d9ce5-585c-4aed-826f-446988e2c92f.png"
+    },
+    {
+      "key": "church",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a small single-nave English parish church, stone walls, modest bell tower, arched entrance and stained glass; interior pews and simple altar. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/church_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a53fb910-bed0-4422-bd0f-6a4d7621c36c.png"
+    },
+    {
+      "key": "bank",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a grand stone high-street bank with columns, secured windows and bronze entry; interior abandoned banking hall, counters, desks and vault door. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/bank_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a5be8453-e08b-41ef-a221-adf8c83637b9.png"
+    },
+    {
+      "key": "auto_repair",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a low British brick auto repair garage, wide roll-up service bays, tyre racks, oil-stained concrete and derelict cars; interior service workshop with lifts and tool cabinets. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/auto_repair.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5d66b78c-3c22-4572-8fe9-21fe29e7845e.png"
+    },
+    {
+      "key": "auto_repair",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a low British brick auto repair garage, wide roll-up service bays, tyre racks, oil-stained concrete and derelict cars; interior service workshop with lifts and tool cabinets. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/auto_repair_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-082ab553-6e9a-4f7c-89a0-b4502bceae94.png"
+    },
+    {
+      "key": "cinema",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: an old art-deco cinema with decorative facade and blank marquee; interior movie theatre with red seats, projector booth and blank screen. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/cinema_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c091ecfa-4b95-45c9-96ff-f98b0e97d090.png"
+    },
+    {
+      "key": "bank",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a grand stone high-street bank with columns, secured windows and bronze entry; interior abandoned banking hall, counters, desks and vault door. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/bank_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d9ac921c-1767-4aee-a0bd-15e0f063a6e8.png"
+    },
+    {
+      "key": "cinema",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: an old art-deco cinema with decorative facade and blank marquee; interior movie theatre with red seats, projector booth and blank screen. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/cinema.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-481caa80-ea9b-470d-85d1-2d9c45c15e78.png"
+    },
+    {
+      "key": "factory",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a brick industrial factory with sawtooth roof, smokestack and loading bays; interior silent assembly machinery, workbenches and metal walkways. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/factory.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6d928e93-5cdd-40bd-aca9-bc9b79c6421e.png"
+    },
+    {
+      "key": "church",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a small single-nave English parish church, stone walls, modest bell tower, arched entrance and stained glass; interior pews and simple altar. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/church_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-9d0099ec-f952-4b12-b89e-19bd2918c709.png"
+    },
+    {
+      "key": "cinema",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: an old art-deco cinema with decorative facade and blank marquee; interior movie theatre with red seats, projector booth and blank screen. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/cinema_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-15b497f5-c951-4004-a11a-2d22e909fce4.png"
+    },
+    {
+      "key": "factory",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a brick industrial factory with sawtooth roof, smokestack and loading bays; interior silent assembly machinery, workbenches and metal walkways. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/factory_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c2781a45-cde3-465e-843b-25edab5473a8.png"
+    },
+    {
+      "key": "fire_station",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a red-brick British fire station with tall hose tower and large red vehicle bay doors; interior fire engine bays, rescue equipment and lockers. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/fire_station.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a4aa92b4-3046-42bd-90e9-6c9a4edc635d.png"
+    },
+    {
+      "key": "factory",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a brick industrial factory with sawtooth roof, smokestack and loading bays; interior silent assembly machinery, workbenches and metal walkways. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/factory_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f6cf57cb-a46d-4495-bc69-0ac9aff20ca1.png"
+    },
+    {
+      "key": "hospital",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a large weathered municipal hospital, pale stone, long window rows and red cross emblem; interior emergency ward with beds, privacy curtains and medical cupboards. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/hospital_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-fd0ec090-da8a-4b04-9ab8-a105bb9b861c.png"
+    },
+    {
+      "key": "hotel",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a tall Victorian hotel with ornate brick facade and projecting entrance canopy; interior dusty reception, luggage carts, grand staircase and worn carpet. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/hotel_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ab8b22ec-1e3d-4883-93d2-8e084851ff5c.png"
+    },
+    {
+      "key": "hospital",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a large weathered municipal hospital, pale stone, long window rows and red cross emblem; interior emergency ward with beds, privacy curtains and medical cupboards. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/hospital_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f5159875-79b0-4531-a74f-b8d0d83c6f42.png"
+    },
+    {
+      "key": "hotel",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a tall Victorian hotel with ornate brick facade and projecting entrance canopy; interior dusty reception, luggage carts, grand staircase and worn carpet. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/hotel_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3d45f93c-8f86-47c2-a205-a6badb10d5fa.png"
+    },
+    {
+      "key": "fire_station",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a red-brick British fire station with tall hose tower and large red vehicle bay doors; interior fire engine bays, rescue equipment and lockers. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/fire_station_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d5c18654-afaf-4f74-9b4d-0a8209c598da.png"
+    },
+    {
+      "key": "fire_station",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a red-brick British fire station with tall hose tower and large red vehicle bay doors; interior fire engine bays, rescue equipment and lockers. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/fire_station_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a925932c-ed64-4d22-89fd-1d8362063e48.png"
+    },
+    {
+      "key": "hotel",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a tall Victorian hotel with ornate brick facade and projecting entrance canopy; interior dusty reception, luggage carts, grand staircase and worn carpet. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/hotel.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f60fd9d9-b292-49ca-80cc-bbeefd0d154a.png"
+    },
+    {
+      "key": "hospital",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a large weathered municipal hospital, pale stone, long window rows and red cross emblem; interior emergency ward with beds, privacy curtains and medical cupboards. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/hospital.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-87b1f72c-5759-4930-be50-5f2ad40e6c8d.png"
+    },
+    {
+      "key": "junkyard",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: an open-air fenced scrapyard piled with rusted vehicles and metal scrap; a hole cut in corrugated perimeter fencing is its sole entrance, no building doors; inside view shows scrap heaps and work area under open sky. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/junkyard.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c522b7b2-19fc-4c09-9c17-b0a9a5620ff2.png"
+    },
+    {
+      "key": "library",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a civic brick library with arched windows and broad entrance steps; interior long bookshelves, reading desks, overturned chairs and fallen books. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/library.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ae88dce9-858b-4a39-be85-46f67141f92c.png"
+    },
+    {
+      "key": "junkyard",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: an open-air fenced scrapyard piled with rusted vehicles and metal scrap; a hole cut in corrugated perimeter fencing is its sole entrance, no building doors; inside view shows scrap heaps and work area under open sky. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/junkyard_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-8fa31453-3332-40bc-98fc-badbbb0d9c2f.png"
+    },
+    {
+      "key": "junkyard",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: an open-air fenced scrapyard piled with rusted vehicles and metal scrap; a hole cut in corrugated perimeter fencing is its sole entrance, no building doors; inside view shows scrap heaps and work area under open sky. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/junkyard_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-1dbaf445-cf88-437f-ad15-4ee4abaa7389.png"
+    },
+    {
+      "key": "mall",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: one quarter-section of a large enclosed modern shopping mall, stone-clad facade and glass entrance; interior broad shopping concourse, storefronts, benches and escalators. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/mall.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c91e91f0-6ebf-465d-80f7-309465b63cd9.png"
+    },
+    {
+      "key": "library",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a civic brick library with arched windows and broad entrance steps; interior long bookshelves, reading desks, overturned chairs and fallen books. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/library_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-b16ab2b3-5922-41b2-a00a-cbfa91596899.png"
+    },
+    {
+      "key": "library",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a civic brick library with arched windows and broad entrance steps; interior long bookshelves, reading desks, overturned chairs and fallen books. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/library_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-be6d8fbd-3797-4f22-a67f-458bfe7d048f.png"
+    },
+    {
+      "key": "mall",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: one quarter-section of a large enclosed modern shopping mall, stone-clad facade and glass entrance; interior broad shopping concourse, storefronts, benches and escalators. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/mall_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-671b6676-5b69-4bff-9e3b-79a5ab410fb9.png"
+    },
+    {
+      "key": "mall",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: one quarter-section of a large enclosed modern shopping mall, stone-clad facade and glass entrance; interior broad shopping concourse, storefronts, benches and escalators. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/mall_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-caa85ee1-b146-432a-9c20-b40075bb2cec.png"
+    },
+    {
+      "key": "museum",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: an old stone museum with classical portico and tall windows; interior exhibit hall, display cases, pedestals and historical artefacts. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/museum_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-684149c0-dad1-4c34-a783-c58435e264de.png"
+    },
+    {
+      "key": "museum",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: an old stone museum with classical portico and tall windows; interior exhibit hall, display cases, pedestals and historical artefacts. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/museum_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e3b40a9a-34ba-44d4-a7f0-062d03550a87.png"
+    },
+    {
+      "key": "nightclub",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a boarded-up urban nightclub with painted brick frontage and blank sign panel; interior abandoned dance floor, bar, balcony and unlit disco fixtures. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/nightclub_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e95704ed-0055-45ab-9b59-b5e14af280ab.png"
+    },
+    {
+      "key": "necrotech_lab",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a concealed biomedical laboratory inside an ordinary British office building; interior scientific workbenches, specimen cabinets, cold storage, computers and diagnostic equipment. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/necrotech_lab_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-9a1c8399-5528-4cf1-b5ff-30b6b0cc17ae.png"
+    },
+    {
+      "key": "museum",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: an old stone museum with classical portico and tall windows; interior exhibit hall, display cases, pedestals and historical artefacts. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/museum.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5929f68d-f06f-4b23-81d0-9d355739c23d.png"
+    },
+    {
+      "key": "nightclub",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a boarded-up urban nightclub with painted brick frontage and blank sign panel; interior abandoned dance floor, bar, balcony and unlit disco fixtures. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/nightclub_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-52d07c1e-fa8c-4092-841e-117b02c0395e.png"
+    },
+    {
+      "key": "office",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: an ordinary weathered British five-storey red-brick and pale-stone office building, flat roof, identical window rows, plain entrance; interior dusty office desks, filing cabinets, cubicles and scattered paperwork. NO scientific equipment, logos, letters, signs or N marking. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/office_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-29c1c144-e80d-4f90-96bf-d73629766497.png"
+    },
+    {
+      "key": "nightclub",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a boarded-up urban nightclub with painted brick frontage and blank sign panel; interior abandoned dance floor, bar, balcony and unlit disco fixtures. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/nightclub.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0af65f1a-0c00-4c59-aa28-3aecd0dea0a1.png"
+    },
+    {
+      "key": "police_department",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a British red-brick police station with stone trim and blue entrance lamps, no text; interior reception desk, duty office, secure lockers and corridor to cells. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/police_department_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c85ce0c6-bfbb-43c5-9c29-1a3f4c7d64ca.png"
+    },
+    {
+      "key": "police_department",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a British red-brick police station with stone trim and blue entrance lamps, no text; interior reception desk, duty office, secure lockers and corridor to cells. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/police_department.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-8af3e976-776f-4d5b-ace9-a4aa9d8fe1fa.png"
+    },
+    {
+      "key": "police_department",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a British red-brick police station with stone trim and blue entrance lamps, no text; interior reception desk, duty office, secure lockers and corridor to cells. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/police_department_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-9322d6b9-0688-47d3-aed3-19a775af0782.png"
+    },
+    {
+      "key": "railway_station",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a Victorian urban railway station with brick entrance and iron-and-glass train shed; interior ticket hall, benches and platforms beside abandoned railway tracks. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/railway_station_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dbd7143b-e17b-402a-a70c-d0d4c9b41730.png"
+    },
+    {
+      "key": "pub",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a traditional British corner public house, weathered brick and timber frontage, blank hanging sign; interior wooden bar, beer taps, tables, stools and dark booths. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/pub_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-50e42d63-758d-4efd-855d-12299093aa5d.png"
+    },
+    {
+      "key": "office",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: an ordinary weathered British five-storey red-brick and pale-stone office building, flat roof, identical window rows, plain entrance; interior dusty office desks, filing cabinets, cubicles and scattered paperwork. NO scientific equipment, logos, letters, signs or N marking. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/office_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-764f94c1-c034-477f-9b2a-5eb20f8a9384.png"
+    },
+    {
+      "key": "pub",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a traditional British corner public house, weathered brick and timber frontage, blank hanging sign; interior wooden bar, beer taps, tables, stools and dark booths. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/pub.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-27f72863-d568-45fc-9022-99265d9070b0.png"
+    },
+    {
+      "key": "school",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: an old red-brick primary school with playground and modest clock gable; interior abandoned classroom, desks, chalkboard with no writing, cupboards and school corridor. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/school.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-18986e1b-c8c7-49c7-b81f-f1cda914d975.png"
+    },
+    {
+      "key": "pub",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a traditional British corner public house, weathered brick and timber frontage, blank hanging sign; interior wooden bar, beer taps, tables, stools and dark booths. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/pub_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5a7c5864-2f20-4669-a016-e64202c756af.png"
+    },
+    {
+      "key": "railway_station",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a Victorian urban railway station with brick entrance and iron-and-glass train shed; interior ticket hall, benches and platforms beside abandoned railway tracks. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/railway_station_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d83691d7-98ee-4acd-a989-328eea4bc6b4.png"
+    },
+    {
+      "key": "railway_station",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a Victorian urban railway station with brick entrance and iron-and-glass train shed; interior ticket hall, benches and platforms beside abandoned railway tracks. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/railway_station.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e19fa255-489b-40f4-a22a-dbe9db51cd7a.png"
+    },
+    {
+      "key": "tower",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a tall narrow brutalist concrete residential tower with many windows and rooftop antennas; interior high-floor landing, utility cabinets and windows over the city. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/tower.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f0ff8f99-fa33-4468-97e0-a39d68ef1b1c.png"
+    },
+    {
+      "key": "tower",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a tall narrow brutalist concrete residential tower with many windows and rooftop antennas; interior high-floor landing, utility cabinets and windows over the city. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/tower_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2eda2b92-a323-4eb1-a9f3-7241f94595a6.png"
+    },
+    {
+      "key": "school",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: an old red-brick primary school with playground and modest clock gable; interior abandoned classroom, desks, chalkboard with no writing, cupboards and school corridor. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/school_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3bd2e8ce-f72e-4f26-998f-794dce1152eb.png"
+    },
+    {
+      "key": "warehouse",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a large corrugated-and-brick warehouse with loading shutters and freight doors; interior pallet racks, wooden crates, cartons and loading equipment. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/warehouse_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-25ad6a78-aa12-448c-9c23-9c753c2cbe07.png"
+    },
+    {
+      "key": "warehouse",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a large corrugated-and-brick warehouse with loading shutters and freight doors; interior pallet racks, wooden crates, cartons and loading equipment. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/warehouse.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-822cb99a-446b-43f6-99db-b208359ca66b.png"
+    },
+    {
+      "key": "tower",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a tall narrow brutalist concrete residential tower with many windows and rooftop antennas; interior high-floor landing, utility cabinets and windows over the city. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/tower_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-02344743-6c16-4a79-92e5-5aca9979876b.png"
+    },
+    {
+      "key": "school",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: an old red-brick primary school with playground and modest clock gable; interior abandoned classroom, desks, chalkboard with no writing, cupboards and school corridor. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/school_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a1dacb99-37a6-4c30-8692-dd527ab0b23c.png"
+    },
+    {
+      "key": "warehouse",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset: replacement inside location image for a pixel-art zombie survival game. Subject: a large corrugated-and-brick warehouse with loading shutters and freight doors; interior pallet racks, wooden crates, cartons and loading equipment. Show ONLY the inside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 interior scene at eye level with spatial depth. Keep an open floor foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_inside.png"
+      ],
+      "dest": "godot/assets/settings/warehouse_inside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dc131e4e-4a4f-4cfa-ad01-f0f3e21fb600.png"
+    },
+    {
+      "key": "street",
+      "type": "map",
+      "dest": "godot/assets/blocks/streets.png",
+      "prompt": "Use case: stylized-concept. Asset: isometric minimap terrain tile for a detailed pixel-art British zombie survival game. Reference image shows the exact palette, ground perspective and fine pixel rendering. Create a square canvas with a single diamond ground tile containing ONLY a wide paved street intersection: grey cracked asphalt crossing roads, clear faded white road markings, raised stone pavements at four corners, small weeds, a fallen streetlamp and a few scattered litter pieces. Flat OPEN STREET TERRAIN only. No buildings, houses, ruins, walls, roofs, towers, churches, fences, memorials, cars, characters, labels or text. Keep the full diamond ground shape inside the image with a generous solid muted teal-grey backdrop, same reference style. Road should be immediately readable at 89x89 pixels. Restrained clutter, clear road silhouette.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/carpark.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-46d4ee66-ea1d-4e85-9494-293de0bae102.png",
+      "superseded_source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7bc6c58a-605c-4795-bb90-1713680f03f5.png"
+    },
+    {
+      "key": "street",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a deserted British city street intersection, cracked asphalt, pavement, brick terraced buildings at edges and scattered debris; this is an outdoor road tile, no focal standalone building. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/street_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4919317b-100a-4042-90a9-0adf15fa53e7.png"
+    },
+    {
+      "key": "park",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a neglected city park with winding paths, mature trees, benches, grass and a small ornamental fountain, no people. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/park_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e31b35b3-826a-427d-8ede-53c86df089a2.png"
+    },
+    {
+      "key": "carpark",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a neglected open-air asphalt car park with faded bay markings, scattered abandoned cars, weeds and low perimeter walls. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/carpark.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0e69fd22-3aa7-46c7-9fff-954a7dd61094.png"
+    },
+    {
+      "key": "cemetery",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: an old British cemetery with gravestones, stone memorials, bare paths, iron fence and weathered trees, no people. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/cemetery_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0d5c40fb-f035-41ac-95b1-2ac438d396dd.png"
+    },
+    {
+      "key": "cemetery",
+      "type": "map",
+      "dest": "godot/assets/blocks/cemetery.png",
+      "prompt": "Use case: stylized-concept. Asset: isometric minimap cemetery terrain tile for a detailed pixel-art British zombie survival game. Match reference fine crisp pixel rendering, muted palette, isometric flat diamond ground base, solid muted teal-grey backdrop. Subject: an OPEN-AIR grassy graveyard with twelve modest individual weathered headstones, a few low stone grave slabs, narrow gravel paths, two sparse old trees, and a simple low iron fence. Stones are short and small relative to the tile. Absolutely NO buildings, chapels, cathedrals, towers, tall spires, roofs, castles, interior rooms, crowds, zombies, text or labels. No huge monuments or clustered gothic architecture. Clearly readable rows of separate short gravestones in open ground, full diamond plot contained with margin. Square composition, fits the existing minimap.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/carpark.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ece259f4-741b-4ca4-ae02-11d3d1b7321b.png",
+      "superseded_source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ab679517-ee84-4564-acdf-5885c18a1c8b.png"
+    },
+    {
+      "key": "carpark",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a neglected open-air asphalt car park with faded bay markings, scattered abandoned cars, weeds and low perimeter walls. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/carpark_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c76020e1-0de6-4307-b6cd-c5102a70644e.png"
+    },
+    {
+      "key": "medic",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/medic_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art a Black woman army medic with dark hair in a high bun, olive medic fatigues and a small red-cross sleeve patch, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-8c8990b3-45b6-43d4-bcb7-a781d2ed5d34.png"
+    },
+    {
+      "key": "park",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a neglected city park with winding paths, mature trees, benches, grass and a small ornamental fountain, no people. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/park.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d06ee7bd-0c57-406c-9c97-8a07b0625827.png"
+    },
+    {
+      "key": "monument",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset: replacement map location image for a pixel-art zombie survival game. Subject: a public square containing a tall stone war memorial obelisk on stepped base, low iron railings and surrounding paving, no people. Show ONLY the outside view. Style reference: attached newly generated minimap building image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Complete isometric overhead building/site on a compact diamond pavement/ground base, fills a square canvas with margin; opaque solid muted teal-grey background matching reference; no interior cutaway. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/cathedral.png"
+      ],
+      "dest": "godot/assets/blocks/monument.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-13920ab9-eeca-45eb-9f67-480d1d453fea.png"
+    },
+    {
+      "key": "doctor",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/doctor_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art a South Asian woman doctor with shoulder-length dark hair, white lab coat over teal scrubs and stethoscope, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/doctor.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-431385b6-0aae-4bdd-a5d7-2dda4faea7dc.png"
+    },
+    {
+      "key": "necro",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/necro_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art an East Asian male laboratory assistant with short black hair, protective goggles resting on head, white lab coat over grey shirt and dark trousers, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/necro.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-546f76a0-0fe6-4c90-9668-0d0e37905e91.png"
+    },
+    {
+      "key": "scout",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/scout_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art a young pale woman with red hair under an olive patrol cap, olive fatigues and practical boots, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/scout.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-8a87b9d3-73a1-4d20-9aca-18d0b57140cb.png"
+    },
+    {
+      "key": "monument",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset: replacement outside location image for a pixel-art zombie survival game. Subject: a public square containing a tall stone war memorial obelisk on stepped base, low iron railings and surrounding paving, no people. Show ONLY the outside view. Style reference: attached newly generated environment image. Match its crisp detailed pixel-art illustration, dark contour work, weathered muted masonry, moss and warm neutral palette; fine pixel texture rather than blurry painting. Same consistent post-apocalyptic British city, neglected but structurally intact, no ruined roof or smashed building shell. Wide 16:9 exterior facade and approach at eye level. Keep an open foreground along bottom for small character sprites. No people, zombies, living animals, UI, labels, readable text, watermarks or borders. No artificial yellow glow suggesting a powered generator; neutral ambient daylight through windows if interior.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/settings/cathedral_outside.png"
+      ],
+      "dest": "godot/assets/settings/monument_outside.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6330f0f1-f2ba-4d41-b8c2-1b335dc883e5.png"
+    },
+    {
+      "key": "vagrant",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/vagrant_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art an older wild-haired, grey-bearded male vagrant survivor, ragged olive coat, worn trousers and scuffed boots, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/corpse.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-39c5fad3-cc88-4d99-a0a4-b73409e188be.png"
+    },
+    {
+      "key": "police",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/police_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art a Black male police officer with short black hair and trimmed beard, dark navy uniform and utility belt, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/police.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-945dcae7-458c-4ed8-a6d9-d1b0b6d5ae8d.png"
+    },
+    {
+      "key": "firefighter",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/firefighter_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art a pale woman firefighter with brown hair, black-and-yellow fire helmet, yellow turnout jacket with reflective bands and dark boots, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/firefighter.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-071d0646-a9f5-429e-816f-e03cf2d986fd.png"
+    },
+    {
+      "key": "consumer",
+      "type": "actor",
+      "dest": "godot/assets/sprite_sheets/consumer_sprite_sheet.png",
+      "prompt": "Use case: stylized-concept. Asset: full-body NPC animation sprite atlas. Reference 1 is the original game's full-body sprite style and animation sequences; reference 2 establishes the occupation character's face and costume. Generate ONE consistent small chibi pixel-art a middle-aged white woman with shoulder-length brown hair, purple casual jacket and grey trousers, facing RIGHT in three-quarter side view, matching original sprite proportions and crisp low-resolution pixels (not detailed portrait style). TRUE transparent background. EXACTLY 24 equal-sized cells in a SIX-column FOUR-row grid, no margins or gutters. Character same scale/pivot, feet at same baseline in each cell, completely inside each cell. Row-major sequence frames0\u20137: eight idle/walking/breathing poses; frames8\u201314: seven unarmed forward punch attack windup/strike/recover poses; frames15\u201320: six progressive death/collapse poses ending lying unmoving; frames21\u201323: three hit-reaction hurt poses. Thus first row six idle, second row last two idle then first four attack; third row last three attack then first three death; fourth row last three death then three hurt. Character fills about 75 percent of cell height, centered horizontally. No weapons, labels, writing, grid lines, shadows outside character, watermarks or extra characters. Landscape 3:2 atlas.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/military_sprite_sheet.png",
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/consumer.png"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d31f13ce-8271-41d4-969c-32ecf057c0d1.png"
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (5 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  16% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (26 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | building-art-gallery.png[39m[0m
+[   3% ] [90m[1m_update_scan_actions[22m | connected-mall-preview.png[39m[0m
+[   7% ] [90m[1m_update_scan_actions[22m | context-description-preview.png[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | crowded-scene-preview.png[39m[0m
+[  14% ] [90m[1m_update_scan_actions[22m | dialogue-preview.png[39m[0m
+[  18% ] [90m[1m_update_scan_actions[22m | downed-preview.png[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | encumbrance-inventory-preview.png[39m[0m
+[  25% ] [90m[1m_update_scan_actions[22m | full-height-downed-preview.png[39m[0m
+[  29% ] [90m[1m_update_scan_actions[22m | help-preview.png[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | item-art-gallery.png[39m[0m
+[  37% ] [90m[1m_update_scan_actions[22m | location-preview.png[39m[0m
+[  40% ] [90m[1m_update_scan_actions[22m | malton-city-preview.png[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | malton-start-preview.png[39m[0m
+[  48% ] [90m[1m_update_scan_actions[22m | minimap-outline-preview.png[39m[0m
+[  51% ] [90m[1m_update_scan_actions[22m | necrotech-recognition-preview.png[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | occupation-animation-gallery.png[39m[0m
+[  59% ] [90m[1m_update_scan_actions[22m | occupation-crowd-preview.png[39m[0m
+[  62% ] [90m[1m_update_scan_actions[22m | outdoor-art-gallery.png[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | portrait-art-gallery.png[39m[0m
+[  70% ] [90m[1m_update_scan_actions[22m | prototype-preview.png[39m[0m
+[  74% ] [90m[1m_update_scan_actions[22m | refreshed-locations-1.png[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | refreshed-locations-2.png[39m[0m
+[  81% ] [90m[1m_update_scan_actions[22m | skills-preview.png[39m[0m
+[  85% ] [90m[1m_update_scan_actions[22m | world-setup-preview.png[39m[0m
+[  88% ] [90m[1m_update_scan_actions[22m | zombie-animation-preview.png[39m[0m
+[  92% ] [90m[1m_update_scan_actions[22m | zombie-dialogue-preview.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (12 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   7% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  15% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  23% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  30% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  38% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  46% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  53% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  61% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  69% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  76% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  84% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | context-description-preview.png[39m[0m
+[   7% ] [90m[1mreimport[22m | crowded-scene-preview.png[39m[0m
+[  15% ] [90m[1mreimport[22m | dialogue-preview.png[39m[0m
+[  23% ] [90m[1mreimport[22m | encumbrance-inventory-preview.png[39m[0m
+[  30% ] [90m[1mreimport[22m | help-preview.png[39m[0m
+[  38% ] [90m[1mreimport[22m | location-preview.png[39m[0m
+[  46% ] [90m[1mreimport[22m | minimap-outline-preview.png[39m[0m
+[  53% ] [90m[1mreimport[22m | occupation-crowd-preview.png[39m[0m
+[  61% ] [90m[1mreimport[22m | prototype-preview.png[39m[0m
+[  69% ] [90m[1mreimport[22m | skills-preview.png[39m[0m
+[  76% ] [90m[1mreimport[22m | zombie-animation-preview.png[39m[0m
+[  84% ] [90m[1mreimport[22m | zombie-dialogue-preview.png[39m[0m
+[  92% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (12 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SOAK seed=4815 population={ "humans": 16, "zombies": 6, "down": 11, "powered": 1, "ruined": 2 } metrics={ "attacks": 799, "deaths": 4, "revivals": 2, "npc_actions": 2293 }
+SOAK seed=77 population={ "humans": 16, "zombies": 7, "down": 10, "powered": 0, "ruined": 0 } metrics={ "attacks": 763, "deaths": 4, "revivals": 2, "npc_actions": 2428 }
+SOAK seed=994 population={ "humans": 17, "zombies": 4, "down": 12, "powered": 3, "ruined": 0 } metrics={ "attacks": 692, "deaths": 5, "revivals": 2, "npc_actions": 2053 }
+CHECKS: 114  FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SURVIVAL CHECKS: 65 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+NPC BALANCE CHECKS: 26 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+LOOT/TRUST CHECKS: 39 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CONTENT CHECKS: 161 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ENCUMBRANCE/DOORS CHECKS: 38 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CITY TIMING: build 433 ms; three simulated minutes 88 ms
+WORLD CHECKS: 37 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 591.86 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060
+
+UI CHECKS: 127 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 591.86 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060
+
+ENVIRONMENT/INVENTORY UI CHECKS: 15 FAILURES: 0
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 591.86 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060
+
+STYLE/UI CHECKS: 27 FAILURES: 0; 80 refreshed assets rendered
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 591.86 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 4060
+
+ASSET GALLERY: 90 generated assets rendered
+
+Supplemental NPC regressions after the full run: NPC BALANCE CHECKS: 29 FAILURES: 0 (three added AP/fuel checks; 652 total current checks).

@@ -1,0 +1,22 @@
+[
+  {
+    "key": "street",
+    "type": "map",
+    "dest": "godot/assets/blocks/streets.png",
+    "prompt": "Use case: stylized-concept. Asset: isometric minimap terrain tile for a detailed pixel-art British zombie survival game. Reference image shows the exact palette, ground perspective and fine pixel rendering. Create a square canvas with a single diamond ground tile containing ONLY a wide paved street intersection: grey cracked asphalt crossing roads, clear faded white road markings, raised stone pavements at four corners, small weeds, a fallen streetlamp and a few scattered litter pieces. Flat OPEN STREET TERRAIN only. No buildings, houses, ruins, walls, roofs, towers, churches, fences, memorials, cars, characters, labels or text. Keep the full diamond ground shape inside the image with a generous solid muted teal-grey backdrop, same reference style. Road should be immediately readable at 89x89 pixels. Restrained clutter, clear road silhouette.",
+    "refs": [
+      "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/carpark.png"
+    ],
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-46d4ee66-ea1d-4e85-9494-293de0bae102.png"
+  },
+  {
+    "key": "cemetery",
+    "type": "map",
+    "dest": "godot/assets/blocks/cemetery.png",
+    "prompt": "Use case: stylized-concept. Asset: isometric minimap cemetery terrain tile for a detailed pixel-art British zombie survival game. Match reference fine crisp pixel rendering, muted palette, isometric flat diamond ground base, solid muted teal-grey backdrop. Subject: an OPEN-AIR grassy graveyard with twelve modest individual weathered headstones, a few low stone grave slabs, narrow gravel paths, two sparse old trees, and a simple low iron fence. Stones are short and small relative to the tile. Absolutely NO buildings, chapels, cathedrals, towers, tall spires, roofs, castles, interior rooms, crowds, zombies, text or labels. No huge monuments or clustered gothic architecture. Clearly readable rows of separate short gravestones in open ground, full diamond plot contained with margin. Square composition, fits the existing minimap.",
+    "refs": [
+      "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/blocks/carpark.png"
+    ],
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ece259f4-741b-4ca4-ae02-11d3d1b7321b.png"
+  }
+]

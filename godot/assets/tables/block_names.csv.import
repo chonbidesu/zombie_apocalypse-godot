@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cmti5d76bxenm"
+
+[deps]
+
+files=["res://assets/tables/block_names.CARPARK.translation", "res://assets/tables/block_names.CEMETERY.translation", "res://assets/tables/block_names.CHURCH.translation", "res://assets/tables/block_names.FACTORY.translation", "res://assets/tables/block_names.FIRE.translation", "res://assets/tables/block_names.HOSPITAL.translation", "res://assets/tables/block_names.JUNKYARD.translation", "res://assets/tables/block_names.LIBRARY.translation", "res://assets/tables/block_names.MALL.translation", "res://assets/tables/block_names.MONUMENT.translation", "res://assets/tables/block_names.MUSEUM.translation", "res://assets/tables/block_names.NECROTECH.translation", "res://assets/tables/block_names.NIGHTCLUB.translation", "res://assets/tables/block_names.PARK.translation", "res://assets/tables/block_names.POLICE.translation", "res://assets/tables/block_names.PUB.translation", "res://assets/tables/block_names.SCHOOL.translation", "res://assets/tables/block_names.STREET.translation", "res://assets/tables/block_names.WAREHOUSE.translation", "res://assets/tables/block_names.OFFICE.translation", "res://assets/tables/block_names.BANK.translation", "res://assets/tables/block_names.CINEMA.translation", "res://assets/tables/block_names.HOTEL.translation", "res://assets/tables/block_names.RAILWAY.translation", "res://assets/tables/block_names.TOWER.translation"]
+
+source_file="res://assets/tables/block_names.csv"
+dest_files=["res://assets/tables/block_names.CARPARK.translation", "res://assets/tables/block_names.CEMETERY.translation", "res://assets/tables/block_names.CHURCH.translation", "res://assets/tables/block_names.FACTORY.translation", "res://assets/tables/block_names.FIRE.translation", "res://assets/tables/block_names.HOSPITAL.translation", "res://assets/tables/block_names.JUNKYARD.translation", "res://assets/tables/block_names.LIBRARY.translation", "res://assets/tables/block_names.MALL.translation", "res://assets/tables/block_names.MONUMENT.translation", "res://assets/tables/block_names.MUSEUM.translation", "res://assets/tables/block_names.NECROTECH.translation", "res://assets/tables/block_names.NIGHTCLUB.translation", "res://assets/tables/block_names.PARK.translation", "res://assets/tables/block_names.POLICE.translation", "res://assets/tables/block_names.PUB.translation", "res://assets/tables/block_names.SCHOOL.translation", "res://assets/tables/block_names.STREET.translation", "res://assets/tables/block_names.WAREHOUSE.translation", "res://assets/tables/block_names.OFFICE.translation", "res://assets/tables/block_names.BANK.translation", "res://assets/tables/block_names.CINEMA.translation", "res://assets/tables/block_names.HOTEL.translation", "res://assets/tables/block_names.RAILWAY.translation", "res://assets/tables/block_names.TOWER.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

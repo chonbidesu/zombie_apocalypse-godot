@@ -1,0 +1,201 @@
+extends RefCounted
+const C = preload("res://scripts/catalog.gd")
+
+class Routes extends AStar2D:
+ func _compute_cost(_from_id: int,_to_id: int) -> float: return 1.0
+ func _estimate_cost(from_id: int,to_id: int) -> float:
+  var delta = (get_point_position(from_id)-get_point_position(to_id)).abs()
+  return maxf(delta.x,delta.y)
+
+static func build_navigation(s) -> AStar2D:
+ var graph = Routes.new()
+ for b in s.blocks: graph.add_point(b.id,Vector2(b.x,b.y))
+ for b in s.blocks:
+  for delta in [Vector2i(1,0),Vector2i(0,1),Vector2i(1,1),Vector2i(-1,1)]:
+   var x = b.x+delta.x
+   var y = b.y+delta.y
+   if x < 0 or x >= s.width or y < 0 or y >= s.height: continue
+   var other = s.block_at(x,y)
+   if b.fort != other.fort:
+    if not b.fort.is_empty() and b.type != "gatehouse": continue
+    if not other.fort.is_empty() and other.type != "gatehouse": continue
+   graph.connect_points(b.id,other.id)
+ return graph
+
+static func go(s,a: Dictionary,goal: Dictionary) -> bool:
+ var b = s.current_block(a)
+ if b.id == goal.id: return false
+ if a.route_goal != goal.id or a.route.is_empty():
+  a.route = Array(s.navigation.get_id_path(b.id,goal.id))
+  a.route_goal = goal.id
+  if not a.route.is_empty(): a.route.pop_front()
+ if a.route.is_empty(): return false
+ var next = s.blocks[int(a.route[0])]
+ if a.human and not a.inside and next.id != goal.id and s.occupants(next,false).any(func(t): return not t.human and not t.down):
+  var avoided: Array[int] = []
+  for y in range(maxi(0,a.y-1),mini(s.height,a.y+2)):
+   for x in range(maxi(0,a.x-1),mini(s.width,a.x+2)):
+    var site = s.block_at(x,y)
+    if site.id in [b.id,goal.id]: continue
+    if s.occupants(site,false).any(func(t): return not t.human and not t.down):
+     s.navigation.set_point_disabled(site.id,true)
+     avoided.append(site.id)
+  var safer = Array(s.navigation.get_id_path(b.id,goal.id))
+  for id in avoided: s.navigation.set_point_disabled(id,false)
+  if safer.size() > 1:
+   safer.pop_front()
+   a.route = safer
+   next = s.blocks[int(a.route[0])]
+ if maxi(absi(next.x-a.x),absi(next.y-a.y)) != 1:
+  a.route.clear()
+  return false
+ if b.type == "gatehouse" and not b.fort.is_empty() and not a.inside and next.fort == b.fort:
+  return s._try(a,"enter")
+ var free_run = a.human and s.has_skill(a,"free_running") and s.is_building(next) and next.ruin < 3
+ if a.inside and b.type != "gatehouse" and not free_run:
+  if s._try(a,"leave"): return true
+  if not a.human and b.barricade > 0: return s._try(a,"break")
+  return false
+ var moved = s._try(a,"move",-1,{"dx":next.x-a.x,"dy":next.y-a.y})
+ if moved: a.route.pop_front()
+ else: a.route.clear()
+ return moved
+
+static func shelter_worker(s,a: Dictionary) -> bool:
+ return s.has_skill(a,"construction") or a.job in ["Engineer","Scientist","Firefighter","Consumer","NecroTech Lab Assistant"]
+
+static func keeper(s,a: Dictionary) -> bool:
+ if not s.has_skill(a,"construction"): return false
+ if not s.actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false
+ for other in s.actors:
+  if other.id == a.id: break
+  if other.human and not other.down and other.home == a.home and s.has_skill(other,"construction"): return false
+ return true
+
+static func regroup(s,a: Dictionary) -> bool:
+ if s.actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false
+ var here = s.current_block(a)
+ var closest: Dictionary = {}
+ var distance = 13
+ for id in s.spatial:
+  var site = s.blocks[id]
+  var d = maxi(absi(site.x-a.x),absi(site.y-a.y))
+  if d >= distance or d+2 > a.ap or not s.is_building(site) or site.ruin > 0 or site.barricade > 4: continue
+  if site.fort != here.fort: continue
+  var others = s.occupants(site,true)
+  if others.any(func(t): return not t.human and not t.down): continue
+  var friends = others.filter(func(t): return t.id != a.id and t.human and not t.down).size()
+  if friends < 1 or friends > 2: continue
+  closest = site
+  distance = d
+ if closest.is_empty(): return false
+ a.home = closest.id
+ a.supply_goal = closest.id
+ a.supply_kind = ""
+ if closest.id == here.id: return false
+ return go(s,a,closest)
+
+static func group_need(s,a: Dictionary) -> String:
+ var home = s.blocks[a.home]
+ var allies = s.actors.filter(func(t): return t.human and not t.down and t.home == a.home and t.id != a.id)
+ if allies.is_empty(): return ""
+ var need = "portable_generator" if not home.generator else ("fuel_can" if home.fuel_until-s.minute < 360 else "")
+ if need.is_empty(): return ""
+ if allies.any(func(t): return not s.item_kind(t,need).is_empty() or t.supply_kind == need): return ""
+ return need
+
+static func retreat(s,a: Dictionary,forced: bool = false) -> bool:
+ if not forced and a.ap > 8: return false
+ var here = s.current_block(a)
+ var hostiles = s.occupants(here,a.inside).any(func(t): return not t.human and not t.down)
+ if a.inside and not hostiles: return false
+ if not a.inside and s.is_building(here) and here.ruin == 0 and here.barricade <= 4 and not s.occupants(here,true).any(func(t): return not t.human and not t.down):
+  a.home = here.id
+  a.supply_goal = -1
+  a.supply_kind = ""
+  return s._try(a,"enter")
+ var best: Dictionary = {}
+ var best_score = INF
+ var radius = mini(8,maxi(1,a.ap-1))
+ for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
+  for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
+   var site = s.block_at(x,y)
+   if not s.is_building(site) or site.ruin > 0 or site.barricade > 4 or site.id == here.id: continue
+   if site.fort != here.fort: continue
+   if s.occupants(site,true).any(func(t): return not t.human and not t.down): continue
+   var friends = s.occupants(site,true).filter(func(t): return t.human and not t.down).size()
+   var distance = maxi(absi(x-a.x),absi(y-a.y))
+   var score = distance+(4 if friends == 0 else 0)+(2 if site.barricade == 0 else 0)
+   if site.id == a.home: score -= 2
+   if score < best_score:
+    best = site
+    best_score = score
+ if best.is_empty(): return false
+ a.home = best.id
+ a.supply_goal = best.id
+ a.supply_kind = ""
+ return go(s,a,best)
+
+static func equip_best(s,a: Dictionary,target: Dictionary) -> bool:
+ var bare = s.attack_stats(a,target,"attack")
+ var best_score = float(bare.hit)*bare.damage
+ var best: Dictionary = {}
+ for item in a.inventory:
+  var def = C.ITEMS[item.kind]
+  if not def.has("damage"): continue
+  var factor = 1.0
+  if def.has("capacity") and item.ammo == 0:
+   if s.item_kind(a,def.ammo_kind).is_empty(): continue
+   factor = 0.7
+  var stats = s.attack_stats(a,target,"attack",item)
+  var score = stats.hit*stats.damage*factor
+  if score > best_score:
+   best_score = score
+   best = item
+ var desired = int(best.get("uid",-1))
+ if desired != a.equipped:
+  var selected = desired if desired >= 0 else a.equipped
+  if selected >= 0: return s._try(a,"equip",-1,{"uid":selected})
+ return false
+
+static func prey(s,a: Dictionary,people: Array) -> Dictionary:
+ if a.grasp_target >= 0:
+  var held = people.filter(func(t): return t.id == a.grasp_target and t.human and not t.down)
+  if not held.is_empty(): return held[0]
+ var choices = people.filter(func(t): return t.human and not t.down)
+ if choices.is_empty(): return {}
+ if s.has_skill(a,"scent_fear"):
+  choices.sort_custom(func(one,two): return one.hp < two.hp)
+  return choices[0]
+ return choices[a.id%choices.size()]
+
+static func can_call(s,a: Dictionary,people: Array) -> bool:
+ if not s.has_skill(a,"feeding_groan") or a.next_groan > s.minute: return false
+ var radius = mini(6,people.filter(func(t): return t.human and not t.down).size())
+ if radius == 0: return false
+ return s.actors.any(func(t): return t.id != a.id and not t.human and not t.down and s.current_block(t).id != s.current_block(a).id and maxi(absi(t.x-a.x),absi(t.y-a.y)) <= radius)
+
+static func seek_revival(s,a: Dictionary) -> void:
+ # Public clinic locations replace the multiplayer revive-point coordination.
+ var clinic: Dictionary = {}
+ var distance = INF
+ for medic in s.actors:
+  if not medic.human or medic.down or not s.has_skill(medic,"lab_experience"): continue
+  var site = s.blocks[medic.home]
+  if s.has_skill(a,"brain_rot") and (site.type != "necrotech_lab" or not s.powered(site)): continue
+  var d = maxi(absi(site.x-a.x),absi(site.y-a.y))
+  if d < distance:
+   clinic = site
+   distance = d
+ if clinic.is_empty():
+  for site in s.sites_by_type.get("necrotech_lab",[]):
+   var d = maxi(absi(site.x-a.x),absi(site.y-a.y))
+   if d < distance:
+    clinic = site
+    distance = d
+ if clinic.is_empty(): return
+ if s.current_block(a).id != clinic.id:
+  go(s,a,clinic)
+ elif a.inside:
+  if not s._try(a,"leave") and s.current_block(a).barricade > 0: s._try(a,"break")
+

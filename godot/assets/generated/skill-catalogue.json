@@ -1,0 +1,407 @@
+{
+  "shopping": {
+    "name": "Shopping",
+    "side": "human",
+    "category": "civilian",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Choose a mall store when searching."
+  },
+  "bargain_hunting": {
+    "name": "Bargain Hunting",
+    "side": "human",
+    "category": "civilian",
+    "cost": 100,
+    "requires": "shopping",
+    "min_level": 0,
+    "description": "Improve the total chance of finding items in malls."
+  },
+  "body_building": {
+    "name": "Body Building",
+    "side": "human",
+    "category": "civilian",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Raise maximum HP to 60, including after death."
+  },
+  "tagging": {
+    "name": "Tagging",
+    "side": "human",
+    "category": "civilian",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Earn XP for useful exterior tags and make spray cans last longer."
+  },
+  "construction": {
+    "name": "Construction",
+    "side": "human",
+    "category": "civilian",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Barricade and use a toolbox to repair buildings."
+  },
+  "radio_operation": {
+    "name": "Radio Operation",
+    "side": "human",
+    "category": "civilian",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Broadcast on restricted 26-28 MHz radio channels."
+  },
+  "firearms": {
+    "name": "Basic Firearms Training",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Add 25 percentage points to firearm accuracy."
+  },
+  "pistol_training": {
+    "name": "Pistol Training",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "firearms",
+    "min_level": 0,
+    "description": "Add 25 points to pistol accuracy."
+  },
+  "advanced_pistol": {
+    "name": "Advanced Pistol Training",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "pistol_training",
+    "min_level": 0,
+    "description": "Add another 10 points to pistol accuracy."
+  },
+  "shotgun_training": {
+    "name": "Shotgun Training",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "firearms",
+    "min_level": 0,
+    "description": "Add 25 points to shotgun accuracy."
+  },
+  "advanced_shotgun": {
+    "name": "Advanced Shotgun Training",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "shotgun_training",
+    "min_level": 0,
+    "description": "Add another 10 points to shotgun accuracy."
+  },
+  "hand_to_hand": {
+    "name": "Hand to Hand Combat",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Add 15 points to melee and fist accuracy."
+  },
+  "knife_combat": {
+    "name": "Knife Combat",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "hand_to_hand",
+    "min_level": 0,
+    "description": "Add 15 points to knife accuracy."
+  },
+  "axe_proficiency": {
+    "name": "Axe Proficiency",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "hand_to_hand",
+    "min_level": 0,
+    "description": "Add 15 points to axe accuracy."
+  },
+  "free_running": {
+    "name": "Free Running",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Move directly between intact building interiors."
+  },
+  "scout_safehouse": {
+    "name": "Scout Safehouse",
+    "side": "human",
+    "category": "military",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Spend 30 AP scouting a shelter for five discounted actions each day."
+  },
+  "necro_employment": {
+    "name": "NecroTech Employment",
+    "side": "human",
+    "category": "science",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Operate DNA extractors and recognise NecroTech sites."
+  },
+  "lab_experience": {
+    "name": "Lab Experience",
+    "side": "human",
+    "category": "science",
+    "cost": 100,
+    "requires": "necro_employment",
+    "min_level": 0,
+    "description": "Revive zombies using syringes."
+  },
+  "necronet": {
+    "name": "NecroNet Access",
+    "side": "human",
+    "category": "science",
+    "cost": 100,
+    "requires": "lab_experience",
+    "min_level": 0,
+    "description": "Scan tagged zombies, make syringes and revive Brain Rot in powered labs."
+  },
+  "first_aid": {
+    "name": "First Aid",
+    "side": "human",
+    "category": "science",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "First aid kits heal 10 HP instead of 5."
+  },
+  "surgery": {
+    "name": "Surgery",
+    "side": "human",
+    "category": "science",
+    "cost": 100,
+    "requires": "first_aid",
+    "min_level": 0,
+    "description": "Heal another 5 HP in powered hospitals and infirmaries."
+  },
+  "diagnosis": {
+    "name": "Diagnosis",
+    "side": "human",
+    "category": "science",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Read nearby survivor HP when visibility permits."
+  },
+  "headshot": {
+    "name": "Headshot",
+    "side": "human",
+    "category": "hunter",
+    "cost": 100,
+    "requires": "",
+    "min_level": 10,
+    "description": "Killed zombies need five additional AP to stand. Requires level 10."
+  },
+  "scent_fear": {
+    "name": "Scent Fear",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Distinguish wounded and dying survivors."
+  },
+  "scent_blood": {
+    "name": "Scent Blood",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "scent_fear",
+    "min_level": 0,
+    "description": "Read survivor HP and recognise infection."
+  },
+  "scent_trail": {
+    "name": "Scent Trail",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "scent_fear",
+    "min_level": 0,
+    "description": "Track survivors with whom you recently fought."
+  },
+  "scent_death": {
+    "name": "Scent Death",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "scent_fear",
+    "min_level": 0,
+    "description": "Sense nearby zombies, bodies and revivifying bodies."
+  },
+  "digestion": {
+    "name": "Digestion",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Bites restore HP; feed on corpses to recover four HP."
+  },
+  "infectious_bite": {
+    "name": "Infectious Bite",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "digestion",
+    "min_level": 0,
+    "description": "Bites infect survivors until medical treatment."
+  },
+  "vigour_mortis": {
+    "name": "Vigour Mortis",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Add 10 points to hand and bite accuracy."
+  },
+  "neck_lurch": {
+    "name": "Neck Lurch",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "vigour_mortis",
+    "min_level": 0,
+    "description": "Add 10 points to bite accuracy."
+  },
+  "death_grip": {
+    "name": "Death Grip",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "vigour_mortis",
+    "min_level": 0,
+    "description": "Add 15 points to hand accuracy."
+  },
+  "rend_flesh": {
+    "name": "Rend Flesh",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "vigour_mortis",
+    "min_level": 0,
+    "description": "Hand attacks inflict one extra damage."
+  },
+  "tangling_grasp": {
+    "name": "Tangling Grasp",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "vigour_mortis",
+    "min_level": 0,
+    "description": "Hand hits grasp a victim: +10 accuracy; a miss has 50% grip-loss chance."
+  },
+  "feeding_drag": {
+    "name": "Feeding Drag",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "vigour_mortis",
+    "min_level": 0,
+    "description": "Drag survivors at 12 HP or less through an open, clear entrance."
+  },
+  "memories": {
+    "name": "Memories of Life",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Open closed doors."
+  },
+  "death_rattle": {
+    "name": "Death Rattle",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "memories",
+    "min_level": 0,
+    "description": "Communicate using groaned zombie speech."
+  },
+  "feeding_groan": {
+    "name": "Feeding Groan",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "memories",
+    "min_level": 0,
+    "description": "Call nearby zombies towards the survivors you face."
+  },
+  "bellow": {
+    "name": "Bellow",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "feeding_groan",
+    "min_level": 0,
+    "description": "Spend 10 AP to call a horde when facing at least 25 survivors."
+  },
+  "ransack": {
+    "name": "Ransack",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "memories",
+    "min_level": 0,
+    "description": "Damage undefended interiors after destroying generators."
+  },
+  "flailing_gesture": {
+    "name": "Flailing Gesture",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "memories",
+    "min_level": 0,
+    "description": "Point towards locations, objects or people."
+  },
+  "lurching_gait": {
+    "name": "Lurching Gait",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Movement costs one AP instead of two."
+  },
+  "ankle_grab": {
+    "name": "Ankle Grab",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "lurching_gait",
+    "min_level": 0,
+    "description": "Standing costs one AP, plus any Headshot penalty."
+  },
+  "brain_rot": {
+    "name": "Brain Rot",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "",
+    "min_level": 0,
+    "description": "Resist DNA extraction; revival needs a powered lab and NecroNet."
+  },
+  "flesh_rot": {
+    "name": "Flesh Rot",
+    "side": "zombie",
+    "category": "zombie",
+    "cost": 100,
+    "requires": "brain_rot",
+    "min_level": 0,
+    "description": "Raise zombie maximum HP to 60 and reduce firearm damage."
+  }
+}

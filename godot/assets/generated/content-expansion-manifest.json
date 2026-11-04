@@ -1,0 +1,636 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "key": "cathedral",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4518e588-6f40-43e1-9f20-09fcb12756fa.png",
+      "dest": "godot/assets/blocks/cathedral.png"
+    },
+    {
+      "key": "cathedral",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-535a9685-086a-4b39-83e5-c580d0a744e5.png",
+      "dest": "godot/assets/settings/cathedral_outside.png"
+    },
+    {
+      "key": "mansion",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7c61fe37-3dbb-4402-9e0f-677862c563cd.png",
+      "dest": "godot/assets/settings/mansion_outside.png"
+    },
+    {
+      "key": "cathedral",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-172588d6-7509-44df-92b9-d488e3990df5.png",
+      "dest": "godot/assets/settings/cathedral_inside.png"
+    },
+    {
+      "key": "mansion",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ab553345-fbe6-45ca-beb1-fcd503cbdf6f.png",
+      "dest": "godot/assets/settings/mansion_inside.png"
+    },
+    {
+      "key": "mansion",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d18833d0-5b5d-4d18-a5dc-4be0653e5bba.png",
+      "dest": "godot/assets/blocks/mansion.png"
+    },
+    {
+      "key": "power_station",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned brick power station, smokestacks, transformers and an industrial turbine hall. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dc2686e9-58ce-4e5e-8b12-921e2badd72b.png",
+      "dest": "godot/assets/blocks/power_station.png"
+    },
+    {
+      "key": "power_station",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned brick power station, smokestacks, transformers and an industrial turbine hall. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-23300951-96d7-4ec9-85d1-2e3de1a69df7.png",
+      "dest": "godot/assets/settings/power_station_outside.png"
+    },
+    {
+      "key": "power_station",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned brick power station, smokestacks, transformers and an industrial turbine hall. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ca7ebd7c-0daa-4f47-9530-6a3b38351a3d.png",
+      "dest": "godot/assets/settings/power_station_inside.png"
+    },
+    {
+      "key": "stadium",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-636b7808-03dc-47e8-9cbe-1ca205d39f82.png",
+      "dest": "godot/assets/blocks/stadium.png"
+    },
+    {
+      "key": "armoury",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-aaed5d58-167b-4704-96ce-953f86fe652a.png",
+      "dest": "godot/assets/blocks/armoury.png"
+    },
+    {
+      "key": "armoury",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5f6d2963-02c0-451e-a04d-ef427381ed0f.png",
+      "dest": "godot/assets/settings/armoury_outside.png"
+    },
+    {
+      "key": "stadium",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5b726abb-0af3-4c95-b04f-d5dc9c261c24.png",
+      "dest": "godot/assets/settings/stadium_outside.png"
+    },
+    {
+      "key": "stadium",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-1572c068-e6d8-4560-b6dc-dfe00233c415.png",
+      "dest": "godot/assets/settings/stadium_inside.png"
+    },
+    {
+      "key": "armoury",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-67599ee6-5f91-4d51-9a49-b70e9918658a.png",
+      "dest": "godot/assets/settings/armoury_inside.png"
+    },
+    {
+      "key": "barracks",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e3a5cb70-2d89-4e93-9fed-835420ed65dd.png",
+      "dest": "godot/assets/settings/barracks_inside.png"
+    },
+    {
+      "key": "gatehouse",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3b5bef94-6b3e-4ac4-a496-e9439f951cae.png",
+      "dest": "godot/assets/blocks/gatehouse.png"
+    },
+    {
+      "key": "barracks",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-597055f8-d902-4e88-ac38-9e7164e0b343.png",
+      "dest": "godot/assets/blocks/barracks.png"
+    },
+    {
+      "key": "barracks",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bc7e402d-6c18-47ec-8b8f-e43cce18e74e.png",
+      "dest": "godot/assets/settings/barracks_outside.png"
+    },
+    {
+      "key": "gatehouse",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a567b742-7ffc-429f-91c3-55e5a22bdb47.png",
+      "dest": "godot/assets/settings/gatehouse_outside.png"
+    },
+    {
+      "key": "infirmary",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e82b185c-f5e2-47a7-a6a2-1ccc18411bfb.png",
+      "dest": "godot/assets/settings/infirmary_outside.png"
+    },
+    {
+      "key": "gatehouse",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-cca75c06-0669-43f7-98a9-f05d0dd14953.png",
+      "dest": "godot/assets/settings/gatehouse_inside.png"
+    },
+    {
+      "key": "infirmary",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0a70e71a-fb53-4cd8-b901-3f9fb8516b9a.png",
+      "dest": "godot/assets/blocks/infirmary.png"
+    },
+    {
+      "key": "infirmary",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-37952d6b-1291-4667-bd94-4ad560b79171.png",
+      "dest": "godot/assets/settings/infirmary_inside.png"
+    },
+    {
+      "key": "vehicle_depot",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort military vehicle depot, repair bays, abandoned transport truck and service tools. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-03e0152c-f9bc-492d-adcb-57ec36611179.png",
+      "dest": "godot/assets/blocks/vehicle_depot.png"
+    },
+    {
+      "key": "storehouse",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a6a26906-0cbe-412f-a9c1-a9de604fa216.png",
+      "dest": "godot/assets/blocks/storehouse.png"
+    },
+    {
+      "key": "vehicle_depot",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military vehicle depot, repair bays, abandoned transport truck and service tools. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6b412a06-b93a-492e-924e-5daefaf23ecc.png",
+      "dest": "godot/assets/settings/vehicle_depot_outside.png"
+    },
+    {
+      "key": "storehouse",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-225e5b0b-31d0-45cf-a3cb-9f922bf1f0ba.png",
+      "dest": "godot/assets/settings/storehouse_outside.png"
+    },
+    {
+      "key": "vehicle_depot",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military vehicle depot, repair bays, abandoned transport truck and service tools. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2a28783e-589f-4e8f-83d6-df0b3c5a1a72.png",
+      "dest": "godot/assets/settings/vehicle_depot_inside.png"
+    },
+    {
+      "key": "aquarium",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-49116473-0843-403b-aa78-50fb19256101.png",
+      "dest": "godot/assets/blocks/aquarium.png"
+    },
+    {
+      "key": "storehouse",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-b1384f0c-14c1-4bfb-84e1-9a61c8a34109.png",
+      "dest": "godot/assets/settings/storehouse_inside.png"
+    },
+    {
+      "key": "aquarium",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e9edbf51-62ed-47ad-9e51-66b1261dde53.png",
+      "dest": "godot/assets/settings/aquarium_outside.png"
+    },
+    {
+      "key": "bear_pit",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ad2c31f9-8ac2-4849-b659-8baf067d8dc2.png",
+      "dest": "godot/assets/blocks/bear_pit.png"
+    },
+    {
+      "key": "aquarium",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2cd63c81-9793-430a-b48a-ca268a46e15b.png",
+      "dest": "godot/assets/settings/aquarium_inside.png"
+    },
+    {
+      "key": "bear_pit",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-118b1025-7e59-4d1a-9c2d-e2f45f248ccb.png",
+      "dest": "godot/assets/settings/bear_pit_outside.png"
+    },
+    {
+      "key": "elephant_house",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ee511584-9284-49f5-9ccc-30f97aa1520f.png",
+      "dest": "godot/assets/settings/elephant_house_outside.png"
+    },
+    {
+      "key": "bear_pit",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3aeb2af0-ddeb-4909-b899-d730516debd1.png",
+      "dest": "godot/assets/settings/bear_pit_inside.png"
+    },
+    {
+      "key": "elephant_house",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-49633528-72d4-4c59-8dbe-9916f046a0a7.png",
+      "dest": "godot/assets/settings/elephant_house_inside.png"
+    },
+    {
+      "key": "elephant_house",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-66fdc261-1d3d-4eeb-af81-299951956122.png",
+      "dest": "godot/assets/blocks/elephant_house.png"
+    },
+    {
+      "key": "giraffe_house",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-96a58779-a3ba-439c-9e01-f1c2b759598d.png",
+      "dest": "godot/assets/blocks/giraffe_house.png"
+    },
+    {
+      "key": "giraffe_house",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3e09961f-eb95-41e5-9c1d-159fe726a6ee.png",
+      "dest": "godot/assets/settings/giraffe_house_outside.png"
+    },
+    {
+      "key": "giraffe_house",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-891cda5e-04e6-46d7-b48b-8c41fdd34338.png",
+      "dest": "godot/assets/settings/giraffe_house_inside.png"
+    },
+    {
+      "key": "reptile_house",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-972fdbc9-8e49-4b61-b106-10df3be9e3cf.png",
+      "dest": "godot/assets/blocks/reptile_house.png"
+    },
+    {
+      "key": "lion_enclosure",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-526cc7df-1616-4545-ac96-5482e71cb1bb.png",
+      "dest": "godot/assets/blocks/lion_enclosure.png"
+    },
+    {
+      "key": "reptile_house",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-147e31eb-0c4f-4a72-97d7-6285c976661e.png",
+      "dest": "godot/assets/settings/reptile_house_outside.png"
+    },
+    {
+      "key": "lion_enclosure",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f82260af-44c7-4630-b50c-9afcf032a6a6.png",
+      "dest": "godot/assets/settings/lion_enclosure_outside.png"
+    },
+    {
+      "key": "reptile_house",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6138573a-0a11-4e51-aa1b-4afe27a7c115.png",
+      "dest": "godot/assets/settings/reptile_house_inside.png"
+    },
+    {
+      "key": "lion_enclosure",
+      "type": "inside",
+      "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-76a2445a-760f-470d-95d6-3723c470562a.png",
+      "dest": "godot/assets/settings/lion_enclosure_inside.png"
+    },
+    {
+      "key": "wasteland",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an empty urban wasteland of cracked paving, weeds and rubble. Square minimap icon: isometric overhead view of the complete outdoor plot, centered on solid muted teal-grey background; compact readable tile. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4e296b86-d8f5-48b1-8585-dd89fffd6017.png",
+      "dest": "godot/assets/blocks/wasteland.png"
+    },
+    {
+      "key": "exercise_yard",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an abandoned military exercise yard with parallel bars and training equipment. Square minimap icon: isometric overhead view of the complete outdoor plot, centered on solid muted teal-grey background; compact readable tile. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-937b40e8-1488-4fb2-b139-072f4e2d2f20.png",
+      "dest": "godot/assets/blocks/exercise_yard.png"
+    },
+    {
+      "key": "wasteland",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an empty urban wasteland of cracked paving, weeds and rubble. Wide 16:9 landscape environment: eye-level view across this open land, detailed scenery and empty bottom foreground for character sprites. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-be3a93ad-c7f8-48c2-86b7-5d069a956254.png",
+      "dest": "godot/assets/settings/wasteland_outside.png"
+    },
+    {
+      "key": "exercise_yard",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an abandoned military exercise yard with parallel bars and training equipment. Wide 16:9 landscape environment: eye-level view across this open land, detailed scenery and empty bottom foreground for character sprites. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2cc3fc16-49de-4116-9872-11c7db38ac51.png",
+      "dest": "godot/assets/settings/exercise_yard_outside.png"
+    },
+    {
+      "key": "training_ground",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an abandoned military training ground with obstacle course and sandbags. Square minimap icon: isometric overhead view of the complete outdoor plot, centered on solid muted teal-grey background; compact readable tile. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a0ce9206-488c-41f7-a81b-bed90cd4e6da.png",
+      "dest": "godot/assets/blocks/training_ground.png"
+    },
+    {
+      "key": "training_ground",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an abandoned military training ground with obstacle course and sandbags. Wide 16:9 landscape environment: eye-level view across this open land, detailed scenery and empty bottom foreground for character sprites. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5b68bdcb-d1f3-4b0f-8643-7f037b22ef29.png",
+      "dest": "godot/assets/settings/training_ground_outside.png"
+    },
+    {
+      "key": "zoo_ground",
+      "type": "map",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an abandoned zoo pathway with weathered fencing, empty benches and overgrown landscaping. Square minimap icon: isometric overhead view of the complete outdoor plot, centered on solid muted teal-grey background; compact readable tile. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-c4681776-5e10-41cc-b8ed-da1112a625f8.png",
+      "dest": "godot/assets/blocks/zoo_ground.png"
+    },
+    {
+      "key": "zoo_ground",
+      "type": "outside",
+      "prompt": "Use case: stylized-concept. Pixel-art game environment matching the reference's crisp detailed pixel style, muted abandoned-city palette and weathering. Subject: an abandoned zoo pathway with weathered fencing, empty benches and overgrown landscaping. Wide 16:9 landscape environment: eye-level view across this open land, detailed scenery and empty bottom foreground for character sprites. No people, animals, zombies, lettering, UI, frames or labels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f16cdbdb-5b46-4139-9948-112a4955be9d.png",
+      "dest": "godot/assets/settings/zoo_ground_outside.png"
+    },
+    {
+      "key": "length_of_pipe",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: short rusty length of metal pipe. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bf6b5f0b-f276-4a2a-bf55-a27f01148771.png",
+      "dest": "godot/assets/items/length_of_pipe.png"
+    },
+    {
+      "key": "cricket_bat",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: wooden cricket bat. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e7c04ea9-b243-4c63-b043-efa5b193ab03.png",
+      "dest": "godot/assets/items/cricket_bat.png"
+    },
+    {
+      "key": "fencing_foil",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: fencing foil with cup guard. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4b17cad3-6836-418e-9027-504298410b30.png",
+      "dest": "godot/assets/items/fencing_foil.png"
+    },
+    {
+      "key": "pool_cue",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: wooden pool cue. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e2e54d75-be2c-411b-8475-cbfe1e7db4e6.png",
+      "dest": "godot/assets/items/pool_cue.png"
+    },
+    {
+      "key": "ski_pole",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: single aluminium ski pole. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-044917e2-e6c6-43e8-9c0a-22b93d37b038.png",
+      "dest": "godot/assets/items/ski_pole.png"
+    },
+    {
+      "key": "mobile_phone",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: old mobile phone with small screen. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-9872eec1-0496-43bd-a856-a3d4d86e4bb6.png",
+      "dest": "godot/assets/items/mobile_phone.png"
+    },
+    {
+      "key": "radio_transmitter",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: desktop radio transmitter with microphone. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d5d167f7-af00-4b57-91ab-6d4aa86e425c.png",
+      "dest": "godot/assets/items/radio_transmitter.png"
+    },
+    {
+      "key": "flare_gun",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: red emergency flare pistol. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0cdd5512-5d5e-4564-9b86-98ee79d4ccf7.png",
+      "dest": "godot/assets/items/flare_gun.png"
+    },
+    {
+      "key": "flak_jacket",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: dark police ballistic flak vest. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-181231b3-b5e9-443c-87f9-5b306a3b5624.png",
+      "dest": "godot/assets/items/flak_jacket.png"
+    },
+    {
+      "key": "spray_can",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: aerosol spray paint can. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-312ea264-e45a-4986-ac45-7a759b3f38ba.png",
+      "dest": "godot/assets/items/spray_can.png"
+    },
+    {
+      "key": "painting",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small framed painting. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a10564b2-8435-4eb3-b92f-d67cf8e58a46.png",
+      "dest": "godot/assets/items/painting.png"
+    },
+    {
+      "key": "glass_piece",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: museum glass vase. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dd6c84f7-98dd-443b-b3e6-e64cbff799d5.png",
+      "dest": "godot/assets/items/glass_piece.png"
+    },
+    {
+      "key": "pottery",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: terracotta museum urn. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e88ae54e-7343-49f1-aee2-945fcfd93b3f.png",
+      "dest": "godot/assets/items/pottery.png"
+    },
+    {
+      "key": "skeleton",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: museum human skeleton display. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5c325a22-ffe0-46ed-9711-22f960b15e45.png",
+      "dest": "godot/assets/items/skeleton.png"
+    },
+    {
+      "key": "tapestry",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: rolled woven decorative tapestry. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-994ffcea-0342-43a4-858c-88081c7af159.png",
+      "dest": "godot/assets/items/tapestry.png"
+    },
+    {
+      "key": "stuffed_animal",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: taxidermy fox museum exhibit. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-744b40a3-a775-4efb-b63e-4458da8ebd8a.png",
+      "dest": "godot/assets/items/stuffed_animal.png"
+    },
+    {
+      "key": "sculpture",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small abstract stone sculpture. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-13f27d93-3501-4428-8931-6df018df9676.png",
+      "dest": "godot/assets/items/sculpture.png"
+    },
+    {
+      "key": "christmas_lights",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: coiled festive string lights. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-fbabc1ec-7d4f-42e7-b6c6-1fe4aaa84c7e.png",
+      "dest": "godot/assets/items/christmas_lights.png"
+    },
+    {
+      "key": "dead_fir_tree",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small dead fir tree in simple wooden stand. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7e08240a-d2fb-4e4a-af62-557fadfd1d01.png",
+      "dest": "godot/assets/items/dead_fir_tree.png"
+    },
+    {
+      "key": "plastic_christmas_tree",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small plastic green Christmas tree. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-02a8ec0a-74d5-4ee7-95d4-609e51cd4fb8.png",
+      "dest": "godot/assets/items/plastic_christmas_tree.png"
+    },
+    {
+      "key": "tinsel",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: coiled silver tinsel garland. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e5c2f502-d2d9-4780-a7de-98a02fa4654d.png",
+      "dest": "godot/assets/items/tinsel.png"
+    },
+    {
+      "key": "clothing",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: folded civilian shirt and trousers. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5d6abff1-b9fe-46af-9be3-905ea48e059b.png",
+      "dest": "godot/assets/items/clothing.png"
+    },
+    {
+      "key": "pumpkin",
+      "type": "item",
+      "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: orange carved pumpkin. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0ef0e87a-e1ad-405c-8e5e-524d5c514bfb.png",
+      "dest": "godot/assets/items/pumpkin.png"
+    },
+    {
+      "key": "statue",
+      "prompt": "Use case: stylized-concept. One small stone owl statue inventory icon for a low-resolution pixel-art survival game. A carved stone owl perched on a simple square pedestal, complete object centered with generous transparent margin. Match the reference's chunky dark outline, low-resolution pixel shading, muted palette, readable 45-pixel silhouette. Genuine transparent background. No people, writing, labels, borders or extra objects.",
+      "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dc695c54-2b2c-43db-9ad5-994a1f4c8c4a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "type": "item",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dc695c54-2b2c-43db-9ad5-994a1f4c8c4a.png",
+      "dest": "godot/assets/items/statue.png"
+    },
+    {
+      "key": "radio",
+      "type": "item",
+      "prompt": "A pixel art red radio inventory icon, transparent background, crisp pixel art matching an old survival game, centered single object, no text.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-82b86707-f0d7-45c0-a190-58301eb7b80e.png",
+      "dest": "godot/assets/items/radio.png"
+    },
+    {
+      "key": "private",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset type: production pixel-art game portrait animation atlas. Create ONE 5-column by 5-row grid of exactly 25 equal square cells, edge to edge, no labels, no gutters, no grid lines. The reference is STYLE ONLY: match its crisp low-resolution pixel-art bust, restrained shading, slightly comic late-1990s survival game look, frontal head and shoulders and fixed camera. Subject: adult army PRIVATE with olive fatigues, short dark hair, recognisable friendly face. Same identity and exact head position/scale across every cell. Reading order row-major: cells 0-5 six subtle healthy breathing frames; 6-11 six moderately injured breathing frames with bruises; 12-17 six critically injured breathing frames; cell18 dead with closed eyes and no movement; cells19-24 six undead versions of same person, pallid green-grey skin, cloudy eyes, torn fatigues, irregular lurching pose. One character per cell, shoulders fill lower edge, face unobscured. Preserve very similar silhouettes across frames. Genuine transparent background. At least 1000px square output, evenly spaced cells. No text, borders, extra objects or weapons.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f6c39f56-c07d-454a-bab9-f38279584f52.png",
+      "dest": "godot/assets/portraits/private.png"
+    },
+    {
+      "key": "medic",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: Black woman army medic in olive medical fatigues. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-01d9e5b6-6875-4898-8d5c-96c0510d24bd.png",
+      "dest": "godot/assets/portraits/medic.png"
+    },
+    {
+      "key": "scout",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: auburn-haired woman scout in green cap and lightweight olive fatigues. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-1048406b-b95f-413c-a0da-20856de1e943.png",
+      "dest": "godot/assets/portraits/scout.png"
+    },
+    {
+      "key": "necro",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: East Asian man NecroTech lab technician in white lab coat, blue shirt, goggles on forehead. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bdc7181d-0f31-4db9-8122-7cfc37991c69.png",
+      "dest": "godot/assets/portraits/necro.png"
+    },
+    {
+      "key": "doctor",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: South Asian woman doctor in white coat and teal scrubs. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-56dd0868-92c6-41b5-ac7b-4139a018935c.png",
+      "dest": "godot/assets/portraits/doctor.png"
+    },
+    {
+      "key": "police",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: Black man police officer in navy uniform. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6e58c90f-9355-4a16-bf0d-05a3c2ec61c0.png",
+      "dest": "godot/assets/portraits/police.png"
+    },
+    {
+      "key": "firefighter",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: woman firefighter in yellow turnout jacket and firefighter helmet. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-15183e51-918f-45f1-91ab-8b3f3f46e7c2.png",
+      "dest": "godot/assets/portraits/firefighter.png"
+    },
+    {
+      "key": "consumer",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: middle-aged woman civilian shopper in purple everyday jacket. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2736d453-b9ea-433a-9c3f-8c1645398e48.png",
+      "dest": "godot/assets/portraits/consumer.png"
+    },
+    {
+      "key": "corpse",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. One production portrait animation atlas for a pixel-art zombie survival game. STYLE REFERENCE ONLY: match the reference's crisp old-school pixel-art frontal head-and-shoulders bust and restrained colours. Character: older man vagrant with wild matted grey hair, scruffy beard, weathered face, torn brown-green coat. Exactly 5 columns and 5 rows of equal square frames filling the image, no gutters, labels, borders or drawn grid. Camera and identity locked. ROW 1 (cells 0-4): five subtle healthy breathing frames. ROW 2 (5-9): five moderately injured breathing frames, facial bruises. ROW 3 (10-14): five critically injured breathing frames, blood and exhaustion. ROW 4 first cell (15): dead unmoving face, eyes closed; remaining four cells (16-19) begin undead lurch animation. ROW 5 (20-24): five more undead lurch frames of SAME identity, pallid green-grey skin, cloudy eyes, torn same clothing. Exactly 25 busts total. All busts share scale and baseline, chest cut at bottom edge of each cell. Genuine transparent background, no other objects, no writing. Square atlas.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bf9e0e64-85f2-433e-95ab-90b295d53ecf.png",
+      "dest": "godot/assets/portraits/corpse.png"
+    }
+  ]
+}

@@ -1,0 +1,595 @@
+[
+  {
+    "key": "cathedral",
+    "type": "map",
+    "subject": "large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4518e588-6f40-43e1-9f20-09fcb12756fa.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/cathedral.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4518e588-6f40-43e1-9f20-09fcb12756fa.png"
+  },
+  {
+    "key": "cathedral",
+    "type": "outside",
+    "subject": "large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-535a9685-086a-4b39-83e5-c580d0a744e5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/cathedral_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-535a9685-086a-4b39-83e5-c580d0a744e5.png"
+  },
+  {
+    "key": "mansion",
+    "type": "outside",
+    "subject": "ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7c61fe37-3dbb-4402-9e0f-677862c563cd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/mansion_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7c61fe37-3dbb-4402-9e0f-677862c563cd.png"
+  },
+  {
+    "key": "cathedral",
+    "type": "inside",
+    "subject": "large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: large Gothic stone cathedral with twin towers, broken stained glass, vaulted nave and rows of pews. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-172588d6-7509-44df-92b9-d488e3990df5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/cathedral_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-172588d6-7509-44df-92b9-d488e3990df5.png"
+  },
+  {
+    "key": "mansion",
+    "type": "inside",
+    "subject": "ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ab553345-fbe6-45ca-beb1-fcd503cbdf6f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/mansion_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ab553345-fbe6-45ca-beb1-fcd503cbdf6f.png"
+  },
+  {
+    "key": "mansion",
+    "type": "map",
+    "subject": "ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: ornate Victorian stone mansion, wrought iron gates, grand entrance hall and dusty staircases. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d18833d0-5b5d-4d18-a5dc-4be0653e5bba.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/mansion.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d18833d0-5b5d-4d18-a5dc-4be0653e5bba.png"
+  },
+  {
+    "key": "power_station",
+    "type": "map",
+    "subject": "abandoned brick power station, smokestacks, transformers and an industrial turbine hall",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned brick power station, smokestacks, transformers and an industrial turbine hall. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dc2686e9-58ce-4e5e-8b12-921e2badd72b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/power_station.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dc2686e9-58ce-4e5e-8b12-921e2badd72b.png"
+  },
+  {
+    "key": "power_station",
+    "type": "outside",
+    "subject": "abandoned brick power station, smokestacks, transformers and an industrial turbine hall",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned brick power station, smokestacks, transformers and an industrial turbine hall. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-23300951-96d7-4ec9-85d1-2e3de1a69df7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/power_station_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-23300951-96d7-4ec9-85d1-2e3de1a69df7.png"
+  },
+  {
+    "key": "power_station",
+    "type": "inside",
+    "subject": "abandoned brick power station, smokestacks, transformers and an industrial turbine hall",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned brick power station, smokestacks, transformers and an industrial turbine hall. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ca7ebd7c-0daa-4f47-9530-6a3b38351a3d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/power_station_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ca7ebd7c-0daa-4f47-9530-6a3b38351a3d.png"
+  },
+  {
+    "key": "stadium",
+    "type": "map",
+    "subject": "abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-636b7808-03dc-47e8-9cbe-1ca205d39f82.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/stadium.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-636b7808-03dc-47e8-9cbe-1ca205d39f82.png"
+  },
+  {
+    "key": "armoury",
+    "type": "map",
+    "subject": "fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-aaed5d58-167b-4704-96ce-953f86fe652a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/armoury.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-aaed5d58-167b-4704-96ce-953f86fe652a.png"
+  },
+  {
+    "key": "armoury",
+    "type": "outside",
+    "subject": "fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5f6d2963-02c0-451e-a04d-ef427381ed0f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/armoury_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5f6d2963-02c0-451e-a04d-ef427381ed0f.png"
+  },
+  {
+    "key": "stadium",
+    "type": "outside",
+    "subject": "abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5b726abb-0af3-4c95-b04f-d5dc9c261c24.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/stadium_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5b726abb-0af3-4c95-b04f-d5dc9c261c24.png"
+  },
+  {
+    "key": "stadium",
+    "type": "inside",
+    "subject": "abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned football stadium, floodlight towers, damaged stands, green pitch and concrete concourse. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-1572c068-e6d8-4560-b6dc-dfe00233c415.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/stadium_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-1572c068-e6d8-4560-b6dc-dfe00233c415.png"
+  },
+  {
+    "key": "armoury",
+    "type": "inside",
+    "subject": "fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military concrete armoury bunker, reinforced steel entrance, empty weapon racks and ammunition crates. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-67599ee6-5f91-4d51-9a49-b70e9918658a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/armoury_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-67599ee6-5f91-4d51-9a49-b70e9918658a.png"
+  },
+  {
+    "key": "barracks",
+    "type": "inside",
+    "subject": "fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e3a5cb70-2d89-4e93-9fed-835420ed65dd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/barracks_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e3a5cb70-2d89-4e93-9fed-835420ed65dd.png"
+  },
+  {
+    "key": "gatehouse",
+    "type": "map",
+    "subject": "fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3b5bef94-6b3e-4ac4-a496-e9439f951cae.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/gatehouse.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3b5bef94-6b3e-4ac4-a496-e9439f951cae.png"
+  },
+  {
+    "key": "barracks",
+    "type": "map",
+    "subject": "fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-597055f8-d902-4e88-ac38-9e7164e0b343.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/barracks.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-597055f8-d902-4e88-ac38-9e7164e0b343.png"
+  },
+  {
+    "key": "barracks",
+    "type": "outside",
+    "subject": "fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort red-brick military barracks, regimented windows, rows of metal bunks and personal lockers. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bc7e402d-6c18-47ec-8b8f-e43cce18e74e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/barracks_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bc7e402d-6c18-47ec-8b8f-e43cce18e74e.png"
+  },
+  {
+    "key": "gatehouse",
+    "type": "outside",
+    "subject": "fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a567b742-7ffc-429f-91c3-55e5a22bdb47.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/gatehouse_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a567b742-7ffc-429f-91c3-55e5a22bdb47.png"
+  },
+  {
+    "key": "infirmary",
+    "type": "outside",
+    "subject": "fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e82b185c-f5e2-47a7-a6a2-1ccc18411bfb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/infirmary_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e82b185c-f5e2-47a7-a6a2-1ccc18411bfb.png"
+  },
+  {
+    "key": "gatehouse",
+    "type": "inside",
+    "subject": "fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort fortified military gatehouse, heavy concrete walls, guard booth and a defensible passage. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-cca75c06-0669-43f7-98a9-f05d0dd14953.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/gatehouse_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-cca75c06-0669-43f7-98a9-f05d0dd14953.png"
+  },
+  {
+    "key": "infirmary",
+    "type": "map",
+    "subject": "fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0a70e71a-fb53-4cd8-b901-3f9fb8516b9a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/infirmary.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0a70e71a-fb53-4cd8-b901-3f9fb8516b9a.png"
+  },
+  {
+    "key": "infirmary",
+    "type": "inside",
+    "subject": "fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort small military infirmary, medical sign, treatment beds, cabinets and surgical trolley. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-37952d6b-1291-4667-bd94-4ad560b79171.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/infirmary_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-37952d6b-1291-4667-bd94-4ad560b79171.png"
+  },
+  {
+    "key": "vehicle_depot",
+    "type": "map",
+    "subject": "fort military vehicle depot, repair bays, abandoned transport truck and service tools",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort military vehicle depot, repair bays, abandoned transport truck and service tools. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-03e0152c-f9bc-492d-adcb-57ec36611179.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/vehicle_depot.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-03e0152c-f9bc-492d-adcb-57ec36611179.png"
+  },
+  {
+    "key": "storehouse",
+    "type": "map",
+    "subject": "fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a6a26906-0cbe-412f-a9c1-a9de604fa216.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/storehouse.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a6a26906-0cbe-412f-a9c1-a9de604fa216.png"
+  },
+  {
+    "key": "vehicle_depot",
+    "type": "outside",
+    "subject": "fort military vehicle depot, repair bays, abandoned transport truck and service tools",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military vehicle depot, repair bays, abandoned transport truck and service tools. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6b412a06-b93a-492e-924e-5daefaf23ecc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/vehicle_depot_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6b412a06-b93a-492e-924e-5daefaf23ecc.png"
+  },
+  {
+    "key": "storehouse",
+    "type": "outside",
+    "subject": "fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-225e5b0b-31d0-45cf-a3cb-9f922bf1f0ba.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/storehouse_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-225e5b0b-31d0-45cf-a3cb-9f922bf1f0ba.png"
+  },
+  {
+    "key": "vehicle_depot",
+    "type": "inside",
+    "subject": "fort military vehicle depot, repair bays, abandoned transport truck and service tools",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military vehicle depot, repair bays, abandoned transport truck and service tools. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2a28783e-589f-4e8f-83d6-df0b3c5a1a72.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/vehicle_depot_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2a28783e-589f-4e8f-83d6-df0b3c5a1a72.png"
+  },
+  {
+    "key": "aquarium",
+    "type": "map",
+    "subject": "abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-49116473-0843-403b-aa78-50fb19256101.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/aquarium.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-49116473-0843-403b-aa78-50fb19256101.png"
+  },
+  {
+    "key": "storehouse",
+    "type": "inside",
+    "subject": "fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: fort military supply storehouse, cargo doors, shelves of crates, canvas packs and maintenance supplies. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-b1384f0c-14c1-4bfb-84e1-9a61c8a34109.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/storehouse_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-b1384f0c-14c1-4bfb-84e1-9a61c8a34109.png"
+  },
+  {
+    "key": "aquarium",
+    "type": "outside",
+    "subject": "abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e9edbf51-62ed-47ad-9e51-66b1261dde53.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/aquarium_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e9edbf51-62ed-47ad-9e51-66b1261dde53.png"
+  },
+  {
+    "key": "bear_pit",
+    "type": "map",
+    "subject": "abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ad2c31f9-8ac2-4849-b659-8baf067d8dc2.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/bear_pit.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ad2c31f9-8ac2-4849-b659-8baf067d8dc2.png"
+  },
+  {
+    "key": "aquarium",
+    "type": "inside",
+    "subject": "abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo aquarium, curved entrance facade, cracked glass tanks and empty viewing corridors. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2cd63c81-9793-430a-b48a-ca268a46e15b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/aquarium_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-2cd63c81-9793-430a-b48a-ca268a46e15b.png"
+  },
+  {
+    "key": "bear_pit",
+    "type": "outside",
+    "subject": "abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-118b1025-7e59-4d1a-9c2d-e2f45f248ccb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/bear_pit_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-118b1025-7e59-4d1a-9c2d-e2f45f248ccb.png"
+  },
+  {
+    "key": "elephant_house",
+    "type": "outside",
+    "subject": "abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ee511584-9284-49f5-9ccc-30f97aa1520f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/elephant_house_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-ee511584-9284-49f5-9ccc-30f97aa1520f.png"
+  },
+  {
+    "key": "bear_pit",
+    "type": "inside",
+    "subject": "abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo bear enclosure, concrete viewing terraces, dry moat, rocks and empty dens. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3aeb2af0-ddeb-4909-b899-d730516debd1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/bear_pit_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3aeb2af0-ddeb-4909-b899-d730516debd1.png"
+  },
+  {
+    "key": "elephant_house",
+    "type": "inside",
+    "subject": "abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-49633528-72d4-4c59-8dbe-9916f046a0a7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/elephant_house_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-49633528-72d4-4c59-8dbe-9916f046a0a7.png"
+  },
+  {
+    "key": "elephant_house",
+    "type": "map",
+    "subject": "abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo elephant house, broad arched doorway, large indoor stalls and broken feeding troughs. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-66fdc261-1d3d-4eeb-af81-299951956122.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/elephant_house.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-66fdc261-1d3d-4eeb-af81-299951956122.png"
+  },
+  {
+    "key": "giraffe_house",
+    "type": "map",
+    "subject": "abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-96a58779-a3ba-439c-9e01-f1c2b759598d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/giraffe_house.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-96a58779-a3ba-439c-9e01-f1c2b759598d.png"
+  },
+  {
+    "key": "giraffe_house",
+    "type": "outside",
+    "subject": "abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3e09961f-eb95-41e5-9c1d-159fe726a6ee.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/giraffe_house_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-3e09961f-eb95-41e5-9c1d-159fe726a6ee.png"
+  },
+  {
+    "key": "giraffe_house",
+    "type": "inside",
+    "subject": "abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo giraffe house, tall doors, high timber roof, straw and empty animal stalls. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-891cda5e-04e6-46d7-b48b-8c41fdd34338.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/giraffe_house_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-891cda5e-04e6-46d7-b48b-8c41fdd34338.png"
+  },
+  {
+    "key": "reptile_house",
+    "type": "map",
+    "subject": "abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-972fdbc9-8e49-4b61-b106-10df3be9e3cf.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/reptile_house.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-972fdbc9-8e49-4b61-b106-10df3be9e3cf.png"
+  },
+  {
+    "key": "lion_enclosure",
+    "type": "map",
+    "subject": "abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter",
+    "prompt": "Use case: stylized-concept. Asset type: isometric minimap building sprite for a pixel-art zombie survival game. Subject: abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the complete single building or enclosure in isometric view, fully contained with margin, centered on an opaque solid muted teal-grey square background matching reference. View from above at 30 degrees, building fills most of tile; compact readable silhouette. Square image.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-526cc7df-1616-4545-ac96-5482e71cb1bb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/blocks/lion_enclosure.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-526cc7df-1616-4545-ac96-5482e71cb1bb.png"
+  },
+  {
+    "key": "reptile_house",
+    "type": "outside",
+    "subject": "abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-147e31eb-0c4f-4a72-97d7-6285c976661e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/reptile_house_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-147e31eb-0c4f-4a72-97d7-6285c976661e.png"
+  },
+  {
+    "key": "lion_enclosure",
+    "type": "outside",
+    "subject": "abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the exterior facade and immediate surrounding approach at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f82260af-44c7-4630-b50c-9afcf032a6a6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/lion_enclosure_outside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-f82260af-44c7-4630-b50c-9afcf032a6a6.png"
+  },
+  {
+    "key": "reptile_house",
+    "type": "inside",
+    "subject": "abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo reptile house, low brick building, rows of dark terrariums and cracked glass exhibits. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6138573a-0a11-4e51-aa1b-4afe27a7c115.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/reptile_house_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-6138573a-0a11-4e51-aa1b-4afe27a7c115.png"
+  },
+  {
+    "key": "lion_enclosure",
+    "type": "inside",
+    "subject": "abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter",
+    "prompt": "Use case: stylized-concept. Asset type: wide environment background for a pixel-art zombie survival game. Subject: abandoned zoo lion enclosure, heavy fenced boundary, rocky habitat and barred night shelter. Match the attached reference's detailed hand-crafted pixel-art style, muted weathered palette, crisp pixels and apocalyptic neglect. No characters, living animals, zombies, writing, labels, watermarks, UI, or frames. Show the interior space at eye level, wide 16:9 landscape scene, consistent architecture with the subject. Detailed background suitable behind small game sprites. Keep bottom foreground open for character sprites. No text or signage lettering.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-76a2445a-760f-470d-95d6-3723c470562a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/settings/lion_enclosure_inside.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-76a2445a-760f-470d-95d6-3723c470562a.png"
+  },
+  {
+    "key": "length_of_pipe",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: short rusty length of metal pipe. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bf6b5f0b-f276-4a2a-bf55-a27f01148771.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/length_of_pipe.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-bf6b5f0b-f276-4a2a-bf55-a27f01148771.png"
+  },
+  {
+    "key": "cricket_bat",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: wooden cricket bat. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e7c04ea9-b243-4c63-b043-efa5b193ab03.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/cricket_bat.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e7c04ea9-b243-4c63-b043-efa5b193ab03.png"
+  },
+  {
+    "key": "fencing_foil",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: fencing foil with cup guard. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4b17cad3-6836-418e-9027-504298410b30.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/fencing_foil.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-4b17cad3-6836-418e-9027-504298410b30.png"
+  },
+  {
+    "key": "pool_cue",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: wooden pool cue. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e2e54d75-be2c-411b-8475-cbfe1e7db4e6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/pool_cue.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e2e54d75-be2c-411b-8475-cbfe1e7db4e6.png"
+  },
+  {
+    "key": "ski_pole",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: single aluminium ski pole. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-044917e2-e6c6-43e8-9c0a-22b93d37b038.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/ski_pole.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-044917e2-e6c6-43e8-9c0a-22b93d37b038.png"
+  },
+  {
+    "key": "mobile_phone",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: old mobile phone with small screen. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-9872eec1-0496-43bd-a856-a3d4d86e4bb6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/mobile_phone.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-9872eec1-0496-43bd-a856-a3d4d86e4bb6.png"
+  },
+  {
+    "key": "radio_transmitter",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: desktop radio transmitter with microphone. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d5d167f7-af00-4b57-91ab-6d4aa86e425c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/radio_transmitter.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-d5d167f7-af00-4b57-91ab-6d4aa86e425c.png"
+  },
+  {
+    "key": "flare_gun",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: red emergency flare pistol. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0cdd5512-5d5e-4564-9b86-98ee79d4ccf7.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/flare_gun.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0cdd5512-5d5e-4564-9b86-98ee79d4ccf7.png"
+  },
+  {
+    "key": "flak_jacket",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: dark police ballistic flak vest. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-181231b3-b5e9-443c-87f9-5b306a3b5624.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/flak_jacket.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-181231b3-b5e9-443c-87f9-5b306a3b5624.png"
+  },
+  {
+    "key": "spray_can",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: aerosol spray paint can. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-312ea264-e45a-4986-ac45-7a759b3f38ba.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/spray_can.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-312ea264-e45a-4986-ac45-7a759b3f38ba.png"
+  },
+  {
+    "key": "painting",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small framed painting. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a10564b2-8435-4eb3-b92f-d67cf8e58a46.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/painting.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-a10564b2-8435-4eb3-b92f-d67cf8e58a46.png"
+  },
+  {
+    "key": "glass_piece",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: museum glass vase. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dd6c84f7-98dd-443b-b3e6-e64cbff799d5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/glass_piece.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-dd6c84f7-98dd-443b-b3e6-e64cbff799d5.png"
+  },
+  {
+    "key": "pottery",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: terracotta museum urn. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e88ae54e-7343-49f1-aee2-945fcfd93b3f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/pottery.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e88ae54e-7343-49f1-aee2-945fcfd93b3f.png"
+  },
+  {
+    "key": "skeleton",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: museum human skeleton display. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5c325a22-ffe0-46ed-9711-22f960b15e45.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/skeleton.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5c325a22-ffe0-46ed-9711-22f960b15e45.png"
+  },
+  {
+    "key": "tapestry",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: rolled woven decorative tapestry. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-994ffcea-0342-43a4-858c-88081c7af159.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/tapestry.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-994ffcea-0342-43a4-858c-88081c7af159.png"
+  },
+  {
+    "key": "stuffed_animal",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: taxidermy fox museum exhibit. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-744b40a3-a775-4efb-b63e-4458da8ebd8a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/stuffed_animal.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-744b40a3-a775-4efb-b63e-4458da8ebd8a.png"
+  },
+  {
+    "key": "sculpture",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small abstract stone sculpture. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-13f27d93-3501-4428-8931-6df018df9676.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/sculpture.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-13f27d93-3501-4428-8931-6df018df9676.png"
+  },
+  {
+    "key": "christmas_lights",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: coiled festive string lights. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-fbabc1ec-7d4f-42e7-b6c6-1fe4aaa84c7e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/christmas_lights.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-fbabc1ec-7d4f-42e7-b6c6-1fe4aaa84c7e.png"
+  },
+  {
+    "key": "dead_fir_tree",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small dead fir tree in simple wooden stand. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7e08240a-d2fb-4e4a-af62-557fadfd1d01.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/dead_fir_tree.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-7e08240a-d2fb-4e4a-af62-557fadfd1d01.png"
+  },
+  {
+    "key": "plastic_christmas_tree",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: small plastic green Christmas tree. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-02a8ec0a-74d5-4ee7-95d4-609e51cd4fb8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/plastic_christmas_tree.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-02a8ec0a-74d5-4ee7-95d4-609e51cd4fb8.png"
+  },
+  {
+    "key": "tinsel",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: coiled silver tinsel garland. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e5c2f502-d2d9-4780-a7de-98a02fa4654d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/tinsel.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-e5c2f502-d2d9-4780-a7de-98a02fa4654d.png"
+  },
+  {
+    "key": "clothing",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: folded civilian shirt and trousers. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5d6abff1-b9fe-46af-9be3-905ea48e059b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/clothing.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-5d6abff1-b9fe-46af-9be3-905ea48e059b.png"
+  },
+  {
+    "key": "pumpkin",
+    "prompt": "Use case: stylized-concept. Asset type: one inventory icon for a low-resolution pixel-art zombie survival game. Subject: orange carved pumpkin. The attached image is STYLE ONLY: match its chunky outlined pixel art, limited palette and crisp dark outline, simple readable silhouette, compact old computer game item icon. One complete object only, diagonally angled if tall or elongated, centered with margin on a genuine fully transparent background. No text, no labels, no grid, no UI panel, no shadow outside the object. Square canvas. Make the object recognisable when reduced to 45 pixels.",
+    "hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a as C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0ef0e87a-e1ad-405c-8e5e-524d5c514bfb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "dest": "godot/assets/items/pumpkin.png",
+    "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a288-6719-72f3-a0ad-222d37056f6a\\exec-0ef0e87a-e1ad-405c-8e5e-524d5c514bfb.png"
+  }
+]

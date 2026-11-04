@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dsfd6awhmr8wt"
+
+[deps]
+
+files=["res://assets/tables/search.FIRE.translation", "res://assets/tables/search.POLICE.translation", "res://assets/tables/search.HOSPITAL.translation", "res://assets/tables/search.LIBRARY.translation", "res://assets/tables/search.CHURCH.translation", "res://assets/tables/search.WAREHOUSE.translation", "res://assets/tables/search.AUTO.translation", "res://assets/tables/search.FACTORY.translation", "res://assets/tables/search.SCHOOL.translation", "res://assets/tables/search.NECROTECH.translation", "res://assets/tables/search.JUNKYARD.translation", "res://assets/tables/search.MUSEUM.translation", "res://assets/tables/search.NIGHTCLUB.translation", "res://assets/tables/search.PUB.translation", "res://assets/tables/search.MALL.translation", "res://assets/tables/search.OFFICE.translation", "res://assets/tables/search.BANK.translation", "res://assets/tables/search.CINEMA.translation", "res://assets/tables/search.HOTEL.translation", "res://assets/tables/search.RAILWAY.translation", "res://assets/tables/search.TOWER.translation"]
+
+source_file="res://assets/tables/search.csv"
+dest_files=["res://assets/tables/search.FIRE.translation", "res://assets/tables/search.POLICE.translation", "res://assets/tables/search.HOSPITAL.translation", "res://assets/tables/search.LIBRARY.translation", "res://assets/tables/search.CHURCH.translation", "res://assets/tables/search.WAREHOUSE.translation", "res://assets/tables/search.AUTO.translation", "res://assets/tables/search.FACTORY.translation", "res://assets/tables/search.SCHOOL.translation", "res://assets/tables/search.NECROTECH.translation", "res://assets/tables/search.JUNKYARD.translation", "res://assets/tables/search.MUSEUM.translation", "res://assets/tables/search.NIGHTCLUB.translation", "res://assets/tables/search.PUB.translation", "res://assets/tables/search.MALL.translation", "res://assets/tables/search.OFFICE.translation", "res://assets/tables/search.BANK.translation", "res://assets/tables/search.CINEMA.translation", "res://assets/tables/search.HOTEL.translation", "res://assets/tables/search.RAILWAY.translation", "res://assets/tables/search.TOWER.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

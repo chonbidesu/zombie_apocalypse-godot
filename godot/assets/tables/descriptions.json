@@ -1,0 +1,1248 @@
+{
+ "auto_repair": {
+  "inside": {
+   "first": [
+    "The walls are covered in oil stains and grease marks, with shelves of tools and parts lining the corners.",
+    "Empty toolboxes are scattered around the workshop, and old, rusted car parts sit in piles in every corner."
+   ],
+   "second": [
+    "Broken car parts and discarded tires create an obstacle course on the floor.",
+    "Old vehicles, stripped of valuable parts, sit motionless in the service bays, covered in dust and cobwebs."
+   ],
+   "third": [
+    "A lone car frame sits near the back, its rusted body a reminder of the shop's former purpose.",
+    "A workbench sits in the corner, its surface covered in grease and ancient stains.",
+    "A couple of broken tools lie abandoned on the counter, and an old car battery leaks in the corner of the room."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The building's exterior is rusted and beaten by the elements, the paint chipped and peeling.",
+    "The garage's sign is faded and barely legible, with letters missing or dangling precariously."
+   ],
+   "second": [
+    "The garage doors are rusted and stuck, with a tangle of metal wires hanging from one corner.",
+    "A few rusted car frames sit abandoned outside, stripped of anything useful.",
+    "The windows are cracked, and the faded sign above the door barely reads 'Auto Repair' through the grime.",
+    "The concrete outside is chipped and worn, with tire tracks leading up to the entrance, long since abandoned."
+   ],
+   "third": [
+    "The corrugated metal roof is bent and riddled with holes, offering little protection.",
+    "Dust settles over the exterior, but an occasional gust of wind shifts the litter around the yard.",
+    "The garage is dark, its windows covered in grime, but the outline of vehicles can still be seen inside."
+   ]
+  }
+ },
+ "carpark": {
+  "outside": {
+   "first": [
+    "A rusting metal gate is slightly ajar, the remnants of an old sign hanging loosely above.",
+    "The cracked asphalt is littered with debris, while weeds push through the gaps in the pavement.",
+    "Rows of empty, weathered parking spaces stretch out before you, each one marked with faded white lines.",
+    "Rows of empty spaces are filled with broken glass and overgrown weeds."
+   ],
+   "second": [
+    "Faded yellow lines divide the parking spaces, many of which are now cracked and uneven.",
+    "A single rusted car remains, its tires deflated and its windows smashed.",
+    "The ground is littered with trash, old car tires, and empty bottles, evidence of long-forgotten visitors.",
+    "Graffiti covers the walls of the surrounding buildings, adding a touch of urban decay to the desolate lot."
+   ],
+   "third": [
+    "The concrete structure looms above, its once-bright paint now faded and peeling.",
+    "The empty carpark feels vast and abandoned, as if no one has been here in years.",
+    "A broken-down vehicle, covered in vines, serves as a grim reminder of the past.",
+    "A lone, rusted vending machine stands in a corner, its glass shattered and its contents long gone."
+   ]
+  }
+ },
+ "cemetery": {
+  "outside": {
+   "first": [
+    "Rows of gravestones stretch into the distance, some toppled and others shrouded in moss.",
+    "A large stone mausoleum looms in the center, covered in creeping ivy and bathed in shadows.",
+    "A lone raven perched on a gravestone watches silently, its feathers ruffled by the cold wind.",
+    "Rows of weathered gravestones stretch out across the cemetery, their inscriptions barely legible."
+   ],
+   "second": [
+    "A cracked and broken statue of an angel stands at the entrance, its face eroded by time.",
+    "A wrought-iron gate stands ajar, its rusted hinges protesting with each gust of wind.",
+    "Moss and lichen grow thick on the tombstones, making the once-pristine markers blend with the earth."
+   ],
+   "third": [
+    "A thin layer of fog lingers near the ground, making the cemetery feel even more desolate.",
+    "A faded photograph of a long-dead person rests against a gravestone, as if left by a forgotten visitor."
+   ]
+  }
+ },
+ "church": {
+  "inside": {
+   "first": [
+    "The pews are rotting and covered in dust, their once-pristine wood now warped and brittle.",
+    "The altar is covered in dust, with tattered cloth and broken candlesticks scattered nearby.",
+    "Shattered stained glass windows filter a faint, muted light into the otherwise dark church.",
+    "The altar is covered in cobwebs, with a faded cloth draped over it, stained with years of neglect."
+   ],
+   "second": [
+    "The once-vibrant altar is now a rotting husk, the wood cracked and the religious symbols faded.",
+    "Old candles sit in the remains of their holders, their wax long melted into dark, hardened pools.",
+    "The pews are overturned, and the floors are littered with broken shards of glass from the windows.",
+    "Pews are overturned, some reduced to piles of splinters by time and neglect."
+   ],
+   "third": [
+    "Light streams through the shattered windows, casting fractured rainbows on the cracked floor.",
+    "The once grand organ is now a pile of broken pipes and rotting wood, its haunting music long silenced."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The facade of the church is crumbling, with broken windows revealing the shadowy interior.",
+    "The steeple leans precariously, with ivy crawling up its weathered surface.",
+    "The church's steeple rises crookedly against the sky, its cross now worn and rusted from years of neglect.",
+    "The steeple leans dangerously, its stones cracked and chipped, with a faint bell still hanging in the tower."
+   ],
+   "second": [
+    "The once-pristine grounds are now a graveyard for overgrown grass and neglected statues.",
+    "A tangle of overgrown vines snakes around the entrance, slowly overtaking the building.",
+    "The stained glass windows are shattered, leaving only fragments of coloured glass scattered on the ground."
+   ],
+   "third": [
+    "The church is bathed in the dim light of a setting sun, casting long shadows across the neglected yard.",
+    "Cracked stained glass windows depict faded scenes of saints and angels."
+   ]
+  }
+ },
+ "factory": {
+  "inside": {
+   "first": [
+    "The assembly line is frozen in time, its conveyor belts covered in dust and debris.",
+    "The interior is a cavernous space, filled with rusted machinery, broken conveyor belts, and discarded tools."
+   ],
+   "second": [
+    "Industrial machinery lies dormant, massive and imposing in the dim light.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "Every corner bears the traces of people who left in haste and never returned.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  },
+  "outside": {
+   "first": [
+    "Giant gears and metal beams lie discarded in the yard, covered in dust and rust.",
+    "The towering smokestacks are cracked and covered in moss, long since unused."
+   ],
+   "second": [
+    "The chain-link fence surrounding the facility is torn and overgrown with weeds.",
+    "The factory yard is scattered with broken equipment and abandoned vehicles, a testament to a time long passed."
+   ],
+   "third": [
+    "Faded signs warn against trespassing, their messages barely visible under layers of rust.",
+    "The broken windows rattle in the wind, and the factory stands as a monument to industrial collapse.",
+    "The factory is a ghost of its former self, its faded sign hanging crookedly, almost obscured by rust and age."
+   ]
+  }
+ },
+ "fire_station": {
+  "inside": {
+   "first": [
+    "The walls are lined with rusted tools, long since abandoned and gathering dust in the airless room.",
+    "Rows of lockers stand ajar, their contents long pilfered by scavengers."
+   ],
+   "second": [
+    "The walls are lined with old fire hoses and rusted tools, reminders of a time long passed.",
+    "A disarray of equipment and abandoned firefighting gear litters the floor, untouched for years.",
+    "Faded pictures of firefighters in action hang crookedly on the walls, their glossy surfaces covered in dust."
+   ],
+   "third": [
+    "Old signs and instructions are barely legible, the paint peeling from years of neglect.",
+    "Broken fire hoses and empty oxygen tanks litter the station's once-busy floor.",
+    "A lone chair sits in the corner, untouched and covered in dust, as though the station was abandoned mid-shift."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The once-vital station is now a crumbling relic, its red bricks blackened with soot.",
+    "A weathered emblem of a firetruck remains above the door, though time has worn it nearly to obscurity.",
+    "The fire station stands at the edge of the street, its once-vibrant walls now chipped and weathered by time."
+   ],
+   "second": [
+    "The fire station's front steps are cracked, with weeds growing through the gaps in the stone.",
+    "A faded fire truck sits abandoned outside, its tires deflated and frame rusted.",
+    "Broken windows line the upper floor, with the glass long since shattered and the frames left to rot.",
+    "Old fire hoses dangle from the side of the building, their once vibrant red colour now faded and torn."
+   ],
+   "third": [
+    "A rusted fire hydrant sits near the entrance, its purpose long forgotten.",
+    "Debris has collected along the walls, mixed with splinters of wood and glass."
+   ]
+  }
+ },
+ "hospital": {
+  "inside": {
+   "first": [
+    "Cracked tiles crunch underfoot, their once-pristine white surface now mottled with dirt.",
+    "Broken fluorescent lights hang precariously from the ceiling, casting uneven shadows.",
+    "The sterile walls are chipped and faded, revealing layers of peeling paint beneath."
+   ],
+   "second": [
+    "Rows of overturned beds line the corridors, tangled in dusty sheets and rusted IV stands.",
+    "A rusted operating table sits in the center of a room, its surface stained and cracked.",
+    "Empty oxygen tanks and surgical tools litter the corners, creating an eerie stillness.",
+    "Scattered medical charts and syringes lie forgotten, hinting at an abrupt evacuation.",
+    "Bloodstains mar the walls and floors, long dried and darkened to a deep rust-red."
+   ],
+   "third": [
+    "An old intercom crackles to life momentarily, emitting an unintelligible burst of static.",
+    "The remnants of a wheelchair lie overturned, its wheels broken and frame bent."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The facade is crumbling, with a faded red cross barely visible against the peeling paint.",
+    "The hospital's facade is crumbling, with large chunks of concrete missing from the walls.",
+    "Shattered windows line the upper floors, their jagged edges glinting in the dim light.",
+    "A collapsed awning lies in a heap near the entrance, rusted metal and torn fabric intertwined.",
+    "Overgrown vines snake up the sides of the hospital, their grip tightening on the decaying structure."
+   ],
+   "second": [
+    "Cracked pavement surrounds the hospital, with weeds sprouting defiantly between the fissures.",
+    "Broken stretchers and IV poles are scattered around the entrance, abandoned in the rush to escape.",
+    "A pile of discarded medical waste sits near the entrance, long since scavenged for anything useful.",
+    "The roof has partially caved in, leaving a gaping hole that exposes the skeletal remains of upper floors."
+   ],
+   "third": [
+    "Graffiti covers the lower walls, a mix of desperate warnings and crude symbols.",
+    "Debris has collected along the walls, mixed with splinters of wood and glass."
+   ]
+  }
+ },
+ "junkyard": {
+  "inside": {
+   "first": [
+    "Shards of glass and twisted wires litter the floor, making every step a cautious one.",
+    "Massive piles of scrap metal form precarious towers, their edges jagged and rusted.",
+    "Discarded tools and machinery lie forgotten, their usefulness long expired.",
+    "Piles of rusting scrap metal are stacked haphazardly around the yard."
+   ],
+   "second": [
+    "A trail of footprints weaves between the piles, evidence of recent scavengers.",
+    "An overturned barrel leaks a dark, viscous liquid, pooling in the dirt below.",
+    "A gutted bus sits in the center, its seats torn and frame stripped bare."
+   ],
+   "third": [
+    "A broken vending machine leans against a heap of junk, its contents long pilfered.",
+    "A faded sign lies half-buried in the dirt, warning of hazardous materials."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The junkyard stretches endlessly, a chaotic maze of rusting metal and discarded debris.",
+    "A dilapidated sign at the entrance reads 'Scrap Paradise,' its letters barely legible.",
+    "A watchtower stands at the edge, its wooden frame warped and leaning dangerously.",
+    "Tall fences topped with barbed wire encircle the area, though many sections are broken or missing.",
+    "The ground outside is littered with smaller scraps of metal and broken glass."
+   ],
+   "second": [
+    "Vines and weeds have begun to claim the outskirts, creeping over the metal debris.",
+    "Rows of crushed cars form a makeshift wall, their frames flattened and rusting.",
+    "An old crane looms in the distance, its arm frozen in mid-motion."
+   ],
+   "third": [
+    "Clouds of dust rise with each gust of wind, coating everything in a fine layer of grime.",
+    "A broken-down truck rests near the entrance, its cab gutted and wheels missing."
+   ]
+  }
+ },
+ "library": {
+  "inside": {
+   "first": [
+    "Broken chandeliers dangle precariously, their crystals reflecting dim light.",
+    "Scattered pages flutter on the floor, their edges yellowed and brittle.",
+    "Once-pristine wooden desks are now marred with scratches and graffiti."
+   ],
+   "second": [
+    "Faded posters of past events hang askew on the walls, their colours muted with age.",
+    "Cobwebs stretch across the reading nooks, weaving intricate patterns of neglect.",
+    "Rows of torn and crumbling books lie abandoned, their spines barely legible.",
+    "A toppled ladder leans against a shelf, its rungs splintered and broken.",
+    "Fragments of shattered glass from skylights litter the carpeted floors."
+   ],
+   "third": [
+    "An overturned chair lies in the corner, its cushion torn and stuffing exposed.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The library's grand facade is now weathered and cracked, its columns streaked with grime.",
+    "Vines have claimed much of the building, crawling over its once-proud architecture.",
+    "The library's stone sign is chipped and faded, its name barely readable.",
+    "The large double doors are splintered, their handles rusted and bent."
+   ],
+   "second": [
+    "A pair of rusted lampposts stand crookedly at the entrance, their bulbs long since shattered.",
+    "The surrounding courtyard is overgrown, wildflowers mingling with weeds and moss.",
+    "The front steps are littered with debris, from broken stone to scattered books.",
+    "An old bench sits warped and broken, its wood rotting from years of exposure.",
+    "Graffiti mars the outer walls, blending with the natural decay of time."
+   ],
+   "third": [
+    "Shadows from the overhanging branches of nearby trees dance across the cracked facade.",
+    "A forgotten bicycle leans against the side of the building, its frame rusted and wheels bent."
+   ]
+  }
+ },
+ "monument": {
+  "outside": {
+   "first": [
+    "The monument's base is surrounded by overgrown weeds, with the stone surfaces worn by time.",
+    "The towering structure looms before you, its surface chipped and cracked by years of neglect.",
+    "The towering structure rises defiantly, though its surface is marred with cracks and graffiti.",
+    "A grand monument, its stone face weathered and eroded, stands in stark contrast to the surrounding decay.",
+    "Faded engravings on the monument's base hint at a long-forgotten history, barely legible in the dim light."
+   ],
+   "second": [
+    "Weathered inscriptions barely tell their stories, their words eroded by the passage of time.",
+    "The monument's edges are jagged, cracked from years of exposure to the elements and neglect.",
+    "Broken stone steps lead up to the base of the monument, some cracked and others completely missing.",
+    "Vines crawl up the weathered stone, obscuring parts of the engravings and adding to the structure's ruin."
+   ],
+   "third": [
+    "The base of the monument is littered with debris, a stark contrast to its intended grandeur.",
+    "Patches of moss and lichen cling to the cold stone, giving it an eerie, almost alive appearance.",
+    "A cold wind blows through the monument, causing the surrounding trees to sway and adding to the desolation."
+   ]
+  }
+ },
+ "museum": {
+  "inside": {
+   "first": [
+    "Empty display cases line the walls, their glass shattered and frames rusted.",
+    "Old museum exhibits lie abandoned, with dusty skeletons of artifacts once on display, now long forgotten."
+   ],
+   "second": [
+    "The grand staircase is covered in dust and debris, leading to nowhere.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "What few artifacts remain are broken and scattered, relics of a time long past.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  },
+  "outside": {
+   "first": [
+    "Massive columns flank the entrance, their surfaces chipped and weathered by time.",
+    "The museum's facade is cracked and broken, the once majestic building now a shadow of its former self.",
+    "A large stone archway marks the entrance, but the once-polished marble is now chipped and covered in moss."
+   ],
+   "second": [
+    "The building is overrun with vines, its grandeur hidden beneath nature's reclamation.",
+    "The once vibrant building is now a hollow shell, with broken windows and rusted gates guarding the entrance.",
+    "The fa\u00e7ade of the museum is faded, with old statues standing guard, their features eroded by time and decay."
+   ],
+   "third": [
+    "Statues outside the museum are broken and worn, their features barely discernible.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  }
+ },
+ "necrotech_lab": {
+  "inside": {
+   "first": [
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Torn wires dangle from the ceiling, sparking occasionally in defiance of their obsolescence. ",
+    "Spilled beakers and chemical stains tell stories of experiments long abandoned. ",
+    "Tables cluttered with shattered vials and rusted instruments hint at long-abandoned experiments.",
+    "Rows of overturned lab tables lie scattered, their surfaces marred with deep scratches and burns."
+   ],
+   "third": [
+    "A forgotten clipboard lies on the ground, its faded notes barely legible in the dim light. ",
+    "You feel a sense of unease, as though unseen eyes are watching your every move. ",
+    "A solitary chair sits upright in the corner, its placement eerily deliberate among the disarray. ",
+    "The room feels alive with a malevolent energy, as if the remnants of old experiments are watching."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The once-imposing structure looms like a skeletal reminder of entrepreneurial ambition. ",
+    "The building looms against the skyline, its sharp angles cutting a menacing silhouette.",
+    "Faded graffiti barely visible on the front entrance shows the building has been long abandoned. ",
+    "The building's metallic facade glints faintly, corroded by years of acid rain. ",
+    "Overgrown vines creep up the sides of the building, their tendrils invading cracks in the structure. "
+   ],
+   "second": [
+    "Shattered windows reflect the dim light, their jagged edges framing the void within. ",
+    "A dilapidated security checkpoint stands near the entrance, its roof caved in and consoles smashed. ",
+    "Crumbling concrete pathways lead to the main entrance, their surfaces riddled with cracks and weeds. "
+   ],
+   "third": [
+    "Crows circle above the compound, their harsh cries adding to the desolate atmosphere. ",
+    "You can't shake the feeling that this place holds secrets better left undisturbed.",
+    "A toppled satellite dish lies near the building, its wires frayed and sparking intermittently. "
+   ]
+  }
+ },
+ "nightclub": {
+  "inside": {
+   "first": [
+    "The dance floor is cracked and dusty, with broken mirrors reflecting the emptiness.",
+    "The dance floor is empty and covered in dust, with the once-vibrant lights now broken and dark."
+   ],
+   "second": [
+    "Old disco balls hang from the ceiling, but the dance floor is empty, the once-lively space now abandoned.",
+    "The DJ booth is smashed, wires and equipment strewn across the stage."
+   ],
+   "third": [
+    "Empty bottles and tattered furniture are scattered throughout the shadowy space.",
+    "Every corner bears the traces of people who left in haste and never returned."
+   ]
+  },
+  "outside": {
+   "first": [
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "Graffiti covers the once-glamorous facade, obscuring its former vibrancy.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "The doors are chained shut, with posters for long-forgotten events still clinging to the walls.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  }
+ },
+ "park": {
+  "outside": {
+   "first": [
+    "Trees with sprawling branches provide shade over areas now overtaken by creeping vines.",
+    "The grass is overgrown, and weeds have overtaken the pathways that once welcomed families.",
+    "A dried-up fountain sits at the center of the park, its stone edges chipped and weathered.",
+    "Benches with peeling paint and rusting legs line a cracked pathway winding through the park."
+   ],
+   "second": [
+    "The distant chirping of birds contrasts with the stillness of the deserted playground.",
+    "An old picnic table lies overturned near the remnants of a barbecue pit, long unused.",
+    "A thin stream of water trickles through what was once a lively pond, now filled with algae.",
+    "A broken statue of a once-celebrated figure stands at the park's edge, now a perch for birds."
+   ],
+   "third": [
+    "A forgotten book lies beneath a bench, its pages swollen and stuck together by moisture.",
+    "Wildflowers bloom sporadically, adding spots of colour to an otherwise bleak landscape.",
+    "A path leads deeper into the park, its end obscured by thick overgrowth and looming trees."
+   ]
+  }
+ },
+ "police_department": {
+  "inside": {
+   "first": [
+    "Desks and chairs are overturned, papers scattered across the floor in chaotic disarray.",
+    "The walls are lined with broken chairs and overturned desks, all abandoned in the rush to leave.",
+    "Scattered evidence markers and torn uniforms are strewn about the empty offices, remnants of hasty departures."
+   ],
+   "second": [
+    "Faded police posters and old wanted flyers are peeling off the walls, barely visible under layers of dust.",
+    "A map of the city hangs crookedly on the wall, its corners curling and edges tattered from years of neglect."
+   ],
+   "third": [
+    "The once-organized police files are now scattered across the floor, with papers crumpled and torn by time.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The building's facade is covered in grime, with shattered windows reflecting the decay.",
+    "The once-imposing police station now stands crumbling, its stone facade covered in layers of grime.",
+    "The tall fence around the station is bent and broken, with remnants of barbed wire hanging loosely.",
+    "A rusted squad car sits abandoned in the parking lot, its tires flattened and its windows shattered."
+   ],
+   "second": [
+    "Faded blue and white stripes run along the building's exterior, now barely visible beneath layers of dirt.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "The fading siren light spins slowly on the roof, barely illuminated by the dying sun.",
+    "A lone crow perches on the broken sign, its black feathers stark against the weathered building.",
+    "The words 'To Serve and Protect' are barely visible under layers of dirt.",
+    "Old police barricades and cones lie scattered around the lot, overtaken by rust and the passing of time."
+   ]
+  }
+ },
+ "pub": {
+  "inside": {
+   "first": [
+    "The bar counter is dusty, with shattered glasses and overturned stools scattered around.",
+    "The bar is empty, with overturned chairs scattered across the floor and spilled liquor staining the counters."
+   ],
+   "second": [
+    "The room is covered in dust, the once-bustling tables and chairs now abandoned and forgotten.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "Tattered curtains hang from the windows, barely blocking the dim light filtering in.",
+    "The walls are covered in cracks, and broken stools and tables are scattered throughout the room.",
+    "The bar is completely empty, with the remains of old patrons' drinks still on the tables and chairs."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The pub's facade is cracked and weathered, with a rusted sign swaying gently in the wind.",
+    "The pub's sign hangs crookedly, its once-cheery logo now faded and peeling."
+   ],
+   "second": [
+    "The windows are boarded up, with graffiti marking the aged wooden panels.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "The building's exterior is chipped and dilapidated, with the pub's former vibrancy now replaced by decay.",
+    "A few empty barrels sit outside, their metal sides rusted and warped.",
+    "The facade of the pub is worn down and weathered, the once-cheerful entrance now a dark and desolate space."
+   ]
+  }
+ },
+ "school": {
+  "inside": {
+   "first": [
+    "Classroom desks are overturned, with torn textbooks and scattered supplies strewn about.",
+    "Desks are overturned, papers scattered across the floor, and the walls are peeling with age and neglect."
+   ],
+   "second": [
+    "Bulletin boards display yellowed papers and faded posters, relics of a forgotten era.",
+    "Old posters and bulletin boards hang crookedly on the walls, faded from years of exposure to the elements.",
+    "The cafeteria is empty, with overturned tables and half-eaten meals left to rot in the corners of the room.",
+    "The school's interior is crumbling, with cracked floors, broken chairs, and walls that are barely standing."
+   ],
+   "third": [
+    "The faint remnants of old graffiti and student artwork line the hallways, now faded and almost unrecognizable.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The flagpole stands empty, its base surrounded by weeds and cracked pavement.",
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "Faded paint peels from the walls, and the playground equipment is rusted and broken.",
+    "The school's brick walls are cracked and faded, with remnants of old murals peeling off in places."
+   ],
+   "third": [
+    "The windows are shattered, with jagged edges reflecting the empty halls inside.",
+    "The school stands half-collapsed, its roof caving in at various points, but still somehow holding on.",
+    "The overgrown schoolyard is filled with the husks of old playground equipment, now rusted and abandoned."
+   ]
+  }
+ },
+ "street": {
+  "outside": {
+   "first": [
+    "Discarded trash and broken furniture are strewn across the sidewalk, untouched for years.",
+    "The asphalt is cracked and riddled with potholes, weeds sprouting defiantly through the gaps.",
+    "Streetlights stand crooked, their bulbs long shattered, casting eerie shadows in the moonlight.",
+    "The faded markings on the road are barely visible, worn away by time and neglect.",
+    "Abandoned vehicles line the street, their windows shattered and frames rusting."
+   ],
+   "second": [
+    "Graffiti covers the walls of nearby buildings, some of it fresh, some faded beyond recognition.",
+    "A lone fire hydrant leaks water, creating a small puddle that reflects the dreary surroundings.",
+    "A stray newspaper flutters down the street, its print blurred and illegible."
+   ],
+   "third": [
+    "A faint trail of footprints leads off into the distance, vanishing into the dust-covered road.",
+    "Shattered glass glitters in the sunlight, remnants of long-broken windows."
+   ]
+  }
+ },
+ "warehouse": {
+  "inside": {
+   "first": [
+    "The floor is littered with broken crates and rusted machinery, remnants of a time long past.",
+    "Rows of empty shelves stretch out into the darkness, their contents long gone."
+   ],
+   "second": [
+    "The walls are stained with oil and grime, the once-pristine concrete floors now cracked and uneven.",
+    "Rusting industrial equipment sits in the corners, covered in layers of dust and debris from years of disuse."
+   ],
+   "third": [
+    "Pale strips of daylight trace the outlines of the crates beneath the dusty roof.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The large metal doors of the warehouse are rusted and barely hanging on their tracks.",
+    "The roof of the warehouse is caved in in some places, and the windows are completely shattered.",
+    "The warehouse looms in front of you, its exterior scarred by years of neglect and weathered by time.",
+    "The exterior is covered in graffiti, with some of the once-clear signage now faded and barely legible."
+   ],
+   "second": [
+    "The steel structure is dented and battered, with parts of it missing from years of neglect.",
+    "Faded signs still cling to the walls, remnants of what once was a thriving hub of activity.",
+    "The building's gray exterior is marked with faded company logos and peeling paint."
+   ],
+   "third": [
+    "The entrance to the warehouse is almost completely blocked by piles of old machinery and junk.",
+    "Broken windows reveal towering shelves of debris inside the structure."
+   ]
+  }
+ },
+ "mall": {
+  "outside": {
+   "first": [
+    "Weeds push through cracks in the once-pristine parking lot, encircling abandoned cars.",
+    "The mall's exterior is littered with debris and shattered glass from broken windows.",
+    "The massive glass facade reflects the light, hinting at the mall's former grandeur.",
+    "Faded banners advertising long-forgotten sales hang limply near the entrance."
+   ],
+   "second": [
+    "A cluster of barricades near the doors suggests survivors once tried to make a stand here.",
+    "A broken fountain sits in the plaza, its dry basin filled with leaves and garbage.",
+    "Graffiti covers much of the outer walls, some of it fresh, some of it faded."
+   ],
+   "third": [
+    "An old shopping cart, still full of goods, sits abandoned near the main doors.",
+    "The emptiness feels unnatural, as if the place itself is holding its breath.",
+    "Glass crunches beneath your feet as you approach the main entrance."
+   ]
+  },
+  "inside": {
+   "first": [
+    "Dim light filters through shattered skylights, casting eerie shadows on the tiled floors.",
+    "The once-bustling corridors are now strewn with abandoned merchandise and debris.",
+    "Posters for movies and sales events long past cling stubbornly to the walls.",
+    "Empty storefronts yawn open, their shelves picked clean by scavengers."
+   ],
+   "second": [
+    "Here and there, makeshift shelters hint at survivors who passed through long ago.",
+    "The escalators have long since stopped, their steps coated in dust and grime.",
+    "A pile of overturned shopping carts forms a crude barricade near a side exit.",
+    "Bullet holes and scorch marks mar the walls, signs of a desperate last stand."
+   ],
+   "third": [
+    "Despite the destruction, a few intact stores hint at treasures left undiscovered.",
+    "You can't shake the feeling that you're being watched from the shadows."
+   ]
+  }
+ },
+ "office": {
+  "outside": {
+   "first": [
+    "The once-imposing structure looms like a skeletal reminder of entrepreneurial ambition. ",
+    "The building looms against the skyline, its sharp angles cutting a menacing silhouette.",
+    "Faded graffiti barely visible on the front entrance shows the building has been long abandoned. ",
+    "The building's metallic facade glints faintly, corroded by years of acid rain. ",
+    "Overgrown vines creep up the sides of the building, their tendrils invading cracks in the structure. "
+   ],
+   "second": [
+    "Shattered windows reflect the dim light, their jagged edges framing the void within. ",
+    "A dilapidated security checkpoint stands near the entrance, its roof caved in and consoles smashed. ",
+    "Crumbling concrete pathways lead to the main entrance, their surfaces riddled with cracks and weeds. "
+   ],
+   "third": [
+    "Crows circle above the compound, their harsh cries adding to the desolate atmosphere. ",
+    "You can't shake the feeling that this place holds secrets better left undisturbed.",
+    "A toppled satellite dish lies near the building, its wires frayed and sparking intermittently. "
+   ]
+  },
+  "inside": {
+   "first": [
+    "The lobby is bright and inviting, with large windows offering a view of the bustling city streets outside.",
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Abandoned paperwork lies scattered beneath overturned desks and broken monitors.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "Faded notices cling to the walls, reminders of routines that ended long ago.",
+    "Every corner bears the traces of people who left in haste and never returned."
+   ]
+  }
+ },
+ "bank": {
+  "outside": {
+   "first": [
+    "The bank has a broad stone facade, its imposing entrance scarred by neglect.",
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "A row of broken windows overlooks the street beneath a weather-beaten sign.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "Discarded papers collect against the steps where customers once queued.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  },
+  "inside": {
+   "first": [
+    "The banking hall stretches past dusty counters towards a row of empty offices.",
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Loose receipts and shattered glass cover the floor around the teller windows.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "The vault corridor disappears into shadow beyond a battered security gate.",
+    "Every corner bears the traces of people who left in haste and never returned."
+   ]
+  }
+ },
+ "cinema": {
+  "outside": {
+   "first": [
+    "The cinema rises behind a cracked ticket booth and a canopy of faded lights.",
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "Torn posters flap beside the entrance, advertising films that never finished.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "A trail of discarded tickets leads from the pavement to the deserted foyer.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  },
+  "inside": {
+   "first": [
+    "Rows of worn seats face a stained cinema screen in the abandoned auditorium.",
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Empty cartons and torn tickets litter the aisles between the folded seats.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "Every corner bears the traces of people who left in haste and never returned.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  }
+ },
+ "hotel": {
+  "outside": {
+   "first": [
+    "The hotel presents a long row of shuttered windows above its battered entrance.",
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "An empty luggage trolley leans against the steps beneath a weathered canopy.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "Curtains stir behind broken panes while scraps of paper drift across the drive.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  },
+  "inside": {
+   "first": [
+    "The hotel lobby opens onto dusty corridors lined with numbered guest rooms.",
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Unclaimed suitcases stand beside the reception desk among scattered room keys.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "Every corner bears the traces of people who left in haste and never returned.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  }
+ },
+ "railway_station": {
+  "outside": {
+   "first": [
+    "The railway station stands beyond a broad forecourt strewn with old timetables.",
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "A broken clock hangs above the entrance, its hands fixed on a forgotten hour.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "Weeds push between the paving stones where commuters once hurried past.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  },
+  "inside": {
+   "first": [
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Abandoned bags and torn newspapers lie between the benches and ticket gates.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "Every corner bears the traces of people who left in haste and never returned.",
+    "Faded notices cling to the walls above a trail of papers and broken furniture."
+   ]
+  }
+ },
+ "tower": {
+  "outside": {
+   "first": [
+    "The tower rises above the neighbouring roofs, its upper windows pale with dust.",
+    "Cracked paving and windblown litter surround the entrance to the deserted site."
+   ],
+   "second": [
+    "Chunks of fallen masonry lie beside the entrance beneath a cracked company sign.",
+    "Weathered signs and broken fixtures offer small reminders of its former use."
+   ],
+   "third": [
+    "Higher up, torn blinds flutter behind broken glass against the empty skyline.",
+    "Debris has collected along the walls, undisturbed by anything except the wind."
+   ]
+  },
+  "inside": {
+   "first": [
+    "The tower lobby opens onto a stairwell and a row of motionless lift doors.",
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+   ],
+   "second": [
+    "Broken office furniture lies beneath the directory beside the reception desk.",
+    "Old fittings hang crookedly along walls marked by years of damp and neglect."
+   ],
+   "third": [
+    "A shaft of daylight falls through cracked windows onto the dusty tiled floor.",
+    "Every corner bears the traces of people who left in haste and never returned."
+   ]
+  }
+ },
+ "cathedral": {
+  "inside": {
+   "first": [
+    "Within the cathedral, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The cathedral stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "mansion": {
+  "inside": {
+   "first": [
+    "Within the mansion, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The mansion stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "power_station": {
+  "inside": {
+   "first": [
+    "Within the power station, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The power station stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "stadium": {
+  "inside": {
+   "first": [
+    "Within the stadium, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The stadium stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "armoury": {
+  "inside": {
+   "first": [
+    "Within the armoury, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The armoury stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "barracks": {
+  "inside": {
+   "first": [
+    "Within the barracks, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The barracks stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "gatehouse": {
+  "inside": {
+   "first": [
+    "Within the gatehouse, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The gatehouse stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "infirmary": {
+  "inside": {
+   "first": [
+    "Within the infirmary, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The infirmary stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "storehouse": {
+  "inside": {
+   "first": [
+    "Within the storehouse, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The storehouse stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "vehicle_depot": {
+  "inside": {
+   "first": [
+    "Within the vehicle depot, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The vehicle depot stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "aquarium": {
+  "inside": {
+   "first": [
+    "Within the aquarium, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The aquarium stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "bear_pit": {
+  "inside": {
+   "first": [
+    "Within the bear pit, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The bear pit stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "elephant_house": {
+  "inside": {
+   "first": [
+    "Within the elephant house, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The elephant house stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "giraffe_house": {
+  "inside": {
+   "first": [
+    "Within the giraffe house, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The giraffe house stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "lion_enclosure": {
+  "inside": {
+   "first": [
+    "Within the lion enclosure, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The lion enclosure stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "reptile_house": {
+  "inside": {
+   "first": [
+    "Within the reptile house, broken fixtures stand among scattered piles of debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  },
+  "outside": {
+   "first": [
+    "The reptile house stands behind broken paving and a scatter of windblown debris."
+   ],
+   "second": [
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+   ],
+   "third": [
+    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+   ]
+  }
+ },
+ "wasteland": {
+  "outside": {
+   "first": [
+    "The wasteland stretches between weathered boundaries and broken paving stones."
+   ],
+   "second": [
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+   ],
+   "third": [
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+   ]
+  }
+ },
+ "exercise_yard": {
+  "outside": {
+   "first": [
+    "The exercise yard stretches between weathered boundaries and broken paving stones."
+   ],
+   "second": [
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+   ],
+   "third": [
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+   ]
+  }
+ },
+ "training_ground": {
+  "outside": {
+   "first": [
+    "The training ground stretches between weathered boundaries and broken paving stones."
+   ],
+   "second": [
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+   ],
+   "third": [
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+   ]
+  }
+ },
+ "zoo_ground": {
+  "outside": {
+   "first": [
+    "The zoo ground stretches between weathered boundaries and broken paving stones."
+   ],
+   "second": [
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+   ],
+   "third": [
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+   ]
+  }
+ }
+}
