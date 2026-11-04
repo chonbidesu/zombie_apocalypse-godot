@@ -37,9 +37,9 @@ Public resource/clinic knowledge replaces external multiplayer maps and coordina
 | Ruins and generators | Installed generators must be destroyed before ruin; ruined buildings must be repaired before generator installation. A lit ruin remains impossible, as requested. Later online rules allow a different combination. |
 | Fuel | A can tops off 24 game hours and wastes the excess. Original fuel lasts much longer; the shorter cycle supports offline resource trips. |
 | Barricade structure | Seven named levels, each with three hidden damage sublevels. Successful maintenance restores damage. This is not the online game's full 21-step distribution or exact construction/interference probabilities. |
-| Zombie equipment | Hands and bite only, as requested. Some online zombies can use carried blunt objects. |
+| Zombie equipment | Claws and bites, plus crowbar, baseball bat and pipe at base 5–10% accuracy for two damage. Human combat bonuses do not apply. |
 | Skills | All 45 entries exist; form-specific effects and occupation XP prices are implemented. Purchasing either tree in either form remains an existing prototype convenience; original purchasing rules are stricter. |
-| Search and durability | Location-specific item tables, strong lighting benefit, extremely low nonzero ruin loot, hidden melee wear/breakage. These are project balance tables, not an exact reconstruction of changing server rates. |
+| Search and durability | Location-specific item tables, strong lighting benefit, extremely low nonzero ruin loot, permanent melee weapons except pool cues (20% break chance on successful hits). Bottles remain fragile. These are project balance tables, not an exact reconstruction of changing server rates. |
 | Time and bodies | Daily dormant-body awakening, accelerated rest/death recovery and pausable offline time replace real-world server scheduling. |
 | Dead visibility | Environment, map and NPC activity remain hidden until standing, as requested. |
 

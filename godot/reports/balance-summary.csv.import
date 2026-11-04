@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://cjmw5f2pgmpcl"
+
+[deps]
+
+files=["res://reports/balance-summary.mode.translation", "res://reports/balance-summary.seed.translation", "res://reports/balance-summary.days.translation", "res://reports/balance-summary.starting.translation", "res://reports/balance-summary.ending.translation", "res://reports/balance-summary.standing.translation", "res://reports/balance-summary.standing.translation", "res://reports/balance-summary.revivals.translation", "res://reports/balance-summary.powered.translation", "res://reports/balance-summary.ruined.translation", "res://reports/balance-summary.failed.translation"]
+
+source_file="res://reports/balance-summary.csv"
+dest_files=["res://reports/balance-summary.mode.translation", "res://reports/balance-summary.seed.translation", "res://reports/balance-summary.days.translation", "res://reports/balance-summary.starting.translation", "res://reports/balance-summary.ending.translation", "res://reports/balance-summary.standing.translation", "res://reports/balance-summary.standing.translation", "res://reports/balance-summary.revivals.translation", "res://reports/balance-summary.powered.translation", "res://reports/balance-summary.ruined.translation", "res://reports/balance-summary.failed.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

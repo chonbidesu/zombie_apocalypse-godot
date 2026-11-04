@@ -71,7 +71,33 @@ func _initialize() -> void:
  p.inventory.clear()
  s.give_item(p,"shotgun")
  p.equipped = p.inventory[0].uid
- check(s.attack_stats(p,t,"attack",p.inventory[0]).damage == 3 and not s.reason(p,"equip",-1,{"uid":p.equipped}).is_empty(),"Zombies cannot use carried weapons")
+ check(s.attack_stats(p,t,"attack",p.inventory[0]).damage == 3 and not s.reason(p,"equip",-1,{"uid":p.equipped}).is_empty(),"Zombies cannot equip firearms or gain their damage")
+ for kind in C.ZOMBIE_MELEE_ITEMS:
+  s.give_item(p,kind)
+  var tool = p.inventory.back()
+  ready(s,p)
+  check(s.act("equip",-1,{"uid":tool.uid}).ok,"Zombie can equip "+kind)
+  var stats = s.attack_stats(p,t,"attack",tool)
+  check(stats.hit == C.ITEMS[kind].hit and stats.damage == 2,"Zombie tool ignores human and zombie combat bonuses: "+kind)
+  s.claim_grasp(p,t)
+  check(s.attack_stats(p,t,"attack",tool).hit == C.ITEMS[kind].hit,"Grasp does not improve tool accuracy")
+  s.clear_grasp(p)
+  t.hp = 10000
+  var tool_hits = 0
+  var tool_damage_correct = true
+  for attempt in range(400):
+   var hp = t.hp
+   s.execute(p,"attack",t.id)
+   if t.hp < hp:
+    tool_hits += 1
+    tool_damage_correct = tool_damage_correct and hp-t.hp == 2
+  check(tool_hits > 5 and tool_damage_correct and p.grasp_target == -1,"Zombie tool hits deal two damage and never grasp: "+kind)
+  check(s.attack_stats(p,t,"bite",tool).hit == 30 and s.attack_stats(p,t,"bite",tool).damage == 4,"Equipped tools do not alter bites")
+  t.hp = 10000
+  s.execute(p,"attack",t.id,{"unarmed":true})
+  check(p.grasp_target == t.id or t.hp == 10000,"Claws can still grasp while a tool is equipped")
+  s.clear_grasp(p)
+ p.equipped = -1
  var released = 0
  var misses = 0
  for attempt in range(500):

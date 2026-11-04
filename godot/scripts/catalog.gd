@@ -22,19 +22,18 @@ const ENCUMBRANCE_LIMIT = 100
 const OUTDOORS = ["wasteland", "exercise_yard", "training_ground", "zoo_ground", "street", "park", "cemetery", "monument", "carpark"]
 const NORMAL_BUILDINGS = ["fire_station", "police_department", "hospital", "library", "church", "warehouse", "auto_repair", "factory", "school", "office", "necrotech_lab", "junkyard", "museum", "nightclub", "pub", "mall", "bank", "cinema", "hotel", "railway_station", "tower"]
 const BUILDINGS = NORMAL_BUILDINGS + ["cathedral", "mansion", "power_station", "stadium", "armoury", "barracks", "gatehouse", "infirmary", "storehouse", "vehicle_depot", "aquarium", "bear_pit", "elephant_house", "giraffe_house", "lion_enclosure", "reptile_house"]
+const ZOMBIE_MELEE_ITEMS = ["crowbar", "baseball_bat", "length_of_pipe"]
 const ITEMS = {
  "fire_axe": {
   "name": "Fire axe",
   "damage": 3,
   "hit": 10,
-  "durability": 30,
   "encumbrance": 6
  },
  "knife": {
   "name": "Knife",
   "damage": 2,
   "hit": 20,
-  "durability": 50,
   "encumbrance": 2
  },
  "pistol": {
@@ -67,42 +66,36 @@ const ITEMS = {
   "name": "Baseball bat",
   "damage": 2,
   "hit": 10,
-  "durability": 25,
   "encumbrance": 2
  },
  "golf_club": {
   "name": "Golf club",
   "damage": 2,
   "hit": 10,
-  "durability": 25,
   "encumbrance": 4
  },
  "crowbar": {
   "name": "Crowbar",
   "damage": 2,
   "hit": 5,
-  "durability": 60,
   "encumbrance": 4
  },
  "shovel": {
   "name": "Shovel",
   "damage": 2,
   "hit": 10,
-  "durability": 30,
   "encumbrance": 4
  },
  "hockey_stick": {
   "name": "Hockey stick",
   "damage": 2,
   "hit": 10,
-  "durability": 25,
   "encumbrance": 4
  },
  "tennis_racket": {
   "name": "Tennis racket",
   "damage": 1,
   "hit": 10,
-  "durability": 20,
   "encumbrance": 4
  },
  "first_aid_kit": {
@@ -129,35 +122,31 @@ const ITEMS = {
   "name": "Length of pipe",
   "damage": 2,
   "hit": 10,
-  "durability": 30,
   "encumbrance": 4
  },
  "cricket_bat": {
   "name": "Cricket bat",
   "damage": 3,
   "hit": 10,
-  "durability": 30,
   "encumbrance": 4
  },
  "fencing_foil": {
   "name": "Fencing foil",
   "damage": 2,
   "hit": 10,
-  "durability": 30,
   "encumbrance": 4
  },
  "pool_cue": {
   "name": "Pool cue",
+  "break_on_hit": 0.20,
   "damage": 2,
   "hit": 25,
-  "durability": 30,
   "encumbrance": 4
  },
  "ski_pole": {
   "name": "Ski pole",
   "damage": 2,
   "hit": 10,
-  "durability": 30,
   "encumbrance": 4
  },
  "flare_gun": {

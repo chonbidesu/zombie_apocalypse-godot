@@ -381,7 +381,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
  var b = current_block(a)
  if command in Extended.COMMANDS: return Extended.command_reason(self,a,command,target_id,data)
  if command == "bite" and a.human: return "Only zombies can bite. Humans use carried weapons or fists."
- var human_only = ["search", "equip", "heal", "revive", "reload", "barricade", "repair", "generator", "fuel", "scan", "manufacture", "request", "give", "jump", "close", "dump", "repair_generator"]
+ var human_only = ["search", "heal", "revive", "reload", "barricade", "repair", "generator", "fuel", "scan", "manufacture", "request", "give", "jump", "close", "dump", "repair_generator"]
  if not a.human and command in human_only: return "The undead cannot use items or human abilities. You can drop carried items."
  match command:
   "move":
@@ -436,6 +436,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
   "equip", "drop":
    var item = item_by_uid(a, data.get("uid", -1))
    if item.is_empty(): return "Select a carried item."
+   if command == "equip" and not a.human and item.kind not in C.ZOMBIE_MELEE_ITEMS: return "Zombies can only wield a crowbar, baseball bat or length of pipe."
    if command == "equip" and not C.ITEMS[item.kind].has("damage"): return "This item is used by its action button."
   "reload":
    var weapon = item_by_uid(a,a.equipped)
@@ -554,21 +555,16 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   "attack","bite":
    var t = actors[target_id]
    if a.grasp_target != target_id: clear_grasp(a)
-   var weapon = item_by_uid(a,a.equipped) if a.human else {}
+   var weapon = item_by_uid(a,a.equipped) if command == "attack" and not data.get("unarmed",false) else {}
+   if not a.human and not weapon.is_empty() and weapon.kind not in C.ZOMBIE_MELEE_ITEMS: weapon = {}
    var stats = attack_stats(a,t,command,weapon)
-   var broken = ""
    var fragile = false
    set_pose(a,"attack")
-   if a.human and not weapon.is_empty():
+   if not weapon.is_empty():
     var def = C.ITEMS[weapon.kind]
     if def.has("capacity"): weapon.ammo -= 1
     elif def.get("single_use",false): consume(a,weapon)
     elif def.get("fragile",false): fragile = true
-    else:
-     weapon.wear = int(weapon.get("wear",maxi(0,int(def.durability)-int(weapon.durability))))+1
-     if rng.randf() < melee_break_chance(weapon):
-      broken = def.name
-      consume(a,weapon)
    metrics.attacks += 1
    if rng.randi_range(1,100) <= stats.hit:
     var damage = int(stats.damage)
@@ -584,10 +580,13 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
       if t.human and has_skill(a,"infectious_bite"):
        t.infected = true
        text += " The wound is infected."
-     elif has_skill(a,"tangling_grasp") and t.hp > 0:
+     elif weapon.is_empty() and has_skill(a,"tangling_grasp") and t.hp > 0:
       claim_grasp(a,t)
       text += " A grasp locks onto the victim."
     if fragile: consume(a,weapon)
+    elif not weapon.is_empty() and melee_break_chance(weapon) > 0.0 and rng.randf() < melee_break_chance(weapon):
+     consume(a,weapon)
+     text += " The pool cue splinters and breaks."
     if t.hp <= 0:
      var penalty = 5 if not t.human and has_skill(a,"headshot") else 0
      a.xp += 10
@@ -599,7 +598,6 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     if a.grasp_target == target_id and rng.randf() < 0.5:
      clear_grasp(a)
      text += " The grasp slips free."
-   if not broken.is_empty(): text += " The %s breaks from wear." % broken.to_lower()
    if a.human and not t.human and has_skill(t,"scent_trail"):
     t.trail_from = a.id
     t.trail_until = minute+60
@@ -1226,9 +1224,8 @@ func load_from(path: String) -> String:
  return ""
 
 func melee_break_chance(item: Dictionary) -> float:
- # Durability is retained for old saves; wear counts attempts, including misses.
- var lifespan = float(C.ITEMS[item.kind].durability)
- return minf(0.8, 0.002 + 0.04 * pow(float(item.get("wear", 0))/lifespan, 2.0))
+ # Legacy durability/wear fields remain loadable but no longer affect combat.
+ return float(C.ITEMS[item.kind].get("break_on_hit",0.0))
 
 func action_feedback(a: Dictionary, command: String, target: int = -1, data: Dictionary = {}, context_only: bool = false) -> String:
  var why = reason(a, command, target, data, context_only)
@@ -1575,7 +1572,10 @@ func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Di
  var hit = 25
  var damage = 1
  var ranged = false
- if not a.human:
+ if not a.human and command != "bite" and not weapon.is_empty() and weapon.kind in C.ZOMBIE_MELEE_ITEMS:
+  hit = C.ITEMS[weapon.kind].hit
+  damage = 2
+ elif not a.human:
   hit = (10 if command == "bite" else 25)+(10 if has_skill(a,"vigour_mortis") else 0)
   damage = 4 if command == "bite" else 2+(1 if has_skill(a,"rend_flesh") else 0)
   hit += (10 if has_skill(a,"neck_lurch") else 0) if command == "bite" else (15 if has_skill(a,"death_grip") else 0)

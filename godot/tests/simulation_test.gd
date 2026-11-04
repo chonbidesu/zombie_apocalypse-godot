@@ -24,6 +24,7 @@ func isolated():
  return s
 
 func _initialize() -> void:
+ melee_combat_rules()
  feedback_rules()
  restored_location_rules()
  perception_rules()
@@ -270,13 +271,10 @@ func feedback_rules() -> void:
  check(s.reason(p,"leave").contains("Memories of Life"),"Unskilled zombie cannot open closed exit")
  p.zombie_skills.append("memories")
  check(s.act("leave").ok and not b.doors,"Memories of Life opens exit")
- var weapon = {"kind":"fire_axe","wear":0}
- var fresh = s.melee_break_chance(weapon)
- weapon.wear = 30
- var used = s.melee_break_chance(weapon)
- weapon.wear = 100
- check(fresh > 0 and fresh < used and used < s.melee_break_chance(weapon),"Melee break probability increases with use")
- check(s.melee_break_chance(weapon) < 1.0,"Weapon wear has no fixed expiry")
+ for kind in preload("res://scripts/catalog.gd").ITEMS:
+  if kind != "pool_cue":
+   check(s.melee_break_chance({"kind":kind,"wear":100000,"durability":0}) == 0.0,"No wear breakage for "+kind)
+ check(s.melee_break_chance({"kind":"pool_cue","wear":0}) == 0.20 and s.melee_break_chance({"kind":"pool_cue","wear":100000}) == 0.20,"Pool cue has a constant 20% break chance on hits")
 
 func restored_location_rules() -> void:
  var s = isolated()
@@ -363,3 +361,44 @@ func perception_rules() -> void:
  check(s.act("stand").ok and not p.down,"Standing restores perception")
  s.discover()
  check(b.known and s.location_description(p).contains(b.name),"Surroundings return after standing")
+
+func melee_combat_rules() -> void:
+ var s = isolated()
+ var p = s.player()
+ var t = s.actors[1]
+ t.x = p.x
+ t.y = p.y
+ t.inside = p.inside
+ t.down = false
+ t.human = false
+ t.hp = 100000
+ p.human_skills = []
+ p.inventory.clear()
+ s.give_item(p,"fire_axe")
+ var axe = p.inventory.back()
+ axe.wear = 100000
+ axe.durability = 0
+ p.equipped = axe.uid
+ for attempt in range(500): s.execute(p,"attack",t.id)
+ check(not s.item_by_uid(p,axe.uid).is_empty() and axe.wear == 100000,"Even heavily worn legacy melee weapons survive repeated attacks without wear")
+ var hits = 0
+ var breaks = 0
+ var misses_safe = true
+ var removals_correct = true
+ for attempt in range(4000):
+  if s.item_kind(p,"pool_cue").is_empty(): s.give_item(p,"pool_cue")
+  var cue = s.item_kind(p,"pool_cue")
+  p.equipped = cue.uid
+  var before = t.hp
+  s.execute(p,"attack",t.id)
+  var message = s.messages.back().text
+  var removed = s.item_by_uid(p,cue.uid).is_empty()
+  if t.hp < before:
+   hits += 1
+   if removed: breaks += 1
+  else:
+   misses_safe = misses_safe and not removed
+  if removed: removals_correct = removals_correct and p.equipped == -1 and message.contains("splinters and breaks") and before-t.hp == 2
+ check(misses_safe,"Missed pool cue attacks never break the cue")
+ check(hits > 800 and float(breaks)/hits > 0.16 and float(breaks)/hits < 0.24,"Pool cues break on approximately 20% of successful hits")
+ check(removals_correct and breaks > 0,"Broken cues deal their hit damage, leave inventory, unequip and report splintering")

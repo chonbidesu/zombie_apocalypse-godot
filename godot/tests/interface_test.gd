@@ -98,6 +98,20 @@ func run() -> void:
  scene.begin_rest(10)
  check(scene.resting,"Downed character at full AP can rest through standing cooldown")
  scene.resting = false
+ var undead_player = scene.sim.player()
+ undead_player.down = false
+ undead_player.human = false
+ undead_player.busy_until = scene.sim.now()
+ undead_player.ap = 50
+ scene.selected_actor = 1
+ scene.selected_item = undead_player.inventory[0].uid
+ scene.refresh()
+ check(scene.action_controls.any(func(entry): return entry.command == "equip"),"Zombie inventory exposes equip for a carried bat")
+ scene.dispatch("equip",-1,{"uid":scene.selected_item})
+ check(undead_player.equipped == scene.selected_item,"Zombie can equip a bat through the interface")
+ var attacks = scene.action_controls.filter(func(entry): return entry.command == "attack")
+ check(attacks.size() == 2 and attacks.any(func(entry): return entry.node.text.begins_with("Claws")) and attacks.any(func(entry): return entry.node.text.begins_with("Swing weapon")),"Zombie UI keeps claws and tool swing separately available")
+ check(scene.action_controls.any(func(entry): return entry.command == "bite"),"Bite remains available while wielding a tool")
  scene.sim.start()
  scene.feed.reset(scene.sim.messages)
  scene.selected_actor = -1
