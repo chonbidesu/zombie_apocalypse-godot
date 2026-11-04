@@ -1,6 +1,7 @@
 extends SceneTree
 const Sim = preload("res://scripts/simulation.gd")
 const AI = preload("res://scripts/npc_ai.gd")
+const C = preload("res://scripts/catalog.gd")
 var checks = 0
 var failures = 0
 func check(ok: bool,message: String) -> void:
@@ -26,6 +27,7 @@ func ready(s,a):
  a.ap = 50
  a.busy_until = s.now()
 func _initialize():
+ combat_choices()
  var s = fresh()
  var a = s.actors[1]
  a.human = true
@@ -173,3 +175,143 @@ func _initialize():
   check(legal,"NPC routes cross fort walls only at a gatehouse")
  print("NPC BALANCE CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func combat_choices() -> void:
+ var s = fresh()
+ var a = s.actors[1]
+ var t = s.actors[2]
+ var p = s.player()
+ a.human = true
+ a.down = false
+ a.hp = 50
+ a.xp = 0
+ a.x = p.x
+ a.y = p.y
+ a.inside = p.inside
+ t.x = p.x
+ t.y = p.y
+ t.inside = p.inside
+ t.down = false
+ t.hp = 50
+ t.wants_revive = false
+ t.inventory.clear()
+ t.zombie_skills = []
+ a.inventory.clear()
+ a.equipped = -1
+ s.reindex()
+ var full_skills = ["firearms","pistol_training","advanced_pistol","shotgun_training","advanced_shotgun","hand_to_hand","knife_combat","axe_proficiency"]
+ for trained in [false,true]:
+  a.human_skills = full_skills.duplicate() if trained else []
+  p.human_skills = a.human_skills.duplicate()
+  for kind in ["flare_gun","hockey_stick","fire_axe","knife","pistol","shotgun"]:
+   check(s.attack_stats(a,t,"attack",{"kind":kind}) == s.attack_stats(p,t,"attack",{"kind":kind}),"NPC and player share weapon stats and skill bonuses: %s trained=%s" % [kind,trained])
+  check(s.attack_stats(a,t,"attack") == s.attack_stats(p,t,"attack"),"NPC and player fists use identical stats")
+ a.human_skills = []
+ for kind in ["baseball_bat","hockey_stick","flare_gun","knife"]: s.give_item(a,kind)
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "knife","Untrained NPC prefers knife damage over hockey stick, bat and low-accuracy flare")
+ a.human_skills = ["hand_to_hand"]
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "hockey_stick","Hand-to-hand-trained NPC chooses the three-damage hockey stick")
+ a.human_skills.append("knife_combat")
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "knife","Knife Combat changes the NPC's best weapon")
+ s.give_item(a,"fire_axe")
+ a.human_skills.append("axe_proficiency")
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "fire_axe","Fully trained axe beats trained knife in expected damage")
+ s.give_item(a,"pistol")
+ s.give_item(a,"shotgun")
+ a.human_skills = full_skills.duplicate()
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "shotgun","Fully trained NPC selects a loaded shotgun")
+ for item in a.inventory:
+  if C.ITEMS[item.kind].has("capacity"): item.ammo = 0
+ a.inventory = a.inventory.filter(func(item): return item.kind != "flare_gun")
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "fire_axe","Empty guns without matching ammunition lose to an available melee weapon")
+ a.inventory.clear()
+ s.give_item(a,"pistol")
+ s.item_kind(a,"pistol").ammo = 0
+ s.give_item(a,"pistol_clip")
+ s.give_item(a,"fire_axe")
+ a.equipped = -1
+ a.human_skills = ["firearms","hand_to_hand","axe_proficiency"]
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "pistol","Reload selection uses six pistol shots per reload rather than an arbitrary discount")
+ s.execute(a,"reload")
+ check(s.item_kind(a,"pistol").ammo == 6,"NPC reload uses the same magazine capacity and action as the player")
+ s.item_kind(a,"pistol").ammo = 0
+ s.give_item(a,"pistol_clip")
+ ready(s,a)
+ a.ap = 1
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "fire_axe","NPC with one AP chooses an immediately usable attack rather than reload plus attack")
+ a.inventory.clear()
+ s.give_item(a,"knife")
+ a.equipped = a.inventory.back().uid
+ s.give_item(a,"shotgun")
+ a.human_skills = []
+ s.give_item(t,"flak_jacket")
+ ready(s,a)
+ check(not AI.equip_best(s,a,t) and s.item_by_uid(a,a.equipped).kind == "knife","Armour-adjusted tie keeps the equipped knife rather than wasting ammunition")
+ t.inventory.clear()
+ ready(s,a)
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "shotgun","Without armour the same NPC prefers the loaded shotgun")
+ a.inventory.clear()
+ s.give_item(a,"flare_gun")
+ a.equipped = a.inventory.back().uid
+ a.human_skills = ["firearms"]
+ p.human = true
+ p.hp = 50
+ t.hp = 1000
+ ready(s,a)
+ s._npc_turn(a)
+ check(a.last_action == "attack" and s.item_kind(a,"flare_gun").is_empty(),"NPC turn uses the shared single-use flare attack")
+ a.human = false
+ a.wants_revive = false
+ a.inventory.clear()
+ a.equipped = -1
+ a.hp = 50
+ a.zombie_skills = []
+ t.human = true
+ t.infected = false
+ check(AI.zombie_attack(s,a,t) == "attack","Untrained zombie chooses claws: 0.5 expected damage beats a 0.4 bite")
+ a.zombie_skills = ["vigour_mortis"]
+ check(AI.zombie_attack(s,a,t) == "bite","Vigour Mortis alone makes bite damage more effective than untrained claws")
+ a.zombie_skills.append_array(["death_grip","rend_flesh","neck_lurch"])
+ check(AI.zombie_attack(s,a,t) == "attack","Fully trained healthy zombie chooses three-damage claws")
+ a.zombie_skills.append("digestion")
+ a.hp = 40
+ check(AI.zombie_attack(s,a,t) == "bite","Wounded zombie values Digestion healing when choosing a bite")
+ a.hp = s.max_hp(a)
+ check(AI.zombie_attack(s,a,t) == "attack","Full-health zombie does not waste attacks on unnecessary healing")
+ a.zombie_skills.append("infectious_bite")
+ check(AI.zombie_attack(s,a,t) == "bite","Infectious bite can win when a surviving target is not infected")
+ t.infected = true
+ check(AI.zombie_attack(s,a,t) == "attack","Already-infected prey removes the infection bonus")
+ s.give_item(a,"baseball_bat")
+ a.equipped = a.inventory.back().uid
+ p.human = false
+ p.down = true
+ p.zombie_skills = a.zombie_skills.duplicate()
+ check(s.attack_stats(a,t,"attack") == s.attack_stats(p,t,"attack") and s.attack_stats(a,t,"bite") == s.attack_stats(p,t,"bite"),"Player and NPC zombies use identical biological stats and bonuses")
+ s.reindex()
+ var claws_used = false
+ for attempt in range(100):
+  ready(s,a)
+  a.xp = 0
+  var hp = t.hp
+  s._npc_turn(a)
+  if t.hp < hp:
+   claws_used = a.last_action == "attack" and hp-t.hp == 3
+   break
+ check(claws_used,"Zombie NPC actually deals trained claw damage while an inferior bat is equipped")

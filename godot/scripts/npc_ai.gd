@@ -136,20 +136,24 @@ static func retreat(s,a: Dictionary,forced: bool = false) -> bool:
  a.supply_kind = ""
  return go(s,a,best)
 
+static func expected_damage(s,target: Dictionary,stats: Dictionary) -> float:
+ return float(stats.hit)/100.0*mini(target.hp,s.attack_damage(target,stats))
+
 static func equip_best(s,a: Dictionary,target: Dictionary) -> bool:
- var bare = s.attack_stats(a,target,"attack")
- var best_score = float(bare.hit)*bare.damage
+ var best_score = expected_damage(s,target,s.attack_stats(a,target,"attack"))
  var best: Dictionary = {}
  for item in a.inventory:
   var def = C.ITEMS[item.kind]
   if not def.has("damage"): continue
   var factor = 1.0
   if def.has("capacity") and item.ammo == 0:
-   if s.item_kind(a,def.ammo_kind).is_empty(): continue
-   factor = 0.7
+   if a.ap < s.cost(a,"reload")+s.cost(a,"attack") or s.item_kind(a,def.ammo_kind).is_empty(): continue
+   # Compare a reload plus the shots it supplies, using actual reload AP.
+   var shots = float(mini(def.capacity,def.reload_amount))
+   factor = shots/(shots+s.cost(a,"reload"))
   var stats = s.attack_stats(a,target,"attack",item)
-  var score = stats.hit*stats.damage*factor
-  if score > best_score:
+  var score = expected_damage(s,target,stats)*factor
+  if score > best_score or (is_equal_approx(score,best_score) and item.uid == a.equipped):
    best_score = score
    best = item
  var desired = int(best.get("uid",-1))
@@ -157,6 +161,19 @@ static func equip_best(s,a: Dictionary,target: Dictionary) -> bool:
   var selected = desired if desired >= 0 else a.equipped
   if selected >= 0: return s._try(a,"equip",-1,{"uid":selected})
  return false
+
+static func zombie_attack(s,a: Dictionary,target: Dictionary) -> String:
+ var claws = s.attack_stats(a,target,"attack")
+ var bite = s.attack_stats(a,target,"bite")
+ var claw_score = expected_damage(s,target,claws)
+ var bite_score = expected_damage(s,target,bite)
+ var bite_damage = mini(target.hp,s.attack_damage(target,bite))
+ if s.has_skill(a,"digestion"):
+  bite_score += float(bite.hit)/100.0*mini(maxi(0,s.max_hp(a)-a.hp),bite_damage)
+ # Infection adds one prospective point of damage on the survivor's next action.
+ var can_infect = target.human and not target.infected and target.hp > bite_damage and s.has_skill(a,"infectious_bite")
+ if can_infect: bite_score += float(bite.hit)/100.0
+ return "bite" if bite_score > claw_score or (can_infect and is_equal_approx(bite_score,claw_score)) else "attack"
 
 static func prey(s,a: Dictionary,people: Array) -> Dictionary:
  if a.grasp_target >= 0:

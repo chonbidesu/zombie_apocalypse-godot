@@ -568,8 +568,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     elif def.get("fragile",false): fragile = true
    metrics.attacks += 1
    if roll_attack_hit(stats.hit):
-    var damage = int(stats.damage)
-    if stats.ranged and (not item_kind(t,"flak_jacket").is_empty() or has_skill(t,"flesh_rot")): damage = int(floor(damage*0.8))
+    var damage = attack_damage(t,stats)
     var actual = mini(t.hp,damage)
     t.hp -= actual
     a.xp += actual
@@ -1021,7 +1020,7 @@ func _npc_turn(a: Dictionary) -> void:
     a.next_groan = minute+180
     if _try(a,"groan"): return
    if has_skill(a,"feeding_drag") and a.inside and victim.hp <= 12 and _try(a,"drag",victim.id): return
-   _try(a,"bite" if (has_skill(a,"infectious_bite") and not victim.infected) or (has_skill(a,"digestion") and a.hp < max_hp(a)) else "attack",victim.id)
+   _try(a,AI.zombie_attack(self,a,victim),victim.id,{"unarmed":true})
    return
   if has_skill(a,"digestion") and a.hp <= max_hp(a)-4:
    for body in present:
@@ -1108,7 +1107,7 @@ func learn(skill: String, actor_id: int = 0) -> String:
 
 func _learn_npc(a: Dictionary) -> void:
  if a.xp < 75: return
- var priorities: Array = ["construction","first_aid","firearms","hand_to_hand","free_running"] if a.human else ["vigour_mortis","lurching_gait","ankle_grab","memories","death_grip","rend_flesh","feeding_groan","tangling_grasp","digestion","infectious_bite","scent_fear","scent_blood"]
+ var priorities: Array = ["construction","first_aid","firearms","hand_to_hand","free_running"] if a.human else ["vigour_mortis","lurching_gait","ankle_grab","memories","death_grip","rend_flesh","neck_lurch","feeding_groan","tangling_grasp","digestion","infectious_bite","scent_fear","scent_blood"]
  if a.human and a.job in ["Scientist","NecroTech Lab Assistant"]: priorities = ["lab_experience","necronet","construction","first_aid","free_running","firearms"]
  elif a.human and a.job in ["Doctor","Medic"]: priorities = ["first_aid","construction","surgery","firearms","hand_to_hand","free_running"]
  for skill in C.SKILLS:
@@ -1654,6 +1653,11 @@ func set_pose(a: Dictionary, pose: String) -> void:
  a.pose = pose
  a.pose_at = now()
  a.pose_sequence += 1
+
+func attack_damage(target: Dictionary, stats: Dictionary) -> int:
+ var damage = int(stats.damage)
+ if stats.ranged and (not item_kind(target,"flak_jacket").is_empty() or has_skill(target,"flesh_rot")): damage = int(floor(damage*0.8))
+ return damage
 
 func roll_attack_hit(hit: float) -> bool:
  # Keep integer attack rolls stable while representing fractional chances exactly.
