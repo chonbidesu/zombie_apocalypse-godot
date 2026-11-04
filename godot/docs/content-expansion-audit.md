@@ -24,7 +24,7 @@ All 45 skill entries have prerequisites and runtime behavior; their authoritativ
 ## User-directed differences and local adaptations
 
 - Zombies only use hands and bites, even though historic Urban Dead allowed some carried melee attacks. Melee breakage and generator damage/repair use the user's requested survival mechanics.
-- Search tables use conservative per-item rates and extremely poor ruined searches. They are not copied wholesale from historic server search statistics. Mall Shopping selects a store with a 12% total lit chance; Bargain Hunting raises it by half. Darkness and ruin multipliers preserve this game's requested progression.
+- Search tables now contain conditional loot weights. A separate state-based find roll precedes item selection; Shopping targets mall stores and Bargain Hunting doubles intact mall yield. Ruins use a flat 10% total instead of multiplied near-zero odds. See [search rules](search-rules.md).
 - Safehouse scouting costs 30 AP and discounts five subsequent actions by one AP per day. There is no server IP-hit accounting or group system.
 - Scents provide a local text intelligence report; no cross-city group scent direction exists. Scent Trail records recent hostile contact for one game hour, within ten blocks. DNA tags last one day; NecroNet reports tags within four blocks.
 - Groans draw simulated zombie attention according to nearby prey, with an ordinary maximum radius of six blocks. Bellow costs ten AP and reaches ten blocks when faced with at least 25 survivors; otherwise it falls back to a normal groan. The normal opening population cannot reach the 25-prey threshold without sandbox changes.

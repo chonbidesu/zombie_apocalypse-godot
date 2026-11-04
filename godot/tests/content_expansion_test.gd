@@ -225,10 +225,10 @@ func _initialize() -> void:
  p.human_skills.erase("bargain_hunting")
  var shopping = s.item_search_chance(b,"first_aid_kit",p,"drugstore")
  p.human_skills.append("bargain_hunting")
- check(is_equal_approx(s.item_search_chance(b,"first_aid_kit",p,"drugstore"),shopping*1.5),"Bargain Hunting improves targeted mall searches")
+ check(is_equal_approx(s.item_search_chance(b,"first_aid_kit",p,"drugstore"),shopping*2.0),"Bargain Hunting improves targeted mall searches")
  check(s.item_search_chance(b,"shotgun",p,"drugstore") == 0,"Shopping chooses appropriate store inventory")
  b.ruin = 3
- check(not s.powered(b) and s.item_search_chance(b,"first_aid_kit",p,"drugstore") > 0 and s.item_search_chance(b,"first_aid_kit",p,"drugstore") < shopping*0.02,"Ruins remain dark with tiny nonzero search chances")
+ check(not s.powered(b) and s.item_search_chance(b,"first_aid_kit",p,"drugstore") > 0 and is_equal_approx(s.search_chance(b,p,"drugstore"),0.1),"Ruins override mall bonuses with a ten percent find rate")
  b.ruin = 0
  p.human = false
  p.zombie_skills.append("scent_death")

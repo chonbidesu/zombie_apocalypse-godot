@@ -1,14 +1,11 @@
 {
   "auto_repair": {
-    "fuel_can": 0.08,
-    "toolbox": 0.055,
-    "crowbar": 0.05,
-    "knife": 0.02,
-    "portable_generator": 0.001,
-    "length_of_pipe": 0.025,
-    "spray_can": 0.02,
-    "beer": 0.01,
-    "newspaper": 0.01
+    "fuel_can": 0.36,
+    "crowbar": 0.32,
+    "fire_axe": 0.15,
+    "portable_generator": 0.07,
+    "toolbox": 0.06,
+    "length_of_pipe": 0.04
   },
   "junkyard": {
     "fuel_can": 0.035,
@@ -28,13 +25,12 @@
     "spray_can": 0.012
   },
   "factory": {
-    "portable_generator": 0.035,
-    "fuel_can": 0.02,
-    "toolbox": 0.045,
-    "crowbar": 0.05,
-    "shovel": 0.02,
-    "fire_axe": 0.003,
-    "length_of_pipe": 0.035
+    "fuel_can": 0.33,
+    "crowbar": 0.33,
+    "fire_axe": 0.16,
+    "portable_generator": 0.08,
+    "toolbox": 0.06,
+    "length_of_pipe": 0.04
   },
   "warehouse": {
     "portable_generator": 0.018,
@@ -49,38 +45,35 @@
     "newspaper": 0.01
   },
   "hospital": {
-    "first_aid_kit": 0.14,
-    "knife": 0.025,
-    "portable_generator": 0.004,
-    "clothing": 0.01
+    "first_aid_kit": 0.85,
+    "knife": 0.08,
+    "portable_generator": 0.01,
+    "clothing": 0.06
   },
   "fire_station": {
     "first_aid_kit": 0.035,
-    "fire_axe": 0.035,
+    "fire_axe": 0.025,
     "crowbar": 0.05,
     "toolbox": 0.025,
     "flare_gun": 0.012,
     "radio": 0.012
   },
   "police_department": {
-    "first_aid_kit": 0.018,
-    "pistol": 0.016,
-    "shotgun": 0.008,
-    "pistol_clip": 0.06,
-    "shotgun_shell": 0.045,
-    "baseball_bat": 0.035,
-    "knife": 0.02,
-    "flare_gun": 0.01,
+    "pistol_clip": 0.1,
+    "shotgun_shell": 0.1,
+    "pistol": 0.04,
+    "shotgun": 0.04,
     "flak_jacket": 0.02,
-    "radio": 0.01
+    "flare_gun": 0.04,
+    "first_aid_kit": 0.005,
+    "baseball_bat": 0.005,
+    "knife": 0.005,
+    "radio": 0.005
   },
   "necrotech_lab": {
-    "syringe": 0.075,
-    "knife": 0.015,
-    "portable_generator": 0.001,
-    "dna_extractor": 0.025,
-    "gps_unit": 0.015,
-    "newspaper": 0.015
+    "syringe": 0.625,
+    "dna_extractor": 0.235,
+    "gps_unit": 0.14
   },
   "school": {
     "baseball_bat": 0.075,
@@ -124,7 +117,13 @@
     "christmas_lights": 0.0021777,
     "plastic_christmas_tree": 0.0013066,
     "tinsel": 0.0021777,
-    "candy": 0.0021777
+    "candy": 0.0021777,
+    "fuel_can": 0.02,
+    "crowbar": 0.02,
+    "fire_axe": 0.01,
+    "pistol": 0.01,
+    "shotgun": 0.01,
+    "newspaper": 0.005
   },
   "pub": {
     "baseball_bat": 0.055,

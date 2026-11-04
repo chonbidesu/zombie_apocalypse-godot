@@ -38,7 +38,7 @@ func _initialize() -> void:
  b.generator = true
  b.fuel_until = s.minute+1440
  check(not s.powered(b),"Even inconsistent old state cannot light a ruin")
- check(s.search_chance(b) > 0 and s.search_chance(b) < 0.005,"Ruins have near-zero but nonzero loot odds")
+ check(is_equal_approx(s.search_chance(b),0.10),"Ruins have a flat ten percent find rate")
  b.ruin = 0
  b.generator = false
  check(s.act("generator").ok and b.generator,"Generator installs after complete repair")
@@ -55,13 +55,13 @@ func _initialize() -> void:
  for building in C.BUILDINGS:
   b.type = building
   if s.item_search_chance(b,"fuel_can") > 0: fuel_sources.append(building)
- check(fuel_sources.size() == 6 and "auto_repair" in fuel_sources and "junkyard" in fuel_sources and "factory" in fuel_sources and "power_station" in fuel_sources and "storehouse" in fuel_sources and "vehicle_depot" in fuel_sources,"Fuel is restricted to plausible repair, industry and military supply sites")
+ check(fuel_sources.size() == 7 and "mall" in fuel_sources and "auto_repair" in fuel_sources and "junkyard" in fuel_sources and "factory" in fuel_sources and "power_station" in fuel_sources and "storehouse" in fuel_sources and "vehicle_depot" in fuel_sources,"Fuel is restricted to plausible repair, industry and military supply sites")
  b.type = "auto_repair"
  var auto_fuel = s.item_search_chance(b,"fuel_can")
  b.type = "junkyard"
  var junk_fuel = s.item_search_chance(b,"fuel_can")
  b.type = "factory"
- check(auto_fuel > junk_fuel and junk_fuel > s.item_search_chance(b,"fuel_can"),"Auto shops have the highest fuel chance")
+ check(auto_fuel > s.item_search_chance(b,"fuel_can") and s.item_search_chance(b,"fuel_can") > junk_fuel,"Auto shops and factories are strong fuel sources")
  var factory_generator = s.item_search_chance(b,"portable_generator")
  b.type = "warehouse"
  var warehouse_generator = s.item_search_chance(b,"portable_generator")
@@ -78,7 +78,7 @@ func _initialize() -> void:
  b.type = "fire_station"
  var lit_axe = s.item_search_chance(b,"fire_axe")
  b.fuel_until = 0
- check(is_equal_approx(s.item_search_chance(b,"fire_axe"),lit_axe*C.DARK_SEARCH_MULTIPLIER),"Lighting modifies each individual item chance")
+ check(is_equal_approx(s.item_search_chance(b,"fire_axe"),lit_axe*C.SEARCH_UNLIT_CHANCE/C.SEARCH_LIT_CHANCE),"Lighting modifies each individual item chance")
  b.type = "auto_repair"
  b.fuel_until = s.minute+1440
  var counts = {}
@@ -86,7 +86,7 @@ func _initialize() -> void:
  for i in range(20000):
   var found = s.roll_search(b)
   counts[found] = counts.get(found,0)+1
- check(absf(float(counts.get("fuel_can",0))/20000-0.08) < 0.01 and absf(float(counts.get("toolbox",0))/20000-0.055) < 0.01,"Sampled loot frequencies match the separate item probabilities")
+ check(absf(float(counts.get("fuel_can",0))/20000-s.item_search_chance(b,"fuel_can")) < 0.01 and absf(float(counts.get("toolbox",0))/20000-s.item_search_chance(b,"toolbox")) < 0.01,"Sampled loot frequencies match normalized conditional weights")
  check(not counts.has("pistol") and not counts.has("first_aid_kit"),"Search never produces items missing from a building table")
  b.type = "hospital"
  b.generator = false
@@ -94,7 +94,7 @@ func _initialize() -> void:
  var ruin_finds = 0
  for i in range(20000):
   if not s.roll_search(b).is_empty(): ruin_finds += 1
- check(ruin_finds > 0 and ruin_finds < 100,"Rare ruin finds occur without becoming a viable supply source")
+ check(ruin_finds > 1800 and ruin_finds < 2200,"Sampled ruin finds remain near ten percent")
  b.type = "police_department"
  b.ruin = 0
  b.generator = true
@@ -106,9 +106,9 @@ func _initialize() -> void:
   if found in ["pistol","shotgun"]:
    s.rng.state = before
    var text = s._search(p,b,"You")
-   found_gun = p.inventory.back().kind == found and p.inventory.back().ammo == 0 and text.contains("needs ammunition")
+   found_gun = p.inventory.back().kind == found and p.inventory.back().ammo >= 0 and p.inventory.back().ammo < C.ITEMS[found].capacity and (text.contains("holds") if p.inventory.back().ammo > 0 else text.contains("needs ammunition"))
    break
- check(found_gun,"Found firearms are empty and the player's narration explains ammunition")
+ check(found_gun,"Found firearms have bounded partial ammunition and accurate narration")
  var npc = s.actors[2]
  npc.x = p.x
  npc.y = p.y

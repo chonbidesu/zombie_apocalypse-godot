@@ -40,7 +40,11 @@ func _initialize() -> void:
  b.fuel_until = s.minute+1440
  b.ruin = 0
  ready(s,p)
- check(s.act("search").ok and s.encumbrance(p) == 118 and not s.item_kind(p,"portable_generator").is_empty(),"A final find below 100 percent can take load to 118 percent")
+ for attempt in range(100):
+  ready(s,p)
+  s.act("search")
+  if not s.item_kind(p,"portable_generator").is_empty(): break
+ check(s.encumbrance(p) == 118 and not s.item_kind(p,"portable_generator").is_empty(),"A final find below 100 percent can take load to 118 percent")
  ready(s,p)
  var count = p.inventory.size()
  check(not s.act("search").ok and p.inventory.size() == count and p.ap == 50,"Overloaded searching is rejected without consuming AP or losing items")

@@ -12,7 +12,7 @@ This is an implementation audit, not a claim of complete Urban Dead parity. The 
 | Generator experience | A repair action earns 1 XP; a zombie earns 5 XP when it finishes destroying a generator. Partial damage gives no destruction XP. |
 | Transmitter experience | Repair earns 1 XP; final destruction earns 5 XP rather than farming XP on every hit. |
 | Barricades | A zombie earns 1 XP when a complete visible level falls. An untrained human carrying a pipe can build the first loose barricade, consuming the pipe on success. Successful barricading closes normal doors. |
-| Population-sensitive medicine | FAK and syringe searches improve when the human share falls below 30%. The offline curve rises smoothly to at most twice the local table chance. The threshold and multiplier are local balance choices, not published server constants. |
+| Search hierarchy | Global find odds depend on location state; normalized site/store weights determine the item only after a successful find. Population share no longer modifies these odds. |
 
 The [Useful Items reference](https://wiki.urbandead.com/index.php/Useful_Items) supports medical effects, revive health, equipment XP and population-dependent medical loot. The [Barricades reference](https://wiki.urbandead.com/index.php/Barricades) supports crude pipe barricades and automatic door closure. [Zombie skills](https://wiki.urbandead.com/index.php/Zombie_skills) supports zombie combat, coordination and structure destruction abilities.
 
@@ -39,7 +39,7 @@ Public resource/clinic knowledge replaces external multiplayer maps and coordina
 | Barricade structure | 21 strength points across seven visible bands: 1 / 2–4 / 5–7 / 8–10 / 11–13 / 14–16 / 17–21. Each damaging hit removes one point and each successful build restores one. Attacks roll combat accuracy then a separate 50% structural penalty, except crowbars. Outside survivor entry ends at strength 10. Progressive construction rates follow the requested table; loose uses 99.5% for the approximate 99%+ value. Dark buildings and 2+ living, standing indoor zombies each halve construction odds, multiplicatively. |
 | Zombie equipment | Claws and bites, plus crowbar, baseball bat and pipe at base 5–10% accuracy for two damage. Human combat bonuses do not apply. |
 | Skills | All 45 entries exist; form-specific effects and occupation XP prices are implemented. Purchasing either tree in either form remains an existing prototype convenience; original purchasing rules are stricter. |
-| Search and durability | Location-specific item tables, strong lighting benefit, extremely low nonzero ruin loot, permanent melee weapons except pool cues (20% break chance on successful hits). Bottles remain fragile. These are project balance tables, not an exact reconstruction of changing server rates. |
+| Search and durability | Two-stage searches use lit/unlit/dark/ruined/outdoor totals and normalized loot weights. Mall targeting and Bargain Hunting are supported. Melee weapons are permanent except pool cues (20% break chance on successful hits); bottles remain fragile. See [search rules](search-rules.md). |
 | Time and bodies | Daily dormant-body awakening, accelerated rest/death recovery and pausable offline time replace real-world server scheduling. |
 | Dead visibility | Environment, map and NPC activity remain hidden until standing, as requested. |
 

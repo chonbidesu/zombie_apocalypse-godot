@@ -21,8 +21,25 @@ const BARRICADE_MATERIALS = {
  "mall":["a shopping trolley", "a mannequin", "a dining table"],
  "junkyard":["some junk", "some loose bricks", "some tyres"]
 }
-const DARK_SEARCH_MULTIPLIER = 0.30
-const RUIN_SEARCH_MULTIPLIER = 0.025
+const SEARCH_LIT_CHANCE = 0.30
+const SEARCH_UNLIT_CHANCE = 0.20
+const SEARCH_RUIN_CHANCE = 0.10
+const SEARCH_OUTSIDE_CHANCE = 0.05
+const DARK_SEARCH_MULTIPLIER = 0.50
+const DARK_SEARCH_BUILDINGS = DARK_BARRICADE_BUILDINGS + ["power_station"]
+const INVENTORY_ITEM_LIMIT = 100
+# One shared, conditional grab bag for every exterior and open-ground square.
+const OUTSIDE_SEARCH_WEIGHTS = {
+ "newspaper":20.0,"clothing":15.0,"book":10.0,"glass_piece":10.0,
+ "beer":8.0,"wine":5.0,"spray_can":5.0,"crowbar":4.0,"knife":4.0,
+ "length_of_pipe":4.0,"baseball_bat":3.0,"fuel_can":3.0,"flashlight":3.0,
+ "fire_axe":2.0,"binoculars":2.0,"shovel":2.0,"golf_club":2.0
+}
+const MALL_STORE_WEIGHTS = {
+ "gun_store":{"pistol_clip":0.327,"shotgun_shell":0.327,"pistol":0.173,"shotgun":0.173},
+ "drugstore":{"first_aid_kit":0.70,"book":0.20,"candy":0.10},
+ "hardware":{"fuel_can":0.33,"crowbar":0.33,"fire_axe":0.16,"portable_generator":0.08,"toolbox":0.06,"knife":0.02,"spray_can":0.02}
+}
 const CLOCK_STEPS_PER_MINUTE = 10
 # Recovery is independent of AP cost. At normal speed these values are seconds.
 const ACTION_RECOVERY = {"move":1.0, "attack":1.4, "search":2.2,
@@ -190,6 +207,11 @@ const ITEMS = {
  "spray_can": {
   "name": "Spray can",
   "action": "tag",
+  "encumbrance": 2
+ },
+ "flashlight": {
+  "name": "Flashlight",
+  "action": "inspect",
   "encumbrance": 2
  },
  "binoculars": {
@@ -753,4 +775,4 @@ static func occupation_sheet(job: String, human: bool) -> String:
  return {"Private":"private","Guard":"private","Medic":"medic","Scout":"scout","NecroTech Lab Assistant":"necro","NecroTech Assistant":"necro","Scientist":"necro","Doctor":"doctor","Police Officer":"police","Firefighter":"firefighter","Engineer":"firefighter","Consumer":"consumer","Volunteer":"consumer","Resident":"vagrant","Corpse":"vagrant"}.get(job,"consumer")
 
 const PORTRAITS = {"Private":"private","Guard":"private","Medic":"medic","Scout":"scout","NecroTech Lab Assistant":"necro","Scientist":"necro","Doctor":"doctor","Police Officer":"police","Firefighter":"firefighter","Engineer":"firefighter","Consumer":"consumer","Volunteer":"consumer","Resident":"corpse","Corpse":"corpse"}
-const MALL_STORES = {"bookstore":["book","poetry_book","newspaper"],"drugstore":["first_aid_kit"],"gun_store":["pistol","shotgun","pistol_clip","shotgun_shell"],"hardware":["crowbar","fire_axe","knife","portable_generator","spray_can","toolbox","flare_gun"],"liquor":["beer","wine"],"sports":["baseball_bat","cricket_bat","fencing_foil","golf_club","hockey_stick","pool_cue","ski_pole","tennis_racket","binoculars"],"tech":["gps_unit","mobile_phone","radio","radio_transmitter"]}
+const MALL_STORES = {"bookstore":["book","poetry_book","newspaper"],"drugstore":["first_aid_kit","book","candy"],"gun_store":["pistol","shotgun","pistol_clip","shotgun_shell"],"hardware":["fuel_can","crowbar","fire_axe","knife","portable_generator","spray_can","toolbox","flare_gun"],"liquor":["beer","wine"],"sports":["baseball_bat","cricket_bat","fencing_foil","golf_club","hockey_stick","pool_cue","ski_pole","tennis_racket","binoculars"],"tech":["gps_unit","mobile_phone","radio","radio_transmitter"]}

@@ -28,7 +28,9 @@ Three existing local additions need local assignments: shovel 4%, paper city map
 
 Loaded ammunition adds no weight beyond the firearm; spare magazines and individual shells each weigh 2%. Reloading consumes a spare item and frees its encumbrance. All carried equipment counts, including equipped weapons and a flak jacket. Candy is reusable, zero-weight and limited to one bag. Only one Christmas tree of either type may be acquired at a time.
 
-Searches, syringe manufacture, gifts, supply requests and NPC supply planning use percentage capacity. A single validated transfer can cross the threshold; later acquisitions are blocked. Initialization/test fixtures retain a low-level item-adder, while player and NPC actions validate carrying rules. Saves retain item instances and derive their load from current catalogue definitions. Existing overloaded saves are preserved intact and can use/drop items to make room.
+Flashlights weigh 2% and can be inspected.
+
+Searches, syringe manufacture, gifts, supply requests and NPC supply planning use percentage capacity. A separate hard ceiling of 100 item instances also prevents collection; searches at that ceiling are rejected before AP or RNG is spent. A single validated transfer can cross the threshold; later acquisitions are blocked. Initialization/test fixtures retain a low-level item-adder, while player and NPC actions validate carrying rules. Saves retain item instances and derive their load from current catalogue definitions. Existing overloaded saves are preserved intact and can use/drop items to make room.
 
 ## Barricades and doors
 

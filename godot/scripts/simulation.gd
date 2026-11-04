@@ -278,6 +278,7 @@ func encumbrance(a: Dictionary) -> int:
  return total
 
 func acquisition_reason(a: Dictionary, kind: String = "") -> String:
+ if a.inventory.size() >= C.INVENTORY_ITEM_LIMIT: return "You are carrying 100 items. Drop or use an item before collecting more."
  if encumbrance(a) >= C.ENCUMBRANCE_LIMIT: return "Already carrying %d%%; drop or use an item first." % encumbrance(a)
  if kind == "candy" and not item_kind(a,"candy").is_empty(): return "You already carry a bag of candy."
  if kind in ["dead_fir_tree","plastic_christmas_tree"] and (not item_kind(a,"dead_fir_tree").is_empty() or not item_kind(a,"plastic_christmas_tree").is_empty()): return "You can carry only one Christmas tree."
@@ -490,7 +491,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if not has_skill(a, "necronet"): return "NecroNet access is required."
    if command == "manufacture" and not acquisition_reason(a,"syringe").is_empty(): return acquisition_reason(a,"syringe")
   "search":
-   if is_building(b) and not a.inside: return "Enter the building before searching it."
+   if a.inventory.size() >= C.INVENTORY_ITEM_LIMIT: return "You are carrying 100 items. Drop or use an item before searching."
    if encumbrance(a) >= C.ENCUMBRANCE_LIMIT: return "You are at %d%% encumbrance. Drop or use something before collecting more." % encumbrance(a)
   "jump":
    if b.type != "tower": return "You must be inside a tower."
@@ -802,54 +803,83 @@ func die(a: Dictionary, penalty: int = 0) -> void:
  metrics.deaths += 1
 
 func _search(a: Dictionary, b: Dictionary, name: String, store: String = "") -> String:
+ if not acquisition_reason(a).is_empty(): return acquisition_reason(a)
  var found = roll_search(b,a,store)
  if found == "dead_fir_tree" and item_kind(a,"fire_axe").is_empty(): return "You find a small fir tree, but need a fire axe to fell it." if a.id == 0 else "%s searches the area for supplies." % name
  if not found.is_empty() and not acquisition_reason(a,found).is_empty():
   return "You find %s, but cannot carry another: %s" % [C.ITEMS[found].name,acquisition_reason(a,found)] if a.id == 0 else "%s searches for supplies." % name
  if not found.is_empty():
   give_item(a,found)
-  if C.ITEMS[found].has("capacity"): a.inventory.back().ammo = 0
+  if C.ITEMS[found].has("capacity"):
+   var capacity = int(C.ITEMS[found].capacity)
+   a.inventory.back().ammo = rng.randi_range(1,capacity-1) if rng.randf() < 0.75 else 0
  # Other actors get the same loot rules without the player's detailed narration.
  if a.id != 0: return "%s searches the area for supplies." % name
- var spot = search_spot(b)
- var lit = powered(b)
+ var outside = search_is_outside(b,a)
+ var spot = "the surrounding streets and discarded debris" if outside else search_spot(b)
+ var lit = not outside and powered(b)
  if found.is_empty():
   var finds = ["only rotting paper and empty wrappers; nothing worth carrying", "a promising container, but its contents have spoiled", "a broken item whose working parts have rusted away", "a heap of useless scraps, which you leave behind", "an empty hiding place beneath a thick layer of dust"]
   var result: String = finds[rng.randi_range(0,finds.size()-1)]
+  if outside: return "%s search %s and find %s." % [name,spot,result]
   return "%s search %s and find %s." % [name,spot,result] if lit else "%s feel through %s in the dark, stumbling over debris, and find %s." % [name,spot,result]
  var description: String = C.ITEMS[found].name
- var condition = "It is empty and needs ammunition." if C.ITEMS[found].has("capacity") else "It is intact and ready to use."
+ var condition = "It is intact and ready to use."
+ if C.ITEMS[found].has("capacity"):
+  var ammo = int(a.inventory.back().ammo)
+  condition = "It holds %d round%s." % [ammo,"" if ammo == 1 else "s"] if ammo > 0 else "It is empty and needs ammunition."
+ if outside: return "%s search %s. At last: %s! %s" % [name,spot,description,condition]
  return "%s search %s under the lights. At last: %s! %s" % [name,spot,description,condition] if lit else "%s grope through %s in the darkness. Against the odds, you find %s! %s" % [name,spot,description,condition]
 
-func item_search_chance(b: Dictionary, kind: String, a: Dictionary = {}, store: String = "") -> float:
- var base = float(search_tables.get(b.type,{}).get(kind,0.0))
- if b.type == "mall" and not a.is_empty() and has_skill(a,"shopping") and C.MALL_STORES.has(store):
-  if kind not in C.MALL_STORES[store]: return 0.0
-  var total = 0.0
-  for candidate in C.MALL_STORES[store]: total += float(search_tables.mall.get(candidate,0.0))
-  base *= 0.12/maxf(0.001,total)
- if b.type == "mall" and not a.is_empty() and has_skill(a,"bargain_hunting"): base *= 1.5
- var multiplier = 1.0 if powered(b) else C.DARK_SEARCH_MULTIPLIER
- if b.ruin >= 3: multiplier *= C.RUIN_SEARCH_MULTIPLIER
- if kind in ["first_aid_kit","syringe"]: multiplier *= 1.0+clampf((0.3-survivor_ratio)/0.3,0.0,1.0)
- return base*multiplier
+func search_is_outside(b: Dictionary, a: Dictionary = {}) -> bool:
+ return not is_building(b) or (not a.is_empty() and not a.inside)
 
-func search_chance(b: Dictionary) -> float:
+func search_distribution(b: Dictionary, a: Dictionary = {}, store: String = "") -> Dictionary:
+ if search_is_outside(b,a):
+  return C.OUTSIDE_SEARCH_WEIGHTS
+ if b.type == "mall" and not a.is_empty() and has_skill(a,"shopping") and C.MALL_STORES.has(store):
+  if C.MALL_STORE_WEIGHTS.has(store): return C.MALL_STORE_WEIGHTS[store]
+  var targeted = {}
+  for kind in C.MALL_STORES[store]: targeted[kind] = search_tables.mall.get(kind,1.0)
+  return targeted
+ return search_tables.get(b.type,{})
+
+func item_search_chance(b: Dictionary, kind: String, a: Dictionary = {}, store: String = "") -> float:
+ var table = search_distribution(b,a,store)
  var total = 0.0
- for kind in search_tables.get(b.type,{}): total += item_search_chance(b,kind)
- return total
+ for weight in table.values(): total += maxf(0.0,float(weight))
+ return search_chance(b,a,store)*maxf(0.0,float(table.get(kind,0.0)))/total if total > 0.0 else 0.0
+
+func search_chance(b: Dictionary, a: Dictionary = {}, _store: String = "") -> float:
+ if search_is_outside(b,a): return C.SEARCH_OUTSIDE_CHANCE
+ # Ruin overrides lighting, darkness and mall bonuses rather than multiplying them.
+ if b.ruin > 0: return C.SEARCH_RUIN_CHANCE
+ var chance = C.SEARCH_UNLIT_CHANCE
+ if powered(b):
+  chance = 0.26 if b.type == "mall" else (0.28 if b.type == "necrotech_lab" else C.SEARCH_LIT_CHANCE)
+ elif b.type in C.DARK_SEARCH_BUILDINGS: chance *= C.DARK_SEARCH_MULTIPLIER
+ if b.type == "mall" and not a.is_empty() and has_skill(a,"bargain_hunting"): chance *= 2.0
+ return minf(chance,1.0)
 
 func roll_search(b: Dictionary, a: Dictionary = {}, store: String = "") -> String:
- # Disjoint per-item probability bands, plus the remaining no-find probability.
- # One roll yields at most one item; unrelated loot never dilutes an item's odds.
- var roll = rng.randf()
- var cumulative = 0.0
- for kind in search_tables.get(b.type,{}):
-  cumulative += item_search_chance(b,kind,a,store)
-  if roll < cumulative: return kind
- return ""
+ # First roll for any find; only then roll the site's conditional loot weights.
+ if rng.randf() >= search_chance(b,a,store): return ""
+ var table = search_distribution(b,a,store)
+ var total = 0.0
+ for weight in table.values(): total += maxf(0.0,float(weight))
+ if total <= 0.0: return ""
+ var roll = rng.randf()*total
+ var last = ""
+ for kind in table:
+  var weight = maxf(0.0,float(table[kind]))
+  if weight <= 0.0: continue
+  last = kind
+  roll -= weight
+  if roll < 0.0: return kind
+ return last
 
 func search_loot(kind: String) -> Array:
+ if kind in C.OUTDOORS: return C.OUTSIDE_SEARCH_WEIGHTS.keys()
  return search_tables.get(kind,{}).keys()
 
 func search_spot(b: Dictionary) -> String:
@@ -1429,7 +1459,7 @@ func human_expedition(a: Dictionary) -> bool:
    a.supply_goal = -1
    a.next_trip = minute+120+a.id*3
    return false
-  if encumbrance(a) >= C.ENCUMBRANCE_LIMIT:
+  if encumbrance(a) >= C.ENCUMBRANCE_LIMIT or a.inventory.size() >= C.INVENTORY_ITEM_LIMIT:
    for item in a.inventory:
     if item.uid != a.equipped and not supply_needed_by(a,item.kind) and item.kind != a.supply_kind:
      return _try(a,"drop",-1,{"uid":item.uid})

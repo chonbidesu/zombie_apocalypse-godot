@@ -50,6 +50,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Survival tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/npc_balance_test.gd --log-file npc-balance-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'NPC balance/rule tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/search_test.gd --log-file search-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Search tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/loot_and_trust_test.gd --log-file loot-trust-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Loot/trust tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/content_expansion_test.gd --log-file content-tests.log

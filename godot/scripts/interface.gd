@@ -329,7 +329,7 @@ func _inventory() -> void:
  rect(page,Rect2(20,720,358,184),PANEL,Color("4e5847"))
  var load_percent = sim.encumbrance(p)
  var title = label(page,"INVENTORY  %d%% / 100%%" % load_percent,Rect2(32,725,332,24),18,RED if load_percent >= 100 else GOLD)
- title.tooltip_text = "At 100% or more, use or drop items before collecting more. A final find may take you over 100%."
+ title.tooltip_text = "Collection stops at 100 items or 100% encumbrance. Use or drop items to make room. A final find below 100% may exceed the weight limit."
  var pages = maxi(1,ceili(float(p.inventory.size())/INVENTORY_PAGE_SIZE))
  inventory_page = clampi(inventory_page,0,pages-1)
  for slot_index in range(INVENTORY_PAGE_SIZE):
@@ -471,7 +471,7 @@ func _people() -> void:
 
 func _actions() -> void:
  var p = sim.player()
- if sim.current_block(p).type == "mall" and sim.has_skill(p,"shopping"):
+ if p.inside and sim.current_block(p).type == "mall" and sim.has_skill(p,"shopping"):
   var stores = OptionButton.new()
   stores.position = Vector2(1110,125)
   stores.size = Vector2(300,28)
