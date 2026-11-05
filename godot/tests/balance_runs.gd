@@ -45,10 +45,17 @@ func snapshot(s) -> Dictionary:
 func _initialize() -> void:
  var label = "current"
  var only = "all"
+ var population_args = PackedStringArray()
  var args = OS.get_cmdline_user_args()
  for arg in args:
   if arg.begins_with("--label="): label = arg.trim_prefix("--label=")
   if arg.begins_with("--only="): only = arg.trim_prefix("--only=")
+  if arg.begins_with("--population="): population_args = arg.trim_prefix("--population=").split(",")
+ if not population_args.is_empty():
+  if population_args.size() != 5 or population_args[0] not in ["random","malton"] or int(population_args[2]) < 1:
+   push_error("Expected --population=MODE,SEED,DAYS,SURVIVORS,ZOMBIES with mode random or malton and at least one day.")
+   quit(2)
+   return
  var jobs = []
  for seed_value in [23,71,119]:
   jobs.append({"mode":"sandbox","seed":seed_value,"days":7})
@@ -62,6 +69,9 @@ func _initialize() -> void:
   report.source_files[path] = FileAccess.get_file_as_string("res://scripts/"+path+".gd").sha256_text()
  if label == "diagnostic": jobs = [{"mode":"sandbox","seed":23,"days":5}]
  if label == "holdout": jobs = [{"mode":"random","seed":307,"days":14},{"mode":"random","seed":997,"days":14},{"mode":"malton","seed":307,"days":14},{"mode":"siege","seed":307,"days":5}]
+ # Population trial arguments are mode, seed, days, survivors, zombies.
+ if population_args.size() == 5:
+  jobs = [{"mode":population_args[0],"seed":int(population_args[1]),"days":int(population_args[2])}]
  var started = Time.get_ticks_msec()
  for job in jobs:
   if only != "all" and job.mode != only: continue
@@ -73,6 +83,9 @@ func _initialize() -> void:
     config.malls = 2
     config.survivors = 45
     config.zombies = 90
+   if population_args.size() == 5:
+    config.survivors = int(population_args[3])
+    config.zombies = int(population_args[4])
    s.start(job.seed,"Private",config)
   var player = s.player()
   player.down = true

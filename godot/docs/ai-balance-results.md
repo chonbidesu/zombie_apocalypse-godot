@@ -1,5 +1,30 @@
 # AI balance results — 4 November 2026
 
+## Population presets — 5 November 2026
+
+The presets change population density and faction mix. Medium is the default for Malton and generated cities. Generated maps scale both counts by area, and Custom accepts exact counts. The legacy test neighbourhood keeps its fixed setup.
+
+| Preset | Survivors per 10,000 blocks | Zombies per 10,000 blocks | Awake at start | Dormant at start |
+|---|---:|---:|---:|---:|
+| Easy | 720 | 900 | 115 | 785 |
+| Medium | 660 | 1,500 | 240 | 1,260 |
+| Hard | 540 | 2,400 | 384 | 2,016 |
+
+Each dormant body has a 20% chance of becoming eligible to stand each midnight. On the 30×30 test map, the presets started with 65/81, 59/135 and 49/216 survivors/zombies respectively. The comparison used the actual simulation with the player inactive. Trials ran for five days on seeds 23, 71 and 119. Seed 307 was held back for a check on the final shelter-selection logic.
+
+| Population | Runs | Standing humans, day 5 mean | Standing zombies, day 5 mean | Ruined blocks, day 5 mean |
+|---|---:|---:|---:|---:|
+| Previous density (27/54) | 3 | 31.0 | 33.7 | 5.7 |
+| Easy | 4 | 83.3 | 39.0 | 10.3 |
+| Medium | 4 | 85.3 | 69.5 | 17.8 |
+| Hard | 4 | 85.0 | 115.3 | 25.8 |
+
+On the holdout seed, Easy, Medium and Hard ended with 41, 72 and 125 standing zombies and 8, 19 and 29 ruined blocks respectively. Standing human counts include revivals, so they measure current faction size. The presets were selected for increasing undead presence and ruin pressure while keeping survivor groups available. Full-size Malton pilots on seed 23 covered the first day for each preset. The five-day figures describe generated cities with an inactive player.
+
+Reproduce a trial with `godot --headless --path godot --script res://tests/balance_runs.gd -- --label=population-hard-307 --population=random,307,5,49,216` from the repository root. Use `malton` with the full-city counts for the original map.
+
+## Earlier AI trials
+
 81 completed scenario/seed trials across iterative versions, totaling 554 simulated game days. Intermediate reports are retained, including completed scenarios from interrupted tuning suites. The diagnostic trace is excluded. The selected `shelter` version has 10 completed scenarios; `holdout` has 4.
 
 ## Method

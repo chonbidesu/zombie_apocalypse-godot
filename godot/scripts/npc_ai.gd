@@ -80,7 +80,9 @@ static func regroup(s,a: Dictionary) -> bool:
  for id in s.spatial:
   var site = s.blocks[id]
   var d = maxi(absi(site.x-a.x),absi(site.y-a.y))
-  if d >= distance or d+2 > a.ap or not s.is_building(site) or site.ruin > 0 or site.barricade > 4: continue
+  # Ties use actor order so rebuilding the spatial index after a load is deterministic.
+  if d > distance or (d == distance and (closest.is_empty() or s.spatial[id][0] >= s.spatial[closest.id][0])): continue
+  if d+2 > a.ap or not s.is_building(site) or site.ruin > 0 or site.barricade > 4: continue
   if site.fort != here.fort: continue
   var others = s.occupants(site,true)
   if others.any(func(t): return not t.human and not t.down): continue

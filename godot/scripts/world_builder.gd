@@ -1,12 +1,22 @@
 extends RefCounted
 ## Static geography and seeded random-city generation, independent of actor state.
 const C = preload("res://scripts/catalog.gd")
+const POPULATION_PRESETS = {
+ "easy": Vector2i(720,900),
+ "medium": Vector2i(660,1500),
+ "hard": Vector2i(540,2400),
+}
+
+static func population_defaults(width: int, height: int, difficulty: String) -> Vector2i:
+ var city: Vector2i = POPULATION_PRESETS.get(difficulty,POPULATION_PRESETS.medium)
+ return Vector2i((Vector2(city)*width*height/10000.0).round())
 
 static func defaults(width: int = 100, height: int = 100) -> Dictionary:
  var counts = {}
  for kind in C.NORMAL_BUILDINGS:
   if kind != "mall": counts[kind] = maxi(1,int(width*height*(0.012 if kind in ["hospital","necrotech_lab","police_department","fire_station","auto_repair","factory","warehouse"] else 0.025)))
- return {"mode":"random","width":width,"height":height,"malls":20,"forts":2,"zoos":1,"cathedrals":5,"mansions":5,"power_stations":2,"stadiums":3,"counts":counts,"survivors":300,"zombies":600}
+ var population = population_defaults(width,height,"medium")
+ return {"mode":"random","width":width,"height":height,"malls":20,"forts":2,"zoos":1,"cathedrals":5,"mansions":5,"power_stations":2,"stadiums":3,"counts":counts,"survivors":population.x,"zombies":population.y}
 
 static func build(config: Dictionary, seed_value: int, names: Dictionary) -> Dictionary:
  if config.get("mode","random") == "malton":

@@ -6,7 +6,6 @@ const Extended = preload("res://scripts/extended_rules.gd")
 const World = preload("res://scripts/world_builder.gd")
 const AI = preload("res://scripts/npc_ai.gd")
 var navigation: AStar2D
-var survivor_ratio: float = 0.5
 var width: int = 10
 var height: int = 10
 var world_mode: String = "sandbox"
@@ -210,8 +209,9 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
  _setup_player(p,occupation)
  var shelters = blocks.filter(func(b): return is_building(b) and b.fort.is_empty() and not b.unbarricadable)
  if shelters.is_empty(): shelters = blocks
- var human_count = clampi(int(config.get("survivors",300)),0,2000)
- var zombie_count = clampi(int(config.get("zombies",600)),0,4000)
+ var population = World.population_defaults(width,height,str(config.get("difficulty","medium")))
+ var human_count = clampi(int(config.get("survivors",population.x)),0,2000)
+ var zombie_count = clampi(int(config.get("zombies",population.y)),0,4000)
  var jobs = ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer"]
  var group_site = start_site
  var clinics = blocks.filter(func(b): return b.type == "necrotech_lab")
@@ -229,8 +229,10 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
   if job == "Doctor": a.human_skills.append("first_aid")
   if job in ["Firefighter","Consumer"]: a.human_skills.append("construction")
   if i%3 == 1:
-   if not has_skill(a,"construction"): a.human_skills.append("construction")
-   give_item(a,"toolbox")
+   # Keep the crew's medic on medical duty and assign construction to a teammate.
+   var builder = actors[a.id-1] if job == "Medic" else a
+   if not has_skill(builder,"construction"): builder.human_skills.append("construction")
+   give_item(builder,"toolbox")
   if job == "NecroTech Lab Assistant":
    a.human_skills.append("lab_experience")
    give_item(a,"syringe")
@@ -332,13 +334,22 @@ func has_skill(a: Dictionary, skill: String) -> bool:
 
 func reindex() -> void:
  spatial.clear()
- var human_forms = 0
  for a in actors:
-  if a.human: human_forms += 1
   var key = a.y*width+a.x
   if not spatial.has(key): spatial[key] = []
   spatial[key].append(a.id)
- survivor_ratio = float(human_forms)/maxi(1,actors.size())
+
+func _relocate(a: Dictionary, from: int, to: int) -> void:
+ if from == to: return
+ var origin: Array = spatial.get(from,[])
+ if not origin.has(a.id):
+  reindex()
+  return
+ origin.erase(a.id)
+ if origin.is_empty(): spatial.erase(from)
+ if not spatial.has(to): spatial[to] = []
+ var destination: Array = spatial[to]
+ destination.insert(destination.bsearch(a.id),a.id)
 
 func occupants(b: Dictionary, inside = null) -> Array:
  var result: Array = []
@@ -549,6 +560,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  var origin = {"x":a.x, "y":a.y, "inside":a.inside}
  var friendly = a.human == player().human
  var critical = false
+ var attack_hit = false
  var initial_target_hp = actors[target_id].hp if target_id >= 0 else -1
  var initial_barricade_strength = barricade_strength(b)
  var name = "You" if a.id == 0 else display_name(a)
@@ -568,6 +580,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    a.inside = move_ends_inside(a,b,destination,data)
    a.x += data.dx
    a.y += data.dy
+   _relocate(a,b.id,destination.id)
    text = "%s move to %s." % [name, destination.name]
    if ruined_free_run:
     text += " You find your route blocked by a collapsed wall, and are forced to street level." if a.id == 0 else " A collapsed wall forces them to street level."
@@ -613,6 +626,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     elif def.get("fragile",false): fragile = true
    metrics.attacks += 1
    if roll_attack_hit(stats.hit):
+    attack_hit = true
     var damage = attack_damage(t,stats)
     var actual = mini(t.hp,damage)
     t.hp -= actual
@@ -736,6 +750,8 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     a.inside = true
     body.x = gate.x
     body.y = gate.y
+    _relocate(a,b.id,gate.id)
+    _relocate(body,b.id,gate.id)
     a.route.clear()
     body.route.clear()
     text = "%s carry a body through %s and dump it outside. You remain inside the gatehouse." % [name,gate.name]
@@ -825,7 +841,6 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   a.hp = maxi(0,a.hp-ap_spent)
   if a.hp == 0: die(a)
   if a.id == 0: text += " Infection costs %d HP." % ap_spent
- reindex()
  var p = player()
  var event_action = command
  if command == "break" and not a.human and not a.inside and p.inside and a.x == p.x and a.y == p.y:
@@ -837,7 +852,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  if a.id == 0 or visible or audible or remote or target_id == 0:
   var category = "PLAYER" if a.id == 0 else ("ALLY" if friendly else "ENEMY")
   if target_id == 0 or (critical and not friendly): category = "ALERT"
-  if not text.is_empty(): log_event(text, category, a.id, event_action, critical or target_id == 0)
+  if not text.is_empty(): log_event(text, category, a.id, event_action, critical or target_id == 0, attack_hit)
  if sleeping:
   var loud_break = audible and command == "break" and initial_barricade_strength > 0 and barricade_strength(b) == 0
   var injured = target_id == 0 and initial_target_hp > p.hp
@@ -999,14 +1014,16 @@ func _clock_step() -> void:
  if clock_step % (C.RECOVERY_MINUTES*C.CLOCK_STEPS_PER_MINUTE) == 0:
   for a in actors: a.ap = mini(C.AP_CAP,a.ap+1)
  # Characters have individual due times, not a synchronized global NPC turn.
- for offset in range(actors.size()-1):
-  var index = 1+(npc_cursor+offset)%(actors.size()-1)
+ var npc_count = actors.size()-1
+ var current_time = now()
+ for offset in range(npc_count):
+  var index = 1+(npc_cursor+offset)%npc_count
   var a = actors[index]
-  if a.next_think > now() or a.busy_until > now(): continue
+  if a.dormant or a.next_think > current_time or a.busy_until > current_time: continue
   var old_ap = a.ap
   _npc_turn(a)
   var delay = rng.randf_range(1.0,4.0) if a.ap != old_ap else rng.randf_range(5.0,10.0)
-  a.next_think = maxf(now(),a.busy_until)+delay
+  a.next_think = maxf(current_time,a.busy_until)+delay
  npc_cursor = (npc_cursor+1)%maxi(1,actors.size()-1)
  if resting and ((player().ap >= rest_target and (not player().down or minute >= player().ready_at)) or clock_step >= rest_end_step):
   stop_rest(("You awaken rested. " if sleeping else "Rest complete. ")+"%d AP available." % player().ap)
@@ -1055,8 +1072,9 @@ func _npc_turn(a: Dictionary) -> void:
     if other.down and not other.human and _try(a,"dump",other.id): return
    if _try(a,"repair_generator"): return
    if _try(a,"repair"): return
-   var away = actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == b.id and (not t.inside or t.x != b.x or t.y != b.y))
-   var threatened = occupants(b,false).filter(func(t): return not t.human and not t.down and not t.wants_revive).size() >= 5 and not away
+   var threatened = occupants(b,false).filter(func(t): return not t.human and not t.down and not t.wants_revive).size() >= 5
+   if threatened:
+    threatened = not actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == b.id and (not t.inside or t.x != b.x or t.y != b.y))
    if barricade_strength(b) < (21 if threatened else 10) and _try(a,"barricade"): return
    if _try(a,"close"): return
    if _try(a,"generator"): return
@@ -1264,10 +1282,11 @@ func population() -> Dictionary:
 func time_text() -> String:
  return "DAY %02d  ·  %02d:%02d" % [minute/1440+1, (minute%1440)/60, minute%60]
 
-func log_event(text: String, category: String = "WORLD", actor_id: int = -1, action: String = "", urgent: bool = false) -> void:
+func log_event(text: String, category: String = "WORLD", actor_id: int = -1, action: String = "", urgent: bool = false, attack_hit: bool = false) -> void:
  if not actors.is_empty() and player().down and actor_id > 0: return
  event_sequence += 1
  messages.append({"id":event_sequence,"step":clock_step,"minute":minute,"category":category,"actor":actor_id,"action":action,"text":text,"urgent":urgent})
+ if attack_hit: messages.back().attack_hit = true
  while messages.size() > 1000: messages.pop_front()
 
 func save_to(path: String) -> Error:
@@ -1653,7 +1672,7 @@ func human_expedition(a: Dictionary) -> bool:
    if other.id != a.id and other.human and not other.down: allies += 1
   if allies < 1 or allies > 2 or site.id == current_block(a).id: continue
   var d = maxf(absf(site.x-a.x),absf(site.y-a.y))
-  if d < distance:
+  if d < distance or (d == distance and spatial[site_id][0] < spatial[destination][0]):
    destination = site.id
    distance = d
  if destination >= 0:

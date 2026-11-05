@@ -57,8 +57,12 @@ func run() -> void:
  await screenshot("res://tests/malton-start-preview.png")
  scene.open_modal("restart")
  check(scene.overlay.get_node("WorldMode").item_count == 3,"New Game offers original, random and legacy worlds")
+ check(scene.overlay.get_node("Difficulty").item_count == 3,"Malton offers Easy, Medium and Hard")
  scene.new_world_mode = "random"
  scene.refresh()
+ var difficulty = scene.overlay.get_node("Difficulty")
+ check(difficulty.item_count == 4,"Random city adds a Custom population option")
+ difficulty.item_selected.emit(3)
  check(scene.overlay.get_node("GenerationCounts").find_children("Count_*","SpinBox",true,false).size() == 20,"Random setup exposes every ordinary resource/building count")
  check(scene.overlay.get_node("GenerationSettings").find_children("Config_*","SpinBox",true,false).size() == 11,"Random setup exposes dimensions, all complexes and population")
  var hospital_count = scene.overlay.find_child("Count_hospital",true,false)

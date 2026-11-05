@@ -7,6 +7,7 @@ var new_world_mode = "malton"
 var new_world_config: Dictionary = {}
 var new_seed = 4815
 var new_occupation = "Private"
+var new_difficulty = "medium"
 var new_game_error = ""
 
 const Sim = preload("res://scripts/simulation.gd")
@@ -67,6 +68,10 @@ func _ready() -> void:
  var ui_theme = Theme.new()
  ui_theme.default_font = load("res://assets/fonts/PixelifySans.ttf")
  ui_theme.default_font_size = 19
+ var italic = FontVariation.new()
+ italic.base_font = ui_theme.default_font
+ italic.variation_transform = Transform2D(Vector2.RIGHT,Vector2(-0.22,1),Vector2.ZERO)
+ ui_theme.set_font("italics_font","RichTextLabel",italic)
  theme = ui_theme
  var why = sim.start(4815,"Volunteer",{"mode":initial_world_mode})
  if not why.is_empty():
@@ -205,19 +210,22 @@ func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accen
  return node
 
 func refresh() -> void:
- if is_instance_valid(page):
-  remove_child(page)
-  page.queue_free()
+ if not is_instance_valid(page):
+  page = Control.new()
+  page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+  add_child(page)
+  move_child(page,0)
+ for child in page.get_children():
+  # Hover and tooltip timing belong to the actor controls across refreshes.
+  if child.name == "SceneActors" and not sim.player().down and not sim.sleeping: continue
+  page.remove_child(child)
+  child.queue_free()
  actor_buttons.clear()
  action_controls.clear()
- page = Control.new()
- page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
- add_child(page)
- move_child(page,0)
  var p = sim.player()
  var b = sim.current_block(p)
  if p.down: selected_actor = -1
- if selected_actor >= 0 and not sim.nearby(p, sim.actors[selected_actor]): selected_actor = -1
+ if selected_actor >= sim.actors.size() or (selected_actor >= 0 and not sim.nearby(p, sim.actors[selected_actor])): selected_actor = -1
  if sim.item_by_uid(p, selected_item).is_empty(): selected_item = -1
  _header()
  _local_map()
@@ -459,32 +467,52 @@ func _people() -> void:
    var floor_y = ENVIRONMENT_RECT.end.y-2-row*43-offset
    entries.append({"actor":group[i],"x":x,"floor":floor_y,"size":size})
  entries.sort_custom(func(a,b): return a.floor < b.floor)
- var actors_layer = Control.new()
- actors_layer.name = "SceneActors"
- actors_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
- page.add_child(actors_layer)
+ var actors_layer = page.get_node_or_null("SceneActors")
+ if actors_layer == null:
+  actors_layer = Control.new()
+  actors_layer.name = "SceneActors"
+  actors_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+  page.add_child(actors_layer)
+ else: page.move_child(actors_layer,-1)
+ var visible_ids = {}
+ for a in people: visible_ids["Actor_%d" % a.id] = true
+ for child in actors_layer.get_children():
+  if visible_ids.has(str(child.name)): continue
+  actors_layer.remove_child(child)
+  child.queue_free()
  var speaking: Array = []
  for entry in entries:
   var a = entry.actor
   var bounds = Rect2(entry.x,entry.floor-entry.size,spacing-2,entry.size-2)
-  var target = button(actors_layer,"",bounds,func(): selected_actor = a.id; refresh())
-  target.name = "Actor_%d" % a.id
-  var clear = StyleBoxFlat.new()
-  clear.bg_color = Color.TRANSPARENT
-  clear.border_color = GOLD if selected_actor == a.id else Color.TRANSPARENT
-  clear.set_border_width_all(1)
-  target.add_theme_stylebox_override("normal",clear)
-  var hover = clear.duplicate()
-  hover.bg_color = Color(1,1,1,0.06)
-  hover.border_color = GOLD
-  target.add_theme_stylebox_override("hover",hover)
-  target.tooltip_text = "%s · %s" % [sim.display_name(a),"Down" if a.down else (a.job if a.human else "Zombie")]
-  if a.human: target.tooltip_text += " · " + sim.trust_description(a,sim.player())
+  var target_name = "Actor_%d" % a.id
+  var target = actors_layer.get_node_or_null(target_name)
+  if target == null:
+   var id: int = a.id
+   target = button(actors_layer,"",bounds,func(): selected_actor = id; refresh())
+   target.name = target_name
+   var clear = StyleBoxFlat.new()
+   clear.bg_color = Color.TRANSPARENT
+   clear.set_border_width_all(1)
+   target.add_theme_stylebox_override("normal",clear)
+   var hover = clear.duplicate()
+   hover.bg_color = Color(1,1,1,0.06)
+   hover.border_color = GOLD
+   target.add_theme_stylebox_override("hover",hover)
+  target.position = bounds.position
+  target.size = bounds.size
+  actors_layer.move_child(target,-1)
+  target.get_theme_stylebox("normal").border_color = GOLD if selected_actor == a.id else Color.TRANSPARENT
+  var tooltip = "%s · %s" % [sim.display_name(a),"Down" if a.down else (a.job if a.human else "Zombie")]
+  if a.human: tooltip += " · " + sim.trust_description(a,sim.player())
   var p = sim.player()
   var b = sim.current_block(p)
   var scent_health = a.human and not a.down and a.hp < sim.max_hp(a) and sim.has_skill(p,"scent_fear")
   var diagnosis = a.human and sim.has_skill(p,"diagnosis") and not (p.inside and sim.is_dark_building(b) and not sim.powered(b))
-  if scent_health or diagnosis: target.tooltip_text += " · %d/%d HP" % [a.hp,sim.max_hp(a)]
+  if scent_health or diagnosis: tooltip += " · %d/%d HP" % [a.hp,sim.max_hp(a)]
+  if target.tooltip_text != tooltip: target.tooltip_text = tooltip
+  for child in target.get_children():
+   target.remove_child(child)
+   child.queue_free()
   var sheet = C.occupation_sheet(a.job,a.human)
   var atlas = AtlasTexture.new()
   atlas.atlas = tex("sprite_sheets/"+sheet+"_sprite_sheet.png")
@@ -1008,7 +1036,7 @@ func generation_spin(parent: Node, key: String, text: String, at: Vector2, lower
 
 func _new_game_modal() -> void:
  if new_world_config.is_empty(): new_world_config = sim.World.defaults()
- label(overlay,"Choose a world, occupation and seed. A new game replaces the current session.",Rect2(140,157,1140,32),21)
+ label(overlay,"Choose a world, occupation, seed and population. A new game replaces the current session.",Rect2(140,157,1140,32),21)
  var mode = OptionButton.new()
  mode.name = "WorldMode"
  mode.position = Vector2(140,204)
@@ -1034,12 +1062,26 @@ func _new_game_modal() -> void:
  seed_input.value = new_seed
  seed_input.value_changed.connect(func(value): new_seed = int(value))
  overlay.add_child(seed_input)
+ if new_world_mode != "sandbox":
+  var choices = ["easy","medium","hard"]
+  if new_world_mode == "random": choices.append("custom")
+  if new_difficulty not in choices: new_difficulty = "medium"
+  var difficulty = OptionButton.new()
+  difficulty.name = "Difficulty"
+  difficulty.position = Vector2(140,258)
+  difficulty.size = Vector2(230,40)
+  for choice in choices: difficulty.add_item(choice.capitalize())
+  difficulty.select(choices.find(new_difficulty))
+  difficulty.item_selected.connect(func(index): new_difficulty = choices[index]; refresh())
+  overlay.add_child(difficulty)
+  var hint = "Set survivor and zombie counts below." if new_difficulty == "custom" else "Population difficulty · Most zombies start dormant and rise over successive nights."
+  label(overlay,hint,Rect2(390,258,910,40),19,MUTED)
  if new_world_mode == "random":
-  label(overlay,"Exact ordinary-building counts",Rect2(140,267,600,30),23,GOLD)
+  label(overlay,"Exact ordinary-building counts",Rect2(140,305,600,30),23,GOLD)
   var scroll = ScrollContainer.new()
   scroll.name = "GenerationCounts"
-  scroll.position = Vector2(140,310)
-  scroll.size = Vector2(620,442)
+  scroll.position = Vector2(140,345)
+  scroll.size = Vector2(620,407)
   overlay.add_child(scroll)
   var content = Control.new()
   content.custom_minimum_size = Vector2(590,20*48)
@@ -1050,10 +1092,11 @@ func _new_game_modal() -> void:
    generation_spin(content,kind,C.pretty(kind),Vector2(0,index*48),0,10000,true)
    index += 1
   var settings = [["width","Width",10,100],["height","Height",10,100],["malls","Malls (Malton plans)",0,100],["forts","3×3 forts",0,20],["zoos","5×4 zoos",0,20],["cathedrals","Cathedrals",0,100],["mansions","Mansions",0,100],["power_stations","Power stations",0,100],["stadiums","Stadiums",0,100],["survivors","Survivors",0,2000],["zombies","Zombies / bodies",0,4000]]
+  if new_difficulty != "custom": settings.resize(9)
   var setting_scroll = ScrollContainer.new()
   setting_scroll.name = "GenerationSettings"
-  setting_scroll.position = Vector2(800,300)
-  setting_scroll.size = Vector2(510,390)
+  setting_scroll.position = Vector2(800,345)
+  setting_scroll.size = Vector2(510,345)
   overlay.add_child(setting_scroll)
   var settings_content = Control.new()
   settings_content.custom_minimum_size = Vector2(470,settings.size()*54)
@@ -1066,13 +1109,17 @@ func _new_game_modal() -> void:
    refresh())
  else:
   var text = "All original named squares across 100 Malton suburbs.\nThe imported data preserves the original zoo, forts and mall footprints.\nMove across suburb boundaries without loading another map.\n\nZoo squares cannot be barricaded. Enter forts through the gatehouse. Perimeter map exits lead outside.\nConnected indoor mall squares do not require Free Running." if new_world_mode == "malton" else "The legacy 10×10 neighbourhood, retained for focused playtests and old saves."
-  var explanation = label(overlay,text,Rect2(140,300,1130,320),23,MUTED)
+  var explanation = label(overlay,text,Rect2(140,330,1130,320),23,MUTED)
   explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  var error_text = label(overlay,new_game_error,Rect2(140,754,1140,48),18,RED)
  error_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  button(overlay,"Start new game",Rect2(140,813,300,42),func():
   var config = new_world_config.duplicate(true)
   config.mode = new_world_mode
+  config.difficulty = new_difficulty
+  if new_difficulty != "custom" or new_world_mode != "random":
+   config.erase("survivors")
+   config.erase("zombies")
   var why = sim.start(new_seed,new_occupation,config)
   if not why.is_empty(): new_game_error = why; refresh(); return
   feed.reset(sim.messages)

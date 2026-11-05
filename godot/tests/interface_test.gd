@@ -42,8 +42,14 @@ func run() -> void:
  scene.set_process(false)
  var p = scene.sim.player()
  var start_time = scene.sim.minute
+ var hovered = scene.page.get_node("SceneActors/Actor_1")
+ var motion = InputEventMouseMotion.new()
+ motion.position = hovered.get_global_rect().get_center()
+ root.push_input(motion,true)
+ await process_frame
  for i in range(20): scene._process(0.1)
  check(scene.sim.minute == start_time+2,"Real-time clock advances while choosing actions")
+ check(scene.page.get_node("SceneActors/Actor_1") == hovered and hovered.is_hovered(),"Clock refreshes preserve the hovered NPC control and tooltip target")
  var mouse = InputEventMouseButton.new()
  mouse.button_index = MOUSE_BUTTON_LEFT
  mouse.pressed = true

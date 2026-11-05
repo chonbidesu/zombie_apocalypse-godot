@@ -228,6 +228,14 @@ func _initialize() -> void:
  feed.ingest(s.messages)
  check(feed.rows.back().urgent,"Damage alert never waits for chat playback")
  check(not "Scott" in feed.format_rows(feed.rows,"You") and "You search" in feed.format_rows(feed.rows,"You"),"Player filter excludes NPC messages")
+ var styled = feed.format_rows([
+  {"category":"ALLY","minute":480,"action":"speech","text":"Scott: Hold [i] here."},
+  {"category":"WORLD","minute":480,"action":"","text":"Notice: Stay alert."},
+  {"category":"ENEMY","minute":480,"action":"attack","text":"A zombie misses."},
+  {"category":"ENEMY","minute":480,"action":"bite","text":"A zombie bites.","attack_hit":true},
+ ]).split("\n")
+ check(styled[0].contains("[i]“Hold [lb]i] here.”[/i]") and not styled[1].contains("[i]"),"Dialogue is quoted and italicized while notices and user brackets remain literal")
+ check(styled[2].begins_with("[color=ed9a87]") and styled[3].begins_with("[color=d77e74]"),"Enemy attacks retain the miss color and darken successful hits")
  for i in range(60): s.log_event("Routine work %d" % i,"ALLY",2,"repair")
  feed.ingest(s.messages)
  check(feed.pending.size() < feed.MAX_PENDING,"Routine presentation backlog bounded")

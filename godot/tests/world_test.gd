@@ -120,11 +120,23 @@ func _initialize() -> void:
  check(s.start(765,"Doctor",config).is_empty() and s.width == 30 and s.height == 20 and s.actors.size() == 28,"Random city starts with requested dimensions and population")
  var full = W.defaults()
  var started = Time.get_ticks_msec()
- check(s.start(4815,"Private",full).is_empty() and s.actors.size() == 901,"Default generated city supports the configured population")
+ check(s.start(4815,"Private",full).is_empty() and s.actors.size() == full.survivors+full.zombies+1,"Default generated city supports the configured population")
+ var medic = s.actors[2]
+ var builder = s.actors[1]
+ var shelter = s.current_block(medic)
+ s.set_barricade_strength(shelter,8)
+ check(medic.job == "Medic" and not s.has_skill(medic,"construction") and not s._try(medic,"barricade") and medic.ap == 50,"Starting medic cannot spend AP to barricade past Strongly")
+ check(s.has_skill(builder,"construction") and s.reason(builder,"barricade").is_empty(),"The medic's crew has a trained builder who can reinforce further")
  var build_ms = Time.get_ticks_msec()-started
  started = Time.get_ticks_msec()
  s.elapse(3.0)
  print("CITY TIMING: build ",build_ms," ms; three simulated minutes ",Time.get_ticks_msec()-started," ms")
  check(s.actors.all(func(a): return a.x >= 0 and a.x < s.width and a.y >= 0 and a.y < s.height and a.ap >= 0 and a.ap <= 50),"City NPC activity preserves bounds and AP invariants")
+ for difficulty in ["easy","medium","hard"]:
+  var small = {"mode":"random","width":10,"height":10,"counts":{"hospital":1},"malls":0,"forts":0,"zoos":0,"difficulty":difficulty}
+  var expected = W.population_defaults(10,10,difficulty)
+  check(s.start(42,"Private",small).is_empty() and s.actors.size() == expected.x+expected.y+1,"Population preset scales with generated map area: "+difficulty)
+  var dormant = s.actors.filter(func(a): return a.dormant and a.down and not a.human).size()
+  check(dormant > expected.y/2 and s.population().zombies > 0,"Most starting zombies are dormant corpses: "+difficulty)
  print("WORLD CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
