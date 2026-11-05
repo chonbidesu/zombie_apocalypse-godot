@@ -27,6 +27,9 @@ var minute: int = 480
 var clock_step: int = 4800
 var clock_fraction: float = 0.0
 var resting: bool = false
+var sleeping: bool = false
+var sleep_damage_hits: int = 0
+var sleep_last_damage_at: float = -1000.0
 var rest_target: int = 0
 var rest_end_step: int = 0
 var last_rest_notice: String = ""
@@ -61,6 +64,7 @@ func start(seed_value: int = 4815, occupation: String = "Volunteer", config: Dic
  clock_step = 4800
  clock_fraction = 0.0
  resting = false
+ sleeping = false
  last_rest_notice = ""
  event_sequence = 0
  next_item_id = 1
@@ -308,10 +312,22 @@ func doors_closed(b: Dictionary) -> bool:
  return has_doors(b) and b.doors
 
 func powered(b: Dictionary) -> bool:
- return b.ruin == 0 and b.generator and b.fuel_until > minute
+ return can_host_generator(b) and b.generator and b.generator_hp > 0 and b.fuel_until > minute
+
+func can_host_generator(b: Dictionary) -> bool:
+ return is_building(b) and b.type not in ["junkyard","stadium","power_station"]
+
+func can_be_ransacked(b: Dictionary) -> bool:
+ return is_building(b) and b.type not in ["junkyard","aquarium","bear_pit","elephant_house","giraffe_house","lion_enclosure","reptile_house"]
+
+func repair_cost(b: Dictionary) -> int:
+ return 1+maxi(0,(minute-int(b.get("ruined_at",minute)))/1440) if b.ruin >= 3 else 1
+
+func is_dark_building(b: Dictionary) -> bool:
+ return b.type in C.DARK_BUILDINGS
 
 func has_skill(a: Dictionary, skill: String) -> bool:
- if skill in ["body_building","diagnosis","necro_employment","ankle_grab","scent_death"]: return skill in a.human_skills or skill in a.zombie_skills
+ if skill in ["body_building","diagnosis","necro_employment","ankle_grab","death_lurch","scent_death","scent_fear"]: return skill in a.human_skills or skill in a.zombie_skills
  return skill in (a.human_skills if a.human else a.zombie_skills)
 
 func reindex() -> void:
@@ -355,20 +371,21 @@ func consume(a: Dictionary, item: Dictionary) -> void:
  if a.equipped == item.uid: a.equipped = -1
  a.inventory.erase(item)
 
-func cost(a: Dictionary, command: String) -> int:
+func cost(a: Dictionary, command: String, target_id: int = -1) -> int:
+ if command == "repair": return repair_cost(current_block(a))
  if command == "dump" and within_fort(a,current_block(a)): return 5
  if command == "barricade" and barricade_strength(current_block(a)) == 21: return 0
  var base = 1
  match command:
-  "move": base = 2 if not a.human and not has_skill(a,"lurching_gait") else 1
+  "move": base = 2 if not a.human and not (has_skill(a,"lurching_gait") or has_skill(a,"death_lurch")) else 1
   "enter","leave": base = 2 if not a.human and doors_closed(current_block(a)) else 1
-  "revive": base = 10
+  "revive": return 10 if target_id >= 0 and target_id < actors.size() and has_skill(actors[target_id],"brain_rot") else 1
   "manufacture": base = 20
   "scout": base = 30
   "bellow": base = 10 if occupants(current_block(a),a.inside).filter(func(t): return t.human and not t.down).size() >= 25 else 1
-  "stand": base = (1 if has_skill(a,"ankle_grab") else 10)+int(a.get("headshot",0))
+  "stand": base = (1 if has_skill(a,"ankle_grab") else (5 if has_skill(a,"death_lurch") else 10))+int(a.get("headshot",0))
   "equip","drop": base = 0
- if a.human and a.inside and a.get("scout_site",-1) == current_block(a).id and current_block(a).ruin == 0 and command not in ["scout","stand","move"]:
+ if a.human and a.inside and a.get("scout_site",-1) == current_block(a).id and current_block(a).ruin < 3 and command not in ["scout","stand","move"]:
   var used = int(a.scout_used) if int(a.scout_day) == minute/1440 else 0
   if used < 5: return maxi(0,base-1)
  return base
@@ -380,11 +397,14 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
   if a.get("dormant",false): return "This body has not begun to stir."
   if not a.down: return "Already standing."
   if not context_only and minute < a.ready_at: return "You can stand in %d minutes." % (a.ready_at-minute)
- if not context_only and a.ap < cost(a, command): return "Not enough AP. Rest to recover."
+ if not context_only:
+  var required_ap = cost(a,command,target_id)
+  if required_ap > 0 and a.ap < 1: return "Exhausted, you can go no further. Rest until AP is positive."
+  if a.id != 0 and a.ap < required_ap and not bool(data.get("allow_ap_debt",false)): return "Not enough AP. Rest to recover."
  var b = current_block(a)
  if command in Extended.COMMANDS: return Extended.command_reason(self,a,command,target_id,data)
- if command == "bite" and a.human: return "Only zombies can bite. Humans use carried weapons or fists."
- var human_only = ["search", "heal", "revive", "reload", "barricade", "repair", "generator", "fuel", "scan", "manufacture", "request", "give", "jump", "close", "dump", "repair_generator"]
+ if command == "bite" and (a.human or not has_skill(a,"neck_lurch")): return "Neck Lurch is required."
+ var human_only = ["search", "heal", "revive", "reload", "barricade", "repair", "generator", "fuel", "scan", "manufacture", "request", "give", "jump", "dump", "repair_generator"]
  if not a.human and command in human_only: return "The undead cannot use items or human abilities. You can drop carried items."
  match command:
   "move":
@@ -403,7 +423,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if not a.inside: return "Already outside."
    if b.barricade > 4: return "The main doors are heavily barricaded. Click an adjacent map square to leave at ground level."
    if not a.human and doors_closed(b) and not has_skill(a, "memories"): return "Memories of Life is needed to open doors."
-  "barricade", "repair", "generator", "fuel", "close", "ransack", "scan", "manufacture", "jump", "repair_generator", "destroy_generator":
+  "barricade", "repair", "generator", "fuel", "close", "ransack", "ruin", "scan", "manufacture", "jump", "repair_generator", "destroy_generator":
    if not a.inside or not is_building(b): return "You must be inside a building."
  if command == "dump":
   if not within_fort(a,b) and (not a.inside or not is_building(b)): return "You must be inside a building or within a fort."
@@ -452,15 +472,17 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
   "barricade":
    if not can_barricade(b): return "This open ground has no entrance to barricade."
    if barricade_strength(b) == 21: return "The barricade cannot be built any higher."
-   if not has_skill(a,"construction") and (b.barricade > 0 or item_kind(a,"length_of_pipe").is_empty()): return "Construction or a length of pipe for a loose barricade is required."
+   if not has_skill(a,"construction") and barricade_strength(b) >= C.STRONGLY_BARRICADED_STRENGTH: return "Construction is required to build past Strongly Barricaded."
    if b.ruin > 0: return "Repair the building first."
   "break":
    if not is_building(b) or b.barricade == 0: return "There are no barricades here."
    if barricade_attack_stats(a,data).hit == 0: return "That attack is ineffective against barricades. Use fists, claws or a suitable melee weapon."
   "repair":
    if b.ruin == 0: return "The building needs no repairs."
-   if item_kind(a,"toolbox").is_empty(): return "You need a toolbox to repair the building."
-   if not has_skill(a,"construction"): return "Construction is required to repair buildings."
+   if b.ruin >= 3:
+    if item_kind(a,"toolbox").is_empty(): return "You need a toolbox to repair the building."
+    if not has_skill(a,"construction"): return "Construction is required to repair buildings."
+    if is_dark_building(b) and not powered(b): return "It is too dark to repair the ruin. Install a generator and fuel it to turn on the lights."
    if occupants(b,true).any(func(t): return not t.human and not t.down): return "Remove standing zombies before repairing the building."
   "repair_generator":
    if not b.generator or b.generator_hp >= C.GENERATOR_HP: return "The generator needs no repairs."
@@ -469,23 +491,26 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
   "destroy_generator":
    if a.human: return "Only zombies attack generators."
    if not b.generator: return "There is no generator here."
-  "ransack":
-   if b.type == "junkyard": return "An open junkyard cannot be ransacked."
+  "ransack", "ruin":
+   if not can_be_ransacked(b): return "This location cannot be ransacked or ruined."
    if not has_skill(a,"ransack"): return "Ransack is required."
    if b.generator: return "Destroy the generator before ransacking the building."
    if a.human: return "Only zombies ransack buildings."
    if b.ruin >= 3: return "The building is already ruined."
+   if command == "ruin" and int(b.get("ransack_hits",0)) < 5: return "Ransack five consecutive times before ruining the building."
+   if command == "ransack" and int(b.get("ransack_hits",0)) >= 5: return "The rooms are ransacked. Choose Ruin building."
    for other in occupants(b, true):
     if other.human and not other.down: return "Survivors are still defending this building."
   "close":
+   if not a.human and not has_skill(a,"memories"): return "Memories of Life is required to secure doors."
    if not has_doors(b): return "There are no doors here, only a hole in the fence." if b.type == "junkyard" else "There are no closable doors here."
    if doors_closed(b): return "The doors are already closed."
   "generator":
-   if b.ruin > 0: return "Repair the building before installing a generator."
+   if not can_host_generator(b): return "Generators cannot be installed at this location."
    if b.generator: return "A generator is already installed."
    if item_kind(a, "portable_generator").is_empty(): return "You need a portable generator."
   "fuel":
-   if b.ruin > 0: return "Repair the building before refueling."
+   if not can_host_generator(b): return "This location cannot be powered by a portable generator."
    if not b.generator: return "Install a generator first."
    if b.generator_hp < C.GENERATOR_HP: return "Repair the damaged generator before refueling."
    if item_kind(a, "fuel_can").is_empty(): return "You need a fuel can."
@@ -498,7 +523,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if encumbrance(a) >= C.ENCUMBRANCE_LIMIT: return "You are at %d%% encumbrance. Drop or use something before collecting more." % encumbrance(a)
   "jump":
    if b.type != "tower": return "You must be inside a tower."
- if command not in ["move", "enter", "leave", "attack", "bite", "heal", "revive", "stand", "search", "equip", "drop", "reload", "barricade", "break", "repair", "ransack", "close", "generator", "fuel", "scan", "manufacture", "request", "give", "jump", "wait", "dump", "repair_generator", "destroy_generator"]: return "Unknown action."
+ if command not in ["move", "enter", "leave", "attack", "bite", "heal", "revive", "stand", "search", "equip", "drop", "reload", "barricade", "break", "repair", "ransack", "ruin", "close", "generator", "fuel", "scan", "manufacture", "request", "give", "jump", "wait", "dump", "repair_generator", "destroy_generator"]: return "Unknown action."
  return ""
 
 func act(command: String, target_id: int = -1, data: Dictionary = {}) -> Dictionary:
@@ -512,11 +537,11 @@ func act(command: String, target_id: int = -1, data: Dictionary = {}) -> Diction
 
 func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> void:
  # Internal callers must validate first. Effects happen before any time passes.
- var ap_spent = cost(a,command)
+ var ap_spent = cost(a,command,target_id)
  if int(a.scout_day) != minute/1440:
   a.scout_day = minute/1440
   a.scout_used = 0
- if a.human and a.inside and a.scout_site == current_block(a).id and current_block(a).ruin == 0 and a.scout_used < 5 and command not in ["scout","stand","move","equip","drop"]: a.scout_used += 1
+ if a.human and a.inside and a.scout_site == current_block(a).id and current_block(a).ruin < 3 and a.scout_used < 5 and command not in ["scout","stand","move","equip","drop","repair"] and not (command == "dump" and within_fort(a,current_block(a))): a.scout_used += 1
  a.ap -= ap_spent
  a.busy_until = now()+recovery(command)
  a.last_action = command
@@ -525,16 +550,32 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  var friendly = a.human == player().human
  var critical = false
  var initial_target_hp = actors[target_id].hp if target_id >= 0 else -1
+ var initial_barricade_strength = barricade_strength(b)
  var name = "You" if a.id == 0 else display_name(a)
  var text = ""
  match command:
   "move":
    clear_grasp(a)
    var destination = block_at(a.x+data.dx, a.y+data.dy)
+   var ruined_free_run = destination.ruin >= 3 and not shared_building_interior(b,destination) and bool(data.get("free_run",true)) and free_run_route(a,b,destination)
+   if a.human:
+    for watcher in occupants(b,a.inside):
+     if watcher.human or watcher.down or not has_skill(watcher,"scent_trail"): continue
+     watcher.trail_from = a.id
+     watcher.trail_origin = b.id
+     watcher.trail_destination = destination.id
+     watcher.trail_until = minute+60
    a.inside = move_ends_inside(a,b,destination,data)
    a.x += data.dx
    a.y += data.dy
    text = "%s move to %s." % [name, destination.name]
+   if ruined_free_run:
+    text += " You find your route blocked by a collapsed wall, and are forced to street level." if a.id == 0 else " A collapsed wall forces them to street level."
+    if roll_free_run_fall():
+     a.hp = maxi(1,a.hp-5)
+     set_pose(a,"hurt")
+     critical = true
+     text += " You lose your footing on the ruined building, and fall to the street below, injuring yourself." if a.id == 0 else " They lose their footing and fall to the street, injuring themselves."
    if not b.fort.is_empty() and b.fort == destination.fort and destination.type == "armoury" and origin.inside and a.human and has_skill(a,"free_running"):
     text += " The defensive design of the armoury prevents Free Running into it. Use the entrance."
    if b.type == "gatehouse" and not b.fort.is_empty() and b.fort != destination.fort and b.barricade > 4 and origin.inside:
@@ -559,7 +600,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    consume(a, item)
   "attack","bite":
    var t = actors[target_id]
-   if a.grasp_target != target_id: clear_grasp(a)
+   if a.grasp_target >= 0 and a.grasp_target != target_id: clear_grasp(a)
    var weapon = item_by_uid(a,a.equipped) if command == "attack" and not data.get("unarmed",false) else {}
    if not a.human and not weapon.is_empty() and weapon.kind not in C.ZOMBIE_MELEE_ITEMS: weapon = {}
    var stats = attack_stats(a,t,command,weapon)
@@ -602,9 +643,6 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     if a.grasp_target == target_id and rng.randf() < 0.5:
      clear_grasp(a)
      text += " The grasp slips free."
-   if a.human and not t.human and has_skill(t,"scent_trail"):
-    t.trail_from = a.id
-    t.trail_until = minute+60
   "heal":
    var t = actors[target_id]
    var healing = (10 if has_skill(a,"first_aid") else 5)+(5 if has_skill(a,"surgery") and a.inside and b.type in ["hospital","infirmary"] and powered(b) else 0)
@@ -649,11 +687,9 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    consume(a,item_kind(a,def.ammo_kind))
    text = "%s load a single shell into the shotgun." % name if weapon.kind == "shotgun" else "%s reload the pistol with a magazine." % name
   "barricade":
-   var improvised = not has_skill(a,"construction")
    var interference = barricade_interference(b)
    if rng.randf() < barricade_build_chance(b):
     gain_local_trust(a,b,3)
-    if improvised: consume(a,item_kind(a,"length_of_pipe"))
     if has_doors(b): b.doors = true
     set_barricade_strength(b,barricade_strength(b)+1)
     if barricade_strength(b) == 10:
@@ -721,17 +757,27 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
      text = "%s smash the generator beyond repair. The lights go out." % name
    else: text = "%s claw at the generator's metal casing without damaging it." % name
   "repair":
-   b.ruin = maxi(0, b.ruin-1)
-   a.xp += 1
+   var structural = b.ruin >= 3
+   b.ruin = 0
+   b.ransack_hits = 0
+   b.ruined_at = -1
+   if structural: a.xp += 1
    gain_local_trust(a,b,4)
-   text = "%s repair the building: damage %d/3." % [name, b.ruin]
+   text = "%s repair the ruined building for %d AP." % [name,ap_spent] if structural else "%s repair the room." % name
   "ransack":
-   b.ruin += 1
-   if b.ruin >= 3:
-    for occupant in actors:
-     if occupant.scout_site == b.id: occupant.scout_site = -1
-   a.xp += 1
-   text = "%s ransack the building: damage %d/3." % [name, b.ruin]
+   var first = b.ruin == 0
+   b.ruin = 1
+   b.ransack_hits = int(b.get("ransack_hits",0))+1
+   if first: a.xp += 1
+   text = "%s ransack the building." % name if first else ("You ransack further rooms of the building." if a.id == 0 else "%s ransack further rooms of the building." % name)
+  "ruin":
+   b.ruin = 3
+   b.ruined_at = minute
+   for occupant in actors:
+    if occupant.scout_site == b.id:
+     occupant.scout_site = -1
+     occupant.scout_used = 0
+   text = "You ransack further rooms of the building. The building is now ruined." if a.id == 0 else "%s ruin the building." % name
   "close":
    b.doors = true
    text = "%s close the doors." % name
@@ -774,10 +820,11 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    text = "%s fall from the tower. Your story continues among the dead." % name
   "wait": text = "%s wait and watch." % name
   _: text = Extended.perform(self,a,command,target_id,data)
- if a.human and a.infected and command != "say":
-  a.hp = maxi(0,a.hp-1)
+ if a.ap <= 0 and a.id == 0: text += " Exhausted, you can go no further."
+ if a.human and not a.down and a.infected and ap_spent > 0:
+  a.hp = maxi(0,a.hp-ap_spent)
   if a.hp == 0: die(a)
-  if a.id == 0: text += " Infection costs one HP."
+  if a.id == 0: text += " Infection costs %d HP." % ap_spent
  reindex()
  var p = player()
  var event_action = command
@@ -791,7 +838,15 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   var category = "PLAYER" if a.id == 0 else ("ALLY" if friendly else "ENEMY")
   if target_id == 0 or (critical and not friendly): category = "ALERT"
   if not text.is_empty(): log_event(text, category, a.id, event_action, critical or target_id == 0)
- if resting and ((target_id == 0 and (initial_target_hp > p.hp or command == "revive")) or (critical and audible) or threats()):
+ if sleeping:
+  var loud_break = audible and command == "break" and initial_barricade_strength > 0 and barricade_strength(b) == 0
+  var injured = target_id == 0 and initial_target_hp > p.hp
+  if injured:
+   sleep_damage_hits = sleep_damage_hits+1 if now()-sleep_last_damage_at <= 10.0 else 1
+   sleep_last_damage_at = now()
+  if p.down or loud_break or sleep_damage_hits >= 2:
+   stop_rest("Sleep interrupted. " + ("The barricades crash down, waking you." if loud_break else "Sustained injuries wake you."))
+ elif resting and ((target_id == 0 and (initial_target_hp > p.hp or command == "revive")) or (critical and audible) or threats()):
   stop_rest("Rest interrupted. Danger or a change in your condition brings you back to normal speed.")
 
 func die(a: Dictionary, penalty: int = 0) -> void:
@@ -867,12 +922,12 @@ func item_search_chance(b: Dictionary, kind: String, a: Dictionary = {}, store: 
 
 func search_chance(b: Dictionary, a: Dictionary = {}, _store: String = "") -> float:
  if search_is_outside(b,a): return C.SEARCH_OUTSIDE_CHANCE
- # Ruin overrides lighting, darkness and mall bonuses rather than multiplying them.
+ # Total darkness includes ruins. Lighting permits repair without erasing ruin.
+ if is_dark_building(b) and not powered(b): return C.SEARCH_DARK_CHANCE
  if b.ruin > 0: return C.SEARCH_RUIN_CHANCE
  var chance = C.SEARCH_UNLIT_CHANCE
  if powered(b):
   chance = 0.26 if b.type == "mall" else (0.28 if b.type == "necrotech_lab" else C.SEARCH_LIT_CHANCE)
- elif b.type in C.DARK_SEARCH_BUILDINGS: chance *= C.DARK_SEARCH_MULTIPLIER
  if b.type == "mall" and not a.is_empty() and has_skill(a,"bargain_hunting"): chance *= 2.0
  return minf(chance,1.0)
 
@@ -923,10 +978,15 @@ func elapse(real_seconds: float) -> void:
  while remaining > 0.000001:
   var slice = minf(remaining,0.05)
   remaining -= slice
-  clock_fraction += slice*C.GAME_MINUTES_PER_SECOND*C.CLOCK_STEPS_PER_MINUTE*time_speed()
+  var slice_speed = time_speed()
+  clock_fraction += slice*C.GAME_MINUTES_PER_SECOND*C.CLOCK_STEPS_PER_MINUTE*slice_speed
   while clock_fraction >= 1.0-0.000001:
    clock_fraction = maxf(0.0,clock_fraction-1.0)
    _clock_step()
+   if time_speed() < slice_speed:
+    # A wake-up must not spend the accelerated time already budgeted to this slice.
+    clock_fraction = 0.0
+    break
 
 func advance(minutes: int) -> void:
  # Headless tests only. Interactive play always uses elapse(delta).
@@ -949,7 +1009,7 @@ func _clock_step() -> void:
   a.next_think = maxf(now(),a.busy_until)+delay
  npc_cursor = (npc_cursor+1)%maxi(1,actors.size()-1)
  if resting and ((player().ap >= rest_target and (not player().down or minute >= player().ready_at)) or clock_step >= rest_end_step):
-  stop_rest("Rest complete. %d AP available." % player().ap)
+  stop_rest(("You awaken rested. " if sleeping else "Rest complete. ")+"%d AP available." % player().ap)
 
 func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> bool:
  if command == "break" and not a.human: data = {"unarmed":true}
@@ -1041,10 +1101,14 @@ func _npc_turn(a: Dictionary) -> void:
   if has_skill(a,"digestion") and a.hp <= max_hp(a)-4:
    for body in present:
     if _try(a,"feed",body.id): return
-  var target = _visible_human(a)
+  var target = _visible_human(a) if has_skill(a,"scent_trail") else {}
+  var trail = scent_trail_destination(a)
   if not target.is_empty():
    a.memory = target.y*width+target.x
    a.memory_until = minute+60
+  elif not trail.is_empty() and trail.id != b.id:
+   a.memory = trail.id
+   a.memory_until = a.trail_until
   if target.is_empty() and (a.memory < 0 or minute > a.memory_until) and not a.inside:
    var light = nearby_light(a)
    if not light.is_empty():
@@ -1064,16 +1128,29 @@ func _npc_turn(a: Dictionary) -> void:
     a.memory = -1
   if a.inside:
    if _try(a,"destroy_generator"): return
-   if _try(a, "ransack"): return
+   if _try(a, "ruin" if b.get("ransack_hits",0) >= 5 else "ransack"): return
   if not a.inside and powered(b):
    if _try(a, "break"): return
    if _try(a, "enter"): return
   _wander(a)
 
+func scent_trail_destination(a: Dictionary) -> Dictionary:
+ if a.human or not has_skill(a,"scent_trail") or a.trail_until < minute: return {}
+ if a.trail_from < 0 or a.trail_from >= actors.size() or not actors[a.trail_from].human or actors[a.trail_from].down: return {}
+ if a.trail_destination < 0 or a.trail_destination >= blocks.size(): return {}
+ return blocks[a.trail_destination]
+
+func scent_trail_direction(a: Dictionary) -> String:
+ var destination = scent_trail_destination(a)
+ if destination.is_empty() or a.trail_origin < 0 or a.trail_origin >= blocks.size(): return ""
+ var origin = blocks[a.trail_origin]
+ var dx = destination.x-origin.x
+ var dy = destination.y-origin.y
+ var vertical = "north" if dy < 0 else ("south" if dy > 0 else "")
+ var horizontal = "west" if dx < 0 else ("east" if dx > 0 else "")
+ return vertical+horizontal
+
 func _visible_human(a: Dictionary) -> Dictionary:
- if has_skill(a,"scent_trail") and a.trail_from >= 0 and a.trail_until >= minute:
-  var tracked = actors[a.trail_from]
-  if tracked.human and not tracked.down and maxi(absi(tracked.x-a.x),absi(tracked.y-a.y)) <= 10: return tracked
  for dy in range(-1, 2):
   for dx in range(-1, 2):
    if a.x+dx not in range(width) or a.y+dy not in range(height): continue
@@ -1123,7 +1200,7 @@ func learn(skill: String, actor_id: int = 0) -> String:
 
 func _learn_npc(a: Dictionary) -> void:
  if a.xp < 75: return
- var priorities: Array = ["construction","first_aid","firearms","hand_to_hand","free_running"] if a.human else ["vigour_mortis","lurching_gait","ankle_grab","memories","death_grip","rend_flesh","neck_lurch","feeding_groan","tangling_grasp","digestion","infectious_bite","scent_fear","scent_blood"]
+ var priorities: Array = ["construction","first_aid","firearms","hand_to_hand","free_running"] if a.human else ["vigour_mortis","lurching_gait","ankle_grab","memories","death_grip","rend_flesh","neck_lurch","feeding_groan","tangling_grasp","digestion","infectious_bite","scent_fear","scent_trail","scent_blood","death_lurch"]
  if a.human and a.job in ["Scientist","NecroTech Lab Assistant"]: priorities = ["lab_experience","necronet","construction","first_aid","free_running","firearms"]
  elif a.human and a.job in ["Doctor","Medic"]: priorities = ["first_aid","construction","surgery","firearms","hand_to_hand","free_running"]
  for skill in C.SKILLS:
@@ -1145,15 +1222,31 @@ func begin_rest(amount: int) -> String:
  if player().busy_until > now(): return "Finish recovering before resting."
  if player().ap >= 50 and not player().down: return "Already at full AP. The world continues while you wait."
  resting = true
+ sleeping = false
  rest_target = mini(50,player().ap+amount)
- rest_end_step = clock_step+1800*C.CLOCK_STEPS_PER_MINUTE
+ rest_end_step = clock_step+maxi(1800,maxi(0,rest_target-player().ap)*30+30)*C.CLOCK_STEPS_PER_MINUTE
  last_rest_notice = "Resting at 16× speed. Danger cancels fast-forward."
+ log_event(last_rest_notice)
+ return ""
+
+func begin_sleep() -> String:
+ if player().down: return "Stand up before sleeping."
+ if player().busy_until > now(): return "Finish recovering before sleeping."
+ if player().ap >= C.AP_CAP: return "Already at full AP."
+ resting = true
+ sleeping = true
+ sleep_damage_hits = 0
+ sleep_last_damage_at = -1000.0
+ rest_target = C.AP_CAP
+ rest_end_step = clock_step+(maxi(0,rest_target-player().ap)*30+30)*C.CLOCK_STEPS_PER_MINUTE
+ last_rest_notice = "You fall asleep at 128× speed. A collapsing barricade or sustained damage can wake you."
  log_event(last_rest_notice)
  return ""
 
 func stop_rest(message: String = "Rest cancelled.") -> void:
  if not resting: return
  resting = false
+ sleeping = false
  last_rest_notice = message
  log_event(message,"ALERT" if "interrupted" in message else "WORLD",-1,"rest",true)
 
@@ -1198,7 +1291,7 @@ func load_from(path: String) -> String:
   if not a is Dictionary: return "Invalid character record."
   for key in ["id", "x", "y", "hp", "ap", "xp", "human", "inside", "down", "inventory", "human_skills", "zombie_skills", "first", "last", "adjective", "job", "equipped", "memory", "memory_until", "ready_at", "busy_until"]:
    if not a.has(key): return "Incomplete character record."
-  if a.x < 0 or a.x >= loaded_width or a.y < 0 or a.y >= loaded_height or a.ap < 0 or a.ap > 50: return "Invalid character bounds."
+  if a.x < 0 or a.x >= loaded_width or a.y < 0 or a.y >= loaded_height or a.ap > 50: return "Invalid character bounds."
   if a.id != parsed.actors.find(a): return "Invalid character identity."
   for item in a.inventory:
    if not item is Dictionary or not C.ITEMS.has(item.get("kind", "")) or not item.has("uid") or not item.has("ammo") or not item.has("durability"): return "Invalid inventory."
@@ -1251,6 +1344,7 @@ func load_from(path: String) -> String:
    if item.has("wear"): item.wear = int(item.wear)
  for b in blocks:
   for key in ["id", "x", "y", "barricade", "ruin", "fuel_until"]: b[key] = int(b[key])
+  if not b.has("ruined_at") and b.ruin >= 3: b.ruined_at = int(parsed.minute)
   initialize_block(b)
   if not has_doors(b): b.doors = false
   b.description_version = int(b.get("description_version",0))
@@ -1262,6 +1356,7 @@ func load_from(path: String) -> String:
  clock_fraction = float(parsed.get("clock_fraction",0.0))
  event_sequence = int(parsed.get("event_sequence",0))
  resting = false
+ sleeping = false
  last_rest_notice = ""
  world_seed = int(parsed.seed)
  for b in blocks: ensure_descriptions(b)
@@ -1286,6 +1381,10 @@ func barricade_strength(b: Dictionary) -> int:
  var level = clampi(int(b.barricade),0,7)
  if level == 0: return 0
  return clampi(C.BARRICADE_MAX_STRENGTH[level]-int(b.get("barricade_damage",0)),C.BARRICADE_MAX_STRENGTH[level-1]+1,C.BARRICADE_MAX_STRENGTH[level])
+
+func barricade_description(b: Dictionary) -> String:
+ if barricade_strength(b) == C.STRONGLY_BARRICADED_STRENGTH: return "strongly barricaded"
+ return C.barricade_description(b.barricade)
 
 func set_barricade_strength(b: Dictionary, strength: int) -> void:
  strength = clampi(strength,0,21)
@@ -1316,11 +1415,7 @@ func barricade_attack_stats(a: Dictionary, data: Dictionary = {}) -> Dictionary:
   var def = C.ITEMS[weapon.kind]
   if not def.has("damage") or def.has("capacity") or def.get("ranged",false) or weapon.kind == "knife": return ineffective
   if not a.human and weapon.kind not in C.ZOMBIE_MELEE_ITEMS: return ineffective
- # An empty target prevents Tangling Grasp from boosting structural attacks.
- var stats = attack_stats(a,{"id":-1,"grasped_by":-1},"attack",weapon)
- if a.human and weapon.is_empty():
-  stats.hit = 10+(15 if has_skill(a,"hand_to_hand") else 0)
-  if current_block(a).type in ["bank","cinema","nightclub","armoury"] and a.inside and not powered(current_block(a)): stats.hit = int(floor(stats.hit*0.5))
+ var stats = attack_stats(a,{},"attack",weapon)
  return {"hit":stats.hit,"structural":1.0 if not weapon.is_empty() and weapon.kind == "crowbar" else C.BARRICADE_STRUCTURE_CHANCE,"weapon":weapon}
 
 func melee_break_chance(item: Dictionary) -> float:
@@ -1338,7 +1433,7 @@ func action_feedback(a: Dictionary, command: String, target: int = -1, data: Dic
 
 func skill_cost(a: Dictionary, skill: String) -> int:
  var category = C.skill_category(skill)
- if category in ["zombie", "civilian", "hunter"]: return 100
+ if C.SKILLS[skill].side == "zombie" or category in ["civilian", "hunter"]: return 100
  var occupation = C.occupation_category(a.job)
  if occupation == category: return 75
  if occupation in ["military", "science"]: return 150
@@ -1346,38 +1441,81 @@ func skill_cost(a: Dictionary, skill: String) -> int:
 
 func ensure_descriptions(b: Dictionary) -> void:
  # Separate RNG keeps flavour text from changing combat/AI randomness.
+ if int(b.get("description_version",0)) == 6 and b.get("description_type","") == b.type and b.has("inside_description_parts") and b.has("outside_description_parts") and b.has("inside_description") and b.has("outside_description"): return
  var local_rng = RandomNumberGenerator.new()
- local_rng.seed = world_seed*1000+int(b.id)
- var pool: Dictionary = description_pools.get(b.type, {})
  for side in ["inside", "outside"]:
+  local_rng.seed = world_seed*1000+int(b.id)+(10000019 if side == "outside" else 0)
+  var kind = "office" if b.type == "necrotech_lab" and side == "outside" else b.type
+  var pool: Dictionary = description_pools.get(kind,{})
   var key = side+"_description"
-  if b.has(key) and int(b.get("description_version",0)) == 3: continue
   var phrases: Array[String] = []
   for position in ["first", "second", "third"]:
    var choices: Array = pool.get(side, {}).get(position, [])
    if not choices.is_empty(): phrases.append(choices[local_rng.randi_range(0,choices.size()-1)])
   b[key] = " ".join(phrases) if not phrases.is_empty() else "This place shows signs of decay and neglect."
- b.description_version = 3
+  b[side+"_description_parts"] = phrases
+ if b.type == "necrotech_lab":
+  var choices: Array = description_pools.necrotech_lab.outside.recognized_third
+  b.necrotech_recognition = choices[local_rng.randi_range(0,choices.size()-1)]
+ b.description_version = 6
+ b.description_type = b.type
+
+func environmental_description(b: Dictionary, observer: Dictionary) -> String:
+ ensure_descriptions(b)
+ if b.type == "necrotech_lab" and observer.inside and powered(b):
+  var parts: Array = b.inside_description_parts.duplicate()
+  parts[2] = description_pools.necrotech_lab.inside.powered_third[0]
+  return " ".join(parts)
+ if b.type == "necrotech_lab" and not observer.inside and has_skill(observer,"necro_employment"):
+  var parts: Array = b.outside_description_parts.duplicate()
+  parts[2] = b.necrotech_recognition
+  return " ".join(parts)
+ return b["inside_description" if observer.inside else "outside_description"]
+
+func entrance_is_open(b: Dictionary) -> bool:
+ return b.barricade == 0 and not doors_closed(b)
+
+func entrance_description(b: Dictionary) -> String:
+ if b.barricade == 1:
+  return "The %s protected by a loose barricade of discarded furniture." % ("doors are" if has_doors(b) else "entrance is")
+ if b.barricade > 0: return "The building has been %s." % barricade_description(b)
+ if not has_doors(b):
+  return "A hole cut in the fence serves as the entrance." if b.type == "junkyard" else "A broad opening leads into the site."
+ if doors_closed(b): return "The building's doors have been secured."
+ return "The doors to the building are wide open."
+
+func exterior_building_clues(b: Dictionary) -> String:
+ var clues = entrance_description(b)
+ if b.ruin >= 3:
+  clues += " The building has been ruined."
+ elif b.ruin > 0 and entrance_is_open(b):
+  clues = "The doors are wide open, the building is a mess." if has_doors(b) else "The entrance is open, the building is a mess."
+ if powered(b):
+  clues = clues.trim_suffix(".") + ", and lights are on inside."
+ return clues
 
 func location_description(a: Dictionary) -> String:
  if a.down: return "You are down. Everything is dark. Rest and stand up to see your surroundings again."
  var b = current_block(a)
- ensure_descriptions(b)
  var observation = "You are %s %s. " % ["inside" if a.inside else "outside",b.name]
  if is_building(b):
-  observation += ("The fence opening is %s. " if b.type == "junkyard" else "The building is %s. ") % C.barricade_description(b.barricade)
-  if not has_doors(b): observation += "A hole cut in the fence serves as the entrance. " if b.type == "junkyard" else "A broad opening leads into the site. "
-  elif not doors_closed(b): observation += "The doors stand wide open. "
-  elif b.barricade == 0: observation += "The doors are closed. "
   if a.inside:
-   observation += "The lights are on. " if powered(b) else "It is too dim to see clearly. "
+   observation += entrance_description(b) + " "
+   if b.ruin >= 3:
+    observation += "The building has been ruined. Its structural damage prevents you from barricading. "
+   elif b.ruin > 0:
+    observation += "The building has been ransacked. "
+   var has_power = powered(b)
+   if not has_power and is_dark_building(b): observation += "The building is pitch black inside. "
+   if b.generator:
+    observation += "A portable generator has been set up here. "
+    if has_power:
+     observation += "It is running. "
+    else:
+     if b.generator_hp < C.GENERATOR_HP: observation += "It is %s. " % generator_condition(b)
+     if b.generator_hp > 0: observation += "It is out of fuel. "
   else:
-   observation += "Lights are on inside. " if powered(b) else "No lights show inside. "
-  if a.inside or not doors_closed(b):
-   if b.ruin >= 3: observation += "The interior is completely ruined and needs major repairs. "
-   elif b.ruin > 0: observation += "The interior is ransacked and needs repairs. "
-  if a.inside and b.generator:
-   observation += "A portable generator is %s, %s. " % [generator_condition(b),"running" if powered(b) else "out of fuel"]
+   observation += exterior_building_clues(b) + " "
  var humans = 0
  var zombies = 0
  var bodies = 0
@@ -1397,11 +1535,12 @@ func location_description(a: Dictionary) -> String:
  if has_skill(a,"scent_death"):
   var changing = occupants(b,a.inside).filter(func(t): return t.down and t.human).size()
   if changing > 0: observation += "%d bodies carry the scent of revival. " % changing
- return b["inside_description" if a.inside else "outside_description"]+"\n\n"+observation.strip_edges()
+ return environmental_description(b,a)+"\n\n"+observation.strip_edges()
 
 func time_speed() -> float:
  var p = player()
- if p.down and (p.ap < cost(p,"stand") or minute < p.ready_at): return C.DEATH_SPEED
+ if sleeping: return C.SLEEP_SPEED
+ if p.down and (p.ap < 1 or minute < p.ready_at): return C.DEATH_SPEED
  return C.REST_SPEED if resting else 1.0
 
 func reanimate_bodies() -> void:
@@ -1635,18 +1774,29 @@ func level(a: Dictionary) -> int:
  return maxi(1,a.human_skills.size()+a.zombie_skills.size())
 
 func initialize_actor(a: Dictionary) -> void:
- var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_until":0,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":""}
+ var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_origin":-1,"trail_destination":-1,"trail_until":0,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":""}
  for key in defaults:
   if not a.has(key): a[key] = defaults[key]
- for key in ["route_goal","avoid_site","avoid_until","next_groan","grasp_target","grasped_by","pose_sequence","trail_from","trail_until","scout_site","scout_day","scout_used","fed","headshot","tagged_until"]: a[key] = int(a[key])
+ for key in ["route_goal","avoid_site","avoid_until","next_groan","grasp_target","grasped_by","pose_sequence","trail_from","trail_origin","trail_destination","trail_until","scout_site","scout_day","scout_used","fed","headshot","tagged_until"]: a[key] = int(a[key])
  a.route = a.route.map(func(id): return int(id))
  a.pose_at = float(a.pose_at)
  a.channel = float(a.channel)
 
 func initialize_block(b: Dictionary) -> void:
+ if not b.has("ransack_hits"): b.ransack_hits = 5 if int(b.get("ruin",0)) >= 3 else int(b.get("ruin",0))
+ if not b.has("ruined_at"): b.ruined_at = minute if int(b.get("ruin",0)) >= 3 else -1
+ b.ransack_hits = int(b.ransack_hits)
+ b.ruined_at = int(b.ruined_at)
  var defaults = {"barricade":0,"doors":false,"ruin":0,"generator":false,"generator_hp":C.GENERATOR_HP,"fuel_until":0,"known":false,"barricade_damage":0,"last_pounding":-9999,"zoo":"","unbarricadable":false,"radio":false,"radio_hp":0,"frequency":27.0,"graffiti":"","decorations":[],"complex":"","fort":"","mast":false}
  for key in defaults:
   if not b.has(key): b[key] = defaults[key]
+ if not can_be_ransacked(b):
+  b.ruin = 0
+  b.ransack_hits = 0
+  b.ruined_at = -1
+ if not can_host_generator(b):
+  b.generator = false
+  b.fuel_until = 0
  b.unbarricadable = not is_building(b)
  if b.unbarricadable: b.barricade = 0; b.barricade_damage = 0
  set_barricade_strength(b,barricade_strength(b))
@@ -1681,7 +1831,7 @@ func roll_attack_hit(hit: float) -> bool:
  if hit == floor(hit): return rng.randi_range(1,100) <= hit
  return rng.randf()*100.0 < hit
 
-func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Dictionary = {}) -> Dictionary:
+func attack_stats(a: Dictionary, _target: Dictionary, command: String, weapon: Dictionary = {}) -> Dictionary:
  var hit = 10.0
  var damage = 1
  var ranged = false
@@ -1689,10 +1839,13 @@ func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Di
   hit = C.ITEMS[weapon.kind].hit
   damage = 2
  elif not a.human:
-  hit = (10 if command == "bite" else 25)+(10 if has_skill(a,"vigour_mortis") else 0)
-  damage = 4 if command == "bite" else 2+(1 if has_skill(a,"rend_flesh") else 0)
-  hit += (10 if has_skill(a,"neck_lurch") else 0) if command == "bite" else (15 if has_skill(a,"death_grip") else 0)
-  if a.grasp_target == target.id and target.grasped_by == a.id: hit += 10
+  if command == "bite":
+   var trained = has_skill(a,"rend_flesh")
+   hit = (40 if trained else 30) if has_skill(a,"neck_lurch") else 0
+   damage = 5 if trained else 4
+  else:
+   hit = 25+(10 if has_skill(a,"vigour_mortis") else 0)+(15 if has_skill(a,"death_grip") else 0)
+   damage = 2
  else:
   if not weapon.is_empty():
    var def = C.ITEMS[weapon.kind]
@@ -1700,14 +1853,15 @@ func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Di
    damage = def.damage
    ranged = def.has("capacity") or def.get("ranged",false)
   if ranged:
-   if has_skill(a,"firearms"): hit += 12.5 if weapon.kind == "flare_gun" else 25
+   if has_skill(a,"firearms"): hit += 12.5 if weapon.kind == "flare_gun" else 15
    if weapon.kind == "pistol": hit += (25 if has_skill(a,"pistol_training") else 0)+(10 if has_skill(a,"advanced_pistol") else 0)
    if weapon.kind == "shotgun": hit += (25 if has_skill(a,"shotgun_training") else 0)+(10 if has_skill(a,"advanced_shotgun") else 0)
   else:
    if has_skill(a,"hand_to_hand"): hit += 15
-   if not weapon.is_empty() and weapon.kind == "knife" and has_skill(a,"knife_combat"): hit += 15
-   if not weapon.is_empty() and weapon.kind == "fire_axe" and has_skill(a,"axe_proficiency"): hit += 15
- if current_block(a).type in ["bank","cinema","nightclub","armoury"] and a.inside and not powered(current_block(a)):
+   if not weapon.is_empty() and weapon.kind == "knife" and has_skill(a,"knife_combat"): hit += 25
+   if not weapon.is_empty() and weapon.kind == "fire_axe" and has_skill(a,"axe_proficiency"): hit = minf(40,hit+30)
+  if a.grasped_by >= 0: hit -= 10
+ if is_dark_building(current_block(a)) and a.inside and not powered(current_block(a)):
   hit = hit*0.5 if not weapon.is_empty() and weapon.kind == "flare_gun" else floor(hit*0.5)
  return {"hit":clampf(hit,0.0,95.0),"damage":damage,"ranged":ranged}
 
@@ -1719,8 +1873,14 @@ func fort_gatehouse(identity: String) -> Dictionary:
   if site.fort == identity: return site
  return {}
 
-func can_free_run_between(a: Dictionary, origin: Dictionary, destination: Dictionary) -> bool:
- if not a.inside or not a.human or not has_skill(a,"free_running") or not is_building(destination) or destination.ruin >= 3: return false
+func roll_free_run_fall() -> bool:
+ return rng.randf() < 0.2
+
+func shared_building_interior(origin: Dictionary, destination: Dictionary) -> bool:
+ return not origin.complex.is_empty() and origin.complex == destination.complex and origin.zoo.is_empty() and origin.fort.is_empty()
+
+func free_run_route(a: Dictionary, origin: Dictionary, destination: Dictionary) -> bool:
+ if not a.inside or not a.human or not has_skill(a,"free_running") or not is_building(destination): return false
  if not destination.fort.is_empty() and destination.fort != origin.fort: return false
  if not origin.fort.is_empty():
   if destination.fort == origin.fort:
@@ -1728,12 +1888,15 @@ func can_free_run_between(a: Dictionary, origin: Dictionary, destination: Dictio
   return origin.type == "gatehouse" and origin.barricade <= 4
  return true
 
+func can_free_run_between(a: Dictionary, origin: Dictionary, destination: Dictionary) -> bool:
+ return destination.ruin < 3 and free_run_route(a,origin,destination)
+
 func move_ends_inside(a: Dictionary, origin: Dictionary, destination: Dictionary, data: Dictionary = {}) -> bool:
  if not origin.fort.is_empty() and origin.fort == destination.fort:
   if destination.type == "gatehouse": return true
   if origin.type == "gatehouse": return false
  if not destination.fort.is_empty() and destination.fort != origin.fort: return false
- if destination.complex == origin.complex and not origin.complex.is_empty(): return a.inside and is_building(destination)
+ if shared_building_interior(origin,destination): return a.inside and is_building(destination)
  return bool(data.get("free_run",true)) and can_free_run_between(a,origin,destination)
 
 func fort_move_reason(a: Dictionary, origin: Dictionary, destination: Dictionary, data: Dictionary = {}) -> String:

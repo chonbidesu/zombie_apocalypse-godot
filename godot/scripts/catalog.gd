@@ -5,15 +5,18 @@ const AP_CAP = 50
 const RECOVERY_MINUTES = 30
 const GAME_MINUTES_PER_SECOND = 1.0
 const REST_SPEED = 16.0
+const SLEEP_SPEED = 128.0
 const DEATH_SPEED = 32.0
 const DAILY_REANIMATION_CHANCE = 0.20
 const GENERATOR_HP = 6
 const FUEL_MINUTES = 1440
 const BARRICADE_MAX_STRENGTH = [0, 1, 4, 7, 10, 13, 16, 21]
+const STRONGLY_BARRICADED_STRENGTH = 8
 const BARRICADE_STRUCTURE_CHANCE = 0.50
 # Indexed by current visible band; strength 21 is blocked separately.
 const BARRICADE_BUILD_CHANCES = [1.0, 0.995, 0.99, 0.978, 0.851, 0.615, 0.38, 0.205]
-const DARK_BARRICADE_BUILDINGS = ["bank", "cinema", "nightclub", "armoury", "warehouse", "mall"]
+const DARK_BUILDINGS = ["bank", "cinema", "nightclub", "armoury", "mall"]
+const DARK_BARRICADE_BUILDINGS = DARK_BUILDINGS
 const BARRICADE_MATERIALS = {
  "hospital":["a gurney", "a wheelchair", "an empty bed"],
  "cinema":["a row of seats", "a popcorn machine"],
@@ -25,8 +28,8 @@ const SEARCH_LIT_CHANCE = 0.30
 const SEARCH_UNLIT_CHANCE = 0.20
 const SEARCH_RUIN_CHANCE = 0.10
 const SEARCH_OUTSIDE_CHANCE = 0.05
-const DARK_SEARCH_MULTIPLIER = 0.50
-const DARK_SEARCH_BUILDINGS = DARK_BARRICADE_BUILDINGS + ["power_station"]
+const SEARCH_DARK_CHANCE = 0.01
+const DARK_SEARCH_BUILDINGS = DARK_BUILDINGS
 const INVENTORY_ITEM_LIMIT = 100
 # One shared, conditional grab bag for every exterior and open-ground square.
 const OUTSIDE_SEARCH_WEIGHTS = {
@@ -60,13 +63,13 @@ const ITEMS = {
  "knife": {
   "name": "Knife",
   "damage": 2,
-  "hit": 20,
+  "hit": 10,
   "encumbrance": 2
  },
  "pistol": {
   "name": "Pistol",
   "damage": 5,
-  "hit": 5,
+  "hit": 15,
   "capacity": 6,
   "ammo_kind": "pistol_clip",
   "reload_amount": 6,
@@ -79,7 +82,7 @@ const ITEMS = {
  "shotgun": {
   "name": "Shotgun",
   "damage": 10,
-  "hit": 5,
+  "hit": 15,
   "capacity": 2,
   "ammo_kind": "shotgun_shell",
   "reload_amount": 1,
@@ -391,7 +394,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Barricade and use a toolbox to repair buildings."
+  "description": "Build beyond Strongly Barricaded, up to EHB. Use a toolbox to repair machinery and ruins."
  },
  "radio_operation": {
   "name": "Radio Operation",
@@ -400,7 +403,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Broadcast on restricted 26-28 MHz radio channels."
+  "description": "Install, tune and broadcast over radio transmitters."
  },
  "firearms": {
   "name": "Basic Firearms Training",
@@ -409,7 +412,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Add 25 percentage points to firearm accuracy."
+  "description": "Add 15 percentage points to pistol and shotgun accuracy."
  },
  "pistol_training": {
   "name": "Pistol Training",
@@ -425,7 +428,7 @@ const SKILLS = {
   "side": "human",
   "category": "military",
   "cost": 100,
-  "requires": "pistol_training",
+  "requires": "firearms",
   "min_level": 0,
   "description": "Add another 10 points to pistol accuracy."
  },
@@ -443,12 +446,12 @@ const SKILLS = {
   "side": "human",
   "category": "military",
   "cost": 100,
-  "requires": "shotgun_training",
+  "requires": "firearms",
   "min_level": 0,
   "description": "Add another 10 points to shotgun accuracy."
  },
  "hand_to_hand": {
-  "name": "Hand to Hand Combat",
+  "name": "Hand-to-Hand Combat",
   "side": "human",
   "category": "military",
   "cost": 100,
@@ -463,7 +466,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "hand_to_hand",
   "min_level": 0,
-  "description": "Add 15 points to knife accuracy."
+  "description": "Add 25 points to knife accuracy, reaching 50%."
  },
  "axe_proficiency": {
   "name": "Axe Proficiency",
@@ -472,7 +475,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "hand_to_hand",
   "min_level": 0,
-  "description": "Add 15 points to axe accuracy."
+  "description": "Add 30 points to fire axe accuracy, capped at 40%."
  },
  "free_running": {
   "name": "Free Running",
@@ -515,7 +518,7 @@ const SKILLS = {
   "side": "human",
   "category": "science",
   "cost": 100,
-  "requires": "lab_experience",
+  "requires": "necro_employment",
   "min_level": 0,
   "description": "Scan tagged zombies, make syringes and revive Brain Rot in powered labs."
  },
@@ -555,199 +558,208 @@ const SKILLS = {
   "min_level": 10,
   "description": "Killed zombies need five additional AP to stand. Requires level 10."
  },
- "scent_fear": {
+"scent_fear": {
   "name": "Scent Fear",
   "side": "zombie",
-  "category": "zombie",
+  "category": "scent",
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Distinguish wounded and dying survivors."
+  "description": "See exact HP for injured survivors in either form."
  },
- "scent_blood": {
+"scent_blood": {
   "name": "Scent Blood",
   "side": "zombie",
-  "category": "zombie",
+  "category": "scent",
   "cost": 100,
   "requires": "scent_fear",
   "min_level": 0,
-  "description": "Read survivor HP and recognise infection."
+  "description": "Mark heavily injured survivors on the minimap with a red cross."
  },
- "scent_trail": {
+"scent_trail": {
   "name": "Scent Trail",
   "side": "zombie",
-  "category": "zombie",
+  "category": "scent",
   "cost": 100,
   "requires": "scent_fear",
   "min_level": 0,
-  "description": "Track survivors with whom you recently fought."
+  "description": "Read the direction a nearby survivor fled and pursue their trail."
  },
- "scent_death": {
+"scent_death": {
   "name": "Scent Death",
   "side": "zombie",
-  "category": "zombie",
+  "category": "scent",
   "cost": 100,
   "requires": "scent_fear",
   "min_level": 0,
-  "description": "Sense nearby zombies, bodies and revivifying bodies."
+  "description": "Count standing zombies on nearby minimap squares, including indoors."
  },
- "digestion": {
+"digestion": {
   "name": "Digestion",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "",
   "min_level": 0,
   "description": "Bites restore HP; feed on corpses to recover four HP."
  },
- "infectious_bite": {
+"infectious_bite": {
   "name": "Infectious Bite",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "digestion",
   "min_level": 0,
-  "description": "Bites infect survivors until medical treatment."
+  "description": "Successful bites infect survivors. Infection costs 1 HP per AP spent until cured by first aid."
  },
- "vigour_mortis": {
+"vigour_mortis": {
   "name": "Vigour Mortis",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Add 10 points to hand and bite accuracy."
+  "description": "Add 10 points to claw accuracy, reaching 35%."
  },
- "neck_lurch": {
+"neck_lurch": {
   "name": "Neck Lurch",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "vigour_mortis",
   "min_level": 0,
-  "description": "Add 10 points to bite accuracy."
+  "description": "Unlock a bite at 30% accuracy for 4 damage."
  },
- "death_grip": {
+"death_grip": {
   "name": "Death Grip",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "vigour_mortis",
   "min_level": 0,
   "description": "Add 15 points to hand accuracy."
  },
- "rend_flesh": {
+"rend_flesh": {
   "name": "Rend Flesh",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "vigour_mortis",
   "min_level": 0,
-  "description": "Hand attacks inflict one extra damage."
+  "description": "Raise bite accuracy to 40% and bite damage to 5."
  },
- "tangling_grasp": {
+"tangling_grasp": {
   "name": "Tangling Grasp",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "vigour_mortis",
   "min_level": 0,
-  "description": "Hand hits grasp a victim: +10 accuracy; a miss has 50% grip-loss chance."
+  "description": "A claw hit grips the survivor and lowers their attack accuracy by 10 points until released."
  },
- "feeding_drag": {
+"feeding_drag": {
   "name": "Feeding Drag",
   "side": "zombie",
-  "category": "zombie",
+  "category": "offensive",
   "cost": 100,
   "requires": "vigour_mortis",
   "min_level": 0,
-  "description": "Drag survivors at 12 HP or less through an open, clear entrance."
+  "description": "Drag dying or unconscious survivors through an open, clear entrance."
  },
- "memories": {
+"memories": {
   "name": "Memories of Life",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Open closed doors."
+  "description": "Open and secure doors."
  },
- "death_rattle": {
+"death_rattle": {
   "name": "Death Rattle",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "memories",
   "min_level": 0,
   "description": "Communicate using groaned zombie speech."
  },
- "feeding_groan": {
+"feeding_groan": {
   "name": "Feeding Groan",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "memories",
   "min_level": 0,
   "description": "Call nearby zombies towards the survivors you face."
  },
- "bellow": {
+"bellow": {
   "name": "Bellow",
   "side": "zombie",
-  "category": "zombie",
-  "cost": 100,
-  "requires": "feeding_groan",
-  "min_level": 0,
-  "description": "Spend 10 AP to call a horde when facing at least 25 survivors."
- },
- "ransack": {
-  "name": "Ransack",
-  "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "memories",
   "min_level": 0,
-  "description": "Damage undefended interiors after destroying generators."
+  "description": "Spend 10 AP to call a horde when facing at least 25 survivors."
  },
- "flailing_gesture": {
+"ransack": {
+  "name": "Ransack",
+  "side": "zombie",
+  "category": "utility",
+  "cost": 100,
+  "requires": "memories",
+  "min_level": 0,
+  "description": "Ransack and ruin undefended buildings, blocking barricading and reducing loot."
+ },
+"flailing_gesture": {
   "name": "Flailing Gesture",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "memories",
   "min_level": 0,
   "description": "Point towards locations, objects or people."
  },
- "lurching_gait": {
+"lurching_gait": {
   "name": "Lurching Gait",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "",
   "min_level": 0,
   "description": "Movement costs one AP instead of two."
  },
- "ankle_grab": {
+"death_lurch": {
+  "name": "Death Lurch",
+  "side": "zombie",
+  "category": "utility",
+  "cost": 100,
+  "requires": "",
+  "min_level": 0,
+  "description": "Stand for 5 AP and move one square for 1 AP."
+ },
+"ankle_grab": {
   "name": "Ankle Grab",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "lurching_gait",
   "min_level": 0,
   "description": "Standing costs one AP, plus any Headshot penalty."
  },
- "brain_rot": {
+"brain_rot": {
   "name": "Brain Rot",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Resist DNA extraction; revival needs a powered lab and NecroNet."
+  "description": "Block DNA extraction. Revival costs 10 AP and needs a powered lab and NecroNet."
  },
- "flesh_rot": {
+"flesh_rot": {
   "name": "Flesh Rot",
   "side": "zombie",
-  "category": "zombie",
+  "category": "utility",
   "cost": 100,
   "requires": "brain_rot",
   "min_level": 0,

@@ -24,7 +24,21 @@ func run() -> void:
  var opening_target = opening_actors.get_node("Actor_1")
  check(opening_target.size.y >= 100,"NPC sprites use enlarged scene targets")
  var red_bars = opening_target.get_children().filter(func(node): return node is Panel)
- check(red_bars.size() == 2 and red_bars[0].size.y == 8 and red_bars[0].size.x <= 34,"Health bars are thicker and narrower")
+ check(red_bars.is_empty(),"NPC health bars are hidden without Scent Fear")
+ var opening_player = scene.sim.player()
+ var opening_npc = scene.sim.actors[1]
+ var original_hp = opening_npc.hp
+ opening_npc.hp = 12
+ opening_player.zombie_skills.append("scent_fear")
+ for human in [true,false]:
+  opening_player.human = human
+  scene.refresh()
+  var target = scene.page.get_node("SceneActors/Actor_1")
+  check(target.get_children().filter(func(node): return node is Panel).size() == 2 and target.tooltip_text.contains("12/"),"Scent Fear reveals exact injured survivor HP in both forms")
+ opening_player.human = true
+ opening_player.zombie_skills.erase("scent_fear")
+ opening_npc.hp = original_hp
+ scene.refresh()
  scene.set_process(false)
  var p = scene.sim.player()
  var start_time = scene.sim.minute
@@ -140,7 +154,10 @@ func run() -> void:
  check(undead_player.equipped == scene.selected_item,"Zombie can equip a bat through the interface")
  var attacks = scene.action_controls.filter(func(entry): return entry.command == "attack")
  check(attacks.size() == 2 and attacks.any(func(entry): return entry.node.text.begins_with("Claws")) and attacks.any(func(entry): return entry.node.text.begins_with("Swing weapon")),"Zombie UI keeps claws and tool swing separately available")
- check(scene.action_controls.any(func(entry): return entry.command == "bite"),"Bite remains available while wielding a tool")
+ check(not scene.action_controls.any(func(entry): return entry.command == "bite"),"Bite stays hidden without Neck Lurch")
+ undead_player.zombie_skills.append("neck_lurch")
+ scene.refresh()
+ check(scene.action_controls.any(func(entry): return entry.command == "bite"),"Learned Bite remains available while wielding a tool")
  scene.sim.start()
  scene.feed.reset(scene.sim.messages)
  scene.selected_actor = -1
@@ -189,7 +206,7 @@ func run() -> void:
  block.ruin = 3
  check(scene.minimap_artwork.state(scene.sim,block) == 2,"Ruins select damaged architecture")
  block.fuel_until = scene.sim.minute+20
- check(scene.minimap_artwork.state(scene.sim,block) == 2,"Ruin appearance takes priority over light")
+ check(scene.minimap_artwork.state(scene.sim,block) == 3,"Powered ruins use new illuminated damaged architecture")
  var zombie = scene.sim.actors[15]
  zombie.x = player.x
  zombie.y = player.y
@@ -261,7 +278,7 @@ func run() -> void:
  player.inside = true
  scene.sim.reindex()
  scene.refresh()
- check(scene.page.get_node("LocationDescription") is Label,"Description uses a non-scrolling overlay")
+ check(scene.page.get_node("LocationDescription") is Label,"Description uses a non-scrolling panel below the scene")
  var world_rng = scene.sim.rng.state
  scene.zombie_pose(30.0)
  var durations = {}
@@ -311,7 +328,7 @@ func run() -> void:
    scene.refresh()
    await process_frame
    var paragraph = scene.page.get_node("LocationDescription")
-   if paragraph.get_visible_line_count() != paragraph.get_line_count() or paragraph.position.y+paragraph.size.y > 370: max_text_fits = false
+   if paragraph.get_visible_line_count() != paragraph.get_line_count() or paragraph.position.y+paragraph.size.y > 935: max_text_fits = false
  check(max_text_fits,"All locations render their entire description within the text area")
  player.x = 4
  player.y = 4
@@ -415,11 +432,11 @@ func run() -> void:
  scene.refresh()
  await process_frame
  var decorated_text = scene.page.get_node("LocationDescription")
- check(decorated_text.get_visible_line_count() == decorated_text.get_line_count() and decorated_text.position.y+decorated_text.size.y <= 370,"Full decoration capacity and long graffiti stay inside description bounds")
+ check(decorated_text.get_visible_line_count() == decorated_text.get_line_count() and decorated_text.position.y+decorated_text.size.y <= 935,"Full decoration capacity and long graffiti stay inside description bounds")
  check(not scene.page.get_node("CityMinimap/MapTile_34").find_children("*","Label",true,false).any(func(node): return node.text == "RUIN"),"Ruins use the grey overlay without a RUIN label")
  scene.open_modal("skills")
  var skill_scroll = scene.overlay.get_node("FullSkillTrees")
- check(skill_scroll is ScrollContainer and skill_scroll.find_children("*","Button",true,false).size() == 45,"All forty-five skill purchase controls fit in scrolling trees")
+ check(skill_scroll is ScrollContainer and skill_scroll.find_children("*","Button",true,false).size() == 46,"All forty-six skill controls fit in scrolling trees")
  scene.modal = ""
  for occupation in ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer","Corpse"]:
   player.job = occupation
@@ -473,5 +490,35 @@ func run() -> void:
   previous_human = human_frame
   previous_zombie = zombie_frame
  check(zombie_changes < human_changes/2,"Zombie gait uses slower holds and uneven stepping")
+ minimap_senses(scene)
  print("UI CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func minimap_senses(scene) -> void:
+ var sim = scene.sim
+ var p = sim.player()
+ p.human = false
+ p.down = false
+ p.x = 4; p.y = 4; p.inside = true
+ p.zombie_skills = []
+ for person in sim.actors:
+  if person.id != p.id: person.down = true
+ for id in range(1,7):
+  var person = sim.actors[id]
+  person.x = p.x; person.y = p.y
+  person.human = id < 5
+  person.inside = id != 6
+  person.down = false
+  person.hp = 12 if id == 1 else 50
+ sim.reindex()
+ scene.refresh()
+ var tile = scene.page.get_node("CityMinimap/MapTile_44")
+ var captions = tile.find_children("*","Label",true,false).map(func(node): return node.text)
+ check(sim.display_name(sim.actors[1]) in captions and "…" in captions and "1 zombie" in captions,"Minimap lists visible survivors, overflow and an anonymous zombie count")
+ check(not tile.has_node("ScentBlood") and not tile.has_node("ScentTrail"),"Minimap hides unlearned scent cues")
+ p.zombie_skills = ["scent_blood","scent_trail","scent_death"]
+ p.trail_from = 1; p.trail_origin = 44; p.trail_destination = 45; p.trail_until = sim.minute+60
+ scene.refresh()
+ tile = scene.page.get_node("CityMinimap/MapTile_44")
+ check(tile.has_node("ScentBlood") and tile.has_node("ScentTrail") and tile.tooltip_text.contains("leads east"),"Minimap shows the injury cross and departure direction")
+ check(tile.tooltip_text.contains("2 zombies") and not tile.tooltip_text.contains(sim.display_name(sim.actors[5])),"Scent Death counts zombies across both sides without names")

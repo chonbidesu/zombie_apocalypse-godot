@@ -34,7 +34,7 @@ func run() -> void:
  var first = scene.actor_buttons[0]
  var standing_feet = first.node.get_parent().position.y+first.ground
  check(standing_feet >= scene.ENVIRONMENT_RECT.end.y-30 and standing_feet < scene.ENVIRONMENT_RECT.end.y,"Sprites stand on the foreground near the bottom of the full image")
- check(scene.actions_bottom <= 806 and scene.log_view.position.y+scene.log_view.size.y <= 904,"Compact common actions preserve a visible activity feed")
+ check(scene.actions_bottom <= 1040 and scene.log_view.position.x >= 1440 and scene.log_view.position.y+scene.log_view.size.y <= 1034,"Actions fit below the description with a separate full-height activity feed")
  scene.paused = false
  p.inventory.clear()
  p.equipped = -1

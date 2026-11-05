@@ -82,6 +82,7 @@ func _initialize() -> void:
   var exact_text = true
   var weapon_name = C.ITEMS[profile[1]].name.to_lower() if not profile[1].is_empty() else "fists"
   for attempt in range(6000):
+   p.ap = 50
    s.set_barricade_strength(b,21)
    s.execute(p,"break")
    var text = s.messages.back().text
@@ -173,7 +174,7 @@ func construction_rules(s, p, b) -> void:
   z.down = false
  s.reindex()
  var expected = [1.0,0.995,0.99,0.99,0.99,0.978,0.978,0.978,0.851,0.851,0.851,0.615,0.615,0.615,0.38,0.38,0.38,0.205,0.205,0.205,0.205,0.0]
- b.type = "warehouse"
+ b.type = "bank"
  b.generator = false
  for strength in range(22):
   s.set_barricade_strength(b,strength)
@@ -205,8 +206,8 @@ func construction_rules(s, p, b) -> void:
   b.type = site_type
   z1.down = true
   z2.down = true
-  check(is_equal_approx(s.barricade_build_chance(b),0.615*(0.5 if site_type != "hospital" else 1.0)),"Darkness classification: "+site_type)
- b.type = "warehouse"
+  check(is_equal_approx(s.barricade_build_chance(b),0.615*(0.5 if site_type in C.DARK_BUILDINGS else 1.0)),"Darkness classification: "+site_type)
+ b.type = "bank"
  # Seeded clicks verify actual transactions, flavour and stacked penalties.
  for dark in [false,true]:
   for interference in [false,true]:

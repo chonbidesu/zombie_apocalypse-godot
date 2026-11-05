@@ -338,7 +338,7 @@
    "second": [
     "The building is overrun with vines, its grandeur hidden beneath nature's reclamation.",
     "The once vibrant building is now a hollow shell, with broken windows and rusted gates guarding the entrance.",
-    "The fa\u00e7ade of the museum is faded, with old statues standing guard, their features eroded by time and decay."
+    "The faÃ§ade of the museum is faded, with old statues standing guard, their features eroded by time and decay."
    ],
    "third": [
     "Statues outside the museum are broken and worn, their features barely discernible.",
@@ -349,19 +349,20 @@
  "necrotech_lab": {
   "inside": {
    "first": [
-    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+    "Rows of laboratory benches hold dusty microscopes, specimen trays and sealed chemical containers.",
+    "Glass partitions divide the laboratory into research bays lined with scientific equipment.",
+    "Long worktops support racks of sample tubes beside precision scales and abandoned laboratory notes."
    ],
    "second": [
-    "Torn wires dangle from the ceiling, sparking occasionally in defiance of their obsolescence. ",
-    "Spilled beakers and chemical stains tell stories of experiments long abandoned. ",
-    "Tables cluttered with shattered vials and rusted instruments hint at long-abandoned experiments.",
-    "Rows of overturned lab tables lie scattered, their surfaces marred with deep scratches and burns."
+    "Computer terminals crowd a separate research room beside server cabinets and tangled data cables.",
+    "A bank of laboratory computers overlooks a preparation bench scattered with slides and pipettes.",
+    "Old analysis screens and specimen cabinets stand beside a row of numbered refrigeration units."
    ],
    "third": [
-    "A forgotten clipboard lies on the ground, its faded notes barely legible in the dim light. ",
-    "You feel a sense of unease, as though unseen eyes are watching your every move. ",
-    "A solitary chair sits upright in the corner, its placement eerily deliberate among the disarray. ",
-    "The room feels alive with a malevolent energy, as if the remnants of old experiments are watching."
+    "The NecroTech logo is set in the wall behind the front desk, and doors open onto powered-down computer rooms and laboratories."
+   ],
+   "powered_third": [
+    "The NecroTech logo glows gently above the front desk, and doors open onto a number of brightly-lit laboratories and computer rooms."
    ]
   },
   "outside": {
@@ -381,6 +382,11 @@
     "Crows circle above the compound, their harsh cries adding to the desolate atmosphere. ",
     "You can't shake the feeling that this place holds secrets better left undisturbed.",
     "A toppled satellite dish lies near the building, its wires frayed and sparking intermittently. "
+   ],
+   "recognized_third": [
+    "You recognize the NecroTech logo etched into a plaque beside the office building's entrance.",
+    "Your NecroTech training lets you recognize the company logo on a discreet sign beside the doorway.",
+    "You recognize a weathered NecroTech logo mounted above the entrance beneath the office windows."
    ]
   }
  },
@@ -401,7 +407,8 @@
   },
   "outside": {
    "first": [
-    "Cracked paving and windblown litter surround the entrance to the deserted site."
+    "Cracked paving and windblown litter surround the entrance to the deserted site.",
+    "The nightclub frontage is lined with covered windows beneath an old sign and a worn entrance canopy."
    ],
    "second": [
     "Graffiti covers the once-glamorous facade, obscuring its former vibrancy.",
@@ -647,7 +654,7 @@
   },
   "inside": {
    "first": [
-    "The lobby is bright and inviting, with large windows offering a view of the bustling city streets outside.",
+    "A broad reception desk faces the office lobby beneath a row of dusty windows and faded company notices.",
     "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
    ],
    "second": [
@@ -767,7 +774,8 @@
   },
   "inside": {
    "first": [
-    "Dust and splinters cover the floor beneath a scatter of abandoned belongings."
+    "Dust and splinters cover the floor beneath a scatter of abandoned belongings.",
+    "The station concourse opens beneath a high roof beside shuttered kiosks and empty ticket barriers."
    ],
    "second": [
     "Abandoned bags and torn newspapers lie between the benches and ticket gates.",
@@ -812,436 +820,544 @@
  "cathedral": {
   "inside": {
    "first": [
-    "Within the cathedral, broken fixtures stand among scattered piles of debris."
+    "Within the cathedral, broken fixtures stand among scattered piles of debris.",
+    "Tall stone pillars divide the nave into shadowed aisles beneath a ceiling of intricate ribs."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Loose hymn sheets lie between the pews, and fragments of stained glass glitter on the floor."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A worn brass lectern faces the altar, surrounded by candle holders and fallen plaster dust."
    ]
   },
   "outside": {
    "first": [
-    "The cathedral stands behind broken paving and a scatter of windblown debris."
+    "The cathedral stands behind broken paving and a scatter of windblown debris.",
+    "A weathered bell tower rises above the cathedral roof, its stonework streaked by years of rain."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Worn saints stand in niches beside the entrance, their faces softened by moss and falling grit."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A narrow processional path follows the outer wall past a row of ivy-covered memorial stones."
    ]
   }
  },
  "mansion": {
   "inside": {
    "first": [
-    "Within the mansion, broken fixtures stand among scattered piles of debris."
+    "Within the mansion, broken fixtures stand among scattered piles of debris.",
+    "Panelled reception rooms open off the entrance hall, their tall mirrors clouded with dust."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A sweeping staircase rises above scattered luggage and an abandoned heap of household linen."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "Family portraits hang over the mantelpiece, their faded faces watching a row of empty chairs."
    ]
   },
   "outside": {
    "first": [
-    "The mansion stands behind broken paving and a scatter of windblown debris."
+    "The mansion stands behind broken paving and a scatter of windblown debris.",
+    "A broad stone staircase leads to the mansion entrance beneath a shallow ornamental balcony."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Tangled climbing roses cover the garden railings, leaving only narrow gaps between the bars."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A neglected carriage drive curves past a dry fountain toward a pair of heavy wooden doors."
    ]
   }
  },
  "power_station": {
   "inside": {
    "first": [
-    "Within the power station, broken fixtures stand among scattered piles of debris."
+    "Within the power station, broken fixtures stand among scattered piles of debris.",
+    "Massive turbine housings fill the long hall, leaving narrow walkways along the concrete walls."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Banks of switches cover the control room walls beside open cabinets of numbered wiring."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A neglected maintenance trolley rests beside coils of cable and a stack of inspection forms."
    ]
   },
   "outside": {
    "first": [
-    "The power station stands behind broken paving and a scatter of windblown debris."
+    "The power station stands behind broken paving and a scatter of windblown debris.",
+    "A row of enormous ducts climbs the power station wall beneath a tangle of corroded gantries."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Heavy cables disappear into concrete trenches beside warning signs bleached almost blank."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A service road runs between the turbine hall and a fenced yard of silent electrical equipment."
    ]
   }
  },
  "stadium": {
   "inside": {
    "first": [
-    "Within the stadium, broken fixtures stand among scattered piles of debris."
+    "Within the stadium, broken fixtures stand among scattered piles of debris.",
+    "Rows of empty seats curve around the playing surface beneath the exposed bones of the roof."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "The concourse is scattered with torn programmes, and weeds force their way through the steps."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A long players tunnel ends beside a row of lockers and an abandoned crate of training equipment."
    ]
   },
   "outside": {
    "first": [
-    "The stadium stands behind broken paving and a scatter of windblown debris."
+    "The stadium stands behind broken paving and a scatter of windblown debris.",
+    "High concrete stands rise behind the stadium gates, with faded banners hanging from the rails."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Overgrown ticket queues lead toward shuttered booths beneath a broad concrete concourse."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A service entrance opens beside a cracked mural celebrating teams whose colours have faded."
    ]
   }
  },
  "armoury": {
   "inside": {
    "first": [
-    "Within the armoury, broken fixtures stand among scattered piles of debris."
+    "Within the armoury, broken fixtures stand among scattered piles of debris.",
+    "Rows of metal weapon racks line the bunker walls beside bolted cupboards and ammunition bins."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "An armoured partition separates the issue counter from a maze of cages and storage lockers."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "Faded inventory charts hang above a workbench scattered with packing paper and spare straps."
    ]
   },
   "outside": {
    "first": [
-    "The armoury stands behind broken paving and a scatter of windblown debris."
+    "The armoury stands behind broken paving and a scatter of windblown debris.",
+    "The armoury bunker presents a low concrete facade pierced by narrow, heavily recessed windows."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Reinforced vents sit high in the wall above an entrance framed by thick slabs of stained stone."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A worn military crest marks the wall beside deep scuffs left by years of boots and equipment."
    ]
   }
  },
  "barracks": {
   "inside": {
    "first": [
-    "Within the barracks, broken fixtures stand among scattered piles of debris."
+    "Within the barracks, broken fixtures stand among scattered piles of debris.",
+    "Rows of narrow bunks fill the dormitory, separated by dented lockers and scuffed wooden stools."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Personal photographs remain tucked into a noticeboard beside yellowed duty rosters and orders."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A communal table stands under the windows with empty mugs and a scattered pack of playing cards."
    ]
   },
   "outside": {
    "first": [
-    "The barracks stands behind broken paving and a scatter of windblown debris."
+    "The barracks stands behind broken paving and a scatter of windblown debris.",
+    "A long line of identical windows runs beneath the barracks roof and its weathered brick chimneys."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Concrete steps connect the barracks entrance to a shared parade apron marked by worn boot tracks."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A covered walkway follows the building toward a small yard of broken benches and washing lines."
    ]
   }
  },
  "gatehouse": {
   "inside": {
    "first": [
-    "Within the gatehouse, broken fixtures stand among scattered piles of debris."
+    "Within the gatehouse, broken fixtures stand among scattered piles of debris.",
+    "The gatehouse passage runs between thick walls beneath a ceiling crossed by heavy steel beams."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A guard room overlooks the approach through narrow windows beside a worn military noticeboard."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A duty desk stands beside the passage with abandoned logbooks and a row of numbered key hooks."
    ]
   },
   "outside": {
    "first": [
-    "The gatehouse stands behind broken paving and a scatter of windblown debris."
+    "The gatehouse stands behind broken paving and a scatter of windblown debris.",
+    "The gatehouse towers rise directly from the perimeter wall, guarding the route into the compound."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Thick masonry turns into the gatehouse jambs beside a narrow approach worn smooth by heavy boots."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A roofed passage passes between the tower bases, linking the outer street to the military yards."
    ]
   }
  },
  "infirmary": {
   "inside": {
    "first": [
-    "Within the infirmary, broken fixtures stand among scattered piles of debris."
+    "Within the infirmary, broken fixtures stand among scattered piles of debris.",
+    "Curtained treatment bays line the infirmary ward beside enamel sinks and empty medicine trolleys."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A nursing desk faces rows of metal beds and cupboards labelled for dressings and surgical supplies."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "An examination lamp hangs above a scarred table beside an abandoned tray of medical instruments."
    ]
   },
   "outside": {
    "first": [
-    "The infirmary stands behind broken paving and a scatter of windblown debris."
+    "The infirmary stands behind broken paving and a scatter of windblown debris.",
+    "A weathered medical cross identifies the infirmary above its modest military brick entrance."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A covered stretcher bay opens beside the building, with worn wheel tracks crossing the apron."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "Small ward windows overlook a narrow planted strip hemmed in by the surrounding fort buildings."
    ]
   }
  },
  "storehouse": {
   "inside": {
    "first": [
-    "Within the storehouse, broken fixtures stand among scattered piles of debris."
+    "Within the storehouse, broken fixtures stand among scattered piles of debris.",
+    "Tall storage racks divide the storehouse into numbered aisles beneath a web of exposed roof beams."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Broken packing cases lie around a freight scale and an abandoned trolley with a bent front wheel."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A small issue counter stands beside pigeonholes filled with brittle requisition slips and labels."
    ]
   },
   "outside": {
    "first": [
-    "The storehouse stands behind broken paving and a scatter of windblown debris."
+    "The storehouse stands behind broken paving and a scatter of windblown debris.",
+    "The storehouse loading doors face a broad shared apron bordered by stacks of weathered pallets."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Rusting brackets support a corrugated canopy above loading bays scarred by years of deliveries."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A narrow service lane passes the building beside discarded packing straps and wooden crates."
    ]
   }
  },
  "vehicle_depot": {
   "inside": {
    "first": [
-    "Within the vehicle depot, broken fixtures stand among scattered piles of debris."
+    "Within the vehicle depot, broken fixtures stand among scattered piles of debris.",
+    "Inspection pits run beneath the service bays beside wheeled tool cabinets and engine stands."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A stripped military truck rests on axle supports with its removed panels stacked against a wall."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "Maintenance diagrams cover a board above shelves of boxed spares and neatly labelled components."
    ]
   },
   "outside": {
    "first": [
-    "The vehicle depot stands behind broken paving and a scatter of windblown debris."
+    "The vehicle depot stands behind broken paving and a scatter of windblown debris.",
+    "The vehicle depot presents a row of wide service bays beneath a low roof of stained metal panels."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Oil-dark wheel tracks cross the apron between the garage doors and a neglected military vehicle."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A fenced maintenance yard contains empty fuel drums, worn tyres and a small mobile engine hoist."
    ]
   }
  },
  "aquarium": {
   "inside": {
    "first": [
-    "Within the aquarium, broken fixtures stand among scattered piles of debris."
+    "Within the aquarium, broken fixtures stand among scattered piles of debris.",
+    "Large viewing tanks line the aquarium hall beneath dusty skylights and suspended display boards."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Service pipes disappear behind thick glass panels beside cabinets of filters and monitoring gauges."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A faded visitor map shows the old tank layout beside an abandoned keeper trolley and feed bins."
    ]
   },
   "outside": {
    "first": [
-    "The aquarium stands behind broken paving and a scatter of windblown debris."
+    "The aquarium stands behind broken paving and a scatter of windblown debris.",
+    "A long glazed roof shelters the aquarium building behind a low terrace of weathered stonework."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Curving visitor paths meet beside the entrance, passing planted beds and old aquatic display signs."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A service opening leads beside pipework and a small yard of empty containers used by the keepers."
    ]
   }
  },
  "bear_pit": {
   "inside": {
    "first": [
-    "Within the bear pit, broken fixtures stand among scattered piles of debris."
+    "Within the bear pit, broken fixtures stand among scattered piles of debris.",
+    "Rough stone ledges step down into the bear enclosure around a shallow basin and a sheltered den."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A barred keeper passage connects the den to a small service room lined with heavy feed containers."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "Old claw marks score a timber post beside a scattered heap of branches and worn enrichment toys."
    ]
   },
   "outside": {
    "first": [
-    "The bear pit stands behind broken paving and a scatter of windblown debris."
+    "The bear pit stands behind broken paving and a scatter of windblown debris.",
+    "A low stone parapet curves around the bear pit above a sunken enclosure of rocks and scrub."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "An uneven visitor path follows the rim past a keeper gate and a row of faded information boards."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A narrow maintenance stair descends toward a sheltered den hidden beneath the viewing terrace."
    ]
   }
  },
  "elephant_house": {
   "inside": {
    "first": [
-    "Within the elephant house, broken fixtures stand among scattered piles of debris."
+    "Within the elephant house, broken fixtures stand among scattered piles of debris.",
+    "Tall stalls divide the elephant house beneath a vaulted roof supported by heavy brick piers."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Broad drains cross the concrete floor beside hose fittings and a row of reinforced keeper partitions."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A keeper station holds old feeding charts beside stacked buckets and a weathered weighing scale."
    ]
   },
   "outside": {
    "first": [
-    "The elephant house stands behind broken paving and a scatter of windblown debris."
+    "The elephant house stands behind broken paving and a scatter of windblown debris.",
+    "The elephant house rises above the zoo paths with tall brick arches and broad timber-framed openings."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A low boundary wall follows the attached yard past a heavy keeper gate and a sheltered feeding bay."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "Worn tracks cross the sandy enclosure beside stout rubbing posts and an empty stone water trough."
    ]
   }
  },
  "giraffe_house": {
   "inside": {
    "first": [
-    "Within the giraffe house, broken fixtures stand among scattered piles of debris."
+    "Within the giraffe house, broken fixtures stand among scattered piles of debris.",
+    "Tall timber partitions divide the giraffe house into broad stalls beneath an open lattice of beams."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "High feeding baskets hang from the walls above a concrete floor crossed by shallow drainage channels."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A narrow keeper platform overlooks the stalls beside rolled bedding and old husbandry records."
    ]
   },
   "outside": {
    "first": [
-    "The giraffe house stands behind broken paving and a scatter of windblown debris."
+    "The giraffe house stands behind broken paving and a scatter of windblown debris.",
+    "The giraffe house has unusually tall openings beneath a steep timber roof and long upper windows."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "A visitor path passes its attached paddock, where worn rails border a patch of trampled earth."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "High feeding racks stand near the barn wall beside a sheltered keeper entrance and empty trough."
    ]
   }
  },
  "lion_enclosure": {
   "inside": {
    "first": [
-    "Within the lion enclosure, broken fixtures stand among scattered piles of debris."
+    "Within the lion enclosure, broken fixtures stand among scattered piles of debris.",
+    "A sheltered den opens onto the rocky lion habitat through a short passage with heavy keeper bars."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Stone ledges surround a shallow water basin beside a sheltered patch of earth and scattered branches."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A service recess contains empty feed bins and a worn keeper chart fixed behind protective wire."
    ]
   },
   "outside": {
    "first": [
-    "The lion enclosure stands behind broken paving and a scatter of windblown debris."
+    "The lion enclosure stands behind broken paving and a scatter of windblown debris.",
+    "A rocky habitat stretches behind the lion enclosure railings beside a low, heavy-walled shelter."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "The visitor path curves past a stone viewing ledge and a keeper gate hidden by untended shrubs."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A dry moat separates the viewing area from sunning rocks and a worn timber scratching post."
    ]
   }
  },
  "reptile_house": {
   "inside": {
    "first": [
-    "Within the reptile house, broken fixtures stand among scattered piles of debris."
+    "Within the reptile house, broken fixtures stand among scattered piles of debris.",
+    "Glass-fronted vivariums line the reptile house corridors beneath an iron framework of roof glazing."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "Banks of habitat controls sit beside planted tanks filled with dry branches, stones and leaf litter."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A keeper bench holds old thermometers and feeding records beside a faded plan of the display rooms."
    ]
   },
   "outside": {
    "first": [
-    "The reptile house stands behind broken paving and a scatter of windblown debris."
+    "The reptile house stands behind broken paving and a scatter of windblown debris.",
+    "A long conservatory roof covers the reptile house behind ornate ironwork and weathered brick walls."
    ],
    "second": [
-    "Weathered surfaces and empty spaces show how abruptly this place was left behind."
+    "Weathered surfaces and empty spaces show how abruptly this place was left behind.",
+    "The zoo path narrows beside its glazed entrance and a row of old displays identifying reptiles."
    ],
    "third": [
-    "Loose papers and splinters collect in corners beneath a layer of pale dust."
+    "Loose papers and splinters collect in corners beneath a layer of pale dust.",
+    "A shaded service yard holds stacks of planting trays beside pipework and a neglected keeper passage."
    ]
   }
  },
  "wasteland": {
   "outside": {
    "first": [
-    "The wasteland stretches between weathered boundaries and broken paving stones."
+    "The wasteland stretches between weathered boundaries and broken paving stones.",
+    "Broken foundations interrupt a broad patch of waste ground where tall weeds move in the breeze."
    ],
    "second": [
-    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches.",
+    "A trace of old pavement leads between rubble heaps and rusted fragments of discarded fencing."
    ],
    "third": [
-    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste.",
+    "A few stubborn saplings have rooted beside an abandoned drain and the remains of a garden wall."
    ]
   }
  },
  "exercise_yard": {
   "outside": {
    "first": [
-    "The exercise yard stretches between weathered boundaries and broken paving stones."
+    "The exercise yard stretches between weathered boundaries and broken paving stones.",
+    "A worn exercise yard spreads between the fort buildings with low climbing frames and timber rails."
    ],
    "second": [
-    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches.",
+    "Boot tracks connect the obstacles across bare ground beside an old equipment hut and rope posts."
    ],
    "third": [
-    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste.",
+    "A rusting rack holds a few training bars beside a faded board listing drills and circuit times."
    ]
   }
  },
  "training_ground": {
   "outside": {
    "first": [
-    "The training ground stretches between weathered boundaries and broken paving stones."
+    "The training ground stretches between weathered boundaries and broken paving stones.",
+    "An open military training ground occupies a broad patch of packed earth between the fort buildings."
    ],
    "second": [
-    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches.",
+    "Sandbag barriers form short firing lanes beside target frames and a weathered observation platform."
    ],
    "third": [
-    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste.",
+    "An old route marker leans above empty ammunition boxes and a coil of fraying training rope."
    ]
   }
  },
  "zoo_ground": {
   "outside": {
    "first": [
-    "The zoo ground stretches between weathered boundaries and broken paving stones."
+    "The zoo ground stretches between weathered boundaries and broken paving stones.",
+    "A winding zoo path passes between irregular tree groves and low beds of untended shrubs."
    ],
    "second": [
-    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches."
+    "Scattered debris and stubborn weeds cover the neglected ground in uneven patches.",
+    "Faded direction signs point toward the enclosures beyond a quiet visitor plaza and empty benches."
    ],
    "third": [
-    "Old signs and discarded fixtures mark the edges of a place abandoned in haste."
+    "Old signs and discarded fixtures mark the edges of a place abandoned in haste.",
+    "A small ornamental pond lies beneath overhanging branches beside a neglected stone drinking fountain."
    ]
   }
  }

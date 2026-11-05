@@ -28,6 +28,7 @@ func ready(s,a):
  a.busy_until = s.now()
 func _initialize():
  combat_choices()
+ scent_pursuit()
  var s = fresh()
  var a = s.actors[1]
  a.human = true
@@ -86,14 +87,23 @@ func _initialize():
  p.human_skills = []
  s.give_item(p,"length_of_pipe")
  ready(s,p)
- check(s.reason(p,"barricade").is_empty(),"A pipe allows crude barricading without Construction even with open doors")
+ check(s.reason(p,"barricade").is_empty(),"Baseline barricading is available without Construction")
  for attempt in range(40):
   if b.barricade > 0: break
   s.execute(p,"barricade")
  check(b.barricade == 1 and b.doors,"The first successful barricade automatically closes normal doors")
- check(s.item_kind(p,"length_of_pipe").is_empty(),"A successful crude barricade consumes its pipe")
- check(not s.reason(p,"barricade").is_empty(),"Further barricading requires Construction")
+ check(not s.item_kind(p,"length_of_pipe").is_empty(),"Baseline construction uses building materials")
+ ready(s,p)
+ s.set_barricade_strength(b,7)
+ for attempt in range(40):
+  if s.barricade_strength(b) > 7: break
+  ready(s,p)
+  s.act("barricade")
+ check(s.barricade_strength(b) == 8 and s.barricade_description(b) == "strongly barricaded","Untrained survivors can build to Strongly Barricaded")
+ ready(s,p)
+ check(not s.act("barricade").ok and p.ap == 50,"Construction is required to build past Strongly Barricaded")
  p.human_skills = ["construction"]
+ check(s.reason(p,"barricade").is_empty(),"Construction permits the next reinforcement")
  s.give_item(p,"toolbox")
  b.ruin = 1
  b.generator = false
@@ -106,7 +116,7 @@ func _initialize():
  check(s.reason(p,"repair").is_empty(),"A cleared building can be repaired with the required tools")
  var xp = p.xp
  s.execute(p,"repair")
- check(p.xp == xp+1,"Building repairs earn XP")
+ check(p.xp == xp,"Basic ransack cleanup does not earn structural repair XP")
  b.generator = true
  b.generator_hp = 3
  xp = p.xp
@@ -210,7 +220,7 @@ func combat_choices() -> void:
  for kind in ["baseball_bat","hockey_stick","flare_gun","knife"]: s.give_item(a,kind)
  ready(s,a)
  AI.equip_best(s,a,t)
- check(s.item_by_uid(a,a.equipped).kind == "knife","Untrained NPC prefers knife damage over hockey stick, bat and low-accuracy flare")
+ check(s.item_by_uid(a,a.equipped).kind == "flare_gun","Untrained NPC considers the flare's expected damage alongside melee")
  a.human_skills = ["hand_to_hand"]
  ready(s,a)
  AI.equip_best(s,a,t)
@@ -261,7 +271,8 @@ func combat_choices() -> void:
  a.human_skills = []
  s.give_item(t,"flak_jacket")
  ready(s,a)
- check(not AI.equip_best(s,a,t) and s.item_by_uid(a,a.equipped).kind == "knife","Armour-adjusted tie keeps the equipped knife rather than wasting ammunition")
+ AI.equip_best(s,a,t)
+ check(s.item_by_uid(a,a.equipped).kind == "shotgun" and s.attack_damage(t,s.attack_stats(a,t,"attack",s.item_by_uid(a,a.equipped))) == 8,"NPC compares damage after armour when choosing a weapon")
  t.inventory.clear()
  ready(s,a)
  AI.equip_best(s,a,t)
@@ -286,18 +297,19 @@ func combat_choices() -> void:
  t.infected = false
  check(AI.zombie_attack(s,a,t) == "attack","Untrained zombie chooses claws: 0.5 expected damage beats a 0.4 bite")
  a.zombie_skills = ["vigour_mortis"]
- check(AI.zombie_attack(s,a,t) == "bite","Vigour Mortis alone makes bite damage more effective than untrained claws")
+ check(AI.zombie_attack(s,a,t) == "attack","Vigour Mortis alone leaves Bite locked")
  a.zombie_skills.append_array(["death_grip","rend_flesh","neck_lurch"])
- check(AI.zombie_attack(s,a,t) == "attack","Fully trained healthy zombie chooses three-damage claws")
+ check(AI.zombie_attack(s,a,t) == "bite","Rend Flesh makes Bite the higher-damage option")
  a.zombie_skills.append("digestion")
  a.hp = 40
  check(AI.zombie_attack(s,a,t) == "bite","Wounded zombie values Digestion healing when choosing a bite")
  a.hp = s.max_hp(a)
- check(AI.zombie_attack(s,a,t) == "attack","Full-health zombie does not waste attacks on unnecessary healing")
- a.zombie_skills.append("infectious_bite")
- check(AI.zombie_attack(s,a,t) == "bite","Infectious bite can win when a surviving target is not infected")
+ check(AI.zombie_attack(s,a,t) == "bite","Full-health zombie still uses the higher expected damage")
  t.infected = true
- check(AI.zombie_attack(s,a,t) == "attack","Already-infected prey removes the infection bonus")
+ t.hp = 1
+ check(AI.zombie_attack(s,a,t) == "attack","Claws have a better chance to finish prey at one HP")
+ t.hp = 1000
+ a.zombie_skills.erase("neck_lurch")
  s.give_item(a,"baseball_bat")
  a.equipped = a.inventory.back().uid
  p.human = false
@@ -312,6 +324,26 @@ func combat_choices() -> void:
   var hp = t.hp
   s._npc_turn(a)
   if t.hp < hp:
-   claws_used = a.last_action == "attack" and hp-t.hp == 3
+   claws_used = a.last_action == "attack" and hp-t.hp == 2
    break
  check(claws_used,"Zombie NPC actually deals trained claw damage while an inferior bat is equipped")
+
+func scent_pursuit() -> void:
+ for skilled in [false,true]:
+  var s = fresh()
+  for site in s.blocks: site.generator = false
+  var human = s.player()
+  human.inside = false
+  var zombie = s.actors[1]
+  zombie.x = human.x-1
+  zombie.y = human.y
+  zombie.down = false
+  zombie.hp = 50
+  zombie.wants_revive = false
+  zombie.memory = -1
+  zombie.xp = 0
+  zombie.zombie_skills = ["scent_trail"] if skilled else []
+  ready(s,zombie)
+  s.reindex()
+  s._npc_turn(zombie)
+  check(zombie.memory == (s.current_block(human).id if skilled else -1),"Zombie NPC pursues a survivor only with Scent Trail")

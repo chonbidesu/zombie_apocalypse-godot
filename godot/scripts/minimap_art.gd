@@ -60,9 +60,18 @@ static func stable_variant(value: String, count: int) -> int:
  return int(value.hash() % count)
 
 static func state(sim, b: Dictionary) -> int:
- return 2 if b.ruin >= 3 else (1 if sim.powered(b) else 0)
+ if b.ruin >= 3 and sim.can_be_ransacked(b): return 3 if sim.powered(b) else 2
+ return 1 if sim.powered(b) else 0
 
-func source(kind: String, variant: int = 0) -> Dictionary:
+func source(kind: String, variant: int = 0, status: int = 0) -> Dictionary:
+ if status == 3:
+  if kind == "fort_property": return {"file":"fort-properties-lit-ruin","grid":Vector2i(2,1),"at":Vector2i(variant,0)}
+  if kind == "mall_l": return {"file":"mall-l-lit-ruin","grid":Vector2i.ONE,"at":Vector2i.ZERO}
+  if kind == "mall" and variant > 0: return {"file":"malls-lit-ruin","grid":Vector2i(3,1),"at":Vector2i(variant-1,0)}
+  for i in range(GROUPS.size()):
+   if kind in GROUPS[i]:
+    var index = GROUPS[i].find(kind)
+    return {"file":"buildings-lit-ruin-%d" % (i+1),"grid":Vector2i(3,2),"at":Vector2i(index%3,index/3)}
  if kind == "fort_property": return {"file":"fort-properties-v4","grid":Vector2i(3,2),"at":Vector2i(0,variant)}
  if kind == "zoo_property": return {"file":"zoo-property-v2","grid":Vector2i(3,1),"at":Vector2i.ZERO}
  if kind == "mall_l": return {"file":"mall-l","grid":Vector2i(3,1),"at":Vector2i.ZERO}
@@ -74,15 +83,18 @@ func source(kind: String, variant: int = 0) -> Dictionary:
  return {"file":"outdoors","grid":Vector2i(3,3),"at":Vector2i(OUTDOORS.find(kind)%3,OUTDOORS.find(kind)/3)}
 
 func model(kind: String, status: int, variant: int) -> Texture2D:
+ if kind == "junkyard": status = 0
+ if kind in ["aquarium","bear_pit","elephant_house","giraffe_house","lion_enclosure","reptile_house"] and status >= 2: status = 0
+ if kind in ["stadium","power_station"] and status in [1,3]: status = 2 if status == 3 else 0
  var key = "%s:%d:%d" % [kind,status,variant]
  if models.has(key): return models[key]
- var info = source(kind,variant)
+ var info = source(kind,variant,status)
  var path = "res://assets/minimap/"+info.file+".png"
  if not sheets.has(path): sheets[path] = load(path) as Texture2D
  var sheet: Texture2D = sheets[path]
  if sheet == null: return null
  var at: Vector2i = info.at
- if kind not in OUTDOORS and kind != "street": at.x = status
+ if status != 3 and kind not in OUTDOORS and kind != "street": at.x = status
  var cell = Vector2(sheet.get_size())/Vector2(info.grid)
  var start = Vector2i(Vector2(at)*cell)
  var end = Vector2i(Vector2(at+Vector2i.ONE)*cell)
@@ -91,7 +103,7 @@ func model(kind: String, status: int, variant: int) -> Texture2D:
  # shared scene, rather than transparent padding inside each gameplay square.
  if kind not in ["fort_property","zoo_property"]:
   var used = image.get_used_rect()
-  if status > 0 and kind not in OUTDOORS and kind != "street":
+  if status in [1,2] and kind not in OUTDOORS and kind != "street":
    used = sheet.get_image().get_region(Rect2i(0,start.y,int(cell.x),end.y-start.y)).get_used_rect().intersection(Rect2i(Vector2i.ZERO,image.get_size()))
   if used.has_area(): image = image.get_region(used)
  image.resize(768,768,Image.INTERPOLATE_LANCZOS)
@@ -136,7 +148,7 @@ func material_for(sim, b: Dictionary) -> ShaderMaterial:
    if at.x >= 0 and at.x < sim.width and at.y >= 0 and at.y < sim.height:
     var other = sim.block_at(at.x,at.y)
     if (not b.fort.is_empty() and other.fort == b.fort) or (not b.complex.is_empty() and other.complex == b.complex): edges[i] = 1.0
- var key = "%d:%s" % [texture.get_instance_id(),str(edges)]
+ var key = "%d:%s:%s" % [texture.get_instance_id(),str(edges),str(sim.powered(b))]
  if materials.has(key): return materials[key]
  var material = ShaderMaterial.new()
  material.shader = preload("res://scripts/minimap_state.gdshader")

@@ -1,0 +1,88 @@
+{
+  "reviewed": "2026-11-04",
+  "rates": "Runtime two-stage probabilities; conditional item weights are prototype estimates, not verified official per-AP percentages. Preserve configured global totals and NT syringe rates.",
+  "sources": [
+    {
+      "url": "https://www.urbandead.com/faq.html",
+      "supports": "Location-dependent searching, power improves searching and disrepair impedes it; no published exact percentages."
+    },
+    {
+      "url": "https://gamefaqs.gamespot.com/webonly/392349-urban-dead/faqs/80292/building-types",
+      "supports": "Building and mall-store item locations; consulted to fill location omissions. Guide is secondary and does not supply exact probabilities."
+    },
+    {
+      "url": "https://gamefaqs.gamespot.com/webonly/392349-urban-dead/faqs/80292/weapons-and-items",
+      "supports": "Equipment locations and seasonal/decorative items."
+    }
+  ],
+  "unavailable_source": "Official wiki Search_Odds was blocked by robots.txt during this audit. Exact historical percentages remain unverified.",
+  "changes": {
+    "auto_repair": {
+      "beer": 0.025,
+      "newspaper": 0.02,
+      "spray_can": 0.025,
+      "clothing": 0.02
+    },
+    "factory": {
+      "clothing": 0.02
+    },
+    "fire_station": {
+      "clothing": 0.02,
+      "flashlight": 0.004
+    },
+    "junkyard": {
+      "book": 0.025,
+      "fire_axe": 0.01,
+      "newspaper": 0.025,
+      "clothing": 0.02,
+      "tennis_racket": 0.02
+    },
+    "police_department": {
+      "clothing": 0.005
+    },
+    "pub": {
+      "shotgun": 0.001
+    },
+    "school": {
+      "knife": 0.025
+    },
+    "warehouse": {
+      "fuel_can": 0.025,
+      "wine": 0.015,
+      "flashlight": 0.004
+    },
+    "power_station": {
+      "clothing": 0.02
+    },
+    "stadium": {
+      "clothing": 0.035
+    },
+    "cinema": {
+      "wine": 0.025,
+      "mobile_phone": 0.008
+    },
+    "library": {
+      "map": 0.005
+    },
+    "office": {
+      "map": 0.003
+    },
+    "railway_station": {
+      "map": 0.003
+    },
+    "museum": {
+      "dead_fir_tree": 0.003
+    }
+  },
+  "custom_items": {
+    "map": "Prototype item; added to libraries, offices and railway stations with estimated weights. No verified Urban Dead search rate.",
+    "flashlight": "Prototype item; existing outdoor grab bag retained, with rare fire-station and warehouse finds. No verified Urban Dead search rate."
+  },
+  "intentional_extensions": [
+    "Shared street grab bag is retained for all outdoors and building exteriors.",
+    "Seasonal decorations remain available year-round, including dead fir trees in museum salvage; the old park-only row was unreachable because outdoors use the shared grab bag.",
+    "User-specified cinema wine/mobile phones and mall hardware fuel remain prototype extensions even where the reference guide differs.",
+    "No new item classes such as 3D glasses or wire cutters were added.",
+    "No existing prototype loot entry was removed solely because the guide omitted it."
+  ]
+}

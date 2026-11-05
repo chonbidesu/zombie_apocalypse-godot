@@ -36,13 +36,21 @@ func _initialize() -> void:
   a.dormant = false
   a.hp = 50
  s.reindex()
- check(C.SKILLS.size() == 45,"Complete 23-human / 22-zombie skill catalogue")
+ check(C.SKILLS.size() == 46,"Catalogue includes all table skills and Death Lurch")
  check(C.SKILLS.values().filter(func(d): return d.side == "human").size() == 23,"All human skills present")
  p.human_skills.clear()
  p.zombie_skills.clear()
  p.xp = 100000
  check(not s.skill_reason(p,"advanced_pistol").is_empty(),"Advanced training cannot bypass prerequisites")
  check(not s.skill_reason(p,"headshot").is_empty(),"Headshot cannot bypass level ten")
+ for skill in ["advanced_pistol","advanced_shotgun","necronet","rend_flesh","bellow","infectious_bite"]:
+  var parent = {"advanced_pistol":"firearms","advanced_shotgun":"firearms","necronet":"necro_employment","rend_flesh":"vigour_mortis","bellow":"memories","infectious_bite":"digestion"}[skill]
+  check(not s.skill_reason(p,skill).is_empty(),"Root skill is required for "+skill)
+  p.human_skills = [parent] if C.SKILLS[parent].side == "human" else []
+  p.zombie_skills = [parent] if C.SKILLS[parent].side == "zombie" else []
+  check(s.skill_reason(p,skill).is_empty(),"The table's bold skill unlocks "+skill)
+  p.human_skills.clear()
+  p.zombie_skills.clear()
  for pass_number in range(4):
   for key in C.SKILLS:
    if s.skill_reason(p,key).is_empty(): s.learn(key)
@@ -59,12 +67,21 @@ func _initialize() -> void:
  p.zombie_skills.clear()
  var hand = s.attack_stats(p,t,"attack")
  var bite = s.attack_stats(p,t,"bite")
- check(hand.hit == 25 and hand.damage == 2 and bite.hit == 10 and bite.damage == 4,"Untrained bite is stronger but less accurate than hands")
- p.zombie_skills = ["vigour_mortis","neck_lurch","death_grip","rend_flesh","tangling_grasp"]
- check(s.attack_stats(p,t,"attack").hit == 50 and s.attack_stats(p,t,"attack").damage == 3,"Hand training applies accuracy and damage")
- check(s.attack_stats(p,t,"bite").hit == 30,"Bite accuracy includes Vigour Mortis and Neck Lurch")
+ check(hand.hit == 25 and hand.damage == 2 and bite.hit == 0 and not s.reason(p,"bite",t.id,{},true).is_empty(),"Bite is locked until Neck Lurch is learned")
+ check(s.cost(p,"move") == 2 and s.cost(p,"stand") == 10,"Untrained zombies move for two AP and stand for ten")
+ p.zombie_skills = ["death_lurch"]
+ check(s.cost(p,"move") == 1 and s.cost(p,"stand") == 5,"Death Lurch improves movement and standing costs")
+ p.zombie_skills = ["lurching_gait","ankle_grab"]
+ check(s.cost(p,"move") == 1 and s.cost(p,"stand") == 1,"Lurching Gait and Ankle Grab specialize in movement and standing")
+ p.zombie_skills = ["vigour_mortis","neck_lurch","death_grip","tangling_grasp"]
+ bite = s.attack_stats(p,t,"bite")
+ check(bite.hit == 30 and bite.damage == 4,"Neck Lurch unlocks a four-damage bite at thirty percent")
+ p.zombie_skills.append("rend_flesh")
+ check(s.attack_stats(p,t,"attack").hit == 50 and s.attack_stats(p,t,"attack").damage == 2,"Fully trained claws reach fifty percent")
+ check(s.attack_stats(p,t,"bite").hit == 40 and s.attack_stats(p,t,"bite").damage == 5,"Rend Flesh improves bite accuracy and damage")
+ var defense = s.attack_stats(t,p,"attack").hit
  s.claim_grasp(p,t)
- check(s.attack_stats(p,t,"attack").hit == 60 and s.attack_stats(p,t,"bite").hit == 40,"Grasp gives both subsequent attacks ten percentage points")
+ check(s.attack_stats(p,t,"attack").hit == 50 and s.attack_stats(t,p,"attack").hit == defense-10,"Tangling Grasp penalizes the victim without raising claw accuracy")
  s.claim_grasp(z,t)
  check(p.grasp_target == -1 and z.grasp_target == t.id and t.grasped_by == z.id,"A target has exactly one grasp owner")
  s.clear_grasp(t)
@@ -72,7 +89,7 @@ func _initialize() -> void:
  p.inventory.clear()
  s.give_item(p,"shotgun")
  p.equipped = p.inventory[0].uid
- check(s.attack_stats(p,t,"attack",p.inventory[0]).damage == 3 and not s.reason(p,"equip",-1,{"uid":p.equipped}).is_empty(),"Zombies cannot equip firearms or gain their damage")
+ check(s.attack_stats(p,t,"attack",p.inventory[0]).damage == 2 and not s.reason(p,"equip",-1,{"uid":p.equipped}).is_empty(),"Zombies cannot equip firearms or gain their damage")
  for kind in C.ZOMBIE_MELEE_ITEMS:
   s.give_item(p,kind)
   var tool = p.inventory.back()
@@ -93,7 +110,7 @@ func _initialize() -> void:
     tool_hits += 1
     tool_damage_correct = tool_damage_correct and hp-t.hp == 2
   check(tool_hits > 5 and tool_damage_correct and p.grasp_target == -1,"Zombie tool hits deal two damage and never grasp: "+kind)
-  check(s.attack_stats(p,t,"bite",tool).hit == 30 and s.attack_stats(p,t,"bite",tool).damage == 4,"Equipped tools do not alter bites")
+  check(s.attack_stats(p,t,"bite",tool).hit == 40 and s.attack_stats(p,t,"bite",tool).damage == 5,"Equipped tools do not alter bites")
   t.hp = 10000
   s.execute(p,"attack",t.id,{"unarmed":true})
   check(p.grasp_target == t.id or t.hp == 10000,"Claws can still grasp while a tool is equipped")
@@ -111,15 +128,25 @@ func _initialize() -> void:
    if p.grasp_target == -1: released += 1
  check(misses > 100 and float(released)/misses > 0.38 and float(released)/misses < 0.62,"Seeded combat loses grasp on approximately half of misses")
  s.clear_grasp(p)
- p.zombie_skills.append_array(["digestion","infectious_bite"])
+ p.zombie_skills.append("digestion")
  p.hp = 10
  t.hp = 10000
  for attempt in range(100):
   s.execute(p,"bite",t.id)
+  if t.hp < 10000: break
+ check(t.hp < 10000 and not t.infected and p.hp > 10,"Digestion heals a successful bite while infection requires Infectious Bite")
+ p.zombie_skills.append("infectious_bite")
+ for attempt in range(100):
+  s.execute(p,"bite",t.id)
   if t.infected: break
  check(t.infected and p.hp > 10,"A successful infected bite infects prey and heals through Digestion")
- s.execute(t,"wait")
- check(t.hp < 10000-4,"Infected survivors lose HP when acting")
+ t.human_skills.append("scout_safehouse")
+ ready(s,t)
+ var pre_infection = t.hp
+ check(s.reason(t,"scout").is_empty(),"Infected survivor can spend AP on scouting")
+ s.execute(t,"scout")
+ check(t.hp == pre_infection-30,"Infection takes one HP per AP on a multi-AP action")
+ t.scout_site = -1
  t.hp = 1
  t.infected = false
  s.die(t)
@@ -178,18 +205,30 @@ func _initialize() -> void:
  t.zombie_skills.clear()
  ready(s,p)
  var xp = p.xp
+ p.human_skills.erase("necro_employment")
+ check(not s.act("extract",t.id).ok,"DNA extraction requires NecroTech Employment")
+ p.human_skills.append("necro_employment")
+ t.zombie_skills.append("brain_rot")
+ check(not s.act("extract",t.id).ok and p.xp == xp,"Brain Rot blocks DNA extraction outright")
+ t.zombie_skills.clear()
  s.execute(p,"extract",t.id)
  check(t.tagged_until > s.minute and p.xp == xp+4,"DNA extraction marks a zombie and awards four XP")
  check(not s.reason(p,"extract",t.id).is_empty(),"Current DNA tag prevents repeated XP farming")
  p.inventory.clear()
  s.give_item(p,"radio_transmitter")
  ready(s,p)
- check(s.reason(p,"install_radio").is_empty(),"Transmitter can be installed in repaired interior")
+ p.human_skills.erase("radio_operation")
+ check(not s.reason(p,"install_radio").is_empty(),"Installing a transmitter requires Radio Operation")
+ p.human_skills.append("radio_operation")
+ check(s.reason(p,"install_radio").is_empty(),"Trained survivor can install a transmitter in a repaired interior")
  s.execute(p,"install_radio")
  check(b.radio and b.radio_hp == 6 and s.item_kind(p,"radio_transmitter").is_empty(),"Installation consumes transmitter and records condition")
  p.human_skills.erase("radio_operation")
  ready(s,p)
- check(not s.reason(p,"broadcast",-1,{"frequency":27.0}).is_empty() and s.reason(p,"broadcast",-1,{"frequency":29.0}).is_empty(),"Radio Operation gates restricted channels only")
+ check(not s.reason(p,"broadcast",-1,{"frequency":29.0}).is_empty() and not s.reason(p,"tune_transmitter").is_empty(),"Radio Operation gates transmitter tuning and broadcast on every channel")
+ p.human_skills.append("radio_operation")
+ check(s.act("tune_transmitter",-1,{"frequency":29.0}).ok and is_equal_approx(b.frequency,29.0),"Trained operator can tune the transmitter")
+ ready(s,p)
  b.radio_hp = 2
  check(not s.reason(p,"repair_radio").is_empty(),"Transmitter repair requires a toolbox")
  s.give_item(p,"toolbox")
@@ -229,17 +268,22 @@ func _initialize() -> void:
  check(is_equal_approx(s.item_search_chance(b,"first_aid_kit",p,"drugstore"),shopping*2.0),"Bargain Hunting improves targeted mall searches")
  check(s.item_search_chance(b,"shotgun",p,"drugstore") == 0,"Shopping chooses appropriate store inventory")
  b.ruin = 3
- check(not s.powered(b) and s.item_search_chance(b,"first_aid_kit",p,"drugstore") > 0 and is_equal_approx(s.search_chance(b,p,"drugstore"),0.1),"Ruins override mall bonuses with a ten percent find rate")
+ check(s.powered(b) and s.item_search_chance(b,"first_aid_kit",p,"drugstore") > 0 and is_equal_approx(s.search_chance(b,p,"drugstore"),0.1),"Powered ruins retain lights but lose mall search bonuses")
  b.ruin = 0
  p.human = false
  p.zombie_skills.append("scent_death")
  s.execute(p,"smell")
  check(s.sense_report.begins_with("SCENT DEATH"),"Scent Death produces local intelligence")
- p.trail_from = t.id
- p.trail_until = s.minute+30
  p.zombie_skills.append("scent_trail")
- s.execute(p,"trail")
- check(p.memory == s.current_block(t).id,"Scent Trail follows recent attacker position")
+ var start = Vector2i(t.x,t.y)
+ s.reindex()
+ s.execute(t,"move",-1,{"dx":1,"dy":0})
+ var departure = s.current_block(t).id
+ s.execute(t,"move",-1,{"dx":1,"dy":0})
+ ready(s,p)
+ check(s.act("trail").ok and p.memory == departure and s.sense_report.contains("east"),"Scent Trail reports the recorded departure, even after the survivor moves again")
+ t.x = start.x; t.y = start.y; t.inside = p.inside
+ s.reindex()
  p.zombie_skills.append_array(["feeding_drag","feeding_groan","bellow","death_rattle","flailing_gesture","lurching_gait","ankle_grab"])
  t.human = true
  t.down = false
@@ -248,6 +292,14 @@ func _initialize() -> void:
  b.doors = false
  ready(s,p)
  check(s.reason(p,"drag",t.id).is_empty(),"Feeding Drag permits dying prey through an open entrance")
+ t.down = true
+ check(s.reason(p,"drag",t.id).is_empty(),"Feeding Drag also permits unconscious survivors")
+ t.down = false
+ p.zombie_skills.erase("memories")
+ check(not s.act("close").ok and not b.doors,"Untrained zombies cannot secure doors")
+ p.zombie_skills.append("memories")
+ check(s.act("close").ok and b.doors,"Memories of Life lets zombies secure doors")
+ ready(s,p)
  b.doors = true
  check(not s.reason(p,"drag",t.id).is_empty(),"Closed doors prevent dragging prey")
  b.doors = false
@@ -306,6 +358,15 @@ func human_balance_rules() -> void:
  p.human_skills = ["firearms","pistol_training","advanced_pistol","shotgun_training","advanced_shotgun"]
  var stats = s.attack_stats(p,t,"attack",flare)
  check(stats.hit == 15 and stats.damage == 15 and stats.ranged and C.ITEMS.flare_gun.single_use,"Basic firearms caps flare accuracy at fifteen percent without changing damage or single-use status")
+ for kind in ["pistol","shotgun"]:
+  var firearm = {"kind":kind}
+  check(s.attack_stats(p,t,"attack",firearm).hit == 65,"Fully trained firearm reaches 65 percent: "+kind)
+  var trained = p.human_skills
+  p.human_skills = ["firearms"]
+  check(s.attack_stats(p,t,"attack",firearm).hit-C.ITEMS[kind].hit == 15,"Basic firearm training adds fifteen points: "+kind)
+  p.human_skills = trained
+ p.human_skills = ["hand_to_hand","knife_combat","axe_proficiency"]
+ check(s.attack_stats(p,t,"attack",{"kind":"knife"}).hit == 50 and s.attack_stats(p,t,"attack",{"kind":"fire_axe"}).hit == 40,"Specialized melee reaches the requested knife and axe totals")
  p.inside = true
  s.current_block(p).type = "cinema"
  s.current_block(p).generator = false
@@ -345,6 +406,6 @@ func human_balance_rules() -> void:
  firefighter_game.start(907,"Firefighter")
  var firefighter = firefighter_game.player()
  var axe = firefighter_game.item_by_uid(firefighter,firefighter.equipped)
- check(axe.kind == "fire_axe" and firefighter_game.has_skill(firefighter,"axe_proficiency") and not firefighter_game.has_skill(firefighter,"hand_to_hand") and firefighter_game.attack_stats(firefighter,firefighter_game.actors[1],"attack",axe).hit == 25,"New firefighters start with Axe Proficiency alone for twenty-five percent axe accuracy")
+ check(axe.kind == "fire_axe" and firefighter_game.has_skill(firefighter,"axe_proficiency") and not firefighter_game.has_skill(firefighter,"hand_to_hand") and firefighter_game.attack_stats(firefighter,firefighter_game.actors[1],"attack",axe).hit == 40,"New firefighters start with Axe Proficiency alone for forty percent axe accuracy")
  firefighter.xp = 1000
  check(firefighter_game.learn("hand_to_hand").is_empty() and firefighter_game.attack_stats(firefighter,firefighter_game.actors[1],"attack",axe).hit == 40,"Firefighters can learn hand-to-hand later to reach forty percent axe accuracy")

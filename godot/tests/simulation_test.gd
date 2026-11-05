@@ -114,7 +114,9 @@ func _initialize() -> void:
  check(s.act("heal",0).ok and p.hp == 35 and s.item_kind(p,"first_aid_kit").is_empty(),"Healing consumes kit")
  s.elapse(2.0)
  s.current_block(p).ruin = 2
- check(s.act("repair").ok and s.current_block(p).ruin == 1,"Repair changes building damage")
+ check(s.act("repair").ok and s.current_block(p).ruin == 0,"Repair clears ransacking in one action")
+ s.current_block(p).ruin = 1
+ s.elapse(3.0)
  check(not s.act("barricade").ok,"Cannot barricade damaged building")
  s.elapse(3.0)
  s.current_block(p).ruin = 0
@@ -172,7 +174,7 @@ func _initialize() -> void:
  scientist.down = false
  s.reindex()
  s._npc_turn(scientist)
- check(p.human and p.down and scientist.ap == 40,"Scientist revives player")
+ check(p.human and p.down and scientist.ap == 49,"Scientist revives player for one AP")
  var busy_ap = scientist.ap
  s._npc_turn(scientist)
  check(scientist.ap == busy_ap and scientist.busy_until == s.now()+3.0,"NPC revival obeys recovery independent of AP cost")
@@ -289,7 +291,7 @@ func restored_location_rules() -> void:
  check(s.location_description(p).contains("running"),"Description reports live generator state")
  b.fuel_until = 0
  b.ruin = 3
- check(s.location_description(p).contains("out of fuel") and s.location_description(p).contains("completely ruined"),"Description updates fuel and ruin state")
+ check(s.location_description(p).contains("out of fuel") and s.location_description(p).contains("has been ruined"),"Description updates fuel and ruin state")
  p.inside = false
  check(s.location_description(p).begins_with(b.outside_description),"Exterior has its own generated text")
  var repeat = isolated()
@@ -333,13 +335,13 @@ func perception_rules() -> void:
  b.ruin = 0
  p.inside = false
  var exterior = s.location_description(p)
- check(exterior.contains("Lights are on inside") and not exterior.contains("portable generator") and not exterior.contains("completely ruined"),"Exterior sees light without revealing interior equipment or damage")
+ check(exterior.contains("and lights are on inside.") and not exterior.contains("portable generator") and not exterior.contains("has been ruined"),"Exterior sees light without revealing interior equipment")
  p.inside = true
  var interior = s.location_description(p)
  check(interior.contains("portable generator") and interior.contains("running"),"Standing inside observes generator state")
  b.generator = false
  b.ruin = 3
- check(s.location_description(p).contains("completely ruined"),"Unpowered ruined interior is described")
+ check(s.location_description(p).contains("has been ruined"),"Unpowered ruined interior is described")
  s.die(p)
  var dark = s.location_description(p)
  check(not dark.contains(b.name) and not dark.contains(b.inside_description) and not dark.contains("body") and dark.contains("Everything is dark"),"Downed description reveals no surroundings or bodies")

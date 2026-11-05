@@ -29,7 +29,7 @@ This copies geographical data from the credited community map; it does not bundl
 ## Multi-block rules and identification
 
 - Humans and zombies can walk between connected indoor mall squares without Free Running. Large indoor complexes share an identity; leaving for outdoor zoo grounds clears the inside state.
-- Fort components remain distinct buildings. Perimeter travel is blocked except via the gatehouse. A character must enter the gatehouse before crossing into the compound. Free Running cannot cross the walls.
+- Fort components remain distinct buildings. Entry is through the gatehouse only; ground-level map exits are one-way across any perimeter square. A survivor inside the gatehouse can Free Run to adjacent outside buildings at VSB or lower. The Armoury requires its ground entrance. See [fort and Free Running rules](fort-and-free-running.md).
 - The fourteen open zoo squares are unbarricadable. All six enclosure buildings can be barricaded but have no closable doors. Open land, including fort yards, cannot be barricaded. These rules are normalized when loading older saves.
 - Office and NecroTech outside/map images are identical. Untrained humans and zombies see ordinary office identification from outside. NecroTech Employment reveals an **NT** logo and lab identification in either form. Interior laboratory equipment remains visible after entering.
 - Minimap and field-map tiles now use the connected aerial renderer, shared roads and multiple mall designs. Every large building is cropped across its footprint, with individual lighting and ruin states. Pole Mall has dedicated L-shaped inner-corner artwork. This supersedes the earlier building-card minimap described in the original artwork pass below.

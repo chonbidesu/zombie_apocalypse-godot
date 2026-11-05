@@ -52,7 +52,7 @@ static func go(s,a: Dictionary,goal: Dictionary) -> bool:
  if b.type == "gatehouse" and not b.fort.is_empty() and not a.inside and next.fort == b.fort:
   return s._try(a,"enter")
  var free_run = s.can_free_run_between(a,b,next)
- if a.inside and b.type != "gatehouse" and not free_run:
+ if a.inside and b.type != "gatehouse" and not free_run and not s.shared_building_interior(b,next):
   if s._try(a,"leave"): return true
   # Barricades cannot trap an occupant: a blocked Leave button still permits a
   # map-click ground exit, for NPCs as well as the player.
@@ -163,6 +163,7 @@ static func equip_best(s,a: Dictionary,target: Dictionary) -> bool:
  return false
 
 static func zombie_attack(s,a: Dictionary,target: Dictionary) -> String:
+ if not s.has_skill(a,"neck_lurch"): return "attack"
  var claws = s.attack_stats(a,target,"attack")
  var bite = s.attack_stats(a,target,"bite")
  var claw_score = expected_damage(s,target,claws)

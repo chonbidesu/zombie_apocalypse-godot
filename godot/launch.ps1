@@ -62,6 +62,18 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'World tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/fort_rules_test.gd --log-file fort-rules-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Fort rules tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/free_running_test.gd --log-file free-running-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Free Running tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/environment_rules_test.gd --log-file environment-rules-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Environment and dark building tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/ruin_debt_test.gd --log-file ruin_debt-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'ruin_debt tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/sleep_test.gd --log-file sleep-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'sleep tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/search_coverage_test.gd --log-file search_coverage-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'search_coverage tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/widescreen_test.gd --log-file widescreen-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Widescreen and powered-ruin tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/interface_test.gd --log-file interface-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Interface tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/connected_minimap_test.gd --log-file connected-minimap-tests.log

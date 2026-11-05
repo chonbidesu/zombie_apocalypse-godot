@@ -20,7 +20,7 @@ func screenshot(path: String) -> void:
  root.get_texture().get_image().save_png(path)
 
 func run() -> void:
- root.size = Vector2i(1440,960)
+ root.size = Vector2i(1920,1080)
  scene = Interface.new()
  root.add_child(scene)
  scene.set_process(false)
@@ -197,7 +197,7 @@ func gate_preview() -> void:
   var name = ["Fort Creedy","Fort Perryn"][i]
   var gate: Dictionary = scene.sim.blocks.filter(func(b): return b.fort == name and b.type == "gatehouse")[0]
   panel(canvas,name+ (" · EAST entrance" if i == 0 else " · SOUTH entrance"),Vector2(24+i*500,62),Rect2i(gate.x-1,gate.y-1,3,3),150)
- scene.label(canvas,"The perimeter meets both doorway jambs. There is no path around the gatehouse.",Rect2(24,558,960,26),18,Color("a8b6a5"))
+ scene.label(canvas,"Walls turn into the tower jambs. Entry uses the gatehouse; map exits remain possible.",Rect2(24,558,960,26),18,Color("a8b6a5"))
  await process_frame
  await process_frame
  await RenderingServer.frame_post_draw

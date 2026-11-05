@@ -20,9 +20,9 @@ config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]
 
-window/size/viewport_width=1440
-window/size/viewport_height=960
-window/size/window_width_override=1296
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/window_width_override=1536
 window/size/window_height_override=864
 window/stretch/mode="canvas_items"
 

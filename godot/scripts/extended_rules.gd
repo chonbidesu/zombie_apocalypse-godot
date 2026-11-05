@@ -1,16 +1,16 @@
 extends RefCounted
 
 const C = preload("res://scripts/catalog.gd")
-const COMMANDS = ["feed","drag","groan","bellow","gesture","say","smell","trail","scout","extract","tag","install_radio","repair_radio","destroy_radio","broadcast","phone","tune","lookout","locate","read","drink","eat","inspect","decorate","smash_decorations","wear","flare"]
+const COMMANDS = ["feed","drag","groan","bellow","gesture","say","smell","trail","scout","extract","tag","install_radio","repair_radio","destroy_radio","broadcast","phone","tune","tune_transmitter","lookout","locate","read","drink","eat","inspect","decorate","smash_decorations","wear","flare"]
 
 static func max_hp(a: Dictionary) -> int:
  return 60 if "body_building" in a.human_skills or (not a.human and "flesh_rot" in a.zombie_skills) else 50
 
 static func command_reason(s,a: Dictionary, command: String, target: int, data: Dictionary) -> String:
  var b = s.current_block(a)
- var human_commands = ["scout","extract","tag","install_radio","repair_radio","broadcast","phone","tune","lookout","locate","read","drink","eat","inspect","decorate","wear","flare"]
+ var human_commands = ["scout","extract","tag","install_radio","repair_radio","broadcast","phone","tune","tune_transmitter","lookout","locate","read","drink","eat","inspect","decorate","wear","flare"]
  if not a.human and command in human_commands: return "This requires living hands."
- var skill = {"feed":"digestion","drag":"feeding_drag","groan":"feeding_groan","bellow":"bellow","gesture":"flailing_gesture","smell":"scent_death","trail":"scent_trail","scout":"scout_safehouse","extract":"necro_employment"}.get(command,"")
+ var skill = {"feed":"digestion","drag":"feeding_drag","groan":"feeding_groan","bellow":"bellow","gesture":"flailing_gesture","smell":"scent_death","trail":"scent_trail","scout":"scout_safehouse","extract":"necro_employment","install_radio":"radio_operation","broadcast":"radio_operation","tune_transmitter":"radio_operation"}.get(command,"")
  if not skill.is_empty() and not s.has_skill(a,skill): return "Requires "+C.SKILLS[skill].name+"."
  if command in ["feed","drag","groan","bellow","gesture","destroy_radio","smash_decorations"] and a.human: return "This is an undead ability."
  if command in ["feed","drag","extract"]:
@@ -21,18 +21,17 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
    if t.get("fed",0) >= 10: return "The body has been picked clean."
    if a.hp >= max_hp(a): return "You are already at full health."
   if command == "drag":
-   if not a.inside or not t.human or t.down or t.hp > 12: return "Choose a dying survivor inside."
+   if not a.inside or not t.human or (not t.down and t.hp > 12): return "Choose a dying or unconscious survivor inside."
    if b.barricade > 0 or s.doors_closed(b): return "Dragging needs an open, unbarricaded entrance."
   if command == "extract":
    if t.human or t.down: return "Choose a standing zombie."
+   if s.has_skill(t,"brain_rot"): return "Brain Rot prevents DNA extraction."
    if t.tagged_until > s.minute: return "This zombie already has a current DNA tag."
    if s.item_kind(a,"dna_extractor").is_empty(): return "You need a DNA extractor."
  if command in ["install_radio","repair_radio","destroy_radio","decorate","smash_decorations","scout"] and (not a.inside or not s.is_building(b)): return "You must be inside."
- if command == "scout" and b.ruin > 0: return "Repair this shelter before scouting it."
+ if command == "scout" and b.ruin >= 3: return "Repair this shelter before scouting it."
  if command == "trail":
-  if a.trail_from < 0 or a.trail_until < s.minute: return "No recent scent trail remains."
-  var t = s.actors[a.trail_from]
-  if t.down or not t.human or maxi(absi(a.x-t.x),absi(a.y-t.y)) > 10: return "The trail has gone cold."
+  if s.scent_trail_destination(a).is_empty(): return "No recent scent trail remains."
  if command in ["groan","bellow"] and s.occupants(b,a.inside).filter(func(t): return t.human and not t.down).is_empty(): return "You need living prey nearby to call a feeding horde."
  if command == "say" and not a.human and not s.has_skill(a,"death_rattle"): return "Death Rattle is needed for zombie speech."
  if command == "tag" and s.item_kind(a,"spray_can").is_empty(): return "You need a spray can."
@@ -46,10 +45,8 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
   if not s.has_skill(a,"construction"): return "Construction is required to repair transmitters."
  if command == "destroy_radio" and not b.radio: return "No transmitter is installed."
  if command == "smash_decorations" and b.decorations.is_empty(): return "There are no decorations here."
- if command == "broadcast":
+ if command in ["broadcast","tune_transmitter"]:
   if not a.inside or not b.radio or b.radio_hp <= 0 or not s.powered(b): return "You need a powered radio transmitter."
-  var frequency = float(data.get("frequency",27.0))
-  if frequency >= 26 and frequency <= 28 and not s.has_skill(a,"radio_operation"): return "Radio Operation is needed on restricted channels."
  if command == "phone":
   if s.item_kind(a,"mobile_phone").is_empty(): return "You need a mobile phone."
   if not s.phone_coverage(a): return "Your suburb phone mast has no power."
@@ -122,10 +119,10 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    s.sense_report = "SCENT DEATH\n"+"\n".join(lines)
    return "%s read the scents of death around the neighbourhood." % name
   "trail":
-   var t = s.actors[a.trail_from]
-   a.memory = s.current_block(t).id
-   a.memory_until = s.minute+30
-   s.sense_report = "A familiar scent leads to [%d,%d]." % [t.x,t.y]
+   var destination = s.scent_trail_destination(a)
+   a.memory = destination.id
+   a.memory_until = a.trail_until
+   s.sense_report = "A familiar scent leads %s to [%d,%d]." % [s.scent_trail_direction(a),destination.x,destination.y]
    return "%s catch a familiar scent leading away." % name
   "scout":
    a.scout_site = b.id
@@ -134,7 +131,6 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    return "%s memorise this shelter's routes. Five actions each day will cost one less AP." % name
   "extract":
    var t = s.actors[target]
-   if s.has_skill(t,"brain_rot") and s.rng.randf() < 0.5: return "The degraded sample cannot be read."
    t.tagged_until = s.minute+1440
    a.xp += 4
    return "%s identify %s with a DNA sample; the lab network can track this tag for a day." % [name,s.display_name(t)]
@@ -161,8 +157,11 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
     b.radio = false
     a.xp += 5
    return "%s smash the radio transmitter's casing." % name
+  "tune_transmitter":
+   b.frequency = float(data.get("frequency",b.frequency))
+   return "%s tune the transmitter to %.2f MHz." % [name,b.frequency]
   "broadcast":
-   b.frequency = float(data.get("frequency",27.0))
+   b.frequency = float(data.get("frequency",b.frequency))
    return "[Radio %.2f MHz] %s: %s" % [b.frequency,s.display_name(a),text]
   "phone": return "[Phone to %s] %s: %s" % [s.display_name(s.actors[target]),s.display_name(a),text]
   "tune":

@@ -25,10 +25,10 @@ func _initialize() -> void:
   b.type = kind
   b.ruin = 0
   b.generator = false
-  check(is_equal_approx(s.search_chance(b,p),0.1 if kind in C.DARK_SEARCH_BUILDINGS else 0.2),"Unlit state odds: "+kind)
+  check(is_equal_approx(s.search_chance(b,p),0.01 if kind in C.DARK_SEARCH_BUILDINGS else 0.2),"Unlit state odds: "+kind)
   b.generator = true
   b.fuel_until = s.minute+100
-  var lit = 0.26 if kind == "mall" else (0.28 if kind == "necrotech_lab" else 0.3)
+  var lit = (0.26 if kind == "mall" else (0.28 if kind == "necrotech_lab" else 0.3)) if s.can_host_generator(b) else 0.2
   check(is_equal_approx(s.search_chance(b,p),lit),"Lit state odds: "+kind)
   var total = 0.0
   for item in s.search_distribution(b,p): total += s.item_search_chance(b,item,p)

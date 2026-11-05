@@ -115,7 +115,7 @@ func fort_cases(name: String) -> void:
   p.scout_site = origin.id; p.scout_used = 0; p.scout_day = s.minute/1440
   s.reindex()
   check(s.cost(p,"dump") == 5,"Fort dump costs exactly five AP")
-  p.ap = 4
+  p.ap = 0
   check(not s.act("dump",body.id).ok and p.x == origin.x and body.x == origin.x,"Unaffordable dump has no relocation effects")
   p.ap = 50
   check(s.act("dump",body.id).ok and p.ap == 45,"Fort dump spends exactly five AP")

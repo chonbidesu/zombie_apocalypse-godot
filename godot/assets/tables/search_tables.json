@@ -5,7 +5,11 @@
     "fire_axe": 0.15,
     "portable_generator": 0.07,
     "toolbox": 0.06,
-    "length_of_pipe": 0.04
+    "length_of_pipe": 0.04,
+    "beer": 0.025,
+    "newspaper": 0.02,
+    "spray_can": 0.025,
+    "clothing": 0.02
   },
   "junkyard": {
     "fuel_can": 0.035,
@@ -22,7 +26,12 @@
     "fencing_foil": 0.015,
     "mobile_phone": 0.004,
     "flak_jacket": 0.003,
-    "spray_can": 0.012
+    "spray_can": 0.012,
+    "book": 0.025,
+    "fire_axe": 0.01,
+    "newspaper": 0.025,
+    "clothing": 0.02,
+    "tennis_racket": 0.02
   },
   "factory": {
     "fuel_can": 0.33,
@@ -30,7 +39,8 @@
     "fire_axe": 0.16,
     "portable_generator": 0.08,
     "toolbox": 0.06,
-    "length_of_pipe": 0.04
+    "length_of_pipe": 0.04,
+    "clothing": 0.02
   },
   "warehouse": {
     "portable_generator": 0.018,
@@ -42,7 +52,10 @@
     "fire_axe": 0.001,
     "length_of_pipe": 0.03,
     "beer": 0.015,
-    "newspaper": 0.01
+    "newspaper": 0.01,
+    "fuel_can": 0.025,
+    "wine": 0.015,
+    "flashlight": 0.004
   },
   "hospital": {
     "first_aid_kit": 0.85,
@@ -56,7 +69,9 @@
     "crowbar": 0.05,
     "toolbox": 0.025,
     "flare_gun": 0.012,
-    "radio": 0.012
+    "radio": 0.012,
+    "clothing": 0.02,
+    "flashlight": 0.004
   },
   "police_department": {
     "pistol_clip": 0.1,
@@ -68,12 +83,14 @@
     "first_aid_kit": 0.005,
     "baseball_bat": 0.005,
     "knife": 0.005,
-    "radio": 0.005
+    "radio": 0.005,
+    "clothing": 0.005
   },
   "necrotech_lab": {
     "syringe": 0.625,
-    "dna_extractor": 0.235,
-    "gps_unit": 0.14
+    "dna_extractor": 0.225,
+    "gps_unit": 0.14,
+    "clothing": 0.01
   },
   "school": {
     "baseball_bat": 0.075,
@@ -85,7 +102,8 @@
     "poetry_book": 0.035,
     "fencing_foil": 0.02,
     "ski_pole": 0.02,
-    "spray_can": 0.02
+    "spray_can": 0.02,
+    "knife": 0.025
   },
   "mall": {
     "baseball_bat": 0.0261324,
@@ -133,7 +151,8 @@
     "wine": 0.04,
     "pool_cue": 0.04,
     "mobile_phone": 0.005,
-    "newspaper": 0.025
+    "newspaper": 0.025,
+    "shotgun": 0.001
   },
   "nightclub": {
     "baseball_bat": 0.05,
@@ -171,14 +190,16 @@
     "stuffed_animal": 0.015,
     "tapestry": 0.015,
     "clothing": 0.02,
-    "pumpkin": 0.003
+    "pumpkin": 0.003,
+    "dead_fir_tree": 0.003
   },
   "library": {
     "crowbar": 0.015,
     "knife": 0.01,
     "book": 0.2,
     "poetry_book": 0.08,
-    "newspaper": 0.02
+    "newspaper": 0.02,
+    "map": 0.005
   },
   "office": {
     "crowbar": 0.02,
@@ -186,7 +207,8 @@
     "first_aid_kit": 0.002,
     "newspaper": 0.015,
     "radio": 0.004,
-    "clothing": 0.01
+    "clothing": 0.01,
+    "map": 0.003
   },
   "bank": {
     "crowbar": 0.02,
@@ -199,14 +221,17 @@
     "knife": 0.02,
     "first_aid_kit": 0.002,
     "clothing": 0.02,
-    "newspaper": 0.01
+    "newspaper": 0.01,
+    "wine": 0.025,
+    "mobile_phone": 0.008
   },
   "railway_station": {
     "crowbar": 0.04,
     "toolbox": 0.015,
     "first_aid_kit": 0.002,
     "clothing": 0.035,
-    "newspaper": 0.015
+    "newspaper": 0.015,
+    "map": 0.003
   },
   "tower": {
     "crowbar": 0.02,
@@ -233,7 +258,8 @@
     "crowbar": 0.05,
     "fire_axe": 0.02,
     "length_of_pipe": 0.04,
-    "book": 0.025
+    "book": 0.025,
+    "clothing": 0.02
   },
   "stadium": {
     "cricket_bat": 0.06,
@@ -247,7 +273,8 @@
     "binoculars": 0.025,
     "flare_gun": 0.01,
     "beer": 0.025,
-    "newspaper": 0.02
+    "newspaper": 0.02,
+    "clothing": 0.035
   },
   "armoury": {
     "pistol": 0.025,

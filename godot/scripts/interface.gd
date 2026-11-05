@@ -57,7 +57,7 @@ var mall_store: String = "drugstore"
 var message_command: String = "say"
 var message_target: int = -1
 var message_data: Dictionary = {}
-var actions_bottom: float = 778.0
+var actions_bottom: float = 971.0
 var player_portrait: TextureRect
 var lurch_rng = RandomNumberGenerator.new()
 var lurch_segments: Array = [{"until":0.55,"frame":0}]
@@ -109,11 +109,14 @@ func _process(delta: float) -> void:
 
 func _unhandled_key_input(event: InputEvent) -> void:
  if not event is InputEventKey or not event.pressed or event.echo: return
+ if event.keycode == KEY_F11:
+  toggle_fullscreen()
+  return
  if event.keycode == KEY_ESCAPE:
   if not modal.is_empty(): modal = ""
   elif resting:
-   sim.stop_rest()
-   notice = "Rest cancelled."
+   sim.stop_rest("You wake up." if sim.sleeping else "Rest cancelled.")
+   notice = sim.last_rest_notice
   else: paused = not paused
   refresh()
   return
@@ -225,16 +228,16 @@ func refresh() -> void:
  _people()
  _actions()
  _log()
- rect(page, Rect2(20, 916, 1400, 28), INK)
- label(page, sim.location_description(p) if p.down else notice, Rect2(28, 917, 1380, 26), 18, GOLD)
+ rect(page, Rect2(20, 1044, 1880, 28), INK)
+ label(page, "You are asleep. Wake to return to the city." if sim.sleeping else (sim.location_description(p) if p.down else notice), Rect2(28, 1045, 1860, 26), 18, GOLD)
  if paused:
   rect(page, Rect2(400, 85, 1020, 52), Color("2c3526"), GOLD)
   label(page, "PAUSED  /  Press Escape or Resume to continue", Rect2(420, 90, 980, 40), 25, GOLD)
  if not modal.is_empty(): _modal()
- if is_instance_valid(log_view): log_view.visible = modal.is_empty() and not p.down
+ if is_instance_valid(log_view): log_view.visible = modal.is_empty() and not p.down and not sim.sleeping
 
 func _header() -> void:
- rect(page, Rect2(0, 0, 1440, 74), Color("111d18"))
+ rect(page, Rect2(0, 0, 1920, 74), Color("111d18"))
  label(page, "MALTON", Rect2(22, 5, 210, 44), 39, CREAM)
  label(page, sim.world_title.to_upper()+"  /  SURVIVAL", Rect2(24, 47, 400, 22), 15, GOLD)
  label(page, sim.time_text(), Rect2(270, 15, 270, 30), 24, GOLD)
@@ -246,10 +249,17 @@ func _header() -> void:
  button(page, "Load", Rect2(1136, 15, 80, 40), _load)
  button(page, "Help", Rect2(1226, 15, 80, 40), func(): open_modal("help"))
  button(page, "Restart", Rect2(1316, 15, 104, 40), func(): open_modal("restart"))
+ var fullscreen_button = button(page,"Full screen [F11]",Rect2(1440,15,190,40),toggle_fullscreen)
+ fullscreen_button.name = "FullscreenToggle"
+
+func toggle_fullscreen() -> void:
+ var fullscreen = DisplayServer.window_get_mode() in [DisplayServer.WINDOW_MODE_FULLSCREEN,DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
+ DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if fullscreen else DisplayServer.WINDOW_MODE_FULLSCREEN)
+ refresh()
 
 func _local_map() -> void:
  var p = sim.player()
- if p.down:
+ if p.down or sim.sleeping:
   var darkness = rect(page, Rect2(20,88,358,414), Color.BLACK)
   darkness.name = "DarkMinimap"
   return
@@ -268,26 +278,55 @@ func _local_map() -> void:
    tile.flat = true
    tile.z_index = 1000
    tile.disabled = paused or resting or (dx == 0 and dy == 0)
-   tile.tooltip_text = "%s\n%s • %s • %s\nMove: %d AP" % [b.name, C.pretty(sim.visible_type(b,p)), C.barricade_description(b.barricade), "Powered" if sim.powered(b) else "No power", sim.cost(p,"move")]
+   tile.tooltip_text = map_site_tooltip(b) + "\nMove: %d AP" % sim.cost(p,"move")
    if b.type == "gatehouse" and not b.fort.is_empty(): tile.tooltip_text += "\nOnly fort entrance: enter the gatehouse to access the grounds."
    if dx == 0 and dy == 0:
     var outline = rect(tile,Rect2(0,0,106,106),Color.TRANSPARENT,GOLD)
     outline.get_theme_stylebox("panel").set_border_width_all(1)
    necrotech_mark(tile,b,Vector2(42,27),19)
-   var humans = 0
-   var zombies = 0
-   for a in sim.occupants(b, p.inside if dx == 0 and dy == 0 else false):
-    if not a.down:
-     if a.human: humans += 1
-     else: zombies += 1
-   if humans+zombies > 0:
-    rect(tile, Rect2(3,3,68,16),Color(0.04,0.07,0.05,0.8))
-    label(tile, "%d H   %d Z" % [humans,zombies], Rect2(6,2,65,18),12,GREEN if zombies == 0 else RED)
+   _minimap_population(tile,b,p,p.inside if dx == 0 and dy == 0 else false)
  var caption = "%s  ·  [%02d, %02d]" % [sim.suburb_name(p).to_upper(),p.x,p.y]
  var caption_font = 24
  while caption_font > 14 and theme.default_font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,caption_font).x > 350: caption_font -= 1
  label(page,caption,Rect2(24,451,350,28),caption_font,GOLD)
  label(page, "Click a neighbour • Arrows / WASD • QEZC", Rect2(24,480,355,22), 15, MUTED)
+
+func _minimap_population(tile: Button, b: Dictionary, p: Dictionary, inside: bool) -> void:
+ var visible = sim.occupants(b,inside)
+ var names: Array[String] = []
+ for person in visible:
+  if person.id != p.id and person.human and not person.down: names.append(sim.display_name(person))
+ var sensed = sim.occupants(b) if not p.human and sim.has_skill(p,"scent_death") else visible
+ var zombies = sensed.filter(func(person): return person.id != p.id and not person.down and not person.human).size()
+ var rows: Array[String] = []
+ rows.assign(names.slice(0,3))
+ if names.size() > 3: rows.append("…")
+ if zombies > 0: rows.append("%d zombie%s" % [zombies,"" if zombies == 1 else "s"])
+ var y = 103-rows.size()*14
+ for i in range(rows.size()):
+  var undead_row = zombies > 0 and i == rows.size()-1
+  rect(tile,Rect2(3,y,100,13),Color(0.04,0.07,0.05,0.90))
+  var caption = label(tile,rows[i],Rect2(6,y-1,94,15),12,RED if undead_row else GREEN)
+  caption.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+  y += 14
+ if not names.is_empty(): tile.tooltip_text += "\n" + ", ".join(names)
+ if zombies > 0: tile.tooltip_text += "\n" + rows.back()
+ if not p.human and sim.has_skill(p,"scent_blood"):
+  var injured = sim.occupants(b).any(func(person): return person.human and not person.down and person.hp <= 12)
+  if injured:
+   var cross = rect(tile,Rect2(4,4,18,18),INK)
+   cross.name = "ScentBlood"
+   rect(cross,Rect2(7,3,4,12),RED)
+   rect(cross,Rect2(3,7,12,4),RED)
+   tile.tooltip_text += "\nScent Blood: a heavily injured survivor"
+ if p.trail_origin == b.id:
+  var direction = sim.scent_trail_direction(p)
+  if not direction.is_empty():
+   var arrow = {"north":"↑","south":"↓","east":"→","west":"←","northeast":"↗","northwest":"↖","southeast":"↘","southwest":"↙"}
+   var marker = rect(tile,Rect2(84,4,18,18),INK)
+   marker.name = "ScentTrail"
+   label(marker,arrow[direction],Rect2(2,0,16,17),15,GOLD)
+   tile.tooltip_text += "\nScent Trail leads " + direction
 
 func _status() -> void:
  var p = sim.player()
@@ -297,29 +336,31 @@ func _status() -> void:
  atlas.region = portrait_region(p)
  player_portrait = picture(page, atlas, Rect2(24,518,98,98))
  label(page, sim.display_name(p), Rect2(124,521,245,28), 24)
- label(page, ("SURVIVOR" if p.human else "UNDEAD") + (" / DOWN" if p.down else " / STANDING"), Rect2(124,550,245,24), 16, GREEN if p.human else RED)
+ label(page, ("SURVIVOR" if p.human else "UNDEAD") + (" / ASLEEP" if sim.sleeping else (" / DOWN" if p.down else " / STANDING")), Rect2(124,550,245,24), 16, GREEN if p.human else RED)
  var health = label(page,"%d / %d HP · %d XP" % [p.hp,sim.max_hp(p),p.xp],Rect2(124,578,245,28),18)
  health.name = "PlayerHealth"
  rect(page, Rect2(31,638,334,6), INK)
- rect(page, Rect2(31,638,334*float(p.ap)/50.0,6), GOLD)
+ rect(page, Rect2(31,638,334*clampf(float(p.ap)/50.0,0.0,1.0),6), GOLD)
  var energy = label(page,"%02d / 50 AP" % p.ap,Rect2(124,608,111,26),16,GOLD)
  energy.name = "PlayerEnergy"
  label(page, "+1 AP / 30 min", Rect2(238,609,133,24), 14, MUTED)
 
 func _rest_controls() -> void:
- var rest = button(page,"Cancel rest" if resting else "Rest +10 AP [R]",Rect2(24,658,171,30),func():
-  if resting: sim.stop_rest(); notice = "Rest cancelled."; refresh()
+ var rest = button(page,("Wake" if sim.sleeping else "Cancel rest") if resting else "Rest +10 AP [R]",Rect2(24,658,171,30),func():
+  if resting: sim.stop_rest("You wake up." if sim.sleeping else "Rest cancelled."); notice = sim.last_rest_notice; refresh()
   else: begin_rest(10),true)
  rest.add_theme_font_size_override("font_size",16)
  rest.disabled = paused
- var full = button(page,"Rest to 50 AP",Rect2(203,658,171,30),func(): begin_rest(50))
+ var full = button(page,"Sleep",Rect2(203,658,171,30),begin_sleep)
+ full.name = "SleepButton"
+ full.tooltip_text = "Sleep until 50 AP at 128× speed. Barricades collapsing or sustained damage can wake you."
  full.add_theme_font_size_override("font_size",16)
  full.disabled = resting or paused
  timing_label = label(page,_timing_text(),Rect2(24,691,350,22),14,GOLD)
 
 func _inventory() -> void:
  var p = sim.player()
- if p.down:
+ if p.down or sim.sleeping:
   rect(page,Rect2(20,720,358,184),Color.BLACK)
   return
  rect(page,Rect2(20,720,358,184),PANEL,Color("4e5847"))
@@ -356,18 +397,20 @@ func _inventory() -> void:
 
 func _location(b: Dictionary) -> void:
  var p = sim.player()
- if p.down:
-  var darkness = rect(page,Rect2(400,84,1020,651),Color.BLACK)
+ if p.down or sim.sleeping:
+  var darkness = rect(page,Rect2(400,84,1020,851),Color.BLACK)
   darkness.name = "DarkEnvironment"
-  label(page,"EVERYTHING IS DARK",Rect2(420,250,980,40),27,MUTED)
-  var down_text = label(page,sim.location_description(p),Rect2(420,303,980,62),20,MUTED)
+  label(page,"ASLEEP" if sim.sleeping else "EVERYTHING IS DARK",Rect2(420,250,980,40),27,MUTED)
+  var down_text = label(page,"The city fades away. You will awaken at 50 AP, or if collapsing barricades or sustained injuries disturb you." if sim.sleeping else sim.location_description(p),Rect2(420,303,980,62),20,MUTED)
   down_text.name = "LocationDescription"
+  down_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
   return
  label(page, b.name.to_upper(), Rect2(400,84,1010,38), 31, CREAM)
  var subtitle = "%s / %s" % ["INSIDE" if p.inside else "OUTSIDE", C.pretty(sim.visible_type(b,p))]
  if sim.is_building(b):
-  subtitle += " · %s · %s" % [C.barricade_description(b.barricade).capitalize(), "Lights on" if sim.powered(b) else "No lights"]
-  if p.inside or not sim.doors_closed(b): subtitle += " · " + ("Ruined" if b.ruin >= 3 else ("Damaged" if b.ruin > 0 else "Intact"))
+  subtitle += " · %s · %s" % [sim.barricade_description(b).capitalize(), "Lights on" if sim.powered(b) else "Unpowered"]
+  if b.ruin >= 3 or p.inside or sim.entrance_is_open(b):
+   subtitle += " · " + ("Ruined" if b.ruin >= 3 else ("Ransacked" if b.ruin > 0 else "Intact"))
  label(page,subtitle,Rect2(402,124,690 if b.type == "mall" and sim.has_skill(p,"shopping") else 1005,26),19,MUTED)
  var filename = "settings/%s_%s.png" % ["office" if b.type == "necrotech_lab" and not p.inside else b.type, "inside" if p.inside else "outside"]
  rect(page,Rect2(400,159,1020,576),INK,GOLD)
@@ -379,8 +422,8 @@ func _location(b: Dictionary) -> void:
  var text = sim.location_description(p)
  var font_size = description_font_size(text)
  var height = description_height(text,font_size)
- rect(page,Rect2(407,167,1006,height+16),Color(0.02,0.04,0.03,0.88))
- var description = label(page,text,Rect2(416,175,987,height),font_size,CREAM)
+ rect(page,Rect2(400,745,1020,190),PANEL,Color("4e5847"))
+ var description = label(page,text,Rect2(416,753,987,height),font_size,CREAM)
  description.name = "LocationDescription"
  description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  description.add_theme_constant_override("line_spacing",3)
@@ -393,11 +436,11 @@ func description_height(text: String, font_size: int) -> float:
 
 func description_font_size(text: String) -> int:
  var font_size = 20
- while font_size > 12 and description_height(text,font_size) > 190: font_size -= 1
+ while font_size > 12 and description_height(text,font_size) > 174: font_size -= 1
  return font_size
 
 func _people() -> void:
- if sim.player().down: return
+ if sim.player().down or sim.sleeping: return
  var people = ordered_people().filter(func(a): return a.id != 0)
  var humans = people.filter(func(a): return a.human)
  var zombies = people.filter(func(a): return not a.human)
@@ -437,10 +480,11 @@ func _people() -> void:
   target.add_theme_stylebox_override("hover",hover)
   target.tooltip_text = "%s · %s" % [sim.display_name(a),"Down" if a.down else (a.job if a.human else "Zombie")]
   if a.human: target.tooltip_text += " · " + sim.trust_description(a,sim.player())
-  if a.human and ((sim.has_skill(sim.player(),"diagnosis") and not (sim.player().inside and sim.current_block(sim.player()).type in ["bank","cinema","nightclub","armoury"] and not sim.powered(sim.current_block(sim.player())))) or sim.has_skill(sim.player(),"scent_blood")):
-   target.tooltip_text += " · %d/%d HP" % [a.hp,sim.max_hp(a)]
-   if a.infected and sim.has_skill(sim.player(),"scent_blood"): target.tooltip_text += " · Infected"
-  elif a.human and sim.has_skill(sim.player(),"scent_fear") and a.hp < 25: target.tooltip_text += " · "+("Dying" if a.hp < 13 else "Wounded")
+  var p = sim.player()
+  var b = sim.current_block(p)
+  var scent_health = a.human and not a.down and a.hp < sim.max_hp(a) and sim.has_skill(p,"scent_fear")
+  var diagnosis = a.human and sim.has_skill(p,"diagnosis") and not (p.inside and sim.is_dark_building(b) and not sim.powered(b))
+  if scent_health or diagnosis: target.tooltip_text += " · %d/%d HP" % [a.hp,sim.max_hp(a)]
   var sheet = C.occupation_sheet(a.job,a.human)
   var atlas = AtlasTexture.new()
   atlas.atlas = tex("sprite_sheets/"+sheet+"_sprite_sheet.png")
@@ -459,14 +503,18 @@ func _people() -> void:
   var visual = {"node":sprite,"id":a.id,"offset":a.id%8,"sheet":sheet,"size":entry.size,"ground":entry.size-12}
   position_actor_sprite(visual)
   actor_buttons.append(visual)
-  var bar_width = minf(34.0,spacing*0.48)
-  rect(target,Rect2((spacing-bar_width)/2,entry.size-11,bar_width,8),Color("290d0d"))
-  rect(target,Rect2((spacing-bar_width)/2,entry.size-11,bar_width*clampf(float(a.hp)/sim.max_hp(a),0,1),8),Color("c63f37"))
+  if scent_health:
+   var bar_width = minf(34.0,spacing*0.48)
+   rect(target,Rect2((spacing-bar_width)/2,entry.size-11,bar_width,8),Color("290d0d"))
+   rect(target,Rect2((spacing-bar_width)/2,entry.size-11,bar_width*clampf(float(a.hp)/sim.max_hp(a),0,1),8),Color("c63f37"))
   if not a.down and not a.speech.is_empty() and a.speech_until > sim.now(): speaking.append({"actor":a,"bounds":bounds})
  for entry in speaking: _speech_bubble(actors_layer,entry.actor,entry.bounds)
 
 func _actions() -> void:
  var p = sim.player()
+ if sim.sleeping:
+  actions_bottom = 940
+  return
  if p.inside and sim.current_block(p).type == "mall" and sim.has_skill(p,"shopping"):
   var stores = OptionButton.new()
   stores.position = Vector2(1110,125)
@@ -480,21 +528,22 @@ func _actions() -> void:
  if p.down:
   options = [["stand","Stand up",-1]]
  elif p.human:
-  options = [["leave" if p.inside else "enter", "Leave" if p.inside else "Enter", -1], ["search","Search",-1], ["attack","Attack",selected_actor], ["heal","Heal self",0], ["heal","Heal ally",selected_actor], ["revive","Revive",selected_actor], ["barricade","Barricade",-1], ["repair","Repair",-1], ["repair_generator","Fix generator",-1], ["dump","Dump body",selected_actor], ["close","Close doors",-1], ["request","Ask supplies",selected_actor], ["reload","Reload",-1], ["break","Break cades",-1], ["generator","Install gen.",-1], ["fuel","Fuel gen.",-1], ["scan","Scan",-1], ["manufacture","Make syringe",-1]]
+  options = [["leave" if p.inside else "enter", "Leave" if p.inside else "Enter", -1], ["search","Search",-1], ["attack","Attack",selected_actor], ["heal","Heal self",0], ["heal","Heal ally",selected_actor], ["revive","Revive",selected_actor], ["barricade","Barricade",-1], ["repair","Repair building" if sim.current_block(p).ruin >= 3 else "Repair the room",-1], ["repair_generator","Fix generator",-1], ["dump","Dump body",selected_actor], ["close","Close doors",-1], ["request","Ask supplies",selected_actor], ["reload","Reload",-1], ["break","Break cades",-1], ["generator","Install gen.",-1], ["fuel","Fuel gen.",-1], ["scan","Scan",-1], ["manufacture","Make syringe",-1]]
   if sim.current_block(p).type == "tower" and p.inside: options.append(["jump","Jump",-1])
  else:
-  options = [["leave" if p.inside else "enter", "Leave" if p.inside else "Enter", -1], ["attack","Claws",selected_actor,{"unarmed":true}], ["bite","Bite",selected_actor], ["break","Break cades",-1], ["ransack","Ransack",-1], ["destroy_generator","Smash gen.",-1]]
+  options = [["leave" if p.inside else "enter", "Leave" if p.inside else "Enter", -1], ["attack","Claws",selected_actor,{"unarmed":true}], ["bite","Bite",selected_actor], ["close","Close doors",-1], ["break","Break cades",-1], ["ruin" if sim.current_block(p).get("ransack_hits",0) >= 5 else "ransack", "Ruin building" if sim.current_block(p).get("ransack_hits",0) >= 5 else "Ransack",-1], ["destroy_generator","Smash gen.",-1]]
   var weapon = sim.item_by_uid(p,p.equipped)
   if not weapon.is_empty() and weapon.kind in C.ZOMBIE_MELEE_ITEMS: options.append(["attack","Swing weapon",selected_actor])
  if not p.down:
-  options.append_array([["say","Speak",-1],["scout","Scout shelter",-1],["extract","DNA sample",selected_actor],["tag","Spray tag",-1],["install_radio","Set up radio",-1],["repair_radio","Fix radio",-1],["broadcast","Broadcast",-1],["phone","Phone",selected_actor],["tune","Tune radio",-1],["lookout","Binoculars",-1],["locate","GPS/map",-1],["feed","Feed",selected_actor],["drag","Drag prey",selected_actor],["groan","Groan",-1],["bellow","Bellow",-1],["gesture","Gesture",selected_actor],["smell","Scent death",-1],["trail","Scent trail",-1],["destroy_radio","Smash radio",-1],["smash_decorations","Smash decor",-1],["flare","Signal flare",-1]])
+  options.append_array([["say","Speak",-1],["scout","Scout shelter",-1],["extract","DNA sample",selected_actor],["tag","Spray tag",-1],["install_radio","Set up radio",-1],["repair_radio","Fix radio",-1],["broadcast","Broadcast",-1],["phone","Phone",selected_actor],["tune","Tune receiver",-1],["tune_transmitter","Tune transmitter",-1],["lookout","Binoculars",-1],["locate","GPS/map",-1],["feed","Feed",selected_actor],["drag","Drag prey",selected_actor],["groan","Groan",-1],["bellow","Bellow",-1],["gesture","Gesture",selected_actor],["smell","Scent death",-1],["trail","Scent trail",-1],["destroy_radio","Smash radio",-1],["smash_decorations","Smash decor",-1],["flare","Signal flare",-1]])
  options = options.filter(func(option): return sim.action_feedback(p,option[0],option[2],option[3] if option.size() > 3 else {},true).is_empty())
  for i in range(options.size()):
   var option = options[i]
-  _action_button(option[0],option[1],Rect2(400+(i%10)*102,744+(i/10)*31,98,28),option[2],option[3] if option.size() > 3 else {})
- actions_bottom = 744+ceili(float(options.size())/10)*31
+  _action_button(option[0],option[1],Rect2(400+(i%10)*102,944+(i/10)*31,98,28),option[2],option[3] if option.size() > 3 else {})
+ actions_bottom = 944+ceili(float(options.size())/10)*31
 
 func _timing_text() -> String:
+ if sim.sleeping: return "SLEEP 128×  ·  %d / 50 AP" % sim.player().ap
  if sim.player().down and sim.time_speed() > 1: return "DOWN %d× · Recovering to stand" % sim.time_speed()
  if resting: return "REST %d×  ·  %d / %d AP" % [int(sim.time_speed()),sim.player().ap,rest_target]
  var remaining = sim.player().busy_until-sim.now()
@@ -503,10 +552,10 @@ func _timing_text() -> String:
 
 func _action_button(command: String, text: String, bounds: Rect2, target: int = -1, data: Dictionary = {}) -> void:
  if not sim.action_feedback(sim.player(),command,target,data,true).is_empty(): return
- var ap_cost = sim.cost(sim.player(),command)
+ var ap_cost = sim.cost(sim.player(),command,target)
  var caption = text + (" · %d" % ap_cost if ap_cost > 0 else "")
  var node = button(page, caption, bounds, func():
-  if command in ["tag","say","gesture","broadcast","phone","tune"]:
+  if command in ["tag","say","gesture","broadcast","phone","tune","tune_transmitter"]:
    message_command = command
    message_target = target
    message_data = data.duplicate()
@@ -526,34 +575,32 @@ func _action_button(command: String, text: String, bounds: Rect2, target: int = 
  action_controls.append({"node":node,"command":command,"target":target,"data":data,"tip":tip})
 
 func _log() -> void:
- if sim.player().down:
-  rect(page,Rect2(400,actions_bottom+8,1020,904-actions_bottom-8),Color.BLACK)
+ if sim.player().down or sim.sleeping:
+  var darkness = rect(page,Rect2(1440,88,460,946),Color.BLACK)
+  darkness.name = "DarkDialogue"
   if is_instance_valid(log_view): log_view.text = ""
   return
- var activity_y = actions_bottom+8
- label(page,"ACTIVITY",Rect2(400,activity_y,180,24),18,GOLD)
+ rect(page,Rect2(1440,88,460,946),PANEL,Color("4e5847"))
+ label(page,"DIALOGUE & ACTIVITY",Rect2(1452,96,285,26),19,GOLD)
+ button(page,"History",Rect2(1794,96,94,26),func(): open_modal("history"))
  for i in range(4):
   var choice = ["All","You","Allies","Hostiles"][i]
-  button(page,choice,Rect2(615+i*120,activity_y-2,110,24),func(): log_filter = choice; _update_log(); refresh(),log_filter == choice)
- button(page,"History",Rect2(1260,activity_y-2,160,24),func(): open_modal("history"))
- rect(page, Rect2(400,activity_y+28,1020,904-(activity_y+28)), PANEL, Color("4e5847"))
+  button(page,choice,Rect2(1452+i*110,132,104,28),func(): log_filter = choice; _update_log(); refresh(),log_filter == choice)
  if not is_instance_valid(log_view):
   log_view = RichTextLabel.new()
-  log_view.position = Vector2(413,787)
-  log_view.size = Vector2(994,110)
-  log_view.add_theme_font_size_override("normal_font_size",18)
+  log_view.name = "DialogueFeed"
   log_view.add_theme_color_override("default_color",CREAM)
   log_view.bbcode_enabled = true
   log_view.scroll_following = true
   add_child(log_view)
- log_view.position = Vector2(413,activity_y+31)
- log_view.size = Vector2(994,maxf(18,900-(activity_y+31)))
- log_view.add_theme_font_size_override("normal_font_size",16)
+ log_view.position = Vector2(1454,172)
+ log_view.size = Vector2(432,848)
+ log_view.add_theme_font_size_override("normal_font_size",18)
  _update_log()
 
 func _update_log() -> void:
  if not is_instance_valid(log_view): return
- if sim.player().down:
+ if sim.player().down or sim.sleeping:
   log_view.text = ""
   log_view.visible = false
   return
@@ -573,6 +620,13 @@ func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
  notice = result.message if not result.ok else (sim.messages.back().text if not sim.messages.is_empty() else "")
  feed.ingest(sim.messages)
  if result.ok and command in ["smell","trail","lookout","locate"]: modal = "intelligence"
+ refresh()
+
+func begin_sleep() -> void:
+ if paused or not modal.is_empty(): return
+ var rejection = sim.begin_sleep()
+ notice = rejection if not rejection.is_empty() else sim.last_rest_notice
+ feed.ingest(sim.messages)
  refresh()
 
 func begin_rest(amount: int) -> void:
@@ -610,7 +664,8 @@ func _modal() -> void:
  overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  overlay.mouse_filter = Control.MOUSE_FILTER_STOP
  page.add_child(overlay)
- rect(overlay, Rect2(0,0,1440,960), Color(0.01,0.03,0.02,0.92))
+ overlay.position = Vector2(240,60)
+ rect(overlay, Rect2(-240,-60,1920,1080), Color(0.01,0.03,0.02,0.92))
  rect(overlay, Rect2(100,80,1240,800), PANEL, GOLD)
  label(overlay, {"map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / ONE LIFE, TWO FORMS", "help":"SURVIVING DULSTON", "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE"}[modal], Rect2(130,99,1050,48), 32, GOLD)
  button(overlay, "Close [Esc]", Rect2(1170,103,140,38), func(): modal = ""; refresh())
@@ -639,13 +694,18 @@ func _modal() -> void:
   history.text = feed.format_rows(sim.messages,history_filter)
   overlay.add_child(history)
  elif modal == "help":
-  var help_text = "Explore with the 3×3 map, arrow keys or WASD. Q/E/Z/C move diagonally.\nEnter buildings to search and find shelter. Free running links intact interiors.\n\nSelect a person, then attack, heal, revive, or ask for supplies.\nSelect an inventory item to equip, give, or drop it. Undead can wield crowbars, bats and pipes; claws are stronger.\n\nAP measures energy, not time. Everyone regains 1 AP / 30 game minutes.\nActions resolve once, then briefly recover. Extra clicks cannot queue or spam.\nThe world runs continuously: 1 game minute / second; resting speeds it to 16×.\nDanger interrupts rest. Space pauses; maps, skills and history pause too.\n\nDeath preserves your identity, XP, skills and possessions. Stand as a zombie;\nseek June at the lab east of Mercy General for revival. Brain Rot requires\na powered lab and NecroNet access. Both skill trees use the same XP pool.\n\nMaya heals, Scott repairs and barricades, guards defend, and June revives.\nKeep their supplies stocked. They have the same AP limits as you.\n\nPrototype balance: 50 AP; revival 10 AP; standing 10 AP (Ankle Grab: 1);\nsyringe manufacture 20 AP. This is a local sandbox, not the full city war.\n\nGold: you  •  Green: allies  •  Red: enemies / danger  •  Grey: world\nRoutine activity is grouped; History preserves all local details.\nSpace: pause    R: rest    M: map    Escape: pause / close / cancel rest"
+  var help_text = "Explore with the 3×3 map, arrow keys or WASD. Q/E/Z/C move diagonally.\nEnter buildings to search and find shelter. Free running links intact interiors.\n\nSelect a person, then attack, heal, revive, or ask for supplies.\nSelect an inventory item to equip, give, or drop it. Undead can wield crowbars, bats and pipes; claws are stronger.\n\nAP measures energy, not time. Everyone regains 1 AP / 30 game minutes.\nActions resolve once, then briefly recover. Extra clicks cannot queue or spam.\nThe world runs continuously: 1 game minute / second; resting speeds it to 16×.\nDanger interrupts ordinary rest. Sleep runs at 128× speed with dark screens;\ncollapsing barricades or sustained injuries wake you. Space pauses; menus pause too.\n\nDeath preserves your identity, XP, skills and possessions. Stand as a zombie;\nseek June at the lab east of Mercy General for revival. Brain Rot requires\na powered lab and NecroNet access. Both skill trees use the same XP pool.\n\nMaya heals, Scott repairs and barricades, guards defend, and June revives.\nKeep their supplies stocked. They have the same AP limits as you.\n\nPrototype balance: 50 AP; revival 1 AP (Brain Rot: 10); standing 10 AP (Death Lurch: 5, Ankle Grab: 1);\nsyringe manufacture 20 AP. This is a local sandbox, not the full city war.\n\nGold: you  •  Green: allies  •  Red: enemies / danger  •  Grey: world\nRoutine activity is grouped; History preserves all local details.\nSpace: pause    R: rest    M: map    F11: full screen    Escape: pause / close / wake / cancel rest"
   var body = label(overlay,help_text,Rect2(140,170,1160,680),21)
   body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  elif modal == "restart": _new_game_modal()
  elif modal == "jump":
   label(overlay,"Jumping kills your human character. You keep your identity and can rise as a zombie.",Rect2(140,230,1140,60),24)
   button(overlay,"Jump from the tower · 1 AP",Rect2(140,340,350,50),func(): modal = ""; dispatch("jump"),true)
+
+func map_site_tooltip(b: Dictionary) -> String:
+ var text = "%s\n%s" % [b.name,C.pretty(sim.visible_type(b,sim.player()))]
+ if sim.is_building(b): text += "\n" + sim.exterior_building_clues(b)
+ return text
 
 func _map_modal() -> void:
  var p = sim.player()
@@ -685,7 +745,7 @@ func _map_modal() -> void:
     var mark = Control.new()
     mark.position = bounds.position-Vector2(135,196)
     mark.size = Vector2.ONE*61
-    mark.tooltip_text = b.name
+    mark.tooltip_text = map_site_tooltip(b)
     mark.z_index = 1000
     mark.mouse_filter = Control.MOUSE_FILTER_PASS
     field_map.add_child(mark)
@@ -715,18 +775,27 @@ func _skills_modal() -> void:
  scroll.size = Vector2(1180,645)
  overlay.add_child(scroll)
  var content = Control.new()
- content.custom_minimum_size = Vector2(1160,23*102)
  scroll.add_child(content)
- var index = {"human":0,"zombie":0}
- for key in C.SKILLS:
+ var height = {"human":0,"zombie":0}
+ var tracks = {"military":"Military","science":"Scientific","civilian":"Civilian","scent":"Scent","offensive":"Offensive & Attack","utility":"Utility & Brain"}
+ var skills: Array = []
+ for track in tracks:
+  skills.append_array(C.SKILLS.keys().filter(func(key): return C.SKILLS[key].category == track or (track == "military" and C.SKILLS[key].category == "hunter")))
+ var last_track = ""
+ for key in skills:
   var def = C.SKILLS[key]
-  var x = 10 if def.side == "human" else 605
-  var y = index[def.side]*102
-  index[def.side] += 1
   var owned = key in p.human_skills or key in p.zombie_skills
+  var x = 10 if def.side == "human" else 605
+  var track = "military" if def.category == "hunter" else def.category
+  if track != last_track:
+   label(content,tracks[track].to_upper(),Rect2(x,height[def.side],555,32),23,GOLD)
+   height[def.side] += 40
+   last_track = track
+  var y = height[def.side]
+  height[def.side] += 102
   var active = sim.has_skill(p,key)
   label(content,def.name+(" / ACTIVE" if active else " / DORMANT") if owned else def.name,Rect2(x,y,555,27),21,GREEN if owned and active else CREAM)
-  var details = "[%s] %s" % [C.pretty(def.category),def.description]
+  var details: String = def.description
   if not str(def.requires).is_empty(): details += " Needs "+C.SKILLS[def.requires].name+"."
   var desc = label(content,details,Rect2(x,y+28,405,70),16,MUTED)
   desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -736,6 +805,7 @@ func _skills_modal() -> void:
    refresh())
   buy.disabled = not sim.skill_reason(p,key).is_empty()
   buy.tooltip_text = sim.skill_reason(p,key)
+ content.custom_minimum_size = Vector2(1160,maxi(height.human,height.zombie))
 
 func _item_menu(item: Dictionary) -> void:
  if paused or resting or not modal.is_empty(): return
@@ -901,7 +971,7 @@ func _message_modal() -> void:
  frequency.min_value = 25.0
  frequency.max_value = 30.0
  frequency.step = 0.01
- frequency.value = sim.player().channel
+ frequency.value = sim.current_block(sim.player()).frequency if message_command in ["broadcast","tune_transmitter"] else sim.player().channel
  overlay.add_child(frequency)
  var contacts = OptionButton.new()
  contacts.position = Vector2(440,340)
@@ -995,7 +1065,7 @@ func _new_game_modal() -> void:
    new_world_config.counts = sim.World.defaults(int(new_world_config.width),int(new_world_config.height)).counts
    refresh())
  else:
-  var text = "All original named squares across 100 Malton suburbs.\nThe imported data preserves the original zoo, forts and mall footprints.\nMove across suburb boundaries without loading another map.\n\nZoo squares cannot be barricaded. Fort walls can only be crossed via a gatehouse.\nConnected indoor mall squares do not require Free Running." if new_world_mode == "malton" else "The legacy 10×10 neighbourhood, retained for focused playtests and old saves."
+  var text = "All original named squares across 100 Malton suburbs.\nThe imported data preserves the original zoo, forts and mall footprints.\nMove across suburb boundaries without loading another map.\n\nZoo squares cannot be barricaded. Enter forts through the gatehouse. Perimeter map exits lead outside.\nConnected indoor mall squares do not require Free Running." if new_world_mode == "malton" else "The legacy 10×10 neighbourhood, retained for focused playtests and old saves."
   var explanation = label(overlay,text,Rect2(140,300,1130,320),23,MUTED)
   explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  var error_text = label(overlay,new_game_error,Rect2(140,754,1140,48),18,RED)

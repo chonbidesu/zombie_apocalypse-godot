@@ -34,13 +34,15 @@ func _initialize() -> void:
  s.give_item(p,"portable_generator")
  b.ruin = 3
  var inventory_before = p.inventory.size()
- check(not s.act("generator").ok and p.inventory.size() == inventory_before and not b.generator,"Ruined building blocks installation without consuming generator")
+ check(s.act("generator").ok and p.inventory.size() == inventory_before-1 and b.generator,"Ruined building accepts and consumes a portable generator")
  b.generator = true
  b.fuel_until = s.minute+1440
- check(not s.powered(b),"Even inconsistent old state cannot light a ruin")
+ check(s.powered(b),"A fueled generator lights a ruin")
  check(is_equal_approx(s.search_chance(b),0.10),"Ruins have a flat ten percent find rate")
  b.ruin = 0
  b.generator = false
+ ready(s,p)
+ s.give_item(p,"portable_generator")
  check(s.act("generator").ok and b.generator,"Generator installs after complete repair")
  var sane = true
  for building in C.BUILDINGS:
@@ -55,7 +57,7 @@ func _initialize() -> void:
  for building in C.BUILDINGS:
   b.type = building
   if s.item_search_chance(b,"fuel_can") > 0: fuel_sources.append(building)
- check(fuel_sources.size() == 7 and "mall" in fuel_sources and "auto_repair" in fuel_sources and "junkyard" in fuel_sources and "factory" in fuel_sources and "power_station" in fuel_sources and "storehouse" in fuel_sources and "vehicle_depot" in fuel_sources,"Fuel is restricted to plausible repair, industry and military supply sites")
+ check(fuel_sources.size() == 8 and "warehouse" in fuel_sources and "mall" in fuel_sources and "auto_repair" in fuel_sources and "junkyard" in fuel_sources and "factory" in fuel_sources and "power_station" in fuel_sources and "storehouse" in fuel_sources and "vehicle_depot" in fuel_sources,"Fuel is restricted to plausible repair, industry and military supply sites")
  b.type = "auto_repair"
  var auto_fuel = s.item_search_chance(b,"fuel_can")
  b.type = "junkyard"
@@ -76,6 +78,9 @@ func _initialize() -> void:
  b.type = "school"
  check(s.item_search_chance(b,"baseball_bat") > fire_axe and fire_axe < 0.05,"Common sports weapons are easier to find than the best melee weapon")
  b.type = "fire_station"
+ b.generator = true
+ b.generator_hp = C.GENERATOR_HP
+ b.fuel_until = s.minute+1440
  var lit_axe = s.item_search_chance(b,"fire_axe")
  b.fuel_until = 0
  check(is_equal_approx(s.item_search_chance(b,"fire_axe"),lit_axe*C.SEARCH_UNLIT_CHANCE/C.SEARCH_LIT_CHANCE),"Lighting modifies each individual item chance")
@@ -220,9 +225,9 @@ func _initialize() -> void:
  check(s._spare_item(donor,p).is_empty(),"Rare supplies require deeper trust")
  donor.trust[str(p.id)] = 80
  check(s._spare_item(donor,p).kind == "portable_generator","High trust makes an unneeded rare item shareable")
- check(s.save_to("res://test-loot-trust-save.json") == OK,"Loot and relationship state saves")
+ check(s.save_to("user://test-loot-trust-save.json") == OK,"Loot and relationship state saves")
  var loaded = Sim.new()
- check(loaded.load_from("res://test-loot-trust-save.json").is_empty() and loaded.trust_level(loaded.actors[1],loaded.player()) == 80,"Individual trust persists through loading")
+ check(loaded.load_from("user://test-loot-trust-save.json").is_empty() and loaded.trust_level(loaded.actors[1],loaded.player()) == 80,"Individual trust persists through loading")
  check(loaded.actors[1].request_after == npc.request_after,"Request cooldowns persist through loading")
  print("LOOT/TRUST CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)

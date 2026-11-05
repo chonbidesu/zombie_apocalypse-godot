@@ -4,6 +4,8 @@ This is an implementation audit, not a claim of complete Urban Dead parity. The 
 
 ## Corrections implemented in this pass
 
+Fort movement, five-AP corpse dumping and nonlethal ruined-roof falls now have dedicated regression coverage; see [fort and Free Running rules](fort-and-free-running.md).
+
 | Rule | Current behavior |
 |---|---|
 | Healing experience | Restoring another character's HP earns 5 XP. Self-healing and curing infection without restoring HP earn none. Humans can also treat standing zombies. |
@@ -34,7 +36,7 @@ Public resource/clinic knowledge replaces external multiplayer maps and coordina
 
 | Topic | Project decision |
 |---|---|
-| Ruins and generators | Installed generators must be destroyed before ruin; ruined buildings must be repaired before generator installation. A lit ruin remains impossible, as requested. Later online rules allow a different combination. |
+| Ruins and generators | Installed generators prevent ransacking, but eligible ruins accept generators and can be lit. Dark ruins need power before repair. Open ground, junkyards, stadium fields and municipal power stations cannot be powered. |
 | Fuel | A can tops off 24 game hours and wastes the excess. Original fuel lasts much longer; the shorter cycle supports offline resource trips. |
 | Barricade structure | 21 strength points across seven visible bands: 1 / 2–4 / 5–7 / 8–10 / 11–13 / 14–16 / 17–21. Each damaging hit removes one point and each successful build restores one. Attacks roll combat accuracy then a separate 50% structural penalty, except crowbars. Outside survivor entry ends at strength 10. Progressive construction rates follow the requested table; loose uses 99.5% for the approximate 99%+ value. Dark buildings and 2+ living, standing indoor zombies each halve construction odds, multiplicatively. |
 | Zombie equipment | Claws and bites, plus crowbar, baseball bat and pipe at base 5–10% accuracy for two damage. Human combat bonuses do not apply. |
@@ -50,13 +52,12 @@ The [Gameplay reference](https://wiki.urbandead.com/index.php/Gameplay) document
 These have been identified, not silently treated as implemented:
 
 1. **Combat tuning:** human fists now use 10%/25% accuracy, flare guns 2.5%/15%, and hockey sticks deal three damage. New firefighters start with Axe Proficiency alone (25% axe accuracy). Pool cues retain a 20% break chance on each successful hit. Barricade attacks use combat accuracy with the crowbar structural exception; construction uses the requested progressive rates, with darkness and zombie interference penalties.
-2. **Ruin age:** building repair currently uses fixed local ruin levels/costs, without the online accumulation of long-term repair costs.
+2. **Ruin age (implemented):** one-action repair costs 1 AP plus 1 per full day ruined, with no cap. Positive-AP players may overdraw into debt; NPCs normally avoid it.
 3. **DNA scan lifetime:** tags currently use a time window rather than resetting eligibility on the tagged zombie's next action. NecroNet is a local report rather than the complete online interface.
 4. **Signals and binoculars:** flare signals currently have a ten-block radius and lack the original outdoor-only launch restriction. Binoculars provide a local summary rather than the original directional tall-building 3×3 view and separate outdoor landmark survey.
 5. **Communications:** radio/tag text uses the general 255-character input rather than all original per-channel limits. Phones have powered-mast checks but no reciprocal contact list or queued offline delivery.
-6. **Special access consequences:** exact Free Running falls into ruins, all fort armoury traversal details, and special corpse-dumping costs need individual parity tests.
-7. **Server/social systems:** account/IP limits, player-killing/bounty systems, player groups and contact networks, global seasonal events and cosmetic variants are not recreated. NPC trust, local chatter and public clinic knowledge serve some of their offline purposes.
-8. **Zero-AP presentation:** the player retains map visibility while exhausted; death still blacks it out. The original exhaustion UI has additional restrictions.
+6. **Server/social systems:** account/IP limits, player-killing/bounty systems, player groups and contact networks, global seasonal events and cosmetic variants are not recreated. NPC trust, local chatter and public clinic knowledge serve some of their offline purposes.
+7. **Zero-AP presentation:** the player retains map visibility while exhausted; death still blacks it out. The original exhaustion UI has additional restrictions.
 
 These are useful follow-up candidates rather than reasons to overwrite requested mechanics. The simulation results and remaining ecological limits are reported separately in [AI balance results](ai-balance-results.md).
 
