@@ -8,7 +8,7 @@ import hashlib
 import html
 import json
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 SOURCE_COMMIT = "2392369bac6a20e3ea88a912289dc1926f2cd3a0"
@@ -83,6 +83,28 @@ def convert(map_text, suburb_text):
     return blocks
 
 
+def complex_plans(blocks):
+    """Relocatable plans retain every occupied cell, component and missing corner."""
+    groups = defaultdict(list)
+    categories = {"mall": "malls", "cathedral": "cathedrals", "mansion": "mansions",
+                  "power_station": "power_stations", "stadium": "stadiums"}
+    for block in blocks:
+        identity = block.get("fort") or block.get("complex")
+        if identity:
+            groups[identity].append(block)
+    plans = defaultdict(list)
+    for name, cells in groups.items():
+        x0 = min(b["x"] for b in cells)
+        y0 = min(b["y"] for b in cells)
+        category = ("forts" if cells[0].get("fort") else
+                    "zoos" if cells[0].get("zoo") else categories[cells[0]["type"]])
+        plans[category].append({"name": name,
+            "width": max(b["x"] for b in cells) - x0 + 1,
+            "height": max(b["y"] for b in cells) - y0 + 1,
+            "cells": [{"x": b["x"] - x0, "y": b["y"] - y0, "type": b["type"]} for b in cells]})
+    return {"source": "malton.json: original Malton coordinate footprints", "plans": plans}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
@@ -110,6 +132,8 @@ def main():
               "blocks": blocks}
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+    args.output.with_name("complex-plans.json").write_text(
+        json.dumps(complex_plans(blocks), indent=2) + "\n", encoding="utf-8")
     print(f"Imported {len(blocks)} squares, 100 suburbs, {len(malls)} malls, {len(forts)} forts and one zoo.")
     print("Building categories:", dict(Counter(b["type"] for b in blocks)))
 

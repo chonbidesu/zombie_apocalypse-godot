@@ -60,8 +60,12 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Encumbrance/door tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/world_test.gd --log-file world-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'World tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/fort_rules_test.gd --log-file fort-rules-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Fort rules tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/interface_test.gd --log-file interface-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Interface tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/connected_minimap_test.gd --log-file connected-minimap-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Connected minimap tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/environment_inventory_test.gd --log-file environment-inventory-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Environment/inventory UI tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/style_refresh_test.gd --log-file style-refresh-tests.log

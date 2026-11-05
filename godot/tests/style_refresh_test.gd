@@ -79,16 +79,16 @@ func run() -> void:
  var office = b.duplicate()
  office.type = "office"
  check(scene.map_art(b) == scene.map_art(office),"Office and lab map art share exactly the same texture")
- check(not scene.page.get_node("MapTile_97").has_node("NecroTechLogo_97"),"Untrained survivor sees no NecroTech map logo")
+ check(not scene.page.get_node("CityMinimap/MapTile_97").has_node("NecroTechLogo_97"),"Untrained survivor sees no NecroTech map logo")
  var outside = scene.page.get_children().filter(func(n): return n is TextureRect and n.texture != null and n.texture.resource_path.ends_with("office_outside.png"))
  check(outside.size() == 1,"Hidden lab exterior uses the exact office scene")
  p.human = false
  scene.refresh()
- check(not scene.page.get_node("MapTile_97").has_node("NecroTechLogo_97"),"Untrained zombie also sees no logo")
+ check(not scene.page.get_node("CityMinimap/MapTile_97").has_node("NecroTechLogo_97"),"Untrained zombie also sees no logo")
  p.human_skills.append("necro_employment")
  scene.refresh()
- check(scene.page.get_node("MapTile_97").has_node("NecroTechLogo_97"),"Employment reveals the rooftop NT after death")
- check(scene.page.get_node("MapTile_97/NecroTechLogo_97").get_child(0).text == "NT","The NecroTech logo uses NT rather than N")
+ check(scene.page.get_node("CityMinimap/MapTile_97").has_node("NecroTechLogo_97"),"Employment reveals the rooftop NT after death")
+ check(scene.page.get_node("CityMinimap/MapTile_97/NecroTechLogo_97").get_child(0).text == "NT","The NecroTech logo uses NT rather than N")
  await screenshot("res://tests/necrotech-recognition-preview.png")
  scene.open_modal("map")
  scene.city_overview = true
@@ -156,7 +156,7 @@ func run() -> void:
  new_canvas()
  var zombie: Texture2D = load("res://assets/sprite_sheets/zombie_sprite_sheet.png")
  check(zombie.get_width() == 1536 and zombie.get_height() == 1024,"The replacement zombie has a complete 6 by 4 atlas")
- check(FileAccess.get_file_as_bytes("res://assets/blocks/streets.png") == FileAccess.get_file_as_bytes("res://.art-backup/blocks/streets.png"),"Street minimap art is the exact original asset")
+ check(FileAccess.file_exists("res://assets/minimap/streets.png") and preload("res://scripts/minimap_art.gd").new().model("street",0,0) != null,"Connected street variations replace the old flat street icon")
  var titles = ["Slow stagger", "Claw strike", "Collapse", "Corpse", "Recoil"]
  var sample_frames = [[0,2,4,7],[8,10,12,14],[15,16,17,19],[20,20,20,20],[21,22,23,21]]
  for row in range(titles.size()):

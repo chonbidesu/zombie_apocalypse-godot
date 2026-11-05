@@ -12,6 +12,9 @@ var new_game_error = ""
 const Sim = preload("res://scripts/simulation.gd")
 const Feed = preload("res://scripts/event_feed.gd")
 const C = preload("res://scripts/catalog.gd")
+const MapArtwork = preload("res://scripts/minimap_art.gd")
+const MapCanvas = preload("res://scripts/minimap_canvas.gd")
+var minimap_artwork = MapArtwork.new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
 const INVENTORY_PAGE_SIZE = 10
 var inventory_page: int = 0
@@ -251,33 +254,26 @@ func _local_map() -> void:
   darkness.name = "DarkMinimap"
   return
  picture(page, tex("panels/viewport_frame.png"), Rect2(20, 88, 358, 358))
- var labelled_complexes = {}
+ var city = map_region(page,Rect2i(p.x-1,p.y-1,3,3),Vector2(40,108),106)
+ city.name = "CityMinimap"
  for dy in range(-1, 2):
   for dx in range(-1, 2):
-   var bounds = Rect2(40+(dx+1)*106, 108+(dy+1)*106, 103, 103)
+   var bounds = Rect2((dx+1)*106, (dy+1)*106, 106, 106)
    if p.x+dx not in range(sim.width) or p.y+dy not in range(sim.height):
-    rect(page, bounds, INK)
+    rect(city, bounds, INK)
     continue
    var b = sim.block_at(p.x+dx, p.y+dy)
-   var tile = button(page, "", bounds, func(): dispatch("move", -1, {"dx":dx,"dy":dy}), dx == 0 and dy == 0)
+   var tile = button(city, "", bounds, func(): dispatch("move", -1, {"dx":dx,"dy":dy}), dx == 0 and dy == 0)
    tile.name = "MapTile_%d" % b.id
+   tile.flat = true
+   tile.z_index = 1000
    tile.disabled = paused or resting or (dx == 0 and dy == 0)
    tile.tooltip_text = "%s\n%s • %s • %s\nMove: %d AP" % [b.name, C.pretty(sim.visible_type(b,p)), C.barricade_description(b.barricade), "Powered" if sim.powered(b) else "No power", sim.cost(p,"move")]
-   if sim.is_building(b): rect(tile, Rect2(1,1,101,101), tile_background(b))
-   var art_bounds = Rect2(1,1,104,104) if b.type == "mall" else Rect2(7,7,89,89)
-   var tile_art = picture(tile, map_art(b), art_bounds)
-   tile_art.name = "MapArt"
-   if b.type == "mall" and (sim.powered(b) or b.ruin >= 3):
-    var outline = rect(tile,Rect2(1,1,104,104),Color.TRANSPARENT,tile_background(b))
-    outline.get_theme_stylebox("panel").set_border_width_all(2)
+   if b.type == "gatehouse" and not b.fort.is_empty(): tile.tooltip_text += "\nOnly fort entrance: enter the gatehouse to access the grounds."
+   if dx == 0 and dy == 0:
+    var outline = rect(tile,Rect2(0,0,106,106),Color.TRANSPARENT,GOLD)
+    outline.get_theme_stylebox("panel").set_border_width_all(1)
    necrotech_mark(tile,b,Vector2(42,27),19)
-   if b.ruin >= 3:
-    tile_art.material = tile_material(b)
-   if b.type != "mall" or not labelled_complexes.has(b.complex):
-    rect(tile, Rect2(3,59,97,41), Color(0.04,0.08,0.06,0.9))
-    var name_label = label(tile, b.name if b.type == "mall" else C.pretty(sim.visible_type(b,p)), Rect2(6,61,91,36), 12 if b.type == "mall" else 15)
-    name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-   if b.type == "mall": labelled_complexes[b.complex] = true
    var humans = 0
    var zombies = 0
    for a in sim.occupants(b, p.inside if dx == 0 and dy == 0 else false):
@@ -285,8 +281,8 @@ func _local_map() -> void:
      if a.human: humans += 1
      else: zombies += 1
    if humans+zombies > 0:
-    rect(tile, Rect2(3,3,97,21), INK)
-    label(tile, "%d H   %d Z" % [humans,zombies], Rect2(8,3,90,21), 16, GREEN if zombies == 0 else RED)
+    rect(tile, Rect2(3,3,68,16),Color(0.04,0.07,0.05,0.8))
+    label(tile, "%d H   %d Z" % [humans,zombies], Rect2(6,2,65,18),12,GREEN if zombies == 0 else RED)
  var caption = "%s  ·  [%02d, %02d]" % [sim.suburb_name(p).to_upper(),p.x,p.y]
  var caption_font = 24
  while caption_font > 14 and theme.default_font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,caption_font).x > 350: caption_font -= 1
@@ -610,6 +606,7 @@ func open_modal(which: String) -> void:
 
 func _modal() -> void:
  overlay = Control.new()
+ overlay.z_index = 2000
  overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  overlay.mouse_filter = Control.MOUSE_FILTER_STOP
  page.add_child(overlay)
@@ -664,6 +661,9 @@ func _map_modal() -> void:
   button(overlay,["W","E","N","S"][i],Rect2(492+i*62,154,54,30),func(): map_origin = Vector2i(clampi(map_origin.x+direction.x,0,(sim.width-1)/10*10),clampi(map_origin.y+direction.y,0,(sim.height-1)/10*10)); city_overview = false; refresh())
  var columns = ceili(sim.width/10.0) if city_overview else 10
  var rows = ceili(sim.height/10.0) if city_overview else 10
+ var field_map: Control
+ if not city_overview:
+  field_map = map_region(overlay,Rect2i(map_origin,Vector2i(10,10)),Vector2(135,196),61,true)
  for y in range(rows):
   for x in range(columns):
    var bx = x*10 if city_overview else map_origin.x+x
@@ -671,7 +671,7 @@ func _map_modal() -> void:
    if bx >= sim.width or by >= sim.height: continue
    var b = sim.block_at(bx,by)
    var cell_width = 116 if city_overview else 61
-   var bounds = Rect2(135+x*cell_width,196+y*61,cell_width-3,58)
+   var bounds = Rect2(135+x*cell_width,196+y*61,cell_width-3 if city_overview else 61,58 if city_overview else 61)
    if city_overview:
     var at = Vector2i(bx,by)
     var tile = button(overlay,"",bounds,func(): map_origin = at; city_overview = false; refresh(),p.x/10 == x and p.y/10 == y)
@@ -681,20 +681,28 @@ func _map_modal() -> void:
     title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     tile.tooltip_text = "%s [%d–%d, %d–%d]" % [b.get("suburb",sim.world_title),bx,mini(sim.width-1,bx+9),by,mini(sim.height-1,by+9)]
     continue
-   rect(overlay,bounds,INK,GOLD if p.x == bx and p.y == by else Color("40503d"))
    if b.known:
-    if sim.is_building(b): rect(overlay,Rect2(bounds.position+Vector2(1,1),Vector2(56,56)),tile_background(b))
-    var art = picture(overlay,map_art(b),Rect2(bounds.position+Vector2(1,1),Vector2(59,59)) if b.type == "mall" else Rect2(bounds.position+Vector2(5,5),Vector2(48,48)))
-    art.tooltip_text = b.name
-    if b.ruin >= 3: art.material = tile_material(b)
-    necrotech_mark(overlay,b,bounds.position+Vector2(22,9),14)
-   else: label(overlay,"?",Rect2(bounds.position+Vector2(20,12),Vector2(35,35)),23,MUTED)
+    var mark = Control.new()
+    mark.position = bounds.position-Vector2(135,196)
+    mark.size = Vector2.ONE*61
+    mark.tooltip_text = b.name
+    mark.z_index = 1000
+    mark.mouse_filter = Control.MOUSE_FILTER_PASS
+    field_map.add_child(mark)
+    if p.x == bx and p.y == by:
+     var outline = rect(mark,Rect2(0,0,61,61),Color.TRANSPARENT,GOLD)
+     outline.get_theme_stylebox("panel").set_border_width_all(1)
+    necrotech_mark(mark,b,Vector2(22,9),14)
+   else:
+    var unknown = rect(field_map,Rect2(bounds.position-Vector2(135,196),bounds.size),INK)
+    unknown.z_index = 1000
+    label(unknown,"?",Rect2(20,12,35,35),23,MUTED)
  if city_overview: return
  label(overlay,"NECRONET INTELLIGENCE",Rect2(780,176,510,40),26,GOLD)
  var report = label(overlay,sim.scan_report,Rect2(780,230,510,190),24)
  report.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  label(overlay,"Scan age: %d minutes" % (sim.minute-sim.scan_minute) if sim.scan_minute >= 0 else "Not connected",Rect2(780,422,510,35),20,MUTED)
- var info = label(overlay,"%s · %d × %d blocks\n%s\n\nExplore to reveal local blocks. Use City to choose a suburb, or W/E/N/S to browse.\n\nYellow outline: powered   Grey: ruined\nNecroTech Employment reveals the NT logo.\n\nThe scan is a snapshot of tagged zombies, not live tracking.",Rect2(780,487,510,280),22,MUTED)
+ var info = label(overlay,"%s · %d × %d blocks\n%s\n\nExplore to reveal local blocks. Use City to choose a suburb, or W/E/N/S to browse.\n\nWarm windows: powered · Broken roofs: ruined\nGold outline: your location\nNecroTech Employment reveals the NT logo.\n\nThe scan is a snapshot of tagged zombies, not live tracking.",Rect2(780,487,510,280),22,MUTED)
  info.text = info.text % [sim.world_title,sim.width,sim.height,sim.suburb_name(p)]
  info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
@@ -779,23 +787,12 @@ func portrait_region(p: Dictionary) -> Rect2:
  if not p.human: return Rect2((start+zombie_pose(animation_time)%6)*66,0,66,66)
  return Rect2((start+int(animation_time/0.35)%6)*66,0,66,66)
 
-func tile_background(b: Dictionary) -> Color:
- if b.ruin >= 3: return Color("303238")
- return Color("d8c477") if sim.powered(b) else Color("41534d")
-
 func ordered_people() -> Array:
  var people = sim.occupants(sim.current_block(sim.player()), sim.player().inside).duplicate()
  people.sort_custom(func(a,b):
   if a.human != b.human: return a.human
   return a.id < b.id)
  return people
-
-func tile_material(_b: Dictionary) -> ShaderMaterial:
- var shader = Shader.new()
- shader.code = "shader_type canvas_item; void fragment() { vec4 pixel = texture(TEXTURE, UV); float grey = dot(pixel.rgb, vec3(0.299,0.587,0.114)); COLOR = vec4(mix(pixel.rgb,vec3(grey*0.65),0.85),pixel.a); }"
- var material = ShaderMaterial.new()
- material.shader = shader
- return material
 
 func zombie_pose(time: float) -> int:
  # Cosmetic randomness is independent of world RNG and survives UI rebuilds.
@@ -868,17 +865,19 @@ func actor_region(a: Dictionary, texture: Texture2D) -> Rect2:
  return Rect2(Vector2(frame%6,frame/6)*cell,cell)
 
 func map_art(b: Dictionary) -> Texture2D:
- var key = "office" if b.type == "necrotech_lab" else ("streets" if b.type == "street" else b.type)
- var texture = tex("blocks/"+key+".png")
- if b.type == "mall" and sim.complex_bounds.has(b.complex):
-  var footprint: Rect2i = sim.complex_bounds[b.complex]
-  var cell = Vector2(texture.get_width(),texture.get_height())/Vector2(footprint.size)
-  var region = AtlasTexture.new()
-  region.atlas = texture
-  region.region = Rect2(Vector2(Vector2i(b.x,b.y)-footprint.position)*cell,cell)
-  region.filter_clip = true
-  return region
- return texture
+ return minimap_artwork.texture_for(sim,b)
+
+func map_region(parent: Node, footprint: Rect2i, at: Vector2, cell: float, discovered_only: bool = false) -> Control:
+ var city = MapCanvas.new()
+ city.sim = sim
+ city.artwork = minimap_artwork
+ city.footprint = footprint
+ city.cell = cell
+ city.discovered_only = discovered_only
+ city.position = at
+ parent.add_child(city)
+ city.build()
+ return city
 
 func necrotech_mark(parent: Node, b: Dictionary, at: Vector2, size: float = 20) -> void:
  if b.type != "necrotech_lab" or not sim.has_skill(sim.player(),"necro_employment"): return
@@ -980,7 +979,7 @@ func _new_game_modal() -> void:
    if kind == "mall": continue
    generation_spin(content,kind,C.pretty(kind),Vector2(0,index*48),0,10000,true)
    index += 1
-  var settings = [["width","Width",10,100],["height","Height",10,100],["malls","2×2 malls",0,100],["forts","3×3 forts",0,20],["zoos","4×4 zoos",0,20],["cathedrals","Cathedrals",0,100],["mansions","Mansions",0,100],["power_stations","Power stations",0,100],["stadiums","Stadiums",0,100],["survivors","Survivors",0,2000],["zombies","Zombies / bodies",0,4000]]
+  var settings = [["width","Width",10,100],["height","Height",10,100],["malls","Malls (Malton plans)",0,100],["forts","3×3 forts",0,20],["zoos","5×4 zoos",0,20],["cathedrals","Cathedrals",0,100],["mansions","Mansions",0,100],["power_stations","Power stations",0,100],["stadiums","Stadiums",0,100],["survivors","Survivors",0,2000],["zombies","Zombies / bodies",0,4000]]
   var setting_scroll = ScrollContainer.new()
   setting_scroll.name = "GenerationSettings"
   setting_scroll.position = Vector2(800,300)

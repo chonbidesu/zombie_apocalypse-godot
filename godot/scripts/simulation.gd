@@ -356,6 +356,7 @@ func consume(a: Dictionary, item: Dictionary) -> void:
  a.inventory.erase(item)
 
 func cost(a: Dictionary, command: String) -> int:
+ if command == "dump" and within_fort(a,current_block(a)): return 5
  if command == "barricade" and barricade_strength(current_block(a)) == 21: return 0
  var base = 1
  match command:
@@ -392,7 +393,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if maxi(absi(dx), absi(dy)) != 1: return "Choose a neighbouring block."
    if a.x+dx not in range(width) or a.y+dy not in range(height): return "You have reached the city boundary."
    var destination = block_at(a.x+dx,a.y+dy)
-   var fort_error = fort_move_reason(a,b,destination)
+   var fort_error = fort_move_reason(a,b,destination,data)
    if not fort_error.is_empty(): return fort_error
   "enter":
    if not is_building(b) or a.inside: return "There is no entrance here."
@@ -400,14 +401,16 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if not a.human and doors_closed(b) and not has_skill(a, "memories"): return "Memories of Life is needed to open doors."
   "leave":
    if not a.inside: return "Already outside."
-   if not a.human and b.barricade > 0: return "Break the barricade before leaving."
+   if b.barricade > 4: return "The main doors are heavily barricaded. Click an adjacent map square to leave at ground level."
    if not a.human and doors_closed(b) and not has_skill(a, "memories"): return "Memories of Life is needed to open doors."
-  "barricade", "repair", "generator", "fuel", "close", "ransack", "scan", "manufacture", "jump", "dump", "repair_generator", "destroy_generator":
+  "barricade", "repair", "generator", "fuel", "close", "ransack", "scan", "manufacture", "jump", "repair_generator", "destroy_generator":
    if not a.inside or not is_building(b): return "You must be inside a building."
  if command == "dump":
+  if not within_fort(a,b) and (not a.inside or not is_building(b)): return "You must be inside a building or within a fort."
+  if within_fort(a,b) and fort_gatehouse(b.fort).is_empty(): return "This fort has no gatehouse to dump bodies through."
   if target_id < 0 or target_id >= actors.size(): return "Select a body first."
   var body = actors[target_id]
-  if body.id == a.id or not nearby(a,body) or not body.down: return "Select a body inside this building."
+  if body.id == a.id or not nearby(a,body) or not body.down: return "Select a body at your current location."
  if command in ["heal", "revive", "attack", "bite", "request", "give"]:
   if target_id < 0 or target_id >= actors.size(): return "Select a character first."
   var t = actors[target_id]
@@ -528,13 +531,14 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   "move":
    clear_grasp(a)
    var destination = block_at(a.x+data.dx, a.y+data.dy)
-   a.inside = a.inside and a.human and has_skill(a, "free_running") and is_building(destination) and destination.ruin < 3
-   if not destination.fort.is_empty() and destination.fort != b.fort: a.inside = false
-   if destination.fort == b.fort and not b.fort.is_empty(): a.inside = destination.type == "gatehouse"
-   if destination.complex == b.complex and not b.complex.is_empty(): a.inside = origin.inside and is_building(destination)
+   a.inside = move_ends_inside(a,b,destination,data)
    a.x += data.dx
    a.y += data.dy
    text = "%s move to %s." % [name, destination.name]
+   if not b.fort.is_empty() and b.fort == destination.fort and destination.type == "armoury" and origin.inside and a.human and has_skill(a,"free_running"):
+    text += " The defensive design of the armoury prevents Free Running into it. Use the entrance."
+   if b.type == "gatehouse" and not b.fort.is_empty() and b.fort != destination.fort and b.barricade > 4 and origin.inside:
+    text += " You exit at ground level; the barricades prevent Free Running out."
   "enter":
    clear_grasp(a)
    var opened = not a.human and doors_closed(b)
@@ -687,7 +691,19 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    var body = actors[target_id]
    body.inside = false
    gain_local_trust(a,b,2)
-   text = "%s drag a body to the doorway and dump it outside." % name
+   if within_fort(a,b):
+    var gate = fort_gatehouse(b.fort)
+    clear_grasp(a)
+    clear_grasp(body)
+    a.x = gate.x
+    a.y = gate.y
+    a.inside = true
+    body.x = gate.x
+    body.y = gate.y
+    a.route.clear()
+    body.route.clear()
+    text = "%s carry a body through %s and dump it outside. You remain inside the gatehouse." % [name,gate.name]
+   else: text = "%s drag a body to the doorway and dump it outside." % name
   "repair_generator":
    b.generator_hp = mini(C.GENERATOR_HP,b.generator_hp+2)
    a.xp += 1
@@ -1316,6 +1332,7 @@ func action_feedback(a: Dictionary, command: String, target: int = -1, data: Dic
  # Entry remains an attempt the player can make, with feedback on rejection.
  if command == "barricade" and why == "The barricade cannot be built any higher.": return ""
  if command == "enter" and why.begins_with("You try to find an entry point"): return ""
+ if command == "leave" and why.begins_with("The main doors are heavily barricaded"): return ""
  if command == "phone" and why == "Select a contact.": return ""
  return why
 
@@ -1694,13 +1711,42 @@ func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Di
   hit = hit*0.5 if not weapon.is_empty() and weapon.kind == "flare_gun" else floor(hit*0.5)
  return {"hit":clampf(hit,0.0,95.0),"damage":damage,"ranged":ranged}
 
-func fort_move_reason(a: Dictionary, origin: Dictionary, destination: Dictionary) -> String:
+func within_fort(a: Dictionary, b: Dictionary) -> bool:
+ return not b.fort.is_empty() and (b.type != "gatehouse" or a.inside)
+
+func fort_gatehouse(identity: String) -> Dictionary:
+ for site in sites_by_type.get("gatehouse",[]):
+  if site.fort == identity: return site
+ return {}
+
+func can_free_run_between(a: Dictionary, origin: Dictionary, destination: Dictionary) -> bool:
+ if not a.inside or not a.human or not has_skill(a,"free_running") or not is_building(destination) or destination.ruin >= 3: return false
+ if not destination.fort.is_empty() and destination.fort != origin.fort: return false
+ if not origin.fort.is_empty():
+  if destination.fort == origin.fort:
+   return origin.type != "gatehouse" and destination.type != "armoury"
+  return origin.type == "gatehouse" and origin.barricade <= 4
+ return true
+
+func move_ends_inside(a: Dictionary, origin: Dictionary, destination: Dictionary, data: Dictionary = {}) -> bool:
+ if not origin.fort.is_empty() and origin.fort == destination.fort:
+  if destination.type == "gatehouse": return true
+  if origin.type == "gatehouse": return false
+ if not destination.fort.is_empty() and destination.fort != origin.fort: return false
+ if destination.complex == origin.complex and not origin.complex.is_empty(): return a.inside and is_building(destination)
+ return bool(data.get("free_run",true)) and can_free_run_between(a,origin,destination)
+
+func fort_move_reason(a: Dictionary, origin: Dictionary, destination: Dictionary, data: Dictionary = {}) -> String:
  if origin.fort == destination.fort:
   if not origin.fort.is_empty() and origin.type == "gatehouse" and not a.inside: return "Enter the gatehouse before crossing into the fort."
   return ""
- if not origin.fort.is_empty() and origin.type != "gatehouse": return "The fort walls block this route. Use the gatehouse."
+ if not origin.fort.is_empty() and origin.type != "gatehouse" and bool(data.get("free_run",false)):
+  return "There are no accessible windows across the fort wall. Use a ground-level map exit."
  if not destination.fort.is_empty() and destination.type != "gatehouse": return "Enter the fort through its gatehouse."
- if origin.type == "gatehouse" and not origin.fort.is_empty() and a.inside and origin.barricade > 4: return "The gatehouse is too heavily barricaded to leave the compound."
+ if not destination.fort.is_empty() and destination.fort != origin.fort and a.inside and a.human and has_skill(a,"free_running") and bool(data.get("free_run",true)):
+  return "The gatehouse only has a single, low entrance. You cannot Free Run into it; approach at ground level."
+ if origin.type == "gatehouse" and not origin.fort.is_empty() and a.inside and origin.barricade > 4 and bool(data.get("free_run",false)):
+  return "The gatehouse is too heavily barricaded to Free Run out. Click an adjacent map square to exit at ground level."
  return ""
 
 func _setup_player(a: Dictionary, occupation: String) -> void:

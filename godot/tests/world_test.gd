@@ -64,7 +64,8 @@ func _initialize() -> void:
  p.human_skills.append("free_running")
  s.reindex()
  ready(s,p)
- check(not s.reason(p,"move",-1,{"dx":-1,"dy":0}).is_empty(),"Free Running cannot cross fort perimeter walls")
+ check(not s.reason(p,"move",-1,{"dx":-1,"dy":0,"free_run":true}).is_empty(),"Free Running cannot cross fort perimeter walls")
+ check(s.act("move",-1,{"dx":-1,"dy":0}).ok and not p.inside,"Fort perimeter map exits land at ground level")
  p.x = 85
  p.y = 92
  p.inside = false
@@ -114,8 +115,8 @@ func _initialize() -> void:
   counts[b.type] = int(counts.get(b.type,0))+1
   if b.has("complex"): complex_counts[b.complex] = int(complex_counts.get(b.complex,0))+1
  for kind in config.counts: check(counts[kind] == config.counts[kind],"Exact custom resource count: "+kind)
- check(counts.mall == 16 and counts.gatehouse == 1 and counts.power_station == 4,"Random complexes reserve complete footprints")
- check(one.blocks.filter(func(b): return b.get("unbarricadable",false)).size() == 10,"Random zoo reserves ten open squares around six barricadable enclosures")
+ check(counts.mall == 16 and counts.gatehouse == 1 and counts.power_station == 2,"Random complexes reserve original Malton footprints, including Tolman's two squares")
+ check(one.blocks.filter(func(b): return b.get("unbarricadable",false)).size() == 14,"Random zoo reserves fourteen open squares around six barricadable enclosures")
  check(s.start(765,"Doctor",config).is_empty() and s.width == 30 and s.height == 20 and s.actors.size() == 28,"Random city starts with requested dimensions and population")
  var full = W.defaults()
  var started = Time.get_ticks_msec()

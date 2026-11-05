@@ -16,10 +16,10 @@ static func build_navigation(s) -> AStar2D:
    var y = b.y+delta.y
    if x < 0 or x >= s.width or y < 0 or y >= s.height: continue
    var other = s.block_at(x,y)
-   if b.fort != other.fort:
-    if not b.fort.is_empty() and b.type != "gatehouse": continue
-    if not other.fort.is_empty() and other.type != "gatehouse": continue
-   graph.connect_points(b.id,other.id)
+   # Fort walls allow one-way ground exits, while every incoming edge still
+   # terminates at a gatehouse. Never turn a legal exit into an entry shortcut.
+   if b.fort == other.fort or other.fort.is_empty() or other.type == "gatehouse": graph.connect_points(b.id,other.id,false)
+   if b.fort == other.fort or b.fort.is_empty() or b.type == "gatehouse": graph.connect_points(other.id,b.id,false)
  return graph
 
 static func go(s,a: Dictionary,goal: Dictionary) -> bool:
@@ -51,12 +51,12 @@ static func go(s,a: Dictionary,goal: Dictionary) -> bool:
   return false
  if b.type == "gatehouse" and not b.fort.is_empty() and not a.inside and next.fort == b.fort:
   return s._try(a,"enter")
- var free_run = a.human and s.has_skill(a,"free_running") and s.is_building(next) and next.ruin < 3
+ var free_run = s.can_free_run_between(a,b,next)
  if a.inside and b.type != "gatehouse" and not free_run:
   if s._try(a,"leave"): return true
-  if not a.human and b.barricade > 0: return s._try(a,"break")
-  return false
- var moved = s._try(a,"move",-1,{"dx":next.x-a.x,"dy":next.y-a.y})
+  # Barricades cannot trap an occupant: a blocked Leave button still permits a
+  # map-click ground exit, for NPCs as well as the player.
+ var moved = s._try(a,"move",-1,{"dx":next.x-a.x,"dy":next.y-a.y,"free_run":free_run})
  if moved: a.route.pop_front()
  else: a.route.clear()
  return moved

@@ -1,0 +1,1150 @@
+{
+  "source": "malton.json: original Malton coordinate footprints",
+  "plans": {
+    "mansions": [
+      {
+        "name": "Pitman Mansion",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mansion"
+          }
+        ]
+      },
+      {
+        "name": "Curton Mansion -RP-",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mansion"
+          }
+        ]
+      },
+      {
+        "name": "Southall Mansion",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mansion"
+          }
+        ]
+      },
+      {
+        "name": "Alner Mansion",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mansion"
+          }
+        ]
+      },
+      {
+        "name": "Kersley Mansion",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mansion"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mansion"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mansion"
+          }
+        ]
+      }
+    ],
+    "stadiums": [
+      {
+        "name": "Rodges Stadium",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "stadium"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "stadium"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "stadium"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "stadium"
+          }
+        ]
+      },
+      {
+        "name": "Floyde Stadium",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "stadium"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "stadium"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "stadium"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "stadium"
+          }
+        ]
+      },
+      {
+        "name": "Clapton Stadium",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "stadium"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "stadium"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "stadium"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "stadium"
+          }
+        ]
+      }
+    ],
+    "malls": [
+      {
+        "name": "Treweeke Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Calvert Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Bale Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Stickling Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Caiger Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Dowdney Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Giddings Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Ackland Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Tynte Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Nichols Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Hildebrand Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Woodroffe Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Mitchem Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Blesley Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Marven Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Lumber Mall",
+        "width": 1,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Joachim Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Pole Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Tompson Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      },
+      {
+        "name": "Buckley Mall",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "mall"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "mall"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "mall"
+          }
+        ]
+      }
+    ],
+    "cathedrals": [
+      {
+        "name": "St. Luke's Cathedral",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "cathedral"
+          }
+        ]
+      },
+      {
+        "name": "St. Matthew's Cathedral",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "cathedral"
+          }
+        ]
+      },
+      {
+        "name": "St. Jude's Cathedral",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "cathedral"
+          }
+        ]
+      },
+      {
+        "name": "St. John's Cathedral",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "cathedral"
+          }
+        ]
+      },
+      {
+        "name": "St. Mark's Cathedral",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "cathedral"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "cathedral"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "cathedral"
+          }
+        ]
+      }
+    ],
+    "zoos": [
+      {
+        "name": "Malton Zoo",
+        "width": 5,
+        "height": 4,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "lion_enclosure"
+          },
+          {
+            "x": 2,
+            "y": 0,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 3,
+            "y": 0,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 4,
+            "y": 0,
+            "type": "reptile_house"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 2,
+            "y": 1,
+            "type": "bear_pit"
+          },
+          {
+            "x": 3,
+            "y": 1,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 4,
+            "y": 1,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 0,
+            "y": 2,
+            "type": "elephant_house"
+          },
+          {
+            "x": 1,
+            "y": 2,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 3,
+            "y": 2,
+            "type": "giraffe_house"
+          },
+          {
+            "x": 4,
+            "y": 2,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 0,
+            "y": 3,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 1,
+            "y": 3,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 2,
+            "y": 3,
+            "type": "aquarium"
+          },
+          {
+            "x": 3,
+            "y": 3,
+            "type": "zoo_ground"
+          },
+          {
+            "x": 4,
+            "y": 3,
+            "type": "zoo_ground"
+          }
+        ]
+      }
+    ],
+    "forts": [
+      {
+        "name": "Fort Creedy",
+        "width": 3,
+        "height": 3,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "infirmary"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "storehouse"
+          },
+          {
+            "x": 2,
+            "y": 0,
+            "type": "barracks"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "barracks"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "armoury"
+          },
+          {
+            "x": 2,
+            "y": 1,
+            "type": "gatehouse"
+          },
+          {
+            "x": 0,
+            "y": 2,
+            "type": "exercise_yard"
+          },
+          {
+            "x": 1,
+            "y": 2,
+            "type": "training_ground"
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "type": "vehicle_depot"
+          }
+        ]
+      },
+      {
+        "name": "Fort Perryn",
+        "width": 3,
+        "height": 3,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "vehicle_depot"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "exercise_yard"
+          },
+          {
+            "x": 2,
+            "y": 0,
+            "type": "training_ground"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "infirmary"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "armoury"
+          },
+          {
+            "x": 2,
+            "y": 1,
+            "type": "storehouse"
+          },
+          {
+            "x": 0,
+            "y": 2,
+            "type": "storehouse"
+          },
+          {
+            "x": 1,
+            "y": 2,
+            "type": "gatehouse"
+          },
+          {
+            "x": 2,
+            "y": 2,
+            "type": "barracks"
+          }
+        ]
+      }
+    ],
+    "power_stations": [
+      {
+        "name": "Tolman Power Station",
+        "width": 1,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "power_station"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "power_station"
+          }
+        ]
+      },
+      {
+        "name": "Krinks Power Station",
+        "width": 2,
+        "height": 2,
+        "cells": [
+          {
+            "x": 0,
+            "y": 0,
+            "type": "power_station"
+          },
+          {
+            "x": 1,
+            "y": 0,
+            "type": "power_station"
+          },
+          {
+            "x": 0,
+            "y": 1,
+            "type": "power_station"
+          },
+          {
+            "x": 1,
+            "y": 1,
+            "type": "power_station"
+          }
+        ]
+      }
+    ]
+  }
+}

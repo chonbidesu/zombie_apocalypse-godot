@@ -183,13 +183,13 @@ func run() -> void:
  var block = scene.sim.current_block(player)
  block.generator = true
  block.fuel_until = scene.sim.minute+20
- var lit = scene.tile_background(block)
+ var lit = scene.map_art(block)
  block.fuel_until = 0
- check(scene.tile_background(block) != lit,"Viewport background changes when power runs out")
+ check(scene.map_art(block) != lit,"Architectural artwork changes when power runs out")
  block.ruin = 3
- check(scene.tile_background(block) == Color("303238"),"Ruins use dark grey")
+ check(scene.minimap_artwork.state(scene.sim,block) == 2,"Ruins select damaged architecture")
  block.fuel_until = scene.sim.minute+20
- check(scene.tile_background(block) == Color("303238"),"Ruin appearance takes priority over light")
+ check(scene.minimap_artwork.state(scene.sim,block) == 2,"Ruin appearance takes priority over light")
  var zombie = scene.sim.actors[15]
  zombie.x = player.x
  zombie.y = player.y
@@ -392,16 +392,16 @@ func run() -> void:
  scene.feed.reset(scene.sim.messages)
  player = scene.sim.player()
  scene.refresh()
- var centre = scene.page.get_node("MapTile_44")
+ var centre = scene.page.get_node("CityMinimap/MapTile_44")
  var mini_labels = centre.find_children("*","Label",true,false)
  check(not mini_labels.any(func(node): return node.text == "YOU" or node.text == "LIT"),"Centre minimap tile has no YOU or LIT label")
- var powered_tile = scene.page.get_node("MapTile_45")
- check(powered_tile.get_node("MapArt").material == null,"Powered building artwork is displayed without recoloring")
+ var powered_tile = scene.page.get_node("CityMinimap/MapTile_45")
+ check(scene.page.get_node("CityMinimap/Plot_45/MapArt").texture != scene.minimap_artwork.texture_for(scene.sim,scene.sim.blocks[45],0),"Powered building selects its dedicated lit artwork")
  check(not powered_tile.find_children("*","Label",true,false).any(func(node): return node.text == "LIT"),"Power is conveyed without a LIT label")
- check(scene.tile_background(scene.sim.blocks[45]) == Color("d8c477"),"Powered buildings retain a yellow outline")
+ check(scene.minimap_artwork.state(scene.sim,scene.sim.blocks[45]) == 1,"Powered buildings use the lit architectural state")
  scene.sim.blocks[34].ruin = 3
  scene.refresh()
- check(scene.page.get_node("MapTile_34/MapArt").material != null,"Ruined minimap artwork gets the desaturated grey overlay")
+ check(scene.page.get_node("CityMinimap/Plot_34/MapArt").material != null,"Ruined minimap artwork gets the desaturated grey overlay")
  await process_frame
  await RenderingServer.frame_post_draw
  root.get_texture().get_image().save_png("res://tests/minimap-outline-preview.png")
@@ -416,7 +416,7 @@ func run() -> void:
  await process_frame
  var decorated_text = scene.page.get_node("LocationDescription")
  check(decorated_text.get_visible_line_count() == decorated_text.get_line_count() and decorated_text.position.y+decorated_text.size.y <= 370,"Full decoration capacity and long graffiti stay inside description bounds")
- check(not scene.page.get_node("MapTile_34").find_children("*","Label",true,false).any(func(node): return node.text == "RUIN"),"Ruins use the grey overlay without a RUIN label")
+ check(not scene.page.get_node("CityMinimap/MapTile_34").find_children("*","Label",true,false).any(func(node): return node.text == "RUIN"),"Ruins use the grey overlay without a RUIN label")
  scene.open_modal("skills")
  var skill_scroll = scene.overlay.get_node("FullSkillTrees")
  check(skill_scroll is ScrollContainer and skill_scroll.find_children("*","Button",true,false).size() == 45,"All forty-five skill purchase controls fit in scrolling trees")
