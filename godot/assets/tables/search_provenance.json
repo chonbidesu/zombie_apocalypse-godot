@@ -64,21 +64,23 @@
     "library": {
       "map": 0.005
     },
-    "office": {
-      "map": 0.003
+    "hotel": {
+      "map": 0.02
     },
     "railway_station": {
-      "map": 0.003
+      "map": 0.005
     },
     "museum": {
-      "dead_fir_tree": 0.003
+      "dead_fir_tree": 0.003,
+      "map": 0.015
     }
   },
   "custom_items": {
-    "map": "Prototype item; added to libraries, offices and railway stations with estimated weights. No verified Urban Dead search rate.",
+    "map": "Prototype item. Hotels and museums are the primary sources, with lower odds at railway stations and libraries.",
     "flashlight": "Prototype item; existing outdoor grab bag retained, with rare fire-station and warehouse finds. No verified Urban Dead search rate."
   },
   "intentional_extensions": [
+    "GPS units are rare in NecroTech labs and mall tech stores. Reduced NecroTech GPS weight was assigned to DNA extractors to preserve syringe odds.",
     "Shared street grab bag is retained for all outdoors and building exteriors.",
     "Seasonal decorations remain available year-round, including dead fir trees in museum salvage; the old park-only row was unreachable because outdoors use the shared grab bag.",
     "User-specified cinema wine/mobile phones and mall hardware fuel remain prototype extensions even where the reference guide differs.",

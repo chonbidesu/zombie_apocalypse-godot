@@ -58,10 +58,10 @@
         },
         {
           "rates": {
-            "powered": 0.0209059264325927,
-            "powered_ruin": 0.00804074093561259,
-            "ransacked_or_ruined": 0.000804074093561259,
-            "unpowered": 0.000804074093561259
+            "powered": 0.0210539062877654,
+            "powered_ruin": 0.00809765626452517,
+            "ransacked_or_ruined": 0.000809765626452517,
+            "unpowered": 0.000809765626452517
           },
           "type": "mall"
         },
@@ -207,10 +207,10 @@
         },
         {
           "rates": {
-            "powered": 0.00871080268024698,
-            "powered_ruin": 0.00335030872317191,
-            "ransacked_or_ruined": 0.000335030872317191,
-            "unpowered": 0.000335030872317191
+            "powered": 0.0087724609532356,
+            "powered_ruin": 0.00337402344355216,
+            "ransacked_or_ruined": 0.000337402344355216,
+            "unpowered": 0.000337402344355216
           },
           "type": "mall"
         },
@@ -320,10 +320,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.00348432107209879,
-            "powered_ruin": 0.00134012348926877,
-            "ransacked_or_ruined": 0.000134012348926877,
-            "unpowered": 0.000134012348926877
+            "powered": 0.00350898438129424,
+            "powered_ruin": 0.00134960937742086,
+            "ransacked_or_ruined": 0.000134960937742086,
+            "unpowered": 0.000134960937742086
           },
           "type": "mall"
         },
@@ -469,10 +469,10 @@
         },
         {
           "rates": {
-            "powered": 0.0104529632162964,
-            "powered_ruin": 0.0040203704678063,
-            "ransacked_or_ruined": 0.00040203704678063,
-            "unpowered": 0.00040203704678063
+            "powered": 0.0105269531438827,
+            "powered_ruin": 0.00404882813226259,
+            "ransacked_or_ruined": 0.000404882813226259,
+            "unpowered": 0.000404882813226259
           },
           "type": "mall"
         },
@@ -582,10 +582,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0017421605360494,
-            "powered_ruin": 0.000670061744634383,
-            "ransacked_or_ruined": 0.0000670061744634383,
-            "unpowered": 0.0000670061744634383
+            "powered": 0.00175449219064712,
+            "powered_ruin": 0.000674804688710431,
+            "ransacked_or_ruined": 0.0000674804688710431,
+            "unpowered": 0.0000674804688710431
           },
           "type": "mall"
         }
@@ -596,10 +596,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0017421605360494,
-            "powered_ruin": 0.000670061744634383,
-            "ransacked_or_ruined": 0.0000670061744634383,
-            "unpowered": 0.0000670061744634383
+            "powered": 0.00175449219064712,
+            "powered_ruin": 0.000674804688710431,
+            "ransacked_or_ruined": 0.0000674804688710431,
+            "unpowered": 0.0000674804688710431
           },
           "type": "mall"
         }
@@ -655,10 +655,10 @@
         },
         {
           "rates": {
-            "powered": 0.0434782608695652,
-            "powered_ruin": 0.0144927536231884,
-            "ransacked_or_ruined": 0.0144927536231884,
-            "unpowered": 0.0289855072463768
+            "powered": 0.0454545454545455,
+            "powered_ruin": 0.0151515151515152,
+            "ransacked_or_ruined": 0.0151515151515152,
+            "unpowered": 0.0303030303030303
           },
           "type": "office"
         },
@@ -682,19 +682,19 @@
         },
         {
           "rates": {
-            "powered": 0.0246913580246914,
-            "powered_ruin": 0.00823045267489712,
-            "ransacked_or_ruined": 0.00823045267489712,
-            "unpowered": 0.0164609053497942
+            "powered": 0.0232558139534884,
+            "powered_ruin": 0.00775193798449612,
+            "ransacked_or_ruined": 0.00775193798449612,
+            "unpowered": 0.0155038759689922
           },
           "type": "museum"
         },
         {
           "rates": {
-            "powered": 0.00522648160814819,
-            "powered_ruin": 0.00201018523390315,
-            "ransacked_or_ruined": 0.000201018523390315,
-            "unpowered": 0.000201018523390315
+            "powered": 0.00526347657194136,
+            "powered_ruin": 0.00202441406613129,
+            "ransacked_or_ruined": 0.000202441406613129,
+            "unpowered": 0.000202441406613129
           },
           "type": "mall"
         },
@@ -718,19 +718,19 @@
         },
         {
           "rates": {
-            "powered": 0.0408163265306122,
-            "powered_ruin": 0.0136054421768708,
-            "ransacked_or_ruined": 0.0136054421768708,
-            "unpowered": 0.0272108843537415
+            "powered": 0.0359281437125749,
+            "powered_ruin": 0.0119760479041916,
+            "ransacked_or_ruined": 0.0119760479041916,
+            "unpowered": 0.0239520958083832
           },
           "type": "hotel"
         },
         {
           "rates": {
-            "powered": 0.0954545454545455,
-            "powered_ruin": 0.0318181818181818,
-            "ransacked_or_ruined": 0.0318181818181818,
-            "unpowered": 0.0636363636363636
+            "powered": 0.09375,
+            "powered_ruin": 0.03125,
+            "ransacked_or_ruined": 0.03125,
+            "unpowered": 0.0625
           },
           "type": "railway_station"
         },
@@ -939,10 +939,10 @@
         },
         {
           "rates": {
-            "powered": 0.0121951237523458,
-            "powered_ruin": 0.00469043221244068,
-            "ransacked_or_ruined": 0.000469043221244068,
-            "unpowered": 0.000469043221244068
+            "powered": 0.0122814453345298,
+            "powered_ruin": 0.00472363282097302,
+            "ransacked_or_ruined": 0.000472363282097302,
+            "unpowered": 0.000472363282097302
           },
           "type": "mall"
         },
@@ -1016,10 +1016,10 @@
         },
         {
           "rates": {
-            "powered": 0.0869565217391304,
-            "powered_ruin": 0.0289855072463768,
-            "ransacked_or_ruined": 0.0289855072463768,
-            "unpowered": 0.0579710144927536
+            "powered": 0.0909090909090909,
+            "powered_ruin": 0.0303030303030303,
+            "ransacked_or_ruined": 0.0303030303030303,
+            "unpowered": 0.0606060606060606
           },
           "type": "office"
         },
@@ -1034,19 +1034,19 @@
         },
         {
           "rates": {
-            "powered": 0.0246913580246914,
-            "powered_ruin": 0.00823045267489712,
-            "ransacked_or_ruined": 0.00823045267489712,
-            "unpowered": 0.0164609053497942
+            "powered": 0.0232558139534884,
+            "powered_ruin": 0.00775193798449612,
+            "ransacked_or_ruined": 0.00775193798449612,
+            "unpowered": 0.0155038759689922
           },
           "type": "museum"
         },
         {
           "rates": {
-            "powered": 0.0160000049230784,
-            "powered_ruin": 0.00615384804733786,
-            "ransacked_or_ruined": 0.000615384804733786,
-            "unpowered": 0.000615384804733786
+            "powered": 0.0161132588570246,
+            "powered_ruin": 0.00619740725270176,
+            "ransacked_or_ruined": 0.000619740725270176,
+            "unpowered": 0.000619740725270176
           },
           "type": "mall"
         },
@@ -1061,10 +1061,10 @@
         },
         {
           "rates": {
-            "powered": 0.109090909090909,
-            "powered_ruin": 0.0363636363636364,
-            "ransacked_or_ruined": 0.0363636363636364,
-            "unpowered": 0.0727272727272727
+            "powered": 0.107142857142857,
+            "powered_ruin": 0.0357142857142857,
+            "ransacked_or_ruined": 0.0357142857142857,
+            "unpowered": 0.0714285714285714
           },
           "type": "railway_station"
         },
@@ -1215,10 +1215,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0037037037037037,
-            "powered_ruin": 0.00123456790123457,
-            "ransacked_or_ruined": 0.00123456790123457,
-            "unpowered": 0.00246913580246914
+            "powered": 0.00348837209302326,
+            "powered_ruin": 0.00116279069767442,
+            "ransacked_or_ruined": 0.00116279069767442,
+            "unpowered": 0.00232558139534884
           },
           "type": "museum"
         }
@@ -1229,10 +1229,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.063,
-            "powered_ruin": 0.0225,
-            "ransacked_or_ruined": 0.0225,
-            "unpowered": 0.045
+            "powered": 0.091,
+            "powered_ruin": 0.0325,
+            "ransacked_or_ruined": 0.0325,
+            "unpowered": 0.065
           },
           "type": "necrotech_lab"
         }
@@ -1261,10 +1261,10 @@
         },
         {
           "rates": {
-            "powered": 0.00871080268024698,
-            "powered_ruin": 0.00335030872317191,
-            "ransacked_or_ruined": 0.000335030872317191,
-            "unpowered": 0.000335030872317191
+            "powered": 0.0087724609532356,
+            "powered_ruin": 0.00337402344355216,
+            "ransacked_or_ruined": 0.000337402344355216,
+            "unpowered": 0.000337402344355216
           },
           "type": "mall"
         },
@@ -1329,10 +1329,10 @@
         },
         {
           "rates": {
-            "powered": 0.00800000246153922,
-            "powered_ruin": 0.00307692402366893,
-            "ransacked_or_ruined": 0.000307692402366893,
-            "unpowered": 0.000307692402366893
+            "powered": 0.00805662942851229,
+            "powered_ruin": 0.00309870362635088,
+            "ransacked_or_ruined": 0.000309870362635088,
+            "unpowered": 0.000309870362635088
           },
           "type": "mall"
         },
@@ -1487,19 +1487,19 @@
         },
         {
           "rates": {
-            "powered": 0.00869565217391304,
-            "powered_ruin": 0.00289855072463768,
-            "ransacked_or_ruined": 0.00289855072463768,
-            "unpowered": 0.00579710144927536
+            "powered": 0.00909090909090909,
+            "powered_ruin": 0.00303030303030303,
+            "ransacked_or_ruined": 0.00303030303030303,
+            "unpowered": 0.00606060606060606
           },
           "type": "office"
         },
         {
           "rates": {
-            "powered": 0.00104528032162471,
-            "powered_ruin": 0.000402030892932582,
-            "ransacked_or_ruined": 0.0000402030892932582,
-            "unpowered": 0.0000402030892932582
+            "powered": 0.00105267920112942,
+            "powered_ruin": 0.000404876615819006,
+            "ransacked_or_ruined": 0.0000404876615819006,
+            "unpowered": 0.0000404876615819006
           },
           "type": "mall"
         },
@@ -1523,19 +1523,19 @@
         },
         {
           "rates": {
-            "powered": 0.00408163265306122,
-            "powered_ruin": 0.00136054421768708,
-            "ransacked_or_ruined": 0.00136054421768708,
-            "unpowered": 0.00272108843537415
+            "powered": 0.00359281437125749,
+            "powered_ruin": 0.00119760479041916,
+            "ransacked_or_ruined": 0.00119760479041916,
+            "unpowered": 0.00239520958083832
           },
           "type": "hotel"
         },
         {
           "rates": {
-            "powered": 0.00545454545454545,
-            "powered_ruin": 0.00181818181818182,
-            "ransacked_or_ruined": 0.00181818181818182,
-            "unpowered": 0.00363636363636364
+            "powered": 0.00535714285714286,
+            "powered_ruin": 0.00178571428571429,
+            "ransacked_or_ruined": 0.00178571428571429,
+            "unpowered": 0.00357142857142857
           },
           "type": "railway_station"
         },
@@ -1623,10 +1623,10 @@
         },
         {
           "rates": {
-            "powered": 0.00278744085767411,
-            "powered_ruin": 0.00107209263756697,
-            "ransacked_or_ruined": 0.000107209263756697,
-            "unpowered": 0.000107209263756697
+            "powered": 0.00280717139177654,
+            "powered_ruin": 0.00107968130452944,
+            "ransacked_or_ruined": 0.000107968130452944,
+            "unpowered": 0.000107968130452944
           },
           "type": "mall"
         },
@@ -1804,10 +1804,10 @@
         },
         {
           "rates": {
-            "powered": 0.0160000049230784,
-            "powered_ruin": 0.00615384804733786,
-            "ransacked_or_ruined": 0.000615384804733786,
-            "unpowered": 0.000615384804733786
+            "powered": 0.0161132588570246,
+            "powered_ruin": 0.00619740725270176,
+            "ransacked_or_ruined": 0.000619740725270176,
+            "unpowered": 0.000619740725270176
           },
           "type": "mall"
         },
@@ -1926,10 +1926,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0246913580246914,
-            "powered_ruin": 0.00823045267489712,
-            "ransacked_or_ruined": 0.00823045267489712,
-            "unpowered": 0.0164609053497942
+            "powered": 0.0232558139534884,
+            "powered_ruin": 0.00775193798449612,
+            "ransacked_or_ruined": 0.00775193798449612,
+            "unpowered": 0.0155038759689922
           },
           "type": "museum"
         },
@@ -2057,19 +2057,19 @@
         },
         {
           "rates": {
-            "powered": 0.0191637658965433,
-            "powered_ruin": 0.00737067919097821,
-            "ransacked_or_ruined": 0.000737067919097821,
-            "unpowered": 0.000737067919097821
+            "powered": 0.0192994140971183,
+            "powered_ruin": 0.00742285157581474,
+            "ransacked_or_ruined": 0.000742285157581474,
+            "unpowered": 0.000742285157581474
           },
           "type": "mall"
         },
         {
           "rates": {
-            "powered": 0.0918367346938776,
-            "powered_ruin": 0.0306122448979592,
-            "ransacked_or_ruined": 0.0306122448979592,
-            "unpowered": 0.0612244897959184
+            "powered": 0.0808383233532934,
+            "powered_ruin": 0.0269461077844311,
+            "ransacked_or_ruined": 0.0269461077844311,
+            "unpowered": 0.0538922155688623
           },
           "type": "hotel"
         },
@@ -2170,19 +2170,19 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0392,
-            "powered_ruin": 0.014,
-            "ransacked_or_ruined": 0.014,
-            "unpowered": 0.028
+            "powered": 0.0112,
+            "powered_ruin": 0.004,
+            "ransacked_or_ruined": 0.004,
+            "unpowered": 0.008
           },
           "type": "necrotech_lab"
         },
         {
           "rates": {
-            "powered": 0.00278744085767411,
-            "powered_ruin": 0.00107209263756697,
-            "ransacked_or_ruined": 0.000107209263756697,
-            "unpowered": 0.000107209263756697
+            "powered": 0.000966795531421474,
+            "powered_ruin": 0.000371844435162105,
+            "ransacked_or_ruined": 0.0000371844435162105,
+            "unpowered": 0.0000371844435162105
           },
           "type": "mall"
         }
@@ -2202,10 +2202,10 @@
         },
         {
           "rates": {
-            "powered": 0.0121951237523458,
-            "powered_ruin": 0.00469043221244068,
-            "ransacked_or_ruined": 0.000469043221244068,
-            "unpowered": 0.000469043221244068
+            "powered": 0.0122814453345298,
+            "powered_ruin": 0.00472363282097302,
+            "ransacked_or_ruined": 0.000472363282097302,
+            "unpowered": 0.000472363282097302
           },
           "type": "mall"
         },
@@ -2270,10 +2270,10 @@
         },
         {
           "rates": {
-            "powered": 0.0652173913043478,
-            "powered_ruin": 0.0217391304347826,
-            "ransacked_or_ruined": 0.0217391304347826,
-            "unpowered": 0.0434782608695652
+            "powered": 0.0681818181818182,
+            "powered_ruin": 0.0227272727272727,
+            "ransacked_or_ruined": 0.0227272727272727,
+            "unpowered": 0.0454545454545455
           },
           "type": "office"
         },
@@ -2288,10 +2288,10 @@
         },
         {
           "rates": {
-            "powered": 0.0185185185185185,
-            "powered_ruin": 0.00617283950617284,
-            "ransacked_or_ruined": 0.00617283950617284,
-            "unpowered": 0.0123456790123457
+            "powered": 0.0174418604651163,
+            "powered_ruin": 0.00581395348837209,
+            "ransacked_or_ruined": 0.00581395348837209,
+            "unpowered": 0.0116279069767442
           },
           "type": "museum"
         },
@@ -2315,10 +2315,10 @@
         },
         {
           "rates": {
-            "powered": 0.0121951237523458,
-            "powered_ruin": 0.00469043221244068,
-            "ransacked_or_ruined": 0.000469043221244068,
-            "unpowered": 0.000469043221244068
+            "powered": 0.0122814453345298,
+            "powered_ruin": 0.00472363282097302,
+            "ransacked_or_ruined": 0.000472363282097302,
+            "unpowered": 0.000472363282097302
           },
           "type": "mall"
         },
@@ -2333,10 +2333,10 @@
         },
         {
           "rates": {
-            "powered": 0.0714285714285714,
-            "powered_ruin": 0.0238095238095238,
-            "ransacked_or_ruined": 0.0238095238095238,
-            "unpowered": 0.0476190476190476
+            "powered": 0.062874251497006,
+            "powered_ruin": 0.0209580838323353,
+            "ransacked_or_ruined": 0.0209580838323353,
+            "unpowered": 0.0419161676646707
           },
           "type": "hotel"
         },
@@ -2595,19 +2595,28 @@
         },
         {
           "rates": {
-            "powered": 0.0130434782608696,
-            "powered_ruin": 0.00434782608695652,
-            "ransacked_or_ruined": 0.00434782608695652,
-            "unpowered": 0.00869565217391304
+            "powered": 0.0174418604651163,
+            "powered_ruin": 0.00581395348837209,
+            "ransacked_or_ruined": 0.00581395348837209,
+            "unpowered": 0.0116279069767442
           },
-          "type": "office"
+          "type": "museum"
         },
         {
           "rates": {
-            "powered": 0.00818181818181818,
-            "powered_ruin": 0.00272727272727273,
-            "ransacked_or_ruined": 0.00272727272727273,
-            "unpowered": 0.00545454545454546
+            "powered": 0.0359281437125749,
+            "powered_ruin": 0.0119760479041916,
+            "ransacked_or_ruined": 0.0119760479041916,
+            "unpowered": 0.0239520958083832
+          },
+          "type": "hotel"
+        },
+        {
+          "rates": {
+            "powered": 0.0133928571428571,
+            "powered_ruin": 0.00446428571428571,
+            "ransacked_or_ruined": 0.00446428571428571,
+            "unpowered": 0.00892857142857143
           },
           "type": "railway_station"
         }
@@ -2645,10 +2654,10 @@
         },
         {
           "rates": {
-            "powered": 0.00522648160814819,
-            "powered_ruin": 0.00201018523390315,
-            "ransacked_or_ruined": 0.000201018523390315,
-            "unpowered": 0.000201018523390315
+            "powered": 0.00526347657194136,
+            "powered_ruin": 0.00202441406613129,
+            "ransacked_or_ruined": 0.000202441406613129,
+            "unpowered": 0.000202441406613129
           },
           "type": "mall"
         },
@@ -2695,10 +2704,10 @@
         },
         {
           "rates": {
-            "powered": 0.0652173913043478,
-            "powered_ruin": 0.0217391304347826,
-            "ransacked_or_ruined": 0.0217391304347826,
-            "unpowered": 0.0434782608695652
+            "powered": 0.0681818181818182,
+            "powered_ruin": 0.0227272727272727,
+            "ransacked_or_ruined": 0.0227272727272727,
+            "unpowered": 0.0454545454545455
           },
           "type": "office"
         },
@@ -2722,10 +2731,10 @@
         },
         {
           "rates": {
-            "powered": 0.00400000123076961,
-            "powered_ruin": 0.00153846201183446,
-            "ransacked_or_ruined": 0.000153846201183446,
-            "unpowered": 0.000153846201183446
+            "powered": 0.00402831471425614,
+            "powered_ruin": 0.00154935181317544,
+            "ransacked_or_ruined": 0.000154935181317544,
+            "unpowered": 0.000154935181317544
           },
           "type": "mall"
         },
@@ -2749,19 +2758,19 @@
         },
         {
           "rates": {
-            "powered": 0.0408163265306122,
-            "powered_ruin": 0.0136054421768708,
-            "ransacked_or_ruined": 0.0136054421768708,
-            "unpowered": 0.0272108843537415
+            "powered": 0.0359281437125749,
+            "powered_ruin": 0.0119760479041916,
+            "ransacked_or_ruined": 0.0119760479041916,
+            "unpowered": 0.0239520958083832
           },
           "type": "hotel"
         },
         {
           "rates": {
-            "powered": 0.0409090909090909,
-            "powered_ruin": 0.0136363636363636,
-            "ransacked_or_ruined": 0.0136363636363636,
-            "unpowered": 0.0272727272727273
+            "powered": 0.0401785714285714,
+            "powered_ruin": 0.0133928571428571,
+            "ransacked_or_ruined": 0.0133928571428571,
+            "unpowered": 0.0267857142857143
           },
           "type": "railway_station"
         },
@@ -2934,10 +2943,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0308641975308642,
-            "powered_ruin": 0.0102880658436214,
-            "ransacked_or_ruined": 0.0102880658436214,
-            "unpowered": 0.0205761316872428
+            "powered": 0.0290697674418605,
+            "powered_ruin": 0.00968992248062016,
+            "ransacked_or_ruined": 0.00968992248062016,
+            "unpowered": 0.0193798449612403
           },
           "type": "museum"
         },
@@ -2966,10 +2975,10 @@
         },
         {
           "rates": {
-            "powered": 0.00800000246153922,
-            "powered_ruin": 0.00307692402366893,
-            "ransacked_or_ruined": 0.000307692402366893,
-            "unpowered": 0.000307692402366893
+            "powered": 0.00805662942851229,
+            "powered_ruin": 0.00309870362635088,
+            "ransacked_or_ruined": 0.000309870362635088,
+            "unpowered": 0.000309870362635088
           },
           "type": "mall"
         },
@@ -3007,10 +3016,10 @@
         },
         {
           "rates": {
-            "powered": 0.000696880214424681,
-            "powered_ruin": 0.0002680308517018,
-            "ransacked_or_ruined": 0.00002680308517018,
-            "unpowered": 0.00002680308517018
+            "powered": 0.000701812989517705,
+            "powered_ruin": 0.000269928072891425,
+            "ransacked_or_ruined": 0.0000269928072891425,
+            "unpowered": 0.0000269928072891425
           },
           "type": "mall"
         },
@@ -3039,10 +3048,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.00104528032162471,
-            "powered_ruin": 0.000402030892932582,
-            "ransacked_or_ruined": 0.0000402030892932582,
-            "unpowered": 0.0000402030892932582
+            "powered": 0.00105267920112942,
+            "powered_ruin": 0.000404876615819006,
+            "ransacked_or_ruined": 0.0000404876615819006,
+            "unpowered": 0.0000404876615819006
           },
           "type": "mall"
         }
@@ -3071,10 +3080,10 @@
         },
         {
           "rates": {
-            "powered": 0.00522648160814819,
-            "powered_ruin": 0.00201018523390315,
-            "ransacked_or_ruined": 0.000201018523390315,
-            "unpowered": 0.000201018523390315
+            "powered": 0.00526347657194136,
+            "powered_ruin": 0.00202441406613129,
+            "ransacked_or_ruined": 0.000202441406613129,
+            "unpowered": 0.000202441406613129
           },
           "type": "mall"
         }
@@ -3094,10 +3103,10 @@
         },
         {
           "rates": {
-            "powered": 0.00696864214419758,
-            "powered_ruin": 0.00268024697853753,
-            "ransacked_or_ruined": 0.000268024697853753,
-            "unpowered": 0.000268024697853753
+            "powered": 0.00701796876258848,
+            "powered_ruin": 0.00269921875484172,
+            "ransacked_or_ruined": 0.000269921875484172,
+            "unpowered": 0.000269921875484172
           },
           "type": "mall"
         },
@@ -3153,10 +3162,10 @@
         },
         {
           "rates": {
-            "powered": 0.00348432107209879,
-            "powered_ruin": 0.00134012348926877,
-            "ransacked_or_ruined": 0.000134012348926877,
-            "unpowered": 0.000134012348926877
+            "powered": 0.00350898438129424,
+            "powered_ruin": 0.00134960937742086,
+            "ransacked_or_ruined": 0.000134960937742086,
+            "unpowered": 0.000134960937742086
           },
           "type": "mall"
         },
@@ -3185,10 +3194,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0308641975308642,
-            "powered_ruin": 0.0102880658436214,
-            "ransacked_or_ruined": 0.0102880658436214,
-            "unpowered": 0.0205761316872428
+            "powered": 0.0290697674418605,
+            "powered_ruin": 0.00968992248062016,
+            "ransacked_or_ruined": 0.00968992248062016,
+            "unpowered": 0.0193798449612403
           },
           "type": "museum"
         }
@@ -3199,10 +3208,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0037037037037037,
-            "powered_ruin": 0.00123456790123457,
-            "ransacked_or_ruined": 0.00123456790123457,
-            "unpowered": 0.00246913580246914
+            "powered": 0.00348837209302326,
+            "powered_ruin": 0.00116279069767442,
+            "ransacked_or_ruined": 0.00116279069767442,
+            "unpowered": 0.00232558139534884
           },
           "type": "museum"
         }
@@ -3231,19 +3240,19 @@
         },
         {
           "rates": {
-            "powered": 0.0173913043478261,
-            "powered_ruin": 0.00579710144927536,
-            "ransacked_or_ruined": 0.00579710144927536,
-            "unpowered": 0.0115942028985507
+            "powered": 0.0181818181818182,
+            "powered_ruin": 0.00606060606060606,
+            "ransacked_or_ruined": 0.00606060606060606,
+            "unpowered": 0.0121212121212121
           },
           "type": "office"
         },
         {
           "rates": {
-            "powered": 0.00522648160814819,
-            "powered_ruin": 0.00201018523390315,
-            "ransacked_or_ruined": 0.000201018523390315,
-            "unpowered": 0.000201018523390315
+            "powered": 0.00526347657194136,
+            "powered_ruin": 0.00202441406613129,
+            "ransacked_or_ruined": 0.000202441406613129,
+            "unpowered": 0.000202441406613129
           },
           "type": "mall"
         }
@@ -3254,10 +3263,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.00278744085767411,
-            "powered_ruin": 0.00107209263756697,
-            "ransacked_or_ruined": 0.000107209263756697,
-            "unpowered": 0.000107209263756697
+            "powered": 0.00280717139177654,
+            "powered_ruin": 0.00107968130452944,
+            "ransacked_or_ruined": 0.000107968130452944,
+            "unpowered": 0.000107968130452944
           },
           "type": "mall"
         },
@@ -3277,10 +3286,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0246913580246914,
-            "powered_ruin": 0.00823045267489712,
-            "ransacked_or_ruined": 0.00823045267489712,
-            "unpowered": 0.0164609053497942
+            "powered": 0.0232558139534884,
+            "powered_ruin": 0.00775193798449612,
+            "ransacked_or_ruined": 0.00775193798449612,
+            "unpowered": 0.0155038759689922
           },
           "type": "museum"
         }
@@ -3309,10 +3318,10 @@
         },
         {
           "rates": {
-            "powered": 0.00800000246153922,
-            "powered_ruin": 0.00307692402366893,
-            "ransacked_or_ruined": 0.000307692402366893,
-            "unpowered": 0.000307692402366893
+            "powered": 0.00805662942851229,
+            "powered_ruin": 0.00309870362635088,
+            "ransacked_or_ruined": 0.000309870362635088,
+            "unpowered": 0.000309870362635088
           },
           "type": "mall"
         },
@@ -3350,10 +3359,10 @@
         },
         {
           "rates": {
-            "powered": 0.000696880214424681,
-            "powered_ruin": 0.0002680308517018,
-            "ransacked_or_ruined": 0.00002680308517018,
-            "unpowered": 0.00002680308517018
+            "powered": 0.000701812989517705,
+            "powered_ruin": 0.000269928072891425,
+            "ransacked_or_ruined": 0.0000269928072891425,
+            "unpowered": 0.0000269928072891425
           },
           "type": "mall"
         },
@@ -3400,10 +3409,10 @@
         },
         {
           "rates": {
-            "powered": 0.037037037037037,
-            "powered_ruin": 0.0123456790123457,
-            "ransacked_or_ruined": 0.0123456790123457,
-            "unpowered": 0.0246913580246914
+            "powered": 0.0348837209302326,
+            "powered_ruin": 0.0116279069767442,
+            "ransacked_or_ruined": 0.0116279069767442,
+            "unpowered": 0.0232558139534884
           },
           "type": "museum"
         },
@@ -3495,10 +3504,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0148148148148148,
-            "powered_ruin": 0.00493827160493827,
-            "ransacked_or_ruined": 0.00493827160493827,
-            "unpowered": 0.00987654320987654
+            "powered": 0.013953488372093,
+            "powered_ruin": 0.00465116279069767,
+            "ransacked_or_ruined": 0.00465116279069767,
+            "unpowered": 0.00930232558139535
           },
           "type": "museum"
         }
@@ -3518,10 +3527,10 @@
         },
         {
           "rates": {
-            "powered": 0.00696864214419758,
-            "powered_ruin": 0.00268024697853753,
-            "ransacked_or_ruined": 0.000268024697853753,
-            "unpowered": 0.000268024697853753
+            "powered": 0.00701796876258848,
+            "powered_ruin": 0.00269921875484172,
+            "ransacked_or_ruined": 0.000269921875484172,
+            "unpowered": 0.000269921875484172
           },
           "type": "mall"
         },
@@ -3568,10 +3577,10 @@
         },
         {
           "rates": {
-            "powered": 0.00696864214419758,
-            "powered_ruin": 0.00268024697853753,
-            "ransacked_or_ruined": 0.000268024697853753,
-            "unpowered": 0.000268024697853753
+            "powered": 0.00701796876258848,
+            "powered_ruin": 0.00269921875484172,
+            "ransacked_or_ruined": 0.000269921875484172,
+            "unpowered": 0.000269921875484172
           },
           "type": "mall"
         },
@@ -3681,10 +3690,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0246913580246914,
-            "powered_ruin": 0.00823045267489712,
-            "ransacked_or_ruined": 0.00823045267489712,
-            "unpowered": 0.0164609053497942
+            "powered": 0.0232558139534884,
+            "powered_ruin": 0.00775193798449612,
+            "ransacked_or_ruined": 0.00775193798449612,
+            "unpowered": 0.0155038759689922
           },
           "type": "museum"
         }
@@ -3695,10 +3704,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0185185185185185,
-            "powered_ruin": 0.00617283950617284,
-            "ransacked_or_ruined": 0.00617283950617284,
-            "unpowered": 0.0123456790123457
+            "powered": 0.0174418604651163,
+            "powered_ruin": 0.00581395348837209,
+            "ransacked_or_ruined": 0.00581395348837209,
+            "unpowered": 0.0116279069767442
           },
           "type": "museum"
         }
@@ -3723,10 +3732,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0185185185185185,
-            "powered_ruin": 0.00617283950617284,
-            "ransacked_or_ruined": 0.00617283950617284,
-            "unpowered": 0.0123456790123457
+            "powered": 0.0174418604651163,
+            "powered_ruin": 0.00581395348837209,
+            "ransacked_or_ruined": 0.00581395348837209,
+            "unpowered": 0.0116279069767442
           },
           "type": "museum"
         }
@@ -3755,10 +3764,10 @@
         },
         {
           "rates": {
-            "powered": 0.0156794448244446,
-            "powered_ruin": 0.00603055570170944,
-            "ransacked_or_ruined": 0.000603055570170945,
-            "unpowered": 0.000603055570170945
+            "powered": 0.0157904297158241,
+            "powered_ruin": 0.00607324219839388,
+            "ransacked_or_ruined": 0.000607324219839388,
+            "unpowered": 0.000607324219839388
           },
           "type": "mall"
         },
@@ -3778,10 +3787,10 @@
       "locations": [
         {
           "rates": {
-            "powered": 0.0017421605360494,
-            "powered_ruin": 0.000670061744634383,
-            "ransacked_or_ruined": 0.0000670061744634383,
-            "unpowered": 0.0000670061744634383
+            "powered": 0.00175449219064712,
+            "powered_ruin": 0.000674804688710431,
+            "ransacked_or_ruined": 0.0000674804688710431,
+            "unpowered": 0.0000674804688710431
           },
           "type": "mall"
         }
@@ -3837,19 +3846,19 @@
         },
         {
           "rates": {
-            "powered": 0.00696864214419758,
-            "powered_ruin": 0.00268024697853753,
-            "ransacked_or_ruined": 0.000268024697853753,
-            "unpowered": 0.000268024697853753
+            "powered": 0.00701796876258848,
+            "powered_ruin": 0.00269921875484172,
+            "ransacked_or_ruined": 0.000269921875484172,
+            "unpowered": 0.000269921875484172
           },
           "type": "mall"
         },
         {
           "rates": {
-            "powered": 0.0409090909090909,
-            "powered_ruin": 0.0136363636363636,
-            "ransacked_or_ruined": 0.0136363636363636,
-            "unpowered": 0.0272727272727273
+            "powered": 0.0401785714285714,
+            "powered_ruin": 0.0133928571428571,
+            "ransacked_or_ruined": 0.0133928571428571,
+            "unpowered": 0.0267857142857143
           },
           "type": "railway_station"
         },
@@ -3923,10 +3932,10 @@
         },
         {
           "rates": {
-            "powered": 0.00696864214419758,
-            "powered_ruin": 0.00268024697853753,
-            "ransacked_or_ruined": 0.000268024697853753,
-            "unpowered": 0.000268024697853753
+            "powered": 0.00701796876258848,
+            "powered_ruin": 0.00269921875484172,
+            "ransacked_or_ruined": 0.000269921875484172,
+            "unpowered": 0.000269921875484172
           },
           "type": "mall"
         },
@@ -3941,10 +3950,10 @@
         },
         {
           "rates": {
-            "powered": 0.0510204081632653,
-            "powered_ruin": 0.0170068027210884,
-            "ransacked_or_ruined": 0.0170068027210884,
-            "unpowered": 0.0340136054421769
+            "powered": 0.0449101796407186,
+            "powered_ruin": 0.0149700598802395,
+            "ransacked_or_ruined": 0.0149700598802395,
+            "unpowered": 0.0299401197604791
           },
           "type": "hotel"
         },
@@ -4871,40 +4880,46 @@
     "hotel": {
       "items": {
         "clothing": {
-          "powered": 0.0408163265306122,
-          "powered_ruin": 0.0136054421768708,
-          "ransacked_or_ruined": 0.0136054421768708,
-          "unpowered": 0.0272108843537415
+          "powered": 0.0359281437125749,
+          "powered_ruin": 0.0119760479041916,
+          "ransacked_or_ruined": 0.0119760479041916,
+          "unpowered": 0.0239520958083832
         },
         "first_aid_kit": {
-          "powered": 0.00408163265306122,
-          "powered_ruin": 0.00136054421768708,
-          "ransacked_or_ruined": 0.00136054421768708,
-          "unpowered": 0.00272108843537415
+          "powered": 0.00359281437125749,
+          "powered_ruin": 0.00119760479041916,
+          "ransacked_or_ruined": 0.00119760479041916,
+          "unpowered": 0.00239520958083832
         },
         "golf_club": {
-          "powered": 0.0918367346938776,
-          "powered_ruin": 0.0306122448979592,
-          "ransacked_or_ruined": 0.0306122448979592,
-          "unpowered": 0.0612244897959184
+          "powered": 0.0808383233532934,
+          "powered_ruin": 0.0269461077844311,
+          "ransacked_or_ruined": 0.0269461077844311,
+          "unpowered": 0.0538922155688623
         },
         "knife": {
-          "powered": 0.0714285714285714,
-          "powered_ruin": 0.0238095238095238,
-          "ransacked_or_ruined": 0.0238095238095238,
-          "unpowered": 0.0476190476190476
+          "powered": 0.062874251497006,
+          "powered_ruin": 0.0209580838323353,
+          "ransacked_or_ruined": 0.0209580838323353,
+          "unpowered": 0.0419161676646707
+        },
+        "map": {
+          "powered": 0.0359281437125749,
+          "powered_ruin": 0.0119760479041916,
+          "ransacked_or_ruined": 0.0119760479041916,
+          "unpowered": 0.0239520958083832
         },
         "newspaper": {
-          "powered": 0.0408163265306122,
-          "powered_ruin": 0.0136054421768708,
-          "ransacked_or_ruined": 0.0136054421768708,
-          "unpowered": 0.0272108843537415
+          "powered": 0.0359281437125749,
+          "powered_ruin": 0.0119760479041916,
+          "ransacked_or_ruined": 0.0119760479041916,
+          "unpowered": 0.0239520958083832
         },
         "wine": {
-          "powered": 0.0510204081632653,
-          "powered_ruin": 0.0170068027210884,
-          "ransacked_or_ruined": 0.0170068027210884,
-          "unpowered": 0.0340136054421769
+          "powered": 0.0449101796407186,
+          "powered_ruin": 0.0149700598802395,
+          "ransacked_or_ruined": 0.0149700598802395,
+          "unpowered": 0.0299401197604791
         }
       },
       "mode": "interior"
@@ -5112,220 +5127,220 @@
     "mall": {
       "items": {
         "baseball_bat": {
-          "powered": 0.0209059264325927,
-          "powered_ruin": 0.00804074093561259,
-          "ransacked_or_ruined": 0.000804074093561259,
-          "unpowered": 0.000804074093561259
+          "powered": 0.0210539062877654,
+          "powered_ruin": 0.00809765626452517,
+          "ransacked_or_ruined": 0.000809765626452517,
+          "unpowered": 0.000809765626452517
         },
         "beer": {
-          "powered": 0.00871080268024698,
-          "powered_ruin": 0.00335030872317191,
-          "ransacked_or_ruined": 0.000335030872317191,
-          "unpowered": 0.000335030872317191
+          "powered": 0.0087724609532356,
+          "powered_ruin": 0.00337402344355216,
+          "ransacked_or_ruined": 0.000337402344355216,
+          "unpowered": 0.000337402344355216
         },
         "binoculars": {
-          "powered": 0.00348432107209879,
-          "powered_ruin": 0.00134012348926877,
-          "ransacked_or_ruined": 0.000134012348926877,
-          "unpowered": 0.000134012348926877
+          "powered": 0.00350898438129424,
+          "powered_ruin": 0.00134960937742086,
+          "ransacked_or_ruined": 0.000134960937742086,
+          "unpowered": 0.000134960937742086
         },
         "book": {
-          "powered": 0.0104529632162964,
-          "powered_ruin": 0.0040203704678063,
-          "ransacked_or_ruined": 0.00040203704678063,
-          "unpowered": 0.00040203704678063
+          "powered": 0.0105269531438827,
+          "powered_ruin": 0.00404882813226259,
+          "ransacked_or_ruined": 0.000404882813226259,
+          "unpowered": 0.000404882813226259
         },
         "candy": {
-          "powered": 0.0017421605360494,
-          "powered_ruin": 0.000670061744634383,
-          "ransacked_or_ruined": 0.0000670061744634383,
-          "unpowered": 0.0000670061744634383
+          "powered": 0.00175449219064712,
+          "powered_ruin": 0.000674804688710431,
+          "ransacked_or_ruined": 0.0000674804688710431,
+          "unpowered": 0.0000674804688710431
         },
         "christmas_lights": {
-          "powered": 0.0017421605360494,
-          "powered_ruin": 0.000670061744634383,
-          "ransacked_or_ruined": 0.0000670061744634383,
-          "unpowered": 0.0000670061744634383
+          "powered": 0.00175449219064712,
+          "powered_ruin": 0.000674804688710431,
+          "ransacked_or_ruined": 0.0000674804688710431,
+          "unpowered": 0.0000674804688710431
         },
         "clothing": {
-          "powered": 0.00522648160814819,
-          "powered_ruin": 0.00201018523390315,
-          "ransacked_or_ruined": 0.000201018523390315,
-          "unpowered": 0.000201018523390315
+          "powered": 0.00526347657194136,
+          "powered_ruin": 0.00202441406613129,
+          "ransacked_or_ruined": 0.000202441406613129,
+          "unpowered": 0.000202441406613129
         },
         "cricket_bat": {
-          "powered": 0.0121951237523458,
-          "powered_ruin": 0.00469043221244068,
-          "ransacked_or_ruined": 0.000469043221244068,
-          "unpowered": 0.000469043221244068
+          "powered": 0.0122814453345298,
+          "powered_ruin": 0.00472363282097302,
+          "ransacked_or_ruined": 0.000472363282097302,
+          "unpowered": 0.000472363282097302
         },
         "crowbar": {
-          "powered": 0.0160000049230784,
-          "powered_ruin": 0.00615384804733786,
-          "ransacked_or_ruined": 0.000615384804733786,
-          "unpowered": 0.000615384804733786
+          "powered": 0.0161132588570246,
+          "powered_ruin": 0.00619740725270176,
+          "ransacked_or_ruined": 0.000619740725270176,
+          "unpowered": 0.000619740725270176
         },
         "fencing_foil": {
-          "powered": 0.00871080268024698,
-          "powered_ruin": 0.00335030872317191,
-          "ransacked_or_ruined": 0.000335030872317191,
-          "unpowered": 0.000335030872317191
+          "powered": 0.0087724609532356,
+          "powered_ruin": 0.00337402344355216,
+          "ransacked_or_ruined": 0.000337402344355216,
+          "unpowered": 0.000337402344355216
         },
         "fire_axe": {
-          "powered": 0.00800000246153922,
-          "powered_ruin": 0.00307692402366893,
-          "ransacked_or_ruined": 0.000307692402366893,
-          "unpowered": 0.000307692402366893
+          "powered": 0.00805662942851229,
+          "powered_ruin": 0.00309870362635088,
+          "ransacked_or_ruined": 0.000309870362635088,
+          "unpowered": 0.000309870362635088
         },
         "first_aid_kit": {
-          "powered": 0.00104528032162471,
-          "powered_ruin": 0.000402030892932582,
-          "ransacked_or_ruined": 0.0000402030892932582,
-          "unpowered": 0.0000402030892932582
+          "powered": 0.00105267920112942,
+          "powered_ruin": 0.000404876615819006,
+          "ransacked_or_ruined": 0.0000404876615819006,
+          "unpowered": 0.0000404876615819006
         },
         "flare_gun": {
-          "powered": 0.00278744085767411,
-          "powered_ruin": 0.00107209263756697,
-          "ransacked_or_ruined": 0.000107209263756697,
-          "unpowered": 0.000107209263756697
+          "powered": 0.00280717139177654,
+          "powered_ruin": 0.00107968130452944,
+          "ransacked_or_ruined": 0.000107968130452944,
+          "unpowered": 0.000107968130452944
         },
         "fuel_can": {
-          "powered": 0.0160000049230784,
-          "powered_ruin": 0.00615384804733786,
-          "ransacked_or_ruined": 0.000615384804733786,
-          "unpowered": 0.000615384804733786
+          "powered": 0.0161132588570246,
+          "powered_ruin": 0.00619740725270176,
+          "ransacked_or_ruined": 0.000619740725270176,
+          "unpowered": 0.000619740725270176
         },
         "golf_club": {
-          "powered": 0.0191637658965433,
-          "powered_ruin": 0.00737067919097821,
-          "ransacked_or_ruined": 0.000737067919097821,
-          "unpowered": 0.000737067919097821
+          "powered": 0.0192994140971183,
+          "powered_ruin": 0.00742285157581474,
+          "ransacked_or_ruined": 0.000742285157581474,
+          "unpowered": 0.000742285157581474
         },
         "gps_unit": {
-          "powered": 0.00278744085767411,
-          "powered_ruin": 0.00107209263756697,
-          "ransacked_or_ruined": 0.000107209263756697,
-          "unpowered": 0.000107209263756697
+          "powered": 0.000966795531421474,
+          "powered_ruin": 0.000371844435162105,
+          "ransacked_or_ruined": 0.0000371844435162105,
+          "unpowered": 0.0000371844435162105
         },
         "hockey_stick": {
-          "powered": 0.0121951237523458,
-          "powered_ruin": 0.00469043221244068,
-          "ransacked_or_ruined": 0.000469043221244068,
-          "unpowered": 0.000469043221244068
+          "powered": 0.0122814453345298,
+          "powered_ruin": 0.00472363282097302,
+          "ransacked_or_ruined": 0.000472363282097302,
+          "unpowered": 0.000472363282097302
         },
         "knife": {
-          "powered": 0.0121951237523458,
-          "powered_ruin": 0.00469043221244068,
-          "ransacked_or_ruined": 0.000469043221244068,
-          "unpowered": 0.000469043221244068
+          "powered": 0.0122814453345298,
+          "powered_ruin": 0.00472363282097302,
+          "ransacked_or_ruined": 0.000472363282097302,
+          "unpowered": 0.000472363282097302
         },
         "mobile_phone": {
-          "powered": 0.00522648160814819,
-          "powered_ruin": 0.00201018523390315,
-          "ransacked_or_ruined": 0.000201018523390315,
-          "unpowered": 0.000201018523390315
+          "powered": 0.00526347657194136,
+          "powered_ruin": 0.00202441406613129,
+          "ransacked_or_ruined": 0.000202441406613129,
+          "unpowered": 0.000202441406613129
         },
         "newspaper": {
-          "powered": 0.00400000123076961,
-          "powered_ruin": 0.00153846201183446,
-          "ransacked_or_ruined": 0.000153846201183446,
-          "unpowered": 0.000153846201183446
+          "powered": 0.00402831471425614,
+          "powered_ruin": 0.00154935181317544,
+          "ransacked_or_ruined": 0.000154935181317544,
+          "unpowered": 0.000154935181317544
         },
         "pistol": {
-          "powered": 0.00800000246153922,
-          "powered_ruin": 0.00307692402366893,
-          "ransacked_or_ruined": 0.000307692402366893,
-          "unpowered": 0.000307692402366893
+          "powered": 0.00805662942851229,
+          "powered_ruin": 0.00309870362635088,
+          "ransacked_or_ruined": 0.000309870362635088,
+          "unpowered": 0.000309870362635088
         },
         "pistol_clip": {
-          "powered": 0.000696880214424681,
-          "powered_ruin": 0.0002680308517018,
-          "ransacked_or_ruined": 0.00002680308517018,
-          "unpowered": 0.00002680308517018
+          "powered": 0.000701812989517705,
+          "powered_ruin": 0.000269928072891425,
+          "ransacked_or_ruined": 0.0000269928072891425,
+          "unpowered": 0.0000269928072891425
         },
         "plastic_christmas_tree": {
-          "powered": 0.00104528032162471,
-          "powered_ruin": 0.000402030892932582,
-          "ransacked_or_ruined": 0.0000402030892932582,
-          "unpowered": 0.0000402030892932582
+          "powered": 0.00105267920112942,
+          "powered_ruin": 0.000404876615819006,
+          "ransacked_or_ruined": 0.0000404876615819006,
+          "unpowered": 0.0000404876615819006
         },
         "poetry_book": {
-          "powered": 0.00522648160814819,
-          "powered_ruin": 0.00201018523390315,
-          "ransacked_or_ruined": 0.000201018523390315,
-          "unpowered": 0.000201018523390315
+          "powered": 0.00526347657194136,
+          "powered_ruin": 0.00202441406613129,
+          "ransacked_or_ruined": 0.000202441406613129,
+          "unpowered": 0.000202441406613129
         },
         "pool_cue": {
-          "powered": 0.00696864214419758,
-          "powered_ruin": 0.00268024697853753,
-          "ransacked_or_ruined": 0.000268024697853753,
-          "unpowered": 0.000268024697853753
+          "powered": 0.00701796876258848,
+          "powered_ruin": 0.00269921875484172,
+          "ransacked_or_ruined": 0.000269921875484172,
+          "unpowered": 0.000269921875484172
         },
         "portable_generator": {
-          "powered": 0.00348432107209879,
-          "powered_ruin": 0.00134012348926877,
-          "ransacked_or_ruined": 0.000134012348926877,
-          "unpowered": 0.000134012348926877
+          "powered": 0.00350898438129424,
+          "powered_ruin": 0.00134960937742086,
+          "ransacked_or_ruined": 0.000134960937742086,
+          "unpowered": 0.000134960937742086
         },
         "radio": {
-          "powered": 0.00522648160814819,
-          "powered_ruin": 0.00201018523390315,
-          "ransacked_or_ruined": 0.000201018523390315,
-          "unpowered": 0.000201018523390315
+          "powered": 0.00526347657194136,
+          "powered_ruin": 0.00202441406613129,
+          "ransacked_or_ruined": 0.000202441406613129,
+          "unpowered": 0.000202441406613129
         },
         "radio_transmitter": {
-          "powered": 0.00278744085767411,
-          "powered_ruin": 0.00107209263756697,
-          "ransacked_or_ruined": 0.000107209263756697,
-          "unpowered": 0.000107209263756697
+          "powered": 0.00280717139177654,
+          "powered_ruin": 0.00107968130452944,
+          "ransacked_or_ruined": 0.000107968130452944,
+          "unpowered": 0.000107968130452944
         },
         "shotgun": {
-          "powered": 0.00800000246153922,
-          "powered_ruin": 0.00307692402366893,
-          "ransacked_or_ruined": 0.000307692402366893,
-          "unpowered": 0.000307692402366893
+          "powered": 0.00805662942851229,
+          "powered_ruin": 0.00309870362635088,
+          "ransacked_or_ruined": 0.000309870362635088,
+          "unpowered": 0.000309870362635088
         },
         "shotgun_shell": {
-          "powered": 0.000696880214424681,
-          "powered_ruin": 0.0002680308517018,
-          "ransacked_or_ruined": 0.00002680308517018,
-          "unpowered": 0.00002680308517018
+          "powered": 0.000701812989517705,
+          "powered_ruin": 0.000269928072891425,
+          "ransacked_or_ruined": 0.0000269928072891425,
+          "unpowered": 0.0000269928072891425
         },
         "ski_pole": {
-          "powered": 0.00696864214419758,
-          "powered_ruin": 0.00268024697853753,
-          "ransacked_or_ruined": 0.000268024697853753,
-          "unpowered": 0.000268024697853753
+          "powered": 0.00701796876258848,
+          "powered_ruin": 0.00269921875484172,
+          "ransacked_or_ruined": 0.000269921875484172,
+          "unpowered": 0.000269921875484172
         },
         "spray_can": {
-          "powered": 0.00696864214419758,
-          "powered_ruin": 0.00268024697853753,
-          "ransacked_or_ruined": 0.000268024697853753,
-          "unpowered": 0.000268024697853753
+          "powered": 0.00701796876258848,
+          "powered_ruin": 0.00269921875484172,
+          "ransacked_or_ruined": 0.000269921875484172,
+          "unpowered": 0.000269921875484172
         },
         "tennis_racket": {
-          "powered": 0.0156794448244446,
-          "powered_ruin": 0.00603055570170944,
-          "ransacked_or_ruined": 0.000603055570170945,
-          "unpowered": 0.000603055570170945
+          "powered": 0.0157904297158241,
+          "powered_ruin": 0.00607324219839388,
+          "ransacked_or_ruined": 0.000607324219839388,
+          "unpowered": 0.000607324219839388
         },
         "tinsel": {
-          "powered": 0.0017421605360494,
-          "powered_ruin": 0.000670061744634383,
-          "ransacked_or_ruined": 0.0000670061744634383,
-          "unpowered": 0.0000670061744634383
+          "powered": 0.00175449219064712,
+          "powered_ruin": 0.000674804688710431,
+          "ransacked_or_ruined": 0.0000674804688710431,
+          "unpowered": 0.0000674804688710431
         },
         "toolbox": {
-          "powered": 0.00696864214419758,
-          "powered_ruin": 0.00268024697853753,
-          "ransacked_or_ruined": 0.000268024697853753,
-          "unpowered": 0.000268024697853753
+          "powered": 0.00701796876258848,
+          "powered_ruin": 0.00269921875484172,
+          "ransacked_or_ruined": 0.000269921875484172,
+          "unpowered": 0.000269921875484172
         },
         "wine": {
-          "powered": 0.00696864214419758,
-          "powered_ruin": 0.00268024697853753,
-          "ransacked_or_ruined": 0.000268024697853753,
-          "unpowered": 0.000268024697853753
+          "powered": 0.00701796876258848,
+          "powered_ruin": 0.00269921875484172,
+          "ransacked_or_ruined": 0.000269921875484172,
+          "unpowered": 0.000269921875484172
         }
       },
       "mode": "interior"
@@ -5463,88 +5478,94 @@
     "museum": {
       "items": {
         "clothing": {
-          "powered": 0.0246913580246914,
-          "powered_ruin": 0.00823045267489712,
-          "ransacked_or_ruined": 0.00823045267489712,
-          "unpowered": 0.0164609053497942
+          "powered": 0.0232558139534884,
+          "powered_ruin": 0.00775193798449612,
+          "ransacked_or_ruined": 0.00775193798449612,
+          "unpowered": 0.0155038759689922
         },
         "crowbar": {
-          "powered": 0.0246913580246914,
-          "powered_ruin": 0.00823045267489712,
-          "ransacked_or_ruined": 0.00823045267489712,
-          "unpowered": 0.0164609053497942
+          "powered": 0.0232558139534884,
+          "powered_ruin": 0.00775193798449612,
+          "ransacked_or_ruined": 0.00775193798449612,
+          "unpowered": 0.0155038759689922
         },
         "dead_fir_tree": {
-          "powered": 0.0037037037037037,
-          "powered_ruin": 0.00123456790123457,
-          "ransacked_or_ruined": 0.00123456790123457,
-          "unpowered": 0.00246913580246914
+          "powered": 0.00348837209302326,
+          "powered_ruin": 0.00116279069767442,
+          "ransacked_or_ruined": 0.00116279069767442,
+          "unpowered": 0.00232558139534884
         },
         "glass_piece": {
-          "powered": 0.0246913580246914,
-          "powered_ruin": 0.00823045267489712,
-          "ransacked_or_ruined": 0.00823045267489712,
-          "unpowered": 0.0164609053497942
+          "powered": 0.0232558139534884,
+          "powered_ruin": 0.00775193798449612,
+          "ransacked_or_ruined": 0.00775193798449612,
+          "unpowered": 0.0155038759689922
         },
         "knife": {
-          "powered": 0.0185185185185185,
-          "powered_ruin": 0.00617283950617284,
-          "ransacked_or_ruined": 0.00617283950617284,
-          "unpowered": 0.0123456790123457
+          "powered": 0.0174418604651163,
+          "powered_ruin": 0.00581395348837209,
+          "ransacked_or_ruined": 0.00581395348837209,
+          "unpowered": 0.0116279069767442
+        },
+        "map": {
+          "powered": 0.0174418604651163,
+          "powered_ruin": 0.00581395348837209,
+          "ransacked_or_ruined": 0.00581395348837209,
+          "unpowered": 0.0116279069767442
         },
         "painting": {
-          "powered": 0.0308641975308642,
-          "powered_ruin": 0.0102880658436214,
-          "ransacked_or_ruined": 0.0102880658436214,
-          "unpowered": 0.0205761316872428
+          "powered": 0.0290697674418605,
+          "powered_ruin": 0.00968992248062016,
+          "ransacked_or_ruined": 0.00968992248062016,
+          "unpowered": 0.0193798449612403
         },
         "pottery": {
-          "powered": 0.0308641975308642,
-          "powered_ruin": 0.0102880658436214,
-          "ransacked_or_ruined": 0.0102880658436214,
-          "unpowered": 0.0205761316872428
+          "powered": 0.0290697674418605,
+          "powered_ruin": 0.00968992248062016,
+          "ransacked_or_ruined": 0.00968992248062016,
+          "unpowered": 0.0193798449612403
         },
         "pumpkin": {
-          "powered": 0.0037037037037037,
-          "powered_ruin": 0.00123456790123457,
-          "ransacked_or_ruined": 0.00123456790123457,
-          "unpowered": 0.00246913580246914
+          "powered": 0.00348837209302326,
+          "powered_ruin": 0.00116279069767442,
+          "ransacked_or_ruined": 0.00116279069767442,
+          "unpowered": 0.00232558139534884
         },
         "sculpture": {
-          "powered": 0.0246913580246914,
-          "powered_ruin": 0.00823045267489712,
-          "ransacked_or_ruined": 0.00823045267489712,
-          "unpowered": 0.0164609053497942
+          "powered": 0.0232558139534884,
+          "powered_ruin": 0.00775193798449612,
+          "ransacked_or_ruined": 0.00775193798449612,
+          "unpowered": 0.0155038759689922
         },
         "shovel": {
-          "powered": 0.037037037037037,
-          "powered_ruin": 0.0123456790123457,
-          "ransacked_or_ruined": 0.0123456790123457,
-          "unpowered": 0.0246913580246914
+          "powered": 0.0348837209302326,
+          "powered_ruin": 0.0116279069767442,
+          "ransacked_or_ruined": 0.0116279069767442,
+          "unpowered": 0.0232558139534884
         },
         "skeleton": {
-          "powered": 0.0148148148148148,
-          "powered_ruin": 0.00493827160493827,
-          "ransacked_or_ruined": 0.00493827160493827,
-          "unpowered": 0.00987654320987654
+          "powered": 0.013953488372093,
+          "powered_ruin": 0.00465116279069767,
+          "ransacked_or_ruined": 0.00465116279069767,
+          "unpowered": 0.00930232558139535
         },
         "statue": {
-          "powered": 0.0246913580246914,
-          "powered_ruin": 0.00823045267489712,
-          "ransacked_or_ruined": 0.00823045267489712,
-          "unpowered": 0.0164609053497942
+          "powered": 0.0232558139534884,
+          "powered_ruin": 0.00775193798449612,
+          "ransacked_or_ruined": 0.00775193798449612,
+          "unpowered": 0.0155038759689922
         },
         "stuffed_animal": {
-          "powered": 0.0185185185185185,
-          "powered_ruin": 0.00617283950617284,
-          "ransacked_or_ruined": 0.00617283950617284,
-          "unpowered": 0.0123456790123457
+          "powered": 0.0174418604651163,
+          "powered_ruin": 0.00581395348837209,
+          "ransacked_or_ruined": 0.00581395348837209,
+          "unpowered": 0.0116279069767442
         },
         "tapestry": {
-          "powered": 0.0185185185185185,
-          "powered_ruin": 0.00617283950617284,
-          "ransacked_or_ruined": 0.00617283950617284,
-          "unpowered": 0.0123456790123457
+          "powered": 0.0174418604651163,
+          "powered_ruin": 0.00581395348837209,
+          "ransacked_or_ruined": 0.00581395348837209,
+          "unpowered": 0.0116279069767442
         }
       },
       "mode": "interior"
@@ -5558,16 +5579,16 @@
           "unpowered": 0.002
         },
         "dna_extractor": {
-          "powered": 0.063,
-          "powered_ruin": 0.0225,
-          "ransacked_or_ruined": 0.0225,
-          "unpowered": 0.045
+          "powered": 0.091,
+          "powered_ruin": 0.0325,
+          "ransacked_or_ruined": 0.0325,
+          "unpowered": 0.065
         },
         "gps_unit": {
-          "powered": 0.0392,
-          "powered_ruin": 0.014,
-          "ransacked_or_ruined": 0.014,
-          "unpowered": 0.028
+          "powered": 0.0112,
+          "powered_ruin": 0.004,
+          "ransacked_or_ruined": 0.004,
+          "unpowered": 0.008
         },
         "syringe": {
           "powered": 0.175,
@@ -5616,46 +5637,40 @@
     "office": {
       "items": {
         "clothing": {
-          "powered": 0.0434782608695652,
-          "powered_ruin": 0.0144927536231884,
-          "ransacked_or_ruined": 0.0144927536231884,
-          "unpowered": 0.0289855072463768
+          "powered": 0.0454545454545455,
+          "powered_ruin": 0.0151515151515152,
+          "ransacked_or_ruined": 0.0151515151515152,
+          "unpowered": 0.0303030303030303
         },
         "crowbar": {
-          "powered": 0.0869565217391304,
-          "powered_ruin": 0.0289855072463768,
-          "ransacked_or_ruined": 0.0289855072463768,
-          "unpowered": 0.0579710144927536
+          "powered": 0.0909090909090909,
+          "powered_ruin": 0.0303030303030303,
+          "ransacked_or_ruined": 0.0303030303030303,
+          "unpowered": 0.0606060606060606
         },
         "first_aid_kit": {
-          "powered": 0.00869565217391304,
-          "powered_ruin": 0.00289855072463768,
-          "ransacked_or_ruined": 0.00289855072463768,
-          "unpowered": 0.00579710144927536
+          "powered": 0.00909090909090909,
+          "powered_ruin": 0.00303030303030303,
+          "ransacked_or_ruined": 0.00303030303030303,
+          "unpowered": 0.00606060606060606
         },
         "knife": {
-          "powered": 0.0652173913043478,
-          "powered_ruin": 0.0217391304347826,
-          "ransacked_or_ruined": 0.0217391304347826,
-          "unpowered": 0.0434782608695652
-        },
-        "map": {
-          "powered": 0.0130434782608696,
-          "powered_ruin": 0.00434782608695652,
-          "ransacked_or_ruined": 0.00434782608695652,
-          "unpowered": 0.00869565217391304
+          "powered": 0.0681818181818182,
+          "powered_ruin": 0.0227272727272727,
+          "ransacked_or_ruined": 0.0227272727272727,
+          "unpowered": 0.0454545454545455
         },
         "newspaper": {
-          "powered": 0.0652173913043478,
-          "powered_ruin": 0.0217391304347826,
-          "ransacked_or_ruined": 0.0217391304347826,
-          "unpowered": 0.0434782608695652
+          "powered": 0.0681818181818182,
+          "powered_ruin": 0.0227272727272727,
+          "ransacked_or_ruined": 0.0227272727272727,
+          "unpowered": 0.0454545454545455
         },
         "radio": {
-          "powered": 0.0173913043478261,
-          "powered_ruin": 0.00579710144927536,
-          "ransacked_or_ruined": 0.00579710144927536,
-          "unpowered": 0.0115942028985507
+          "powered": 0.0181818181818182,
+          "powered_ruin": 0.00606060606060606,
+          "ransacked_or_ruined": 0.00606060606060606,
+          "unpowered": 0.0121212121212121
         }
       },
       "mode": "interior"
@@ -5953,40 +5968,40 @@
     "railway_station": {
       "items": {
         "clothing": {
-          "powered": 0.0954545454545455,
-          "powered_ruin": 0.0318181818181818,
-          "ransacked_or_ruined": 0.0318181818181818,
-          "unpowered": 0.0636363636363636
+          "powered": 0.09375,
+          "powered_ruin": 0.03125,
+          "ransacked_or_ruined": 0.03125,
+          "unpowered": 0.0625
         },
         "crowbar": {
-          "powered": 0.109090909090909,
-          "powered_ruin": 0.0363636363636364,
-          "ransacked_or_ruined": 0.0363636363636364,
-          "unpowered": 0.0727272727272727
+          "powered": 0.107142857142857,
+          "powered_ruin": 0.0357142857142857,
+          "ransacked_or_ruined": 0.0357142857142857,
+          "unpowered": 0.0714285714285714
         },
         "first_aid_kit": {
-          "powered": 0.00545454545454545,
-          "powered_ruin": 0.00181818181818182,
-          "ransacked_or_ruined": 0.00181818181818182,
-          "unpowered": 0.00363636363636364
+          "powered": 0.00535714285714286,
+          "powered_ruin": 0.00178571428571429,
+          "ransacked_or_ruined": 0.00178571428571429,
+          "unpowered": 0.00357142857142857
         },
         "map": {
-          "powered": 0.00818181818181818,
-          "powered_ruin": 0.00272727272727273,
-          "ransacked_or_ruined": 0.00272727272727273,
-          "unpowered": 0.00545454545454546
+          "powered": 0.0133928571428571,
+          "powered_ruin": 0.00446428571428571,
+          "ransacked_or_ruined": 0.00446428571428571,
+          "unpowered": 0.00892857142857143
         },
         "newspaper": {
-          "powered": 0.0409090909090909,
-          "powered_ruin": 0.0136363636363636,
-          "ransacked_or_ruined": 0.0136363636363636,
-          "unpowered": 0.0272727272727273
+          "powered": 0.0401785714285714,
+          "powered_ruin": 0.0133928571428571,
+          "ransacked_or_ruined": 0.0133928571428571,
+          "unpowered": 0.0267857142857143
         },
         "toolbox": {
-          "powered": 0.0409090909090909,
-          "powered_ruin": 0.0136363636363636,
-          "ransacked_or_ruined": 0.0136363636363636,
-          "unpowered": 0.0272727272727273
+          "powered": 0.0401785714285714,
+          "powered_ruin": 0.0133928571428571,
+          "ransacked_or_ruined": 0.0133928571428571,
+          "unpowered": 0.0267857142857143
         }
       },
       "mode": "interior"
@@ -6865,10 +6880,10 @@
     "tech": {
       "bargain_hunting": "Double intact powered odds; no bonus to ransacked/ruined or pitch-black rooms.",
       "powered_shopping": {
-        "gps_unit": 0.0452172220336614,
-        "mobile_phone": 0.0847827779663386,
-        "radio": 0.0847827779663386,
-        "radio_transmitter": 0.0452172220336614
+        "gps_unit": 0.0175769696628264,
+        "mobile_phone": 0.0956934170868426,
+        "radio": 0.0956934170868426,
+        "radio_transmitter": 0.0510361961634884
       }
     }
   },

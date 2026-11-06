@@ -88,8 +88,8 @@
   },
   "necrotech_lab": {
     "syringe": 0.625,
-    "dna_extractor": 0.225,
-    "gps_unit": 0.14,
+    "dna_extractor": 0.325,
+    "gps_unit": 0.04,
     "clothing": 0.01
   },
   "school": {
@@ -130,7 +130,7 @@
     "mobile_phone": 0.0065331,
     "radio": 0.0065331,
     "radio_transmitter": 0.0034843,
-    "gps_unit": 0.0034843,
+    "gps_unit": 0.0012,
     "clothing": 0.0065331,
     "christmas_lights": 0.0021777,
     "plastic_christmas_tree": 0.0013066,
@@ -167,7 +167,8 @@
     "first_aid_kit": 0.002,
     "wine": 0.025,
     "newspaper": 0.02,
-    "clothing": 0.02
+    "clothing": 0.02,
+    "map": 0.02
   },
   "church": {
     "shovel": 0.04,
@@ -191,7 +192,8 @@
     "tapestry": 0.015,
     "clothing": 0.02,
     "pumpkin": 0.003,
-    "dead_fir_tree": 0.003
+    "dead_fir_tree": 0.003,
+    "map": 0.015
   },
   "library": {
     "crowbar": 0.015,
@@ -207,8 +209,7 @@
     "first_aid_kit": 0.002,
     "newspaper": 0.015,
     "radio": 0.004,
-    "clothing": 0.01,
-    "map": 0.003
+    "clothing": 0.01
   },
   "bank": {
     "crowbar": 0.02,
@@ -231,7 +232,7 @@
     "first_aid_kit": 0.002,
     "clothing": 0.035,
     "newspaper": 0.015,
-    "map": 0.003
+    "map": 0.005
   },
   "tower": {
     "crowbar": 0.02,

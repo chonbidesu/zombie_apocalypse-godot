@@ -17,7 +17,7 @@ This table shows up to three locations with the best intact, unpowered search od
 | Crowbar | Railway Station: 7.27% / 10.9%; Factory: 6.47% / 9.71%; Auto Repair: 5.87% / 8.81% |
 | Crucifix | Cathedral: 10.6% / 15.9%; Church: 7.89% / 11.8% |
 | Dead fir tree | Museum: 0.247% / 0.37% |
-| DNA extractor | Necrotech Lab: 4.5% / 6.3% |
+| DNA extractor | Necrotech Lab: 6.5% / 9.1% |
 | Fencing foil | Stadium: 1.7% / unavailable; School: 0.924% / 1.39%; Junkyard: 0.719% / unavailable |
 | Fire axe | Factory: 3.14% / 4.71%; Auto Repair: 2.75% / 4.13%; Fire Station: 2.73% / 4.1% |
 | First aid kit | Hospital: 17% / 25.5%; Infirmary: 14.5% / 21.8%; Fire Station: 3.83% / 5.74% |
@@ -27,11 +27,11 @@ This table shows up to three locations with the best intact, unpowered search od
 | Fuel can | Auto Repair: 6.61% / 9.91%; Factory: 6.47% / 9.71%; Vehicle Depot: 3.9% / 5.85% |
 | Glass piece | Museum: 1.65% / 2.47%; Any outdoor square / building exterior: 0.49% / unavailable |
 | Golf club | Hotel: 6.12% / 9.18%; Stadium: 2.34% / unavailable; Warehouse: 1.98% / 2.97% |
-| GPS unit | Necrotech Lab: 2.8% / 3.92%; Mall: 0.0107% / 0.279% |
+| GPS unit | Necrotech Lab: 0.8% / 1.12%; Mall: 0.00372% / 0.0967% |
 | Hockey stick | School: 2.54% / 3.81%; Stadium: 2.34% / unavailable; Mall: 0.0469% / 1.22% |
 | Knife | Infirmary: 5.45% / 8.18%; Hotel: 4.76% / 7.14%; Office: 4.35% / 6.52% |
 | Length of pipe | Power Station: 2.81% / unavailable; Warehouse: 1.98% / 2.97%; Storehouse: 1.94% / 2.9% |
-| City map | Office: 0.87% / 1.3%; Railway Station: 0.545% / 0.818%; Library: 0.303% / 0.455% |
+| City map | Hotel: 2.4% / 3.59%; Museum: 1.16% / 1.74%; Railway Station: 0.893% / 1.34% |
 | Mobile phone | Pub: 0.322% / 0.482%; Junkyard: 0.192% / unavailable; Cinema: 0.0727% / 2.18% |
 | Newspaper | Gatehouse: 13.9% / 20.9%; Aquarium: 6% / 9%; Bear Pit: 6% / 9% |
 | Painting | Museum: 2.06% / 3.09%; Mansion: 1% / 1.5% |
