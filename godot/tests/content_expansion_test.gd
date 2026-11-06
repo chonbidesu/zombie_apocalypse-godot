@@ -17,6 +17,7 @@ func ready(s,a) -> void:
 
 func _initialize() -> void:
  human_balance_rules()
+ scent_rules()
  var s = Sim.new()
  s.start(4321)
  for a in s.actors:
@@ -274,16 +275,6 @@ func _initialize() -> void:
  p.zombie_skills.append("scent_death")
  s.execute(p,"smell")
  check(s.sense_report.begins_with("SCENT DEATH"),"Scent Death produces local intelligence")
- p.zombie_skills.append("scent_trail")
- var start = Vector2i(t.x,t.y)
- s.reindex()
- s.execute(t,"move",-1,{"dx":1,"dy":0})
- var departure = s.current_block(t).id
- s.execute(t,"move",-1,{"dx":1,"dy":0})
- ready(s,p)
- check(s.act("trail").ok and p.memory == departure and s.sense_report.contains("east"),"Scent Trail reports the recorded departure, even after the survivor moves again")
- t.x = start.x; t.y = start.y; t.inside = p.inside
- s.reindex()
  p.zombie_skills.append_array(["feeding_drag","feeding_groan","bellow","death_rattle","flailing_gesture","lurching_gait","ankle_grab"])
  t.human = true
  t.down = false
@@ -341,6 +332,83 @@ func _initialize() -> void:
   check(new_game.player().job == occupation and new_game.player().human == (occupation != "Corpse"),"New-game occupation and form: "+occupation)
  print("CONTENT CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func scent_rules() -> void:
+ var s = Sim.new()
+ s.start(4321,"Volunteer",{"mode":"malton"})
+ var p = s.player()
+ var survivor = s.actors[1]
+ for other in s.actors:
+  other.x = 0; other.y = 0; other.down = true
+ p.x = 20; p.y = 20; p.down = false; p.human = false; p.inside = false; p.hp = 40
+ p.zombie_skills = ["scent_fear","scent_blood","scent_death","scent_trail"]
+ survivor.x = p.x; survivor.y = p.y; survivor.down = false; survivor.human = true; survivor.inside = false; survivor.hp = 12
+ survivor.infected = true
+ survivor.human_skills = ["necro_employment","lab_experience"]
+ survivor.inventory.clear()
+ s.reindex()
+ var description = s.location_description(p)
+ check(description.contains("dying, 12 HP, infected"),"Zombie room text combines Scent Fear and Scent Blood")
+ survivor.hp = 24
+ check(s.survivor_condition(p,survivor) == "wounded","Scent Fear shows wounded below twenty-five HP")
+ survivor.hp = 25
+ check(s.survivor_condition(p,survivor).is_empty(),"Scent Fear leaves healthy survivors unmarked")
+ for command in ["attack","extract","heal","revive"]:
+  s.clear_scent_trail(p)
+  p.zombie_skills.erase("brain_rot")
+  p.hp = 40
+  ready(s,survivor)
+  if command == "extract": s.give_item(survivor,"dna_extractor")
+  if command == "heal": s.give_item(survivor,"first_aid_kit")
+  if command == "revive":
+   s.give_item(survivor,"syringe")
+   p.zombie_skills.append("brain_rot")
+  var success = s._try(survivor,command,p.id,{"unarmed":true})
+  check(success == (command != "revive") and p.trail_from == survivor.id,"Scent Trail activates on "+command)
+ p.zombie_skills.erase("brain_rot")
+ for step in range(9):
+  ready(s,survivor)
+  s._try(survivor,"move",-1,{"dx":1,"dy":1})
+ check(s.location_description(p).contains("9 blocks southeast"),"Scent Trail automatically reports the live relative position")
+ var save_path = "user://scent-trail-test.json"
+ check(s.save_to(save_path) == OK,"Active scent trail saves")
+ var loaded = Sim.new()
+ check(loaded.load_from(save_path).is_empty() and loaded.scent_trail_text(loaded.player()).contains("9 blocks southeast"),"Active scent trail reappears on load")
+ ready(s,survivor)
+ s._try(survivor,"move",-1,{"dx":1,"dy":1})
+ check(p.trail_from == -1 and s.location_description(p).contains("(Scent lost)"),"Scent breaks at exactly ten blocks")
+ ready(s,survivor)
+ s._try(survivor,"move",-1,{"dx":-1,"dy":-1})
+ check(s.scent_trail_target(p).is_empty(),"Returning to range does not reacquire a broken trail")
+ survivor.x = p.x; survivor.y = p.y
+ s.reindex()
+ s.start_scent_trail(p,survivor)
+ ready(s,survivor)
+ check(s._try(survivor,"revive",p.id) and p.trail_from == -1 and not p.trail_lost,"Successful revival clears Scent Trail")
+ p.down = false; p.hp = 40; p.human = false
+ s.start_scent_trail(p,survivor)
+ s.die(p)
+ check(p.trail_from == -1,"Death clears the zombie's trail")
+ p.down = false; p.hp = 40; p.human = false
+ s.start_scent_trail(p,survivor)
+ survivor.hp = 1
+ var xp = p.xp
+ for attempt in range(100):
+  ready(s,p)
+  s.act("attack",survivor.id,{"unarmed":true})
+  if survivor.down: break
+ check(survivor.down and p.trail_from == -1 and p.xp == xp+21,"Survivor death clears tracking and Scent Fear awards ten additional XP")
+ var body = s.actors[2]
+ body.x = p.x; body.y = p.y; body.human = true; body.inside = false
+ var zombie = s.actors[3]
+ zombie.x = p.x; zombie.y = p.y; zombie.human = false; zombie.down = false
+ s.reindex()
+ ready(s,p)
+ check(s.act("smell").ok and p.ap == 49 and s.scent_heatmap.size() == 121,"Scent Death costs one AP for an eleven-square map")
+ check(s.scent_heatmap[60].bodies == 2 and s.scent_heatmap[60].zombies == 1 and s.scent_heatmap[60].revivifying == 1,"Heat map separates corpses, zombies and revivification")
+ p.human = true
+ ready(s,p)
+ check(not s.act("smell").ok and s.location_description(p).contains("There are 2 dead bodies here. One of them smells strange."),"Living Scent Death users identify corpses without the tactical map")
 
 func human_balance_rules() -> void:
  var s = Sim.new()

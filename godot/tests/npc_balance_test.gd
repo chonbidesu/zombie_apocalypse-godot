@@ -29,6 +29,7 @@ func ready(s,a):
 func _initialize():
  combat_choices()
  scent_pursuit()
+ undead_preference()
  var s = fresh()
  var a = s.actors[1]
  a.human = true
@@ -85,25 +86,19 @@ func _initialize():
  b.barricade = 0
  b.doors = false
  p.human_skills = []
- s.give_item(p,"length_of_pipe")
  ready(s,p)
- check(s.reason(p,"barricade").is_empty(),"Baseline barricading is available without Construction")
+ check(not s.act("barricade").ok and p.ap == 50,"Loose barricade requires Construction or a carried pipe")
+ s.give_item(p,"length_of_pipe")
  for attempt in range(40):
   if b.barricade > 0: break
-  s.execute(p,"barricade")
- check(b.barricade == 1 and b.doors,"The first successful barricade automatically closes normal doors")
- check(not s.item_kind(p,"length_of_pipe").is_empty(),"Baseline construction uses building materials")
- ready(s,p)
- s.set_barricade_strength(b,7)
- for attempt in range(40):
-  if s.barricade_strength(b) > 7: break
   ready(s,p)
   s.act("barricade")
- check(s.barricade_strength(b) == 8 and s.barricade_description(b) == "strongly barricaded","Untrained survivors can build to Strongly Barricaded")
+ check(s.barricade_strength(b) == 1 and b.doors and s.item_kind(p,"length_of_pipe").is_empty(),"A successful pipe barricade closes the doors and consumes the pipe")
+ s.give_item(p,"length_of_pipe")
  ready(s,p)
- check(not s.act("barricade").ok and p.ap == 50,"Construction is required to build past Strongly Barricaded")
+ check(not s.act("barricade").ok and p.ap == 50 and not s.item_kind(p,"length_of_pipe").is_empty(),"A second pipe cannot reinforce an existing barricade")
  p.human_skills = ["construction"]
- check(s.reason(p,"barricade").is_empty(),"Construction permits the next reinforcement")
+ check(s.reason(p,"barricade").is_empty(),"Construction permits reinforcement")
  s.give_item(p,"toolbox")
  b.ruin = 1
  b.generator = false
@@ -327,6 +322,33 @@ func combat_choices() -> void:
    claws_used = a.last_action == "attack" and hp-t.hp == 2
    break
  check(claws_used,"Zombie NPC actually deals trained claw damage while an inferior bat is equipped")
+
+func undead_preference() -> void:
+ var s = fresh()
+ var p = s.player()
+ var npc = s.actors[16]
+ npc.x = p.x; npc.y = p.y; npc.inside = p.inside; npc.down = false; npc.hp = 30
+ var source = s.current_block(p)
+ var hotel = s.block_at(p.x+1,p.y)
+ source.type = "hospital"
+ hotel.type = "hotel"
+ hotel.fort = ""; hotel.complex = ""
+ s.set_barricade_strength(source,0)
+ s.set_barricade_strength(hotel,0)
+ s.rebuild_geography_index()
+ s.reindex()
+ ready(s,p)
+ check(npc.prefers_undead and s.act("revive",npc.id).ok and npc.human and npc.down,"An originally undead NPC keeps their preference after revival")
+ npc.ready_at = s.minute
+ for step in range(6):
+  ready(s,npc)
+  s._npc_turn(npc)
+  if not npc.human: break
+ check(npc.x == hotel.x and npc.y == hotel.y and not npc.inside and npc.down and not npc.human and npc.last_action == "jump","Revived NPC walks to an accessible tall building and jumps")
+ npc.ready_at = s.minute
+ ready(s,npc)
+ s._npc_turn(npc)
+ check(not npc.down and not npc.human and npc.ap == 40,"NPC pays standing AP to return to play as a zombie")
 
 func scent_pursuit() -> void:
  for skilled in [false,true]:

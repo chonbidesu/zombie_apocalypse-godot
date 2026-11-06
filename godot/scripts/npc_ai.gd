@@ -64,6 +64,37 @@ static func go(s,a: Dictionary,goal: Dictionary) -> bool:
 static func shelter_worker(s,a: Dictionary) -> bool:
  return s.has_skill(a,"construction") or a.job in ["Engineer","Scientist","Firefighter","Consumer","NecroTech Lab Assistant"]
 
+static func return_to_undeath(s,a: Dictionary) -> bool:
+ var here = s.current_block(a)
+ if here.type in C.TALL_BUILDINGS:
+  if a.inside: return s._try(a,"jump")
+  if s._try(a,"enter"): return true
+ if not a.route.is_empty() and a.route_goal in range(s.blocks.size()):
+  var goal = s.blocks[a.route_goal]
+  if goal.type in C.TALL_BUILDINGS and goal.barricade <= 4 and go(s,a,goal): return true
+
+ var candidates: Array = []
+ for kind in C.TALL_BUILDINGS:
+  for site in s.sites_by_type.get(kind,[]):
+   if site.id != here.id and site.barricade <= 4:
+    candidates.append({"site":site,"distance":maxi(absi(site.x-a.x),absi(site.y-a.y))})
+ candidates.sort_custom(func(left,right):
+  if left.distance != right.distance: return left.distance < right.distance
+  return left.site.id < right.site.id)
+ var best: Dictionary = {}
+ var best_path: Array = []
+ for candidate in candidates:
+  if not best_path.is_empty() and candidate.distance >= best_path.size()-1: break
+  var path = Array(s.navigation.get_id_path(here.id,candidate.site.id))
+  if not path.is_empty() and (best_path.is_empty() or path.size() < best_path.size()):
+   best = candidate.site
+   best_path = path
+ if best.is_empty(): return false
+ best_path.pop_front()
+ a.route = best_path
+ a.route_goal = best.id
+ return go(s,a,best)
+
 static func keeper(s,a: Dictionary) -> bool:
  if not s.has_skill(a,"construction"): return false
  if not s.actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false

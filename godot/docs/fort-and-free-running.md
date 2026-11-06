@@ -14,7 +14,7 @@ The user explicitly selected **one-way map exits from every perimeter square**. 
 
 Survivors inside the gatehouse with Free Running can enter an adjacent intact building outside the fort when the gatehouse is VSB or lower. Heavy through EHB gatehouse barricades block this roof-to-roof route. A normal map click still exits, landing outside the destination; an explicitly requested Free Run is rejected without AP loss. Zombies always use ground exits. Internal gatehouse access remains available to them even at EHB.
 
-The Leave button is blocked at Heavy or greater without AP expenditure, and explains that an adjacent map click permits exit. At lower barricades it follows the ordinary door/skill rules. The player cannot be trapped by barricades, and NPCs use the same map-exit fallback.
+The Leave button reports that the main doors are blocked at Heavy or greater and spends no AP. Either form can use the main doors through VSB. The player cannot be trapped by barricades, and NPCs use the same map-exit fallback.
 
 ## Fort body dumping
 

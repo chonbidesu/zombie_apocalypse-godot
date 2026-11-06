@@ -51,7 +51,7 @@ func _initialize() -> void:
  check(s.barricade_attack_stats(p).hit == 10 and s.barricade_attack_stats(p).structural == 0.5,"Untrained fists: 10% accuracy, then structural penalty")
  p.human_skills = ["hand_to_hand","axe_proficiency","knife_combat","firearms","advanced_pistol"]
  check(s.barricade_attack_stats(p).hit == 25,"Hand-to-hand training also improves fists")
- for kind in ["pistol","shotgun","flare_gun","knife","fuel_can"]:
+ for kind in ["pistol","shotgun","flare_gun","knife","fuel_can","newspaper"]:
   s.give_item(p,kind)
   p.equipped = p.inventory.back().uid
   ready(s,p)
@@ -61,7 +61,7 @@ func _initialize() -> void:
   check(s.barricade_strength(b) == before,"Ineffective weapon does no structural damage: "+kind)
  for kind in C.ITEMS:
   var def = C.ITEMS[kind]
-  if not def.has("damage") or def.has("capacity") or def.get("ranged",false) or kind == "knife": continue
+  if def.get("damage",0) <= 0 or def.has("capacity") or def.get("ranged",false) or kind == "knife": continue
   s.give_item(p,kind)
   p.equipped = p.inventory.back().uid
   var stats = s.barricade_attack_stats(p)
@@ -242,7 +242,7 @@ func construction_rules(s, p, b) -> void:
   ready(s,p)
   s.act("barricade")
   if s.barricade_strength(b) == 10: break
- check(s.messages.back().text.begins_with("Using ") and s.messages.back().text.ends_with("It's looking very strong, now - any further barricading will prevent survivors from climbing in."),"Strength ten prints the exact entry warning with a material")
+ check(s.messages.back().text.begins_with("Using ") and s.messages.back().text.ends_with("It is now very strong, and any further barricading will prevent survivors from climbing in."),"Strength ten prints the exact entry warning with a material")
  s.set_barricade_strength(b,21)
  ready(s,p)
  p.ap = 0

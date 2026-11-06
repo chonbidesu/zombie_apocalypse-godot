@@ -45,10 +45,16 @@ const MALL_STORE_WEIGHTS = {
 }
 const CLOCK_STEPS_PER_MINUTE = 10
 # Recovery is independent of AP cost. At normal speed these values are seconds.
-const ACTION_RECOVERY = {"move":1.0, "attack":1.4, "search":2.2,
- "revive":3.0, "manufacture":6.0, "stand":2.0, "heal":1.8,
- "dump":2.0, "repair_generator":2.5, "destroy_generator":2.0, "barricade":2.0, "break":1.8, "repair":2.5, "equip":0.4, "drop":0.4}
+const ACTION_RECOVERY = {"move":0.5, "attack":0.7, "search":1.1,
+ "revive":1.5, "manufacture":3.0, "stand":1.0, "heal":0.9,
+ "dump":1.0, "repair_generator":1.25, "destroy_generator":1.0, "barricade":1.0, "break":0.9, "repair":1.25, "equip":0.2, "drop":0.2}
 const ENCUMBRANCE_LIMIT = 100
+const TALL_BUILDINGS = ["office","necrotech_lab","hotel","tower"]
+const COMPASS_DIRECTIONS = {
+ "northwest": Vector2i(-1,-1), "north": Vector2i(0,-1), "northeast": Vector2i(1,-1),
+ "west": Vector2i(-1,0), "east": Vector2i(1,0),
+ "southwest": Vector2i(-1,1), "south": Vector2i(0,1), "southeast": Vector2i(1,1)
+}
 const OUTDOORS = ["wasteland", "exercise_yard", "training_ground", "zoo_ground", "street", "park", "cemetery", "monument", "carpark"]
 const NORMAL_BUILDINGS = ["fire_station", "police_department", "hospital", "library", "church", "warehouse", "auto_repair", "factory", "school", "office", "necrotech_lab", "junkyard", "museum", "nightclub", "pub", "mall", "bank", "cinema", "hotel", "railway_station", "tower"]
 const BUILDINGS = NORMAL_BUILDINGS + ["cathedral", "mansion", "power_station", "stadium", "armoury", "barracks", "gatehouse", "infirmary", "storehouse", "vehicle_depot", "aquarium", "bear_pit", "elephant_house", "giraffe_house", "lion_enclosure", "reptile_house"]
@@ -249,7 +255,8 @@ const ITEMS = {
  },
  "newspaper": {
   "name": "Newspaper",
-  "action": "read",
+  "damage": 0,
+  "hit": 100,
   "encumbrance": 2
  },
  "crucifix": {
@@ -394,7 +401,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Build beyond Strongly Barricaded, up to EHB. Use a toolbox to repair machinery and ruins."
+  "description": "Build and reinforce barricades without a pipe. Use a toolbox to repair machinery and ruins."
  },
  "radio_operation": {
   "name": "Radio Operation",
@@ -547,7 +554,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Read nearby survivor HP when visibility permits."
+  "description": "Read exact HP for nearby survivors while alive."
  },
  "headshot": {
   "name": "Headshot",
@@ -565,7 +572,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "See exact HP for injured survivors in either form."
+  "description": "Mark survivors below 25 HP as wounded and below 13 HP as dying. Gain 10 bonus XP for killing a survivor."
  },
 "scent_blood": {
   "name": "Scent Blood",
@@ -574,7 +581,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "scent_fear",
   "min_level": 0,
-  "description": "Mark heavily injured survivors on the minimap with a red cross."
+  "description": "Read exact survivor HP and highlight infected survivors in light green."
  },
 "scent_trail": {
   "name": "Scent Trail",
@@ -583,7 +590,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "scent_fear",
   "min_level": 0,
-  "description": "Read the direction a nearby survivor fled and pursue their trail."
+  "description": "Automatically track a survivor after combat, DNA sampling, first aid, or a failed Brain Rot revival. The scent is lost at 10 blocks."
  },
 "scent_death": {
   "name": "Scent Death",
@@ -592,7 +599,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "scent_fear",
   "min_level": 0,
-  "description": "Count standing zombies on nearby minimap squares, including indoors."
+  "description": "Recognize revivifying bodies in either form. As a zombie, spend 1 AP to sense bodies and zombies within five blocks."
  },
 "digestion": {
   "name": "Digestion",

@@ -26,18 +26,33 @@ func run() -> void:
  var red_bars = opening_target.get_children().filter(func(node): return node is Panel)
  check(red_bars.is_empty(),"NPC health bars are hidden without Scent Fear")
  var opening_player = scene.sim.player()
+ var suburb = scene.sim.suburb_name(opening_player).to_upper()
+ check(scene.page.get_node("MinimapCaption").text == suburb,"The minimap omits coordinates without a GPS")
+ scene.sim.give_item(opening_player,"gps_unit")
+ scene.refresh()
+ check(scene.page.get_node("MinimapCaption").text.contains("[%02d, %02d]" % [opening_player.x,opening_player.y]),"A carried GPS reveals coordinates under the minimap")
+ scene.sim.consume(opening_player,scene.sim.item_kind(opening_player,"gps_unit"))
+ scene.refresh()
+ check(scene.page.get_node("MinimapCaption").text == suburb,"Losing the GPS hides the coordinates again")
  var opening_npc = scene.sim.actors[1]
  var original_hp = opening_npc.hp
  opening_npc.hp = 12
- opening_player.zombie_skills.append("scent_fear")
+ opening_player.zombie_skills.append_array(["scent_fear","scent_blood"])
+ opening_player.human_skills.append("diagnosis")
+ opening_npc.infected = true
  for human in [true,false]:
   opening_player.human = human
   scene.refresh()
   var target = scene.page.get_node("SceneActors/Actor_1")
-  check(target.get_children().filter(func(node): return node is Panel).size() == 2 and target.tooltip_text.contains("12/"),"Scent Fear reveals exact injured survivor HP in both forms")
+  var tooltip = str(target.get_meta("actor_tooltip"))
+  check(target.get_children().filter(func(node): return node is Panel).size() == 2 and tooltip.contains("12/"),"The active form's health-reading skill shows exact HP")
+  check(tooltip.contains("Infected") == not human and tooltip.contains("Dying") == not human,"Only the undead form sees infection and Scent Fear labels")
  opening_player.human = true
  opening_player.zombie_skills.erase("scent_fear")
+ opening_player.zombie_skills.erase("scent_blood")
+ opening_player.human_skills.erase("diagnosis")
  opening_npc.hp = original_hp
+ opening_npc.infected = false
  scene.refresh()
  scene.set_process(false)
  var p = scene.sim.player()
@@ -50,6 +65,7 @@ func run() -> void:
  for i in range(20): scene._process(0.1)
  check(scene.sim.minute == start_time+2,"Real-time clock advances while choosing actions")
  check(scene.page.get_node("SceneActors/Actor_1") == hovered and hovered.is_hovered(),"Clock refreshes preserve the hovered NPC control and tooltip target")
+ check(is_instance_valid(scene.actor_tooltip) and scene.actor_tooltip.visible and scene.actor_tooltip_label.text == hovered.get_meta("actor_tooltip"),"NPC tooltip stays visible through clock refreshes")
  var mouse = InputEventMouseButton.new()
  mouse.button_index = MOUSE_BUTTON_LEFT
  mouse.pressed = true
@@ -59,6 +75,8 @@ func run() -> void:
  mouse.pressed = false
  root.push_input(mouse,true)
  await process_frame
+ scene._update_actor_tooltip()
+ check(not scene.actor_tooltip.visible,"NPC tooltip hides when the pointer leaves")
  check(p.ap == 49 and scene.sim.minute == start_time+2,"Mouse search button commits action")
  for i in range(25): scene._process(0.1)
  start_time = scene.sim.minute
@@ -263,7 +281,8 @@ func run() -> void:
  for target in layer.get_children():
   var bounds = target.get_rect()
   if not scene.ENVIRONMENT_RECT.encloses(bounds): fits = false
-  if "AP" in target.tooltip_text or "HP" in target.tooltip_text: no_stats = false
+  var tooltip = str(target.get_meta("actor_tooltip"))
+  if "AP" in tooltip or "HP" in tooltip: no_stats = false
  check(fits and no_stats,"Staggered crowd stays in the scene with no unearned AP/HP details")
  layer.get_node("Actor_1").pressed.emit()
  check(scene.selected_actor == 1,"Scene sprites remain selectable")
@@ -393,7 +412,7 @@ func run() -> void:
  scene.dispatch("request",1)
  await process_frame
  check(scene.page.has_node("SceneActors/Speech_1") and scene.notice.contains("refuses"),"Supply refusal appears in both chat feedback and an NPC bubble")
- check(scene.page.get_node("SceneActors/Actor_1").tooltip_text.contains("Wary"),"NPC tooltip describes current trust")
+ check(str(scene.page.get_node("SceneActors/Actor_1").get_meta("actor_tooltip")).contains("Wary"),"NPC tooltip describes current trust")
  var all_icons = true
  for kind in scene.C.ITEMS:
   if scene.tex("items/"+kind+".png") == null: all_icons = false
@@ -497,8 +516,91 @@ func run() -> void:
   previous_zombie = zombie_frame
  check(zombie_changes < human_changes/2,"Zombie gait uses slower holds and uneven stepping")
  minimap_senses(scene)
+ necronet_controls(scene)
+ binocular_controls(scene)
+ corpse_anonymity(scene)
  print("UI CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func corpse_anonymity(scene) -> void:
+ scene.modal = ""
+ var sim = scene.sim
+ var p = sim.player()
+ p.human = true; p.down = false; p.zombie_skills = []
+ p.ap = 50; p.busy_until = sim.now(); p.human_skills = ["lab_experience"]
+ sim.give_item(p,"syringe")
+ var ordinary = sim.actors[1]
+ var revivifying = sim.actors[2]
+ for body in [ordinary,revivifying]:
+  body.x = p.x; body.y = p.y; body.inside = p.inside; body.down = true
+  sim.set_pose(body,"idle")
+ ordinary.human = false
+ revivifying.human = true
+ sim.reindex()
+ scene.refresh()
+ var layer = scene.page.get_node("SceneActors")
+ var normal = scene.actor_buttons.filter(func(entry): return entry.id == ordinary.id)[0]
+ var changing = scene.actor_buttons.filter(func(entry): return entry.id == revivifying.id)[0]
+ check(normal.sheet == changing.sheet and normal.node.texture.region == changing.node.texture.region,"Ordinary and revivifying bodies share one appearance without Scent Death")
+ check(layer.get_node("Actor_1").get_meta("actor_tooltip") == "Dead body" and layer.get_node("Actor_2").get_meta("actor_tooltip") == "Dead body","Corpse hover labels are identical and anonymous")
+ check(sim.action_feedback(p,"revive",ordinary.id) == sim.action_feedback(p,"revive",revivifying.id),"Revive button does not identify an unsensed body")
+ p.zombie_skills.append("scent_death")
+ scene.refresh()
+ layer = scene.page.get_node("SceneActors")
+ changing = scene.actor_buttons.filter(func(entry): return entry.id == revivifying.id)[0]
+ check(changing.sheet != "zombie" and layer.get_node("Actor_2").get_meta("actor_tooltip") == "Revivifying body","Scent Death reveals the human appearance while leaving the tooltip anonymous")
+ check(layer.get_node("Actor_1").get_meta("actor_tooltip") == "Dead body","Ordinary bodies remain anonymous with Scent Death")
+
+func binocular_controls(scene) -> void:
+ scene.modal = ""
+ var sim = scene.sim
+ var p = sim.player()
+ p.human = true; p.inside = true; p.ap = 50; p.busy_until = sim.now()
+ sim.give_item(p,"binoculars")
+ var site = sim.current_block(p)
+ site.type = "office"
+ scene.refresh()
+ var actions = scene.action_controls.filter(func(entry): return entry.command == "lookout")
+ check(actions.size() == 1 and not actions[0].node.disabled,"Tall interiors offer the binoculars action")
+ actions[0].node.pressed.emit()
+ check(scene.modal == "binocular_compass" and p.ap == 50 and scene.overlay.find_children("Look_*","Button",true,false).size() == 8,"Opening the compass shows eight bearings and spends no AP")
+ scene.overlay.get_node("Look_northeast").pressed.emit()
+ check(scene.modal == "binocular_survey" and scene.overlay.get_node("BinocularGrid").footprint.size == Vector2i(3,3) and p.ap == 49,"Choosing a bearing opens the nine-block rooftop view")
+ scene.modal = ""
+ p.inside = false; p.busy_until = sim.now()
+ site.type = "park"
+ scene.refresh()
+ check(not scene.action_controls.any(func(entry): return entry.command == "lookout"),"A park does not offer the binoculars button")
+ site.type = "monument"
+ scene.refresh()
+ scene.dispatch("lookout")
+ check(scene.modal == "binocular_survey" and scene.overlay.get_node("BinocularGrid").footprint.size == Vector2i(7,7) and p.ap == 48,"Outdoor binoculars open the forty-nine-block survey without a compass")
+
+func necronet_controls(scene) -> void:
+ scene.modal = ""
+ var sim = scene.sim
+ var p = sim.player()
+ var site = sim.current_block(p)
+ p.human = true; p.inside = true; p.ap = 50; p.busy_until = sim.now()
+ p.human_skills = ["necronet","necro_employment"]
+ site.type = "necrotech_lab"; site.generator = true; site.generator_hp = 6; site.fuel_until = sim.minute+10
+ var tagged = sim.actors[5]
+ tagged.tagged_until = sim.minute+10
+ var hospital = sim.block_at(p.x+1,p.y)
+ hospital.type = "hospital"
+ scene.refresh()
+ var commands = scene.action_controls.map(func(entry): return entry.command)
+ check("scan" in commands and "manufacture" in commands and "jump" in commands,"Powered lab offers NecroNet, syringe manufacture and the window")
+ scene.dispatch("scan")
+ var grid = scene.overlay.get_node("NecroNetGrid")
+ check(grid.get_child_count() == 81 and grid.get_child(40).tooltip_text.contains("Tagged zombies  1"),"NecroNet action opens the centred tagged-zombie map")
+ check(grid.get_child(40).get_theme_stylebox("panel").bg_color != grid.get_child(41).get_theme_stylebox("panel").bg_color,"NecroNet colours the lab and neighbouring hospital by type")
+ scene.modal = ""
+ p.human = false; p.busy_until = sim.now()
+ scene.refresh()
+ var jump = scene.action_controls.filter(func(entry): return entry.command == "jump")[0]
+ jump.node.pressed.emit()
+ check(scene.modal.is_empty() and not p.inside and not p.down,"Zombie window action exits immediately without the survivor confirmation")
 
 func minimap_senses(scene) -> void:
  var sim = scene.sim
@@ -508,7 +610,9 @@ func minimap_senses(scene) -> void:
  p.x = 4; p.y = 4; p.inside = true
  p.zombie_skills = []
  for person in sim.actors:
-  if person.id != p.id: person.down = true
+  if person.id != p.id:
+   person.down = true
+   person.x = 0; person.y = 0
  for id in range(1,7):
   var person = sim.actors[id]
   person.x = p.x; person.y = p.y
@@ -522,9 +626,22 @@ func minimap_senses(scene) -> void:
  var captions = tile.find_children("*","Label",true,false).map(func(node): return node.text)
  check(sim.display_name(sim.actors[1]) in captions and "…" in captions and "1 zombie" in captions,"Minimap lists visible survivors, overflow and an anonymous zombie count")
  check(not tile.has_node("ScentBlood") and not tile.has_node("ScentTrail"),"Minimap hides unlearned scent cues")
- p.zombie_skills = ["scent_blood","scent_trail","scent_death"]
- p.trail_from = 1; p.trail_origin = 44; p.trail_destination = 45; p.trail_until = sim.minute+60
+ p.zombie_skills = ["scent_fear","scent_blood","scent_trail","scent_death"]
+ sim.actors[1].infected = true
+ sim.start_scent_trail(p,sim.actors[1])
  scene.refresh()
  tile = scene.page.get_node("CityMinimap/MapTile_44")
- check(tile.has_node("ScentBlood") and tile.has_node("ScentTrail") and tile.tooltip_text.contains("leads east"),"Minimap shows the injury cross and departure direction")
+ var infected_name = tile.find_children("*","Label",true,false).filter(func(node): return node.text.begins_with("* 12 HP"))
+ check(infected_name.size() == 1 and infected_name[0].get_theme_color("font_color") == Color("b7ef9e"),"Minimap marks wounded prey and highlights infection in light green")
+ check(tile.has_node("ScentTrail") and tile.tooltip_text.contains("is on this block"),"Minimap marks the active Scent Trail position")
  check(tile.tooltip_text.contains("2 zombies") and not tile.tooltip_text.contains(sim.display_name(sim.actors[5])),"Scent Death counts zombies across both sides without names")
+ sim.actors[7].x = p.x; sim.actors[7].y = p.y
+ sim.actors[7].down = true; sim.actors[7].human = false
+ sim.reindex()
+ p.ap = 50; p.busy_until = sim.now()
+ scene.dispatch("smell")
+ var grid = scene.overlay.get_node("ScentDeathGrid")
+ check(grid.get_child_count() == 121 and p.ap == 49,"Scent Death action opens the 11 by 11 heat map for one AP")
+ var center = grid.get_child(60)
+ var colour = center.get_theme_stylebox("panel").bg_color
+ check(colour.r > 0.2 and colour.g > colour.r and center.tooltip_text.contains("Standing zombies  2 · Dead bodies  1"),"Mixed cells show both counts and combine red with green")

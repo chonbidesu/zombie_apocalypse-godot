@@ -28,6 +28,10 @@ func _initialize() -> void:
  feedback_rules()
  restored_location_rules()
  perception_rules()
+ activity_perspective()
+ window_and_necronet_rules()
+ binocular_rules()
+ reading_and_newspaper()
  var s = isolated()
  var p = s.player()
  var state = JSON.stringify(s.actors)
@@ -37,6 +41,7 @@ func _initialize() -> void:
  check(not s.act("search").ok and p.ap == 0,"AP cannot underflow")
  p.ap = 50
  check(s.act("move",-1,{"dx":1,"dy":0}).ok,"Adjacent move succeeds")
+ check(is_equal_approx(p.busy_until,s.now()+0.5) and is_equal_approx(s.recovery("close"),0.6),"Movement and default actions use the shorter recovery")
  check(p.x == 5 and p.y == 4 and not p.inside and p.ap == 49 and s.minute == 480,"Movement costs 1 AP without advancing time")
  check(not s.act("enter").ok,"Recovery rejects action spam")
  s.elapse(1.0)
@@ -177,7 +182,7 @@ func _initialize() -> void:
  check(p.human and p.down and scientist.ap == 49,"Scientist revives player for one AP")
  var busy_ap = scientist.ap
  s._npc_turn(scientist)
- check(scientist.ap == busy_ap and scientist.busy_until == s.now()+3.0,"NPC revival obeys recovery independent of AP cost")
+ check(scientist.ap == busy_ap and scientist.busy_until == s.now()+1.5,"NPC revival uses the shorter recovery independent of AP cost")
 
  # Save round-trip preserves simulation state and random continuation exactly.
  s = Sim.new()
@@ -278,9 +283,7 @@ func feedback_rules() -> void:
  p.busy_until = s.now()
  b.doors = true
  p.zombie_skills = []
- check(s.reason(p,"leave").contains("Memories of Life"),"Unskilled zombie cannot open closed exit")
- p.zombie_skills.append("memories")
- check(s.act("leave").ok and not b.doors,"Memories of Life opens exit")
+ check(s.act("leave").ok and b.doors,"A zombie can exit without Memories of Life and secures the doors")
  for kind in preload("res://scripts/catalog.gd").ITEMS:
   if kind != "pool_cue":
    check(s.melee_break_chance({"kind":kind,"wear":100000,"durability":0}) == 0.0,"No wear breakage for "+kind)
@@ -333,6 +336,167 @@ func restored_location_rules() -> void:
  p.human_skills.erase("lab_experience")
  p.xp = 75
  check(s.learn("lab_experience").is_empty() and p.xp == 0,"Off-form purchase uses the same price")
+
+func activity_perspective() -> void:
+ var s = isolated()
+ var p = s.player()
+ var npc = s.actors[1]
+ npc.down = false
+ npc.x = p.x
+ npc.y = p.y
+ npc.inside = true
+ npc.human_skills = ["construction"]
+ var b = s.current_block(p)
+ s.set_barricade_strength(b,0)
+ s.reindex()
+ var name = s.display_name(npc)
+ check(s._try(npc,"barricade") and s.messages.back().text == name+" barricades the building.","NPC construction uses third-person agreement")
+ npc.busy_until = s.now()
+ check(s._try(npc,"leave") and s.messages.back().text == name+" steps outside.","NPC exit uses third-person agreement")
+ p.inside = false
+ npc.busy_until = s.now()
+ var destination = s.block_at(npc.x+1,npc.y)
+ check(s._try(npc,"move",-1,{"dx":1,"dy":0}) and s.messages.back().text == name+" moves to "+destination.name+".","NPC movement uses third-person agreement")
+
+func window_and_necronet_rules() -> void:
+ var s = isolated()
+ var p = s.player()
+ var b = s.current_block(p)
+ for human in [true,false]:
+  for strength in [10,11]:
+   p.human = human; p.inside = true; p.ap = 50; p.busy_until = s.now()
+   b.doors = false
+   s.set_barricade_strength(b,strength)
+   var result = s.act("leave")
+   if strength == 10:
+    check(result.ok and not p.inside and b.doors == not human,"At VSB either form exits, and only the zombie secures an open door")
+   else:
+    check(not result.ok and result.message == Sim.MAIN_DOORS_BLOCKED and p.inside and p.ap == 50,"Heavy barricades block the main doors in both forms")
+    check(s.act("move",-1,{"dx":1,"dy":0}).ok and not p.inside,"Heavy barricades still allow an adjacent-block exit")
+    p.x = b.x; p.y = b.y; s.reindex()
+ p.human = true
+ s.set_barricade_strength(b,0)
+ for closed in [false,true]:
+  p.inside = false; p.ap = 50; p.busy_until = s.now(); b.doors = closed
+  check(s.act("enter").ok and b.doors == closed,"Humans preserve the starting door state on entry")
+  p.busy_until = s.now()
+  check(s.act("leave").ok and b.doors == closed,"Humans preserve the starting door state on exit")
+ p.busy_until = s.now()
+ s.give_item(p,"binoculars")
+ for kind in ["office","necrotech_lab","hotel","tower"]:
+  b.type = kind; p.inside = true
+  check(s.reason(p,"lookout",-1,{"direction":"north"}).is_empty() and s.reason(p,"jump").is_empty(),"Tall building supports binoculars and windows: "+kind)
+ b.type = "hospital"
+ check(not s.reason(p,"lookout").is_empty() and not s.reason(p,"jump").is_empty(),"Ordinary buildings have no tall-building actions")
+ b.type = "hotel"; p.human = false; p.hp = 27; p.ap = 50
+ s.set_barricade_strength(b,21)
+ check(s.act("jump").ok and p.x == b.x and p.y == b.y and not p.inside and not p.down and p.hp == 27 and p.ap == 49,"Zombie window exit bypasses EHB and stays on the same block unharmed")
+ p.human = true; p.inside = true; p.ap = 50; p.busy_until = s.now()
+ check(s.act("jump").ok and not p.human and p.down and p.hp == 0 and not p.inside and p.ap == 49,"Survivor window jump kills immediately on the same block")
+ p.human = true; p.down = false; p.hp = 50; p.inside = true; p.ap = 50; p.busy_until = s.now()
+ p.human_skills = ["necro_employment","necronet"]
+ b.type = "necrotech_lab"; b.generator = true; b.generator_hp = 6; b.fuel_until = 0
+ check(not s.act("scan").ok and not s.act("manufacture").ok,"An unpowered lab cannot scan or manufacture")
+ b.fuel_until = s.minute+30
+ var tagged = s.actors[15]
+ tagged.human = false; tagged.down = false; tagged.x = p.x; tagged.y = p.y
+ tagged.tagged_until = s.minute+10
+ var expired = s.actors[16]
+ expired.human = false; expired.down = false; expired.x = p.x; expired.y = p.y
+ expired.tagged_until = s.minute
+ s.reindex()
+ check(s.act("scan").ok and s.scan_cells.size() == 81 and s.scan_cells[40].count == 1 and s.scan_cells[40].type == "necrotech_lab","NecroNet snapshot captures only active tags and records each block type")
+ tagged.x += 1; s.reindex()
+ check(s.scan_cells[40].count == 1,"A saved scan is a snapshot rather than live tracking")
+ check(s.save_to("user://necronet-scan-test.json") == OK,"NecroNet snapshot saves")
+ var loaded = Sim.new()
+ check(loaded.load_from("user://necronet-scan-test.json").is_empty() and loaded.scan_cells.size() == 81 and loaded.scan_cells[40].count == 1,"The snapshot survives loading")
+ p.ap = 50; p.busy_until = s.now(); p.inventory.clear(); p.scout_site = b.id; p.scout_used = 0
+ check(s.act("manufacture").ok and p.ap == 30 and not s.item_kind(p,"syringe").is_empty(),"Powered manufacturing creates one syringe for twenty AP")
+
+func binocular_rules() -> void:
+ var s = isolated()
+ var p = s.player()
+ var b = s.current_block(p)
+ var origin = Vector2i(p.x,p.y)
+ b.type = "tower"
+ p.inside = true
+ check(not s.act("lookout",-1,{"direction":"north"}).ok,"Binoculars must be carried")
+ s.give_item(p,"binoculars")
+ check(not s.act("lookout").ok and not s.act("lookout",-1,{"direction":"up"}).ok and p.ap == 50,"Rooftop use requires a valid direction before spending AP")
+ for direction in s.C.COMPASS_DIRECTIONS:
+  p.ap = 50; p.busy_until = s.now()
+  var bearing = s.C.COMPASS_DIRECTIONS[direction]
+  var area = Rect2i(origin+2*bearing-Vector2i.ONE,Vector2i(3,3))
+  check(s.act("lookout",-1,{"direction":direction}).ok and p.ap == 49 and s.binocular_area == area and not area.has_point(origin),"Rooftop survey covers nine blocks "+direction)
+ p.inside = false
+ p.busy_until = s.now()
+ check(not s.act("lookout").ok,"The exterior of a building is not a street survey location")
+ for kind in ["street","monument"]:
+  b.type = kind
+  p.ap = 50; p.busy_until = s.now()
+  check(s.act("lookout").ok and p.ap == 49 and s.binocular_area == Rect2i(origin-Vector2i(3,3),Vector2i(7,7)),"Outdoor survey immediately covers forty-nine blocks at a "+kind)
+ var skyline = s.block_at(p.x+4,p.y)
+ skyline.type = "tower"; skyline.complex = ""; skyline.known = false
+ check(s.skyline_landmarks(p).any(func(entry): return entry.site.id == skyline.id and entry.distance == 4 and entry.bearing == "east") and not skyline.known,"Skyline identifies distant tall buildings without surveying their blocks")
+ p.x = 0; p.y = 0; p.busy_until = s.now()
+ s.current_block(p).type = "street"
+ check(s.act("lookout").ok and s.binocular_area.position == Vector2i(-3,-3),"Edge survey retains the centred grid")
+ p.human = false; p.busy_until = s.now()
+ check(not s.act("lookout").ok,"Zombies cannot use binoculars outdoors")
+ p.human = true; p.inside = true
+ p.human_skills = ["shopping"]
+ b.type = "mall"
+ check(s.item_search_chance(b,"binoculars",p,"sports") > 0 and s.item_search_chance(b,"binoculars",p,"drugstore") == 0,"Mall sports stores carry binoculars")
+ for kind in ["armoury","storehouse","stadium"]:
+  b.type = kind
+  check(s.item_search_chance(b,"binoculars",p) > 0,"Binoculars are searchable in "+kind)
+
+func reading_and_newspaper() -> void:
+ var s = isolated()
+ var p = s.player()
+ var xp_totals = []
+ for job in ["Private","Scientist"]:
+  p.job = job
+  p.xp = 0
+  s.rng.seed = 812
+  var excerpts = {}
+  var consumed = true
+  for attempt in range(500):
+   s.give_item(p,"book")
+   var book = s.item_kind(p,"book")
+   p.busy_until = s.now(); p.ap = 50
+   consumed = s.act("read",-1,{"uid":book.uid}).ok and s.item_by_uid(p,book.uid).is_empty() and consumed
+   excerpts[s.messages.back().text.get_slice("”",0)] = true
+  check(consumed and excerpts.size() > 1,"Reading consumes every book and varies its lore")
+  xp_totals.append(p.xp)
+ check(xp_totals[0] >= 33 and xp_totals[0] <= 67 and xp_totals[1] == 2*xp_totals[0],"Books award XP about ten percent of the time and double the award for scientists")
+ var poetry = {}
+ var before_xp = p.xp
+ var consumed_poetry = true
+ for attempt in range(30):
+  s.give_item(p,"poetry_book")
+  var book = s.item_kind(p,"poetry_book")
+  p.busy_until = s.now(); p.ap = 50
+  consumed_poetry = s.act("read",-1,{"uid":book.uid}).ok and s.item_by_uid(p,book.uid).is_empty() and consumed_poetry
+  poetry[s.messages.back().text] = true
+ check(consumed_poetry and poetry.size() > 1 and p.xp == before_xp,"Poetry is consumed, varies its lore and never awards XP")
+ s.give_item(p,"newspaper")
+ var paper = s.item_kind(p,"newspaper")
+ p.busy_until = s.now(); p.ap = 50
+ check(not s.act("read",-1,{"uid":paper.uid}).ok and p.ap == 50,"Newspapers cannot be read")
+ check(s.act("equip",-1,{"uid":paper.uid}).ok and p.equipped == paper.uid,"A survivor can equip the newspaper")
+ var t = s.actors[1]
+ t.x = p.x; t.y = p.y; t.inside = p.inside; t.down = false; t.hp = 25
+ s.reindex()
+ p.scout_site = s.current_block(p).id; p.scout_day = s.minute/1440; p.scout_used = 0
+ check(s.attack_stats(p,t,"attack",paper).hit == 100 and s.attack_stats(p,t,"attack",paper).damage == 0,"Newspapers have one hundred percent base accuracy and zero damage")
+ for human in [true,false]:
+  t.human = human
+  var pose = t.pose_sequence
+  p.busy_until = s.now(); p.ap = 50
+  check(s.act("attack",t.id).ok and p.ap == 49 and p.xp == before_xp and t.hp == 25 and t.pose_sequence == pose and s.messages.back().text.contains("classifieds"),"Newspaper swat costs one AP and leaves the target unhurt in either form")
+ check(not s.item_by_uid(p,paper.uid).is_empty() and p.scout_used == 0,"Newspapers remain equipped and their fixed AP cost uses no scout discount")
 
 func perception_rules() -> void:
  var s = isolated()

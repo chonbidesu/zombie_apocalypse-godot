@@ -42,7 +42,7 @@
     "cost": 100,
     "requires": "",
     "min_level": 0,
-    "description": "Build beyond Strongly Barricaded, up to EHB. Use a toolbox to repair machinery and ruins."
+    "description": "Build and reinforce barricades without a pipe. Use a toolbox to repair machinery and ruins."
   },
   "radio_operation": {
     "name": "Radio Operation",
@@ -195,7 +195,7 @@
     "cost": 100,
     "requires": "",
     "min_level": 0,
-    "description": "Read nearby survivor HP when visibility permits."
+    "description": "Read exact HP for nearby survivors while alive."
   },
   "headshot": {
     "name": "Headshot",
@@ -213,7 +213,7 @@
     "cost": 100,
     "requires": "",
     "min_level": 0,
-    "description": "See exact HP for injured survivors in either form."
+    "description": "Mark survivors below 25 HP as wounded and below 13 HP as dying. Gain 10 bonus XP for killing a survivor."
   },
   "scent_blood": {
     "name": "Scent Blood",
@@ -222,7 +222,7 @@
     "cost": 100,
     "requires": "scent_fear",
     "min_level": 0,
-    "description": "Mark heavily injured survivors on the minimap with a red cross."
+    "description": "Read exact survivor HP and highlight infected survivors in light green."
   },
   "scent_trail": {
     "name": "Scent Trail",
@@ -231,7 +231,7 @@
     "cost": 100,
     "requires": "scent_fear",
     "min_level": 0,
-    "description": "Read the direction a nearby survivor fled and pursue their trail."
+    "description": "Automatically track a survivor after combat, DNA sampling, first aid, or a failed Brain Rot revival. The scent is lost at 10 blocks."
   },
   "scent_death": {
     "name": "Scent Death",
@@ -240,7 +240,7 @@
     "cost": 100,
     "requires": "scent_fear",
     "min_level": 0,
-    "description": "Count standing zombies on nearby minimap squares, including indoors."
+    "description": "Recognize revivifying bodies in either form. As a zombie, spend 1 AP to sense bodies and zombies within five blocks."
   },
   "digestion": {
     "name": "Digestion",
