@@ -519,8 +519,39 @@ func run() -> void:
  necronet_controls(scene)
  binocular_controls(scene)
  corpse_anonymity(scene)
+ city_map_inventory(scene)
  print("UI CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func city_map_inventory(scene) -> void:
+ scene.modal = ""
+ var sim = scene.sim
+ var p = sim.player()
+ p.human = true; p.down = false; p.ap = 0
+ p.inventory.clear()
+ p.busy_until = sim.now()+1.0
+ var recovery = p.busy_until
+ sim.give_item(p,"map")
+ var map_item = sim.item_kind(p,"map")
+ scene.refresh()
+ scene._item_menu(map_item)
+ var menu = scene.get_children().filter(func(node): return node is PopupMenu)[0]
+ check(menu.get_item_text(0) == "Use City map" and not menu.is_item_disabled(0),"A carried map has a usable inventory command during recovery")
+ menu.id_pressed.emit(0)
+ menu.hide()
+ check(scene.modal == "map" and scene.city_overview and p.ap == 0 and p.busy_until == recovery,"Using the map opens the whole-city modal without spending AP or affecting recovery")
+ check(scene.overlay.find_children("GPSNeighbourhood","Panel",true,false).is_empty() and not scene.overlay.has_node("FindMe"),"The city view does not mark the player's neighbourhood without GPS")
+ check(not sim.reason(p,"locate",-1,{},true).is_empty(),"A paper map cannot display GPS coordinates")
+ scene.overlay.get_node("Neighbourhood_0_0").pressed.emit()
+ check(not scene.city_overview and scene.overlay.find_children("GPSSquare","Panel",true,false).is_empty(),"Manual zoom works without a GPS square highlight")
+ sim.give_item(p,"gps_unit")
+ scene.open_city_map()
+ check(scene.overlay.find_children("GPSNeighbourhood","Panel",true,false).size() == 1 and scene.overlay.has_node("FindMe"),"GPS highlights the neighbourhood and enables Find me")
+ scene.overlay.get_node("FindMe").pressed.emit()
+ check(not scene.city_overview and scene.overlay.find_children("GPSSquare","Panel",true,false).size() == 1,"Find me zooms in and highlights the player's square")
+ sim.consume(p,sim.item_kind(p,"gps_unit"))
+ scene.refresh()
+ check(scene.overlay.find_children("GPSSquare","Panel",true,false).is_empty(),"Removing GPS clears the square highlight")
 
 func corpse_anonymity(scene) -> void:
  scene.modal = ""

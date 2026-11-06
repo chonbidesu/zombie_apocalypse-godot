@@ -139,7 +139,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
   dispatch("move", -1, {"dx":direction.x, "dy":direction.y})
  elif event.keycode == KEY_SPACE: paused = not paused; refresh()
  elif event.keycode == KEY_R: begin_rest(10)
- elif event.keycode == KEY_M: open_modal("map")
+ elif event.keycode == KEY_M: open_city_map()
 
 func tex(path: String) -> Texture2D:
  if not textures.has(path):
@@ -255,7 +255,7 @@ func _header() -> void:
  label(page, sim.time_text(), Rect2(270, 15, 270, 30), 24, GOLD)
  label(page, "LIVE · %s" % ("%d×" % sim.time_speed()), Rect2(570, 15, 146, 40), 23, GOLD)
  button(page, "Resume" if paused else "Pause", Rect2(726, 15, 95, 40), func(): paused = not paused; refresh())
- button(page, "Map [M]", Rect2(831, 15, 105, 40), func(): open_modal("map"))
+ button(page, "Map [M]", Rect2(831, 15, 105, 40), open_city_map)
  button(page, "Skills", Rect2(946, 15, 90, 40), func(): open_modal("skills"))
  button(page, "Save", Rect2(1046, 15, 80, 40), _save)
  button(page, "Load", Rect2(1136, 15, 80, 40), _load)
@@ -615,7 +615,7 @@ func _actions() -> void:
   if not weapon.is_empty() and weapon.kind in C.ZOMBIE_MELEE_ITEMS: options.append(["attack","Swing weapon",selected_actor])
  if not p.down:
   if p.inside and sim.current_block(p).type in C.TALL_BUILDINGS: options.append(["jump","Jump from a window",-1])
-  options.append_array([["say","Speak",-1],["scout","Scout shelter",-1],["extract","DNA sample",selected_actor],["tag","Spray tag",-1],["install_radio","Set up radio",-1],["repair_radio","Fix radio",-1],["broadcast","Broadcast",-1],["phone","Phone",selected_actor],["tune","Tune receiver",-1],["tune_transmitter","Tune transmitter",-1],["lookout","Binoculars",-1],["locate","GPS/map",-1],["feed","Feed",selected_actor],["drag","Drag prey",selected_actor],["groan","Groan",-1],["bellow","Bellow",-1],["gesture","Gesture",selected_actor],["smell","Scent death",-1],["destroy_radio","Smash radio",-1],["smash_decorations","Smash decor",-1],["flare","Signal flare",-1]])
+  options.append_array([["say","Speak",-1],["scout","Scout shelter",-1],["extract","DNA sample",selected_actor],["tag","Spray tag",-1],["install_radio","Set up radio",-1],["repair_radio","Fix radio",-1],["broadcast","Broadcast",-1],["phone","Phone",selected_actor],["tune","Tune receiver",-1],["tune_transmitter","Tune transmitter",-1],["lookout","Binoculars",-1],["view_map","Open map",-1],["locate","GPS",-1],["feed","Feed",selected_actor],["drag","Drag prey",selected_actor],["groan","Groan",-1],["bellow","Bellow",-1],["gesture","Gesture",selected_actor],["smell","Scent death",-1],["destroy_radio","Smash radio",-1],["smash_decorations","Smash decor",-1],["flare","Signal flare",-1]])
  options = options.filter(func(option): return sim.action_feedback(p,option[0],option[2],option[3] if option.size() > 3 else {},true).is_empty())
  var slot = 0
  for option in options:
@@ -707,6 +707,9 @@ func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
   return
  if command == "search": data = {"store":mall_store}
  var result = sim.act(command,target,data)
+ if result.ok and command == "view_map":
+  open_city_map()
+  return
  notice = result.message if not result.ok else (sim.messages.back().text if not sim.messages.is_empty() else "")
  feed.ingest(sim.messages)
  if result.ok and command == "smell": modal = "scent_death"
@@ -934,18 +937,31 @@ func map_site_tooltip(b: Dictionary) -> String:
  if sim.is_building(b): text += "\n" + sim.exterior_building_clues(b)
  return text
 
+func open_city_map() -> void:
+ city_overview = true
+ map_origin = Vector2i(-1,-1)
+ open_modal("map")
+
 func _map_modal() -> void:
  var p = sim.player()
  if p.down:
   rect(overlay,Rect2(130,160,1180,690),Color.BLACK)
   label(overlay,"Everything is dark. Stand up to see your surroundings.",Rect2(160,420,1100,50),24,MUTED)
   return
- if map_origin.x < 0: map_origin = Vector2i(p.x/10*10,p.y/10*10)
- button(overlay,"City" if not city_overview else "Local blocks",Rect2(135,154,180,30),func(): city_overview = not city_overview; refresh())
- button(overlay,"Find me",Rect2(325,154,150,30),func(): map_origin = Vector2i(p.x/10*10,p.y/10*10); city_overview = false; refresh())
- for i in range(4):
-  var direction = [Vector2i(-10,0),Vector2i(10,0),Vector2i(0,-10),Vector2i(0,10)][i]
-  button(overlay,["W","E","N","S"][i],Rect2(492+i*62,154,54,30),func(): map_origin = Vector2i(clampi(map_origin.x+direction.x,0,(sim.width-1)/10*10),clampi(map_origin.y+direction.y,0,(sim.height-1)/10*10)); city_overview = false; refresh())
+ var has_gps = not sim.item_kind(p,"gps_unit").is_empty()
+ var player_neighbourhood = Vector2i(p.x/10*10,p.y/10*10)
+ if map_origin.x < 0: city_overview = true
+ if city_overview:
+  label(overlay,"Click a neighbourhood to zoom in.",Rect2(135,154,470,30),20,MUTED)
+ else:
+  button(overlay,"City",Rect2(135,154,180,30),func(): city_overview = true; refresh())
+  for i in range(4):
+   var direction = [Vector2i(-10,0),Vector2i(10,0),Vector2i(0,-10),Vector2i(0,10)][i]
+   button(overlay,["W","E","N","S"][i],Rect2(492+i*62,154,54,30),func(): map_origin = Vector2i(clampi(map_origin.x+direction.x,0,(sim.width-1)/10*10),clampi(map_origin.y+direction.y,0,(sim.height-1)/10*10)); refresh())
+ if has_gps:
+  var find_x = 1030 if city_overview else 325
+  var find_button = button(overlay,"Find me",Rect2(find_x,154,150,30),func(): map_origin = player_neighbourhood; city_overview = false; refresh())
+  find_button.name = "FindMe"
  var columns = ceili(sim.width/10.0) if city_overview else 10
  var rows = ceili(sim.height/10.0) if city_overview else 10
  var field_map: Control
@@ -961,14 +977,22 @@ func _map_modal() -> void:
    var bounds = Rect2(135+x*cell_width,196+y*61,cell_width-3 if city_overview else 61,58 if city_overview else 61)
    if city_overview:
     var at = Vector2i(bx,by)
-    var tile = button(overlay,"",bounds,func(): map_origin = at; city_overview = false; refresh(),p.x/10 == x and p.y/10 == y)
+    var here = has_gps and at == player_neighbourhood
+    var tile = button(overlay,"",bounds,func(): map_origin = at; city_overview = false; refresh(),here)
+    tile.name = "Neighbourhood_%d_%d" % [bx,by]
     var title = label(tile,b.get("suburb",sim.world_title),Rect2(3,5,cell_width-9,48),15)
     title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
     title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
     tile.tooltip_text = "%s [%d–%d, %d–%d]" % [b.get("suburb",sim.world_title),bx,mini(sim.width-1,bx+9),by,mini(sim.height-1,by+9)]
+    if here:
+     var outline = rect(tile,Rect2(Vector2.ZERO,bounds.size),Color.TRANSPARENT,GOLD)
+     outline.name = "GPSNeighbourhood"
+     outline.get_theme_stylebox("panel").set_border_width_all(2)
+     tile.tooltip_text += "\nYour neighbourhood"
     continue
-   if b.known:
+   var player_square = has_gps and p.x == bx and p.y == by
+   if b.known or player_square:
     var mark = Control.new()
     mark.position = bounds.position-Vector2(135,196)
     mark.size = Vector2.ONE*61
@@ -976,9 +1000,10 @@ func _map_modal() -> void:
     mark.z_index = 1000
     mark.mouse_filter = Control.MOUSE_FILTER_PASS
     field_map.add_child(mark)
-    if p.x == bx and p.y == by:
+    if player_square:
      var outline = rect(mark,Rect2(0,0,61,61),Color.TRANSPARENT,GOLD)
-     outline.get_theme_stylebox("panel").set_border_width_all(1)
+     outline.name = "GPSSquare"
+     outline.get_theme_stylebox("panel").set_border_width_all(2)
     necrotech_mark(mark,b,Vector2(22,9),14)
    else:
     var unknown = rect(field_map,Rect2(bounds.position-Vector2(135,196),bounds.size),INK)
@@ -991,8 +1016,9 @@ func _map_modal() -> void:
  label(overlay,"Scan age: %d minutes" % (sim.minute-sim.scan_minute) if sim.scan_minute >= 0 else "Not connected",Rect2(780,422,250,35),20,MUTED)
  if not sim.scan_cells.is_empty():
   button(overlay,"View scan",Rect2(1050,422,150,32),func(): open_modal("necronet"))
- var info = label(overlay,"%s · %d × %d blocks\n%s\n\nExplore to reveal local blocks. Use City to choose a suburb, or W/E/N/S to browse.\n\nWarm windows: powered · Broken roofs: ruined\nGold outline: your location\nNecroTech Employment reveals the NT logo.\n\nThe scan is a snapshot of tagged zombies, not live tracking.",Rect2(780,487,510,280),22,MUTED)
- info.text = info.text % [sim.world_title,sim.width,sim.height,sim.suburb_name(p)]
+ var suburb = sim.block_at(map_origin.x,map_origin.y).get("suburb",sim.world_title)
+ var gps_hint = "\nGold outline: your location" if has_gps else ""
+ var info = label(overlay,"%s · %d × %d blocks\n%s\n\nExplore to reveal local blocks. Use City to choose a suburb, or W/E/N/S to browse.\n\nWarm windows: powered · Broken roofs: ruined%s\nNecroTech Employment reveals the NT logo.\n\nThe scan is a snapshot of tagged zombies, not live tracking." % [sim.world_title,sim.width,sim.height,suburb,gps_hint],Rect2(780,487,510,280),22,MUTED)
  info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
 func _skills_modal() -> void:

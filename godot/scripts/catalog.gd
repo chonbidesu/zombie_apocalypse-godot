@@ -240,7 +240,7 @@ const ITEMS = {
  },
  "map": {
   "name": "City map",
-  "action": "locate",
+  "action": "view_map",
   "encumbrance": 2
  },
  "book": {

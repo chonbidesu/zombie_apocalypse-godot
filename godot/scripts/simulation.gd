@@ -409,6 +409,7 @@ func uses_newspaper(a: Dictionary, command: String, data: Dictionary) -> bool:
  return a.human and command == "attack" and not data.get("unarmed",false) and item_by_uid(a,a.equipped).get("kind","") == "newspaper"
 
 func cost(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> int:
+ if command == "view_map": return 0
  if command == "jump": return 1
  if uses_newspaper(a,command,data): return 1
  if command == "manufacture": return 20
@@ -430,6 +431,10 @@ func cost(a: Dictionary, command: String, target_id: int = -1, data: Dictionary 
  return base
 
 func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}, context_only: bool = false) -> String:
+ if command == "view_map":
+  if a.down: return "Stand up before using the map."
+  if item_kind(a,"map").is_empty(): return "You need a city map."
+  return ""
  if not context_only and a.busy_until > now(): return "Recovering for %.2f seconds." % (a.busy_until-now())
  if a.down and command not in ["stand", "drop"]: return "You are down. Rest for AP, then stand up."
  if command == "stand":
@@ -574,6 +579,7 @@ func act(command: String, target_id: int = -1, data: Dictionary = {}) -> Diction
  if not rejection.is_empty():
   if rejection == BRAIN_ROT_REVIVAL_BLOCKED: start_scent_trail(actors[target_id],p)
   return {"ok":false, "message":rejection}
+ if command == "view_map": return {"ok":true, "message":""}
  execute(p, command, target_id, data)
  discover()
  return {"ok":true, "message":""}
@@ -1029,6 +1035,7 @@ func now() -> float:
  return float(clock_step)/C.CLOCK_STEPS_PER_MINUTE
 
 func recovery(command: String) -> float:
+ if command == "view_map": return 0.0
  return C.ACTION_RECOVERY.get(command,0.6)
 
 func elapse(real_seconds: float) -> void:

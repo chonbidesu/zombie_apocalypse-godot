@@ -97,7 +97,7 @@ func run() -> void:
  scene.open_modal("map")
  scene.city_overview = true
  scene.refresh()
- check(scene.overlay.find_children("*","Button",true,false).size() >= 107,"City overview provides all one hundred suburb selectors")
+ check(scene.overlay.find_children("Neighbourhood_*","Button",true,false).size() == 100,"City overview provides all one hundred suburb selectors")
  await screenshot("res://tests/malton-city-preview.png")
  scene.modal = ""
  p.x = 92

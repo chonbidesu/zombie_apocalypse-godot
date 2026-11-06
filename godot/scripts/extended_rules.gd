@@ -77,7 +77,7 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
    if b.type not in C.TALL_BUILDINGS: return "Use binoculars indoors from a tall building."
    if not C.COMPASS_DIRECTIONS.has(data.get("direction","")): return s.BINOCULAR_DIRECTION_REQUIRED
   elif b.type not in ["street","monument"]: return "Use binoculars outdoors from a street, square or monument."
- if command == "locate" and s.item_kind(a,"gps_unit").is_empty() and s.item_kind(a,"map").is_empty(): return "You need a GPS unit or map."
+ if command == "locate" and s.item_kind(a,"gps_unit").is_empty(): return "You need a GPS unit."
  if command in ["read","drink","eat","inspect","decorate","wear"]:
   var item = s.item_by_uid(a,int(data.get("uid",-1)))
   if item.is_empty() or C.ITEMS[item.kind].get("action","") != command: return "Select an appropriate carried item."
