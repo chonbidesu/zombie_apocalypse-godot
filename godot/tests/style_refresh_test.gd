@@ -160,7 +160,7 @@ func run() -> void:
  new_canvas()
  var zombie: Texture2D = load("res://assets/sprite_sheets/zombie_sprite_sheet.png")
  check(zombie.get_width() == 1536 and zombie.get_height() == 1024,"The replacement zombie has a complete 6 by 4 atlas")
- check(FileAccess.file_exists("res://assets/minimap/streets.png") and preload("res://scripts/minimap_art.gd").new().model("street",0,0) != null,"Connected street variations replace the old flat street icon")
+ check(preload("res://scripts/minimap_art.gd").new().model("street",0,0) != null,"Connected street variations load from the active atlas")
  var titles = ["Slow stagger", "Claw strike", "Collapse", "Corpse", "Recoil"]
  var sample_frames = [[0,2,4,7],[8,10,12,14],[15,16,17,19],[20,20,20,20],[21,22,23,21]]
  for row in range(titles.size()):

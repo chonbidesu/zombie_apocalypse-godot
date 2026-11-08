@@ -46,7 +46,10 @@ func _initialize() -> void:
 func necrotech() -> void:
  b.type = "necrotech_lab"; b.generator = false; b.ruin = 0
  p.inside = false; p.human_skills = []; p.human = true
+ var before_view := b.duplicate(true)
  var hidden = s.environmental_description(b,p)
+ check(b == before_view,"Reading a location with stale prose leaves its saved state intact")
+ s.ensure_descriptions(b)
  var office = b.duplicate(true); office.type = "office"; office.description_version = 0
  check(hidden == s.environmental_description(office,p) and not hidden.contains("NecroTech"),"Untrained lab exterior is exactly its office counterpart")
  var original_parts: Array = b.outside_description_parts.duplicate()

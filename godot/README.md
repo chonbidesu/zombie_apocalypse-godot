@@ -4,7 +4,7 @@ A standalone Godot 4 / GDScript survival game using the original project's artwo
 
 ## Run
 
-Open `project.godot` in Godot and run `main.tscn`, or use PowerShell:
+Open `project.godot` in Godot and press F5 to run the project, or use PowerShell:
 
 ```powershell
 .\launch.ps1
@@ -23,7 +23,11 @@ The minimap now assembles a connected aerial city with shared roads, three archi
 
 ## Playing
 
-Normal launch uses the original 100×100 Malton map and starts the Volunteer at Anne General Hospital in Dulston. The Volunteer carries a bat, first aid kit, toolbox and syringe, knowing Construction, NecroTech Employment and Lab Experience. The old Mercy General opening remains available as the Legacy test neighbourhood. Restart opens New Game, with Original Malton, Random city and Legacy test neighbourhood modes. It offers the eight original survivor occupations, Corpse, and Volunteer. Random city exposes a seed, dimensions, exact ordinary building counts, numbers of mall/fort/zoo/cathedral/mansion/power-station/stadium complexes, and survivor/zombie populations. Invalid requests explain capacity or packing errors without replacing the running session. Each canonical occupation has its own portrait, equipment and starting skills. The Corpse's human portrait appears after revival.
+Normal launch opens `start_screen.tscn` with the Python title's five scrolling city layers, original buttons and looping music. New Game opens the character creation room. Select an occupation and Confirm to play its introduction and start the original 100×100 Malton map. Back returns to the title. Load resumes the Godot save slot and reports missing or invalid saves. The slot updates when you save. F11 toggles fullscreen, and the title buttons support keyboard focus and activation.
+
+The character room uses artwork in `assets/character_creation/`. Superseded Godot artwork and the menu's art prompts are in [the archive](../archive/godot/README.md), outside the Godot project.
+
+Running `main.tscn` directly still starts the Volunteer at Anne General Hospital in Dulston for development. The Volunteer carries a bat, first aid kit, toolbox and syringe, knowing Construction, NecroTech Employment and Lab Experience. The old Mercy General opening remains available as the Legacy test neighbourhood. Restart opens New Game, with Original Malton, Random city and Legacy test neighbourhood modes. It offers the eight original survivor occupations, Corpse, and Volunteer. Random city exposes a seed, dimensions, exact ordinary building counts, numbers of mall/fort/zoo/cathedral/mansion/power-station/stadium complexes, and survivor/zombie populations. Invalid requests explain capacity or packing errors without replacing the running session. Each canonical occupation has its own portrait, equipment and starting skills. The Corpse's human portrait appears after revival.
 
 Click nearby tiles or use arrows/WASD and Q/E/Z/C to move. Click a sprite to select a target. Right-click inventory items for contextual uses; click to select equipment or an item for Give/Drop. Space pauses; R rests for ten AP; M opens the neighbourhood map; Escape closes dialogs, cancels rest or pauses.
 
@@ -93,7 +97,7 @@ See `docs/content-expansion-audit.md` for research, coverage and deliberate adap
 
 `launch.ps1 -Test` imports assets, runs simulation, survival, loot/trust and content-expansion checks, then rendered UI and art-gallery checks. Validation includes full-city and rendered world-setup checks, plus dedicated barricade accuracy, flavour, structural-strength and entry-boundary tests. UI tests require a graphics-capable desktop. Test saves use separate filenames. Tests cover lifecycle, deterministic save/replay, multi-seed population invariants, shelter balance, search/trust, skill purchases, combat/grasp, equipment/communications, atlas health/animation states, crowds and description bounds. They do not establish long-term gameplay balance.
 
-The prototype is a local single-player city simulation: no server messaging, campaigns, audio or remappable controls. Original geography is available offline. New saves include map dimensions, mode, generator settings, provenance, names and complex identities; legacy 10×10 saves still load. Legacy pickle saves are not imported. Clothing is represented by one generic item rather than every named garment; decorative colour/name variants share representative assets. See the audit for additional differences from the original online game.
+The prototype is a local single-player city simulation: no server messaging, campaigns, gameplay sound effects or remappable controls. Title music plays through character creation, then gameplay plays the original `road_runner.mp3` and `forward_motion.mp3` playlist at 30% volume. Original geography is available offline. New saves include map dimensions, mode, generator settings, provenance, names and complex identities; legacy 10×10 saves still load. Legacy pickle saves are not imported. Clothing is represented by one generic item rather than every named garment; decorative colour/name variants share representative assets. See the audit for additional differences from the original online game.
 
 Encumbrance values, sources, zero-weight/unique items, local custom-item assignments, door/barricade migration and layout checks are documented in `docs/encumbrance-and-layout.md`.
 

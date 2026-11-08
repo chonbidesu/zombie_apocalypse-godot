@@ -135,7 +135,7 @@ func run() -> void:
  scene.sim.die(scene.sim.player())
  scene.begin_rest(10)
  check(scene.resting,"Downed character at full AP can rest through standing cooldown")
- scene.resting = false
+ scene.sim.stop_rest()
  var barricade_player = scene.sim.player()
  barricade_player.down = false
  barricade_player.human = true

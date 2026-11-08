@@ -1,0 +1,32 @@
+Consumer redraw from original pre-conversation atlas
+Mode: built-in image_gen; transparent_background=true.
+Final asset: layers/consumer-full-redraw.png, 1448x1086, twelve 362x362 frames.
+Final generated source: exec-dbd3a240-2044-4b9e-a74c-9ebb1d30ec53.png.
+Original reference preserved locally at .runtime/consumer-review/consumer-before.png.
+Photo reference: C:/Users/Jared/Downloads/images.jfif (shot layout only).
+User clarification: portrait is appearance inspiration, not an exact face pose; gaze follows shot.
+This revision supersedes consumer-scene-reference-prompts.txt and the discarded large-figure/closed-bridge attempts. Preserves original figure scale and shallow table angle, moves small open bridge to far rail, separates cue ball from centered rack, retains subtle idle breathing and all eight shot frames. No runtime overlays or timing changes.
+
+RESTART FROM ORIGINAL
+EDIT IMAGE 1, the ORIGINAL animation before revisions. Image 2 is only the reference photo for the shot arrangement. Start fresh from this original; do not use any other prior generated sprite.
+
+Preserve Image 1's original TABLE CAMERA ANGLE AND PERSPECTIVE, table size, rails, pockets, legs and complete frame placement exactly. Also preserve the ORIGINAL SMALL WOMAN'S SCALE: original head size, torso width, shoulders, low posture and body-to-table proportions. Do not enlarge her, her face, head, hair, arms or hands. Keep original face and brown wavy hair appearance, purple shirt. Her eyes should look down her pool cue at shot rather than at viewer. Small natural head adjustment only.
+
+Redraw front LEFT arm and bridge hand nearer HER SIDE of table: bring hand BACK to just inside FAR cushion, not reaching into middle of felt. Use a SMALL normal palm-down OPEN billiards bridge, correctly proportioned to original woman. Exactly four normal fingers gently splayed on felt plus ONE short thumb on proper radial side (viewer-left) lifted against side of index to support cue in V. No extra fingers, no enormous hand, no OK-ring, no fist. Cue rests ON the raised thumb-index bridge, visibly supported, and projects forward beyond hand toward white ball. Ball separate from hand.
+
+Arrange shot as in reference photo but projected onto ORIGINAL OBLIQUE TABLE: cue, bridge, white ball, triangle apex lie on the longitudinal centerline of felt. Keep balls centered between side cushions. There MUST be substantially MORE EMPTY FELT BETWEEN WHITE BALL AND RACK. Aiming white ball is toward far end of table, rack toward near end, with at least FOUR BALL DIAMETERS of clear felt between them.
+Coordinate guide per original 362x362 frame (keep original table corners unchanged): rear cue grip near (131,111); bridge support near (157,140), just inside her far cushion; white ball near (176,162); rack apex near (207,197), rack center near (213,203). Those four points form ONE STRAIGHT SHOT AXIS from upper-left to lower-right, roughly along table's projected centerline. Bridge hand should be no more than about 25px wide including thumb. Current original hand is too far forward; move it back. Current original rack is too far right; move it left onto centerline. White ball should move UP TABLE toward player so it has a LONG clear gap to rack. Draw compact triangle of balls leaving some felt before near cushion. Cue tip a short distance before white ball.
+
+ALL TWELVE complete frames updated, 4 columns x 3 rows:
+Top four: subtle shoulder/chest breathing variations while bridge, balls and table stay planted.
+Next four: short backswing, full short backswing with cue still on bridge, forward stroke, strike.
+Last four: white ball travels down clear centerline gap and impacts rack, balls scatter from centered impact, roll, settle. All contained inside rails. Correct same five-digit hand consistently; cue slides along same V, never floats beside it.
+Transparent 1448x1086 atlas. Keep original figure scale and TABLE angle exactly. No background, text or grids.
+
+FINAL TABLE PERSPECTIVE CORRECTION
+Image 1 is the authoritative ORIGINAL atlas to edit. Image 2 shows desired SMALLER bridge hand near far cushion and separated shot positions, but its table angle is WRONG.
+Return an edit of IMAGE 1. Keep Image 1's TABLE EXACTLY UNCHANGED: same shallow oblique felt quadrilateral, front rail at y~220 in each 362px cell, original long legs and apron. DO NOT use Image 2's deeper tabletop/front rail at y~250, short legs or symmetric perspective. Copy original table pixels/geometry from Image 1 faithfully. Table is locked.
+Change only woman/cue/balls in Image 1. Keep ORIGINAL woman's exact scale, size and hair/face from Image 1; aim her eyes down cue. Use Image 2's smaller natural LEFT bridge hand moved BACK toward far rail on her side: palm just inside far cushion, modest fingers normal sized, exactly five digits, thumb on correct radial side, cue resting physically on thumb-index V. No OK ring or extra fingers. Rear hand grips a straight cue aimed through bridge to white ball and triangle apex. Fingers not huge.
+Within ORIGINAL shallow felt, move bridge up/back near far rail, cue ball farther toward far end and centered rack toward near end: leave CLEAR EMPTY FELT between cue ball and rack, but do not enlarge or deepen the table to make room. Center rack between side cushions in original oblique perspective (near x210,y198), white ball farther UP table (near x174,y163), bridge support near (154,140). Small compact rack, balls proportionally small enough for clear separation. All along straight projected center shot axis.
+All 12 frames: four subtly breathing aiming poses, short backswing, full short backswing, forward stroke, hit, rack impact, scatter, roll, settle. Full transparent 1448x1086 atlas. Most important: Image 1 ORIGINAL table angle and ORIGINAL figure size, with only revised hand/arm/cue/ball arrangement.
+

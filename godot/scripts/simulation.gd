@@ -5,6 +5,8 @@ const Dialogue = preload("res://scripts/dialogue.gd")
 const Extended = preload("res://scripts/extended_rules.gd")
 const World = preload("res://scripts/world_builder.gd")
 const AI = preload("res://scripts/npc_ai.gd")
+const SAVE_PATH = "user://prototype-save.json"
+const DEFAULT_SEED = 4815
 var navigation: AStar2D
 var width: int = 10
 var height: int = 10
@@ -33,7 +35,7 @@ var rest_target: int = 0
 var rest_end_step: int = 0
 var last_rest_notice: String = ""
 var event_sequence: int = 0
-var world_seed: int = 4815
+var world_seed: int = DEFAULT_SEED
 var next_item_id: int = 1
 var scan_report: String = "No scan yet. Use a powered NecroTech lab."
 var scan_minute: int = -1
@@ -53,7 +55,7 @@ const BRAIN_ROT_REVIVAL_BLOCKED = "Brain Rot requires a powered NecroTech lab an
 const CORPSE_REVIVAL_BLOCKED = "You cannot revive that body."
 var metrics: Dictionary = {"attacks":0, "deaths":0, "revivals":0, "npc_actions":0}
 
-func start(seed_value: int = 4815, occupation: String = "Volunteer", config: Dictionary = {}) -> String:
+func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", config: Dictionary = {}) -> String:
  var geography = {}
  if config.get("mode","sandbox") != "sandbox":
   geography = World.build(config,seed_value,_read_names())
@@ -387,6 +389,7 @@ func nearby(a: Dictionary, b: Dictionary) -> bool:
 func discover() -> void:
  var p = player()
  if p.down: return
+ ensure_descriptions(current_block(p))
  for dy in range(-1, 2):
   for dx in range(-1, 2):
    if p.x+dx in range(width) and p.y+dy in range(height): block_at(p.x+dx, p.y+dy).known = true
@@ -1053,6 +1056,7 @@ func elapse(real_seconds: float) -> void:
     # A wake-up must not spend the accelerated time already budgeted to this slice.
     clock_fraction = 0.0
     break
+ discover()
 
 func advance(minutes: int) -> void:
  # Headless tests only. Interactive play always uses elapse(delta).
@@ -1611,9 +1615,12 @@ func skill_cost(a: Dictionary, skill: String) -> int:
  if occupation in ["military", "science"]: return 150
  return 100
 
+func has_current_descriptions(b: Dictionary) -> bool:
+ return int(b.get("description_version",0)) == 6 and b.get("description_type","") == b.type and b.has("inside_description_parts") and b.has("outside_description_parts") and b.has("inside_description") and b.has("outside_description")
+
 func ensure_descriptions(b: Dictionary) -> void:
  # Separate RNG keeps flavour text from changing combat/AI randomness.
- if int(b.get("description_version",0)) == 6 and b.get("description_type","") == b.type and b.has("inside_description_parts") and b.has("outside_description_parts") and b.has("inside_description") and b.has("outside_description"): return
+ if has_current_descriptions(b): return
  var local_rng = RandomNumberGenerator.new()
  for side in ["inside", "outside"]:
   local_rng.seed = world_seed*1000+int(b.id)+(10000019 if side == "outside" else 0)
@@ -1633,16 +1640,20 @@ func ensure_descriptions(b: Dictionary) -> void:
  b.description_type = b.type
 
 func environmental_description(b: Dictionary, observer: Dictionary) -> String:
- ensure_descriptions(b)
+ var descriptions := b
+ if not has_current_descriptions(b):
+  # Render an undiscovered location without changing the saved world.
+  descriptions = {"id":b.id, "type":b.type}
+  ensure_descriptions(descriptions)
  if b.type == "necrotech_lab" and observer.inside and powered(b):
-  var parts: Array = b.inside_description_parts.duplicate()
+  var parts: Array = descriptions.inside_description_parts.duplicate()
   parts[2] = description_pools.necrotech_lab.inside.powered_third[0]
   return " ".join(parts)
  if b.type == "necrotech_lab" and not observer.inside and has_skill(observer,"necro_employment"):
-  var parts: Array = b.outside_description_parts.duplicate()
-  parts[2] = b.necrotech_recognition
+  var parts: Array = descriptions.outside_description_parts.duplicate()
+  parts[2] = descriptions.necrotech_recognition
   return " ".join(parts)
- return b["inside_description" if observer.inside else "outside_description"]
+ return descriptions["inside_description" if observer.inside else "outside_description"]
 
 func entrance_is_open(b: Dictionary) -> bool:
  return b.barricade == 0 and not doors_closed(b)

@@ -10,7 +10,7 @@ class Trial extends Sim:
  func execute(a: Dictionary,command: String,target_id: int = -1,data: Dictionary = {}) -> void:
   var key = ("human_" if a.human else "zombie_")+command
   actions[key] = int(actions.get(key,0))+1
-  super.execute(a,command,target_id,data)
+  super(a,command,target_id,data)
   if a.human and current_block(a).id != a.home: travelled[a.id] = true
  func _try(a: Dictionary,command: String,target_id: int = -1,data: Dictionary = {}) -> bool:
   if command == "move" and not reason(a,command,target_id,data).is_empty(): blocked_moves += 1

@@ -1,21 +1,21 @@
 extends Control
 
-var initial_world_mode = "malton"
-var map_origin = Vector2i(-1,-1)
-var city_overview = false
-var new_world_mode = "malton"
+var initial_world_mode: String = "malton"
+var map_origin: Vector2i = Vector2i(-1,-1)
+var city_overview: bool = false
+var new_world_mode: String = "malton"
 var new_world_config: Dictionary = {}
-var new_seed = 4815
-var new_occupation = "Private"
-var new_difficulty = "medium"
-var new_game_error = ""
+var new_seed: int = Sim.DEFAULT_SEED
+var new_occupation: String = "Private"
+var new_difficulty: String = "medium"
+var new_game_error: String = ""
 
 const Sim = preload("res://scripts/simulation.gd")
 const Feed = preload("res://scripts/event_feed.gd")
 const C = preload("res://scripts/catalog.gd")
 const MapArtwork = preload("res://scripts/minimap_art.gd")
 const MapCanvas = preload("res://scripts/minimap_canvas.gd")
-var minimap_artwork = MapArtwork.new()
+var minimap_artwork := MapArtwork.new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
 const INVENTORY_PAGE_SIZE = 10
 var inventory_page: int = 0
@@ -28,7 +28,8 @@ const GOLD = Color("d8b76b")
 const RED = Color("df8d77")
 const GREEN = Color("a9c69a")
 
-var sim = Sim.new()
+var sim: Sim
+var save_path: String = Sim.SAVE_PATH
 var page: Control
 var overlay: Control
 var selected_actor: int = -1
@@ -37,20 +38,19 @@ var paused: bool = false
 var modal: String = ""
 var resting: bool:
  get: return sim.resting
- set(value): sim.resting = value
 var rest_target: int:
  get: return sim.rest_target
-var feed = Feed.new()
+var feed := Feed.new()
 var log_view: RichTextLabel
 var log_filter: String = "All"
 var history_filter: String = "All"
 var refresh_timer: float = 0.0
 var last_revision: String = ""
-var action_controls: Array = []
+var action_controls: Array[Dictionary] = []
 var timing_label: Label
 var notice: String = "Welcome to Dulston. Explore, find supplies, and keep your neighbours alive."
 var textures: Dictionary = {}
-var actor_buttons: Array = []
+var actor_buttons: Array[Dictionary] = []
 var actor_visuals: Dictionary = {}
 var actor_tooltip: PanelContainer
 var actor_tooltip_label: Label
@@ -62,28 +62,35 @@ var message_target: int = -1
 var message_data: Dictionary = {}
 var actions_bottom: float = 971.0
 var player_portrait: TextureRect
-var lurch_rng = RandomNumberGenerator.new()
+var lurch_rng := RandomNumberGenerator.new()
 var lurch_segments: Array = [{"until":0.55,"frame":0}]
 
 func _ready() -> void:
  lurch_rng.randomize()
- var ui_theme = Theme.new()
+ var ui_theme := Theme.new()
  ui_theme.default_font = load("res://assets/fonts/PixelifySans.ttf")
  ui_theme.default_font_size = 19
- var italic = FontVariation.new()
+ var italic := FontVariation.new()
  italic.base_font = ui_theme.default_font
  italic.variation_transform = Transform2D(Vector2.RIGHT,Vector2(-0.22,1),Vector2.ZERO)
  ui_theme.set_font("italics_font","RichTextLabel",italic)
  theme = ui_theme
- var why = sim.start(4815,"Volunteer",{"mode":initial_world_mode})
- if not why.is_empty():
-  sim.start()
-  notice = why
- else: notice = "Welcome to %s. Find allies and secure a shelter." % sim.world_title
+ if sim == null:
+  sim = Sim.new()
+  var why := sim.start(Sim.DEFAULT_SEED,"Volunteer",{"mode":initial_world_mode})
+  if not why.is_empty():
+   sim.start()
+   notice = why
+  else: notice = "Welcome to %s. Find allies and secure a shelter." % sim.world_title
  feed.reset(sim.messages)
  refresh()
 
 func _process(delta: float) -> void:
+ _animate_scene(delta)
+ if paused or context_open or not modal.is_empty(): return
+ _advance_session(delta)
+
+func _animate_scene(delta: float) -> void:
  _update_actor_tooltip()
  animation_time += delta
  for entry in actor_buttons:
@@ -91,25 +98,25 @@ func _process(delta: float) -> void:
    position_actor_sprite(entry)
  if is_instance_valid(player_portrait):
   player_portrait.texture.region = portrait_region(sim.player())
- if paused or context_open or not modal.is_empty(): return
- var was_resting = resting
- var was_down = sim.player().down
+
+func _advance_session(delta: float) -> void:
+ var was_resting := resting
+ var was_down: bool = sim.player().down
  # Do not turn a stalled/render-blocked frame into a surprise burst of attacks.
  sim.elapse(minf(delta,0.25))
  if was_down != sim.player().down: refresh()
- sim.discover()
  if was_resting and not resting: notice = sim.last_rest_notice
- var feed_changed = feed.ingest(sim.messages)
+ var feed_changed := feed.ingest(sim.messages)
  if feed.update(delta): feed_changed = true
  if feed_changed: _update_log()
  for entry in action_controls:
   if is_instance_valid(entry.node):
-   var why = sim.action_feedback(sim.player(),entry.command,entry.target,entry.data)
-   entry.node.disabled = paused or resting or not why.is_empty()
+   var why := sim.action_feedback(sim.player(),entry.command,entry.target,entry.data)
+   entry.node.disabled = resting or not why.is_empty()
    entry.node.tooltip_text = why if not why.is_empty() else entry.tip
  if is_instance_valid(timing_label): timing_label.text = _timing_text()
  refresh_timer += delta
- var revision = "%d/%d/%d/%s" % [sim.minute,sim.event_sequence,sim.player().ap,resting]
+ var revision := "%d/%d/%d/%s" % [sim.minute,sim.event_sequence,sim.player().ap,resting]
  if refresh_timer >= 0.25 and revision != last_revision and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
   refresh_timer = 0.0
   last_revision = revision
@@ -137,7 +144,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
  if moves.has(event.keycode):
   var direction = moves[event.keycode]
   dispatch("move", -1, {"dx":direction.x, "dy":direction.y})
- elif event.keycode == KEY_SPACE: paused = not paused; refresh()
  elif event.keycode == KEY_R: begin_rest(10)
  elif event.keycode == KEY_M: open_city_map()
 
@@ -734,20 +740,23 @@ func begin_rest(amount: int) -> void:
 
 func _save() -> void:
  if resting: sim.stop_rest()
- notice = "Saved to " + ProjectSettings.globalize_path("user://prototype-save.json") if sim.save_to("user://prototype-save.json") == OK else "Could not save."
+ notice = "Saved to " + ProjectSettings.globalize_path(save_path) if sim.save_to(save_path) == OK else "Could not save."
  refresh()
 
 func _load() -> void:
+ var result := sim.load_from(save_path)
+ notice = "Loaded your neighbourhood." if result.is_empty() else result
+ if result.is_empty(): _reset_session_view()
+ refresh()
+
+func _reset_session_view() -> void:
  map_origin = Vector2i(-1,-1)
  city_overview = false
- resting = false
- var result = sim.load_from("user://prototype-save.json")
- notice = "Loaded your neighbourhood." if result.is_empty() else result
+ inventory_page = 0
  actor_visuals.clear()
  selected_actor = -1
  selected_item = -1
  feed.reset(sim.messages)
- refresh()
 
 func open_modal(which: String) -> void:
  if resting: sim.stop_rest()
@@ -1354,11 +1363,8 @@ func _new_game_modal() -> void:
    config.erase("zombies")
   var why = sim.start(new_seed,new_occupation,config)
   if not why.is_empty(): new_game_error = why; refresh(); return
-  feed.reset(sim.messages)
-  actor_visuals.clear()
-  selected_actor = -1
-  selected_item = -1
-  map_origin = Vector2i(-1,-1)
+  _reset_session_view()
+  new_game_error = ""
   modal = ""
   paused = false
   notice = "New game started."
