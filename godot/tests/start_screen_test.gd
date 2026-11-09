@@ -66,10 +66,17 @@ func run() -> void:
  check(corpse_intro._opening_facade_rect() == final_frame, "Opening camera holds its final position")
  corpse_intro.elapsed = 0.0
  var distant_line: Rect2 = corpse_intro._quarantine_rect(1)
+ var distant_background: Rect2 = corpse_intro._quarantine_rect(0)
  var distant_people: Rect2 = corpse_intro._quarantine_rect(2)
+ var street_row := (distant_line.end.y - distant_background.position.y) / distant_background.size.y
+ corpse_intro.elapsed = 4.0
+ var mid_line: Rect2 = corpse_intro._quarantine_rect(1)
+ var mid_background: Rect2 = corpse_intro._quarantine_rect(0)
+ check(is_equal_approx((mid_line.end.y - mid_background.position.y) / mid_background.size.y, street_row), "Security line stays on its street row midway through the zoom")
  corpse_intro.elapsed = 8.0
  var close_line: Rect2 = corpse_intro._quarantine_rect(1)
- check(close_line.size.x > distant_line.size.x and is_equal_approx(close_line.end.y, distant_line.end.y) and is_equal_approx(close_line.size.x / close_line.size.y, distant_line.size.x / distant_line.size.y) and corpse_intro._quarantine_rect(2).size.x > distant_people.size.x * 3.0, "Checkpoint advances with the security line planted and undistorted")
+ var close_background: Rect2 = corpse_intro._quarantine_rect(0)
+ check(close_line.size.x > distant_line.size.x and is_equal_approx((close_line.end.y - close_background.position.y) / close_background.size.y, street_row) and is_equal_approx(close_line.size.x / close_line.size.y, distant_line.size.x / distant_line.size.y) and corpse_intro._quarantine_rect(2).size.x > distant_people.size.x * 3.0, "Checkpoint advances with the security line planted and undistorted")
  corpse_intro._skip_intro()
  check(corpse_intro.page == 4 and not corpse_intro.eyes.visible, "Skipping a corpse intro still presents the closed-eyed origin")
  check(corpse_intro.line_labels[1].text.ends_with("It's time to claim Malton.") and corpse_intro.title.text.is_empty(), "Corpse text uses the revised line without a heading")

@@ -252,10 +252,16 @@ func _quarantine_rect(index: int) -> Rect2:
  var progress := 0.0 if reduced_motion else smoothstep(0.0, 8.0, elapsed)
  var anchor := Vector2(960, 490)
  var base := Rect2(-77, -43, 2074, 1166)
- var factor := 1.0 + progress * (0.12 if index == 0 else (0.75 if index == 1 else 2.5))
+ var factor := 1.0 + progress * (0.12 if index == 0 else (0.5 if index == 1 else 2.5))
  if index == 1:
-  base = Rect2(-77, 350, 2074, 2074.0 / 3.0)
-  return _zoom_rect(base, factor, Vector2(anchor.x, base.end.y))
+  var line := Rect2(-577, 184, 2574, 2574.0 / 3.0)
+  # Keep the line's base on the same street row as the background zooms.
+  var street_row := (line.end.y - base.position.y) / base.size.y
+  var background := _zoom_rect(base, 1.0 + progress * 0.12, anchor)
+  var grounded_y := background.position.y + street_row * background.size.y
+  var zoomed := _zoom_rect(line, factor, Vector2(anchor.x, line.end.y))
+  zoomed.position.y += grounded_y - line.end.y
+  return zoomed
  return Rect2(anchor + (base.position - anchor) * factor, base.size * factor)
 
 func _advance_time() -> float:
