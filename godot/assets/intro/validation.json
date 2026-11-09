@@ -273,9 +273,9 @@
     "alpha_range": null
   },
   {
-    "file": "05_corpse/body_closed.png",
+    "file": "05_corpse/body_closed-v3.png",
     "size": [
-      1672,
+      1671,
       941
     ],
     "mode": "RGBA",
@@ -285,7 +285,7 @@
     ]
   },
   {
-    "file": "05_corpse/body_open-v2.png",
+    "file": "05_corpse/body_open-v3.png",
     "size": [
       1670,
       941

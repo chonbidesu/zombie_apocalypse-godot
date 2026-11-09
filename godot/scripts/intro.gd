@@ -137,9 +137,9 @@ func _show_page(index: int) -> void:
   4:
    var folder: String = "05_corpse/" if occupation == "Corpse" else "04_origins/%s/" % ORIGINS.get(occupation, "consumer")
    layers.append(_load_layer(folder + "background.png"))
-   layers.append(_load_layer(folder + ("body_closed.png" if occupation == "Corpse" else "foreground.png")))
-   if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open-v2.png")
- title.text = TITLES[page] if page < 4 else ("THE DEAD" if occupation == "Corpse" else occupation.to_upper())
+   layers.append(_load_layer(folder + ("body_closed-v3.png" if occupation == "Corpse" else "foreground.png")))
+   if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open-v3.png")
+ title.text = ""
  facade_view.visible = page == 0
  specimen.visible = page == 3
  var contents := specimen.get_node("Contents") as AnimatedSprite2D
@@ -150,7 +150,7 @@ func _show_page(index: int) -> void:
  if page < 4:
   copy.text = TEXTS[page]
  elif occupation == "Corpse":
-  copy.text = "Your old life is gone, but something remains.\n\nThe living hide behind barricades. The dead roam the streets. And somewhere in the city, there may be a way back."
+  copy.text = "Your old life is gone, but something remains.\n\nThe living hide behind barricades. The dead roam the streets. It's time to claim Malton."
  else:
   copy.text = "Before the outbreak, you were a %s.\n\nNow, you must find shelter, gather supplies, and survive in a city where death is not the end." % occupation
  var texts: Array = []
@@ -162,7 +162,7 @@ func _show_page(index: int) -> void:
   3: texts = ["NecroTech had been studying the dead. Its scientists also found a way to bring them back.", "What happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."]; tracks = ["7", "8"]
   4:
    if occupation == "Corpse":
-    texts = ["Your old life is gone, but something remains.", "The living hide behind barricades. The dead roam the streets. And somewhere in the city, there may be a way back.", "RISE"]
+    texts = ["Your old life is gone, but something remains.", "The living hide behind barricades. The dead roam the streets. It's time to claim Malton.", "RISE"]
     tracks = ["12", "13", "14"]
    else:
     texts = ["Before the outbreak, you were a %s." % occupation, "Now, you must find shelter, gather supplies, and survive in a city where death is not the end.", "ENTER MALTON"]
@@ -186,7 +186,7 @@ func _show_page(index: int) -> void:
   line_times.append(next_time)
   next_time += (stream.get_length() if stream else 0.0) + 1.0
  narration_end = next_time
- prompt.text = "CLICK OR PRESS ANY KEY TO CONTINUE" if page < 4 else "CLICK OR PRESS ANY KEY"
+ prompt.text = "CLICK OR PRESS ANY KEY TO ADVANCE"
  if page == 1:
   copy.position = Vector2(260, 410)
   copy.size = Vector2(1400, 260)
@@ -207,10 +207,15 @@ func _process(delta: float) -> void:
   var progress := 1.0 if reduced_motion else 1.0 - pow(1.0 - clampf(elapsed / 14.0, 0.0, 1.0), 3.0)
   specimen.position = Vector2(lerpf(2270.0, 1570.0, progress), 535)
   specimen.scale = Vector2.ONE * lerpf(0.65, 0.48, progress)
+ if page == 4 and occupation == "Corpse":
+  var body := _corpse_rect()
+  eyes.position = body.position
+  eyes.size = body.size
  if ending:
   ending_time += delta
   curtain.color.a = clampf((ending_time - (2.0 if occupation == "Corpse" else 0.1)) / 1.1, 0.0, 1.0)
-  if ending_time >= (3.2 if occupation == "Corpse" else 1.2):
+  var finish_at := maxf(3.2, narration.stream.get_length() + 0.1) if occupation == "Corpse" and narration.stream else 1.2
+  if ending_time >= finish_at:
    set_process(false)
    finished.emit(occupation)
  else:
@@ -222,8 +227,7 @@ func _process(delta: float) -> void:
    narration_index += 1
    narration.stream = line_streams[narration_index]
    if narration.stream: narration.play()
-  var prompt_at := _advance_time()
-  prompt.modulate.a = clampf((elapsed - prompt_at) / 0.5, 0.0, 1.0)
+  prompt.modulate.a = clampf(elapsed / 0.5, 0.0, 1.0)
  queue_redraw()
 
 func _opening_facade_rect() -> Rect2:
@@ -261,6 +265,12 @@ func _advance_time() -> float:
 func _zoom_rect(base: Rect2, factor: float, anchor: Vector2 = Vector2(960, 490)) -> Rect2:
  return Rect2(anchor + (base.position - anchor) * factor, base.size * factor)
 
+func _corpse_rect() -> Rect2:
+ var progress := 1.0 if reduced_motion else smoothstep(0.0, 14.0, elapsed)
+ # Skipping to Rise should frame the face immediately, ready for the next click.
+ if narration_index >= line_times.size() - 1 and line_times.size() > 0: progress = 1.0
+ return Rect2(Vector2(lerpf(420.0, -2360.0, progress), -510.0), Vector2(4148, 2332))
+
 func _draw() -> void:
  draw_rect(Rect2(Vector2.ZERO, Vector2(1920,1080)), Color.BLACK)
  var drift := 0.0 if reduced_motion else (held_drift if ending else sin(elapsed * 0.18))
@@ -288,6 +298,7 @@ func _draw() -> void:
    elif page == 4 and occupation != "Corpse":
     var approach := 0.0 if reduced_motion else smoothstep(0.0, 18.0, elapsed)
     destination = _zoom_rect(base, 1.0 + approach * (0.12 if i == 0 else 0.85))
+   elif page == 4 and occupation == "Corpse": destination = _corpse_rect()
    draw_texture_rect(layers[i], destination, false)
 
 func _input(event: InputEvent) -> void:
@@ -301,7 +312,17 @@ func _input(event: InputEvent) -> void:
   get_viewport().set_input_as_handled()
 
 func _advance() -> void:
- if elapsed < _advance_time(): return
+ if narration_index + 1 < line_times.size():
+  var next := narration_index + 1
+  narration.stop()
+  var shift: float = line_times[next] - elapsed
+  for i in range(next, line_times.size()): line_times[i] -= shift
+  narration_end -= shift
+  for i in range(next): line_labels[i].modulate.a = 1.0
+  narration_index = next
+  narration.stream = line_streams[next]
+  if narration.stream: narration.play()
+  return
  if page < 4:
   _show_page(page + 1)
  else:
@@ -312,9 +333,12 @@ func _advance() -> void:
   skip.hide()
   prompt.hide()
   if occupation == "Corpse":
-   var drift := 0.0 if reduced_motion else held_drift
-   eyes.position = Vector2(-77, -43) + Vector2(drift * 24.0, drift * 6.0)
+   var body := _corpse_rect()
+   eyes.position = body.position
+   eyes.size = body.size
    eyes.show()
+   narration.stream = load(ROOT + "audio/Malton RISE.mp3") as AudioStream
+   if narration.stream: narration.play()
 
 func _skip_intro() -> void:
  if ending: return

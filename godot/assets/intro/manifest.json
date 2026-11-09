@@ -254,18 +254,19 @@
     },
     {
       "id": "05_corpse/body_closed",
-      "file": "05_corpse/body_closed.png",
+      "file": "05_corpse/body_closed-v3.png",
       "alpha": true,
       "native_size": [
-        1672,
+        1671,
         941
-      ]
+      ],
+      "previous_file": "05_corpse/body_closed.png"
     },
     {
       "id": "05_corpse/body_open",
-      "file": "05_corpse/body_open-v2.png",
+      "file": "05_corpse/body_open-v3.png",
       "alpha": true,
-      "previous_file": "05_corpse/body_open.png",
+      "previous_file": "05_corpse/body_open-v2.png",
       "native_size": [
         1670,
         941
@@ -358,7 +359,7 @@
       ],
       "text": [
         "NecroTech had been studying the dead. Its scientists also found a way to bring them back.",
-        "What happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."
+        "What happened in their laboratories\u00e2\u20ac\u201dand what they knew before the outbreak\u00e2\u20ac\u201dremains buried inside the city."
       ]
     },
     {

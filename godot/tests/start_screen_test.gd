@@ -42,6 +42,10 @@ func run() -> void:
  corpse_intro.elapsed = corpse_intro.line_times[0]
  corpse_intro._process(0.7)
  check(corpse_intro.line_labels[0].modulate.a > 0.0 and corpse_intro.line_labels[0].modulate.a < 1.0 and corpse_intro.line_labels[1].modulate.a == 0.0, "Black-screen narration fades in one line at a time")
+ corpse_intro._advance()
+ check(corpse_intro.narration_index == 1 and is_equal_approx(corpse_intro.line_times[1], corpse_intro.elapsed), "Advancing skips directly to the next line")
+ corpse_intro._advance()
+ check(corpse_intro.page == 2, "Advancing the last line opens the next screen")
  corpse_intro._show_page(3)
  check(corpse_intro.specimen.visible and corpse_intro.layers.size() == 1 and (corpse_intro.specimen.get_node("Contents") as AnimatedSprite2D).is_playing(), "NecroTech uses the animated single specimen")
  var contents := corpse_intro.specimen.get_node("Contents") as AnimatedSprite2D
@@ -68,13 +72,21 @@ func run() -> void:
  check(close_line.size.x > distant_line.size.x and is_equal_approx(close_line.end.y, distant_line.end.y) and is_equal_approx(close_line.size.x / close_line.size.y, distant_line.size.x / distant_line.size.y) and corpse_intro._quarantine_rect(2).size.x > distant_people.size.x * 3.0, "Checkpoint advances with the security line planted and undistorted")
  corpse_intro._skip_intro()
  check(corpse_intro.page == 4 and not corpse_intro.eyes.visible, "Skipping a corpse intro still presents the closed-eyed origin")
+ check(corpse_intro.line_labels[1].text.ends_with("It's time to claim Malton.") and corpse_intro.title.text.is_empty(), "Corpse text uses the revised line without a heading")
  check(corpse_intro.line_streams.size() == 3 and corpse_intro.narration_end > 1.0, "Corpse origin queues its narrated passages and Rise")
- corpse_intro.elapsed = corpse_intro.narration_end
+ var feet: Rect2 = corpse_intro._corpse_rect()
+ corpse_intro.elapsed = 14.0
+ var head: Rect2 = corpse_intro._corpse_rect()
+ check(head.position.x < feet.position.x, "Corpse camera pans from the feet towards the head")
+ corpse_intro._advance()
+ corpse_intro._advance()
+ corpse_intro._advance()
  var rise := InputEventKey.new()
  rise.keycode = KEY_A
  rise.pressed = true
  corpse_intro._input(rise)
  check(corpse_intro.ending and corpse_intro.eyes.visible, "A key opens the corpse's eyes")
+ check(corpse_intro.narration.stream.resource_path.ends_with("Malton RISE.mp3") and corpse_intro.narration.playing, "Eye opening plays the Rise sound")
  corpse_intro._process(1.9)
  check(corpse_intro.curtain.color.a == 0.0, "Corpse awakening holds before fading")
  corpse_intro._process(0.7)

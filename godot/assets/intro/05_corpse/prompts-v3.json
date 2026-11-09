@@ -1,0 +1,28 @@
+{
+  "generator": "built-in image_gen",
+  "identity_reference": "res://assets/portraits/corpse.png",
+  "files": [
+    {
+      "file": "body_closed-v3.png",
+      "size": [
+        1671,
+        941
+      ],
+      "state": "closed eyes"
+    },
+    {
+      "file": "body_open-v3.png",
+      "size": [
+        1670,
+        941
+      ],
+      "state": "open cloudy eyes"
+    }
+  ],
+  "prompts": {
+    "closed": "Use case: identity-preserve. Edit target image 1: existing transparent corpse-on-morgue-trolley foreground layer. Reference image 2: player corpse/vagrant portrait atlas, identity reference only. Regenerate the head as the SAME older male vagrant shown in image 2: weathered gaunt face, long tangled gray hair with swept messy strands, thick scruffy gray beard and mustache, strong brows, pale ashen skin. EYELIDS FULLY CLOSED, still dead expression and relaxed mouth. Keep the original lying-on-back pose, head on RIGHT, feet on LEFT, original trolley geometry, wheels, pillow, lighting, subdued green-gray pixel-textured cinematic game art, canvas framing and transparent margins. Body covered by the existing pale morgue sheet. USER CHANGE: pull back the sheet only at the left foot end so ONE bare adult foot protrudes visibly with all toes exposed; a cream paper morgue toe tag hangs from a thin string loop around the big toe, clearly recognizable rectangular tag with tiny indistinct dark marks but no readable writing. Other foot can remain covered. Natural supine anatomy, foot continues the leg beneath the sheet, toe tag hangs downward with gravity. Full trolley, foot and tag fit entirely on canvas without cropping. One static single-frame foreground asset, not atlas. Actual transparent RGBA background including gaps under trolley. Landscape 16:9, retain original 1672x941 layout. No room or floor, no extra people, no added gore, no labels. Preserve all composition outside the head and exposed foot/tag edit as closely as possible.",
+    "big_toe_correction": "Precise localized correction to the supplied closed-eyes corpse-on-trolley image. Change ONLY the toe-tag string attachment. The BIG TOE is the single largest, uppermost toe of the exposed foot at the LEFT of this image. Put a clearly visible thin beige string loop AROUND THE BASE OF THAT BIG TOE, directly below its large toenail, with a small knot at the side. The two string tails extend from this big-toe loop downward to the punched hole of the existing hanging cream paper tag. Remove the old string path around the smaller toes. The loop must visibly encircle the big toe alone, not the second toe, all toes together, or the ankle. Keep the foot anatomy, hanging tag, entire body, CLOSED EYES, hair, face, beard, sheet folds, trolley, lighting and framing exactly unchanged. Preserve original transparent RGBA background and full landscape canvas. No new text or objects.",
+    "open": "Use case: precise-object-edit. Input is the approved closed-eyes corpse game foreground. Make its OPEN-EYES state. Change ONLY the two eyelids and eyeballs: both eyes now distinctly open, with pale cloudy gray-white undead irises, looking upward blankly. Preserve the exact older vagrant identity, weathered face, tangled gray hair and gray beard. EVERYTHING ELSE must remain unchanged: head position and angle, relaxed closed mouth, body pose, pale sheet and every fold, exposed bare foot, toes and hanging paper toe tag, trolley and wheels, all colors, lighting, framing, original 1672x941 landscape dimensions, and transparent alpha background. No glow beams, no additional expression or body movement, no zoom, no background, no new elements. A matching static second state for an eyes-opening transition. Especially preserve the corrected string loop around the largest big toe at the left, and the hanging toe tag. Only the eyes change."
+  },
+  "notes": "Transparent RGBA. Exposed foot with tag looped around the big toe. Both displayed in the same destination rectangle; do not crop alpha margins. Generated edits have slight detail variation outside eyes; not a pixel-identical pair. Earlier versions retained."
+}
