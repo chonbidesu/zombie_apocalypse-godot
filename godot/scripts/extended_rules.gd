@@ -26,9 +26,10 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
  var b = s.current_block(a)
  var human_commands = ["scout","extract","tag","install_radio","repair_radio","broadcast","phone","tune","tune_transmitter","lookout","locate","read","drink","eat","inspect","decorate","wear","flare"]
  if not a.human and command in human_commands: return "This requires living hands."
- var skill = {"feed":"digestion","drag":"feeding_drag","groan":"feeding_groan","bellow":"bellow","gesture":"flailing_gesture","smell":"scent_death","scout":"scout_safehouse","extract":"necro_employment","install_radio":"radio_operation","broadcast":"radio_operation","tune_transmitter":"radio_operation"}.get(command,"")
+ var skill = {"feed":"digestion","drag":"feeding_drag","groan":"feeding_groan","bellow":"bellow","gesture":"flailing_gesture","smell":"scent_death","scout":"scout_safehouse","extract":"necro_employment"}.get(command,"")
  if not skill.is_empty() and not s.has_skill(a,skill): return "Requires "+C.SKILLS[skill].name+"."
  if command in ["feed","drag","groan","bellow","gesture","destroy_radio","smash_decorations","smell"] and a.human: return "This is an undead ability."
+ if command == "gesture" and target >= s.actors.size(): return "Select a nearby character."
  if command in ["feed","drag","extract"]:
   if target < 0 or target >= s.actors.size() or not s.nearby(a,s.actors[target]): return "Select a nearby character."
   var t = s.actors[target]
@@ -43,18 +44,20 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
    if t.down and not t.human: return CORPSE_DRAG_BLOCKED
   if command == "extract":
    if t.human or t.down: return "Choose a standing zombie."
-   if s.has_skill(t,"brain_rot"): return "Brain Rot prevents DNA extraction."
+   if s.has_skill(t,"brain_rot"): return s.BRAIN_ROT_EXTRACTION_BLOCKED
    if t.tagged_until > s.minute: return "This zombie already has a current DNA tag."
    if s.item_kind(a,"dna_extractor").is_empty(): return "You need a DNA extractor."
  if command in ["install_radio","repair_radio","destroy_radio","decorate","smash_decorations","scout"] and (not a.inside or not s.is_building(b)): return "You must be inside."
  if command == "scout" and b.ruin >= 3: return "Repair this shelter before scouting it."
  if command in ["groan","bellow"] and s.occupants(b,a.inside).filter(func(t): return t.human and not t.down).is_empty(): return "You need living prey nearby to call a feeding horde."
  if command == "say" and not a.human and not s.has_skill(a,"death_rattle"): return "Death Rattle is needed for zombie speech."
- if command == "tag" and s.item_kind(a,"spray_can").is_empty(): return "You need a spray can."
+ if command in ["tag","broadcast"] and data.has("text") and str(data.text).strip_edges().is_empty(): return "Enter a message first."
+ if command == "tag" and s.action_item(a,"spray_can",data).is_empty(): return "You need a spray can."
  if command == "install_radio":
   if b.radio: return "A transmitter is already installed."
   if b.ruin > 0: return "Repair the building first."
-  if s.item_kind(a,"radio_transmitter").is_empty(): return "You need a radio transmitter."
+  if not s.powered(b): return "A transmitter needs a powered building."
+  if s.action_item(a,"radio_transmitter",data).is_empty(): return "You need a radio transmitter."
  if command == "repair_radio":
   if not b.radio or b.radio_hp >= 6: return "The transmitter needs no repairs."
   if s.item_kind(a,"toolbox").is_empty(): return "You need a toolbox."
@@ -63,6 +66,8 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
  if command == "smash_decorations" and b.decorations.is_empty(): return "There are no decorations here."
  if command in ["broadcast","tune_transmitter"]:
   if not a.inside or not b.radio or b.radio_hp <= 0 or not s.powered(b): return "You need a powered radio transmitter."
+  var frequency = float(data.get("frequency",b.frequency if command == "broadcast" else s.suggested_transmit_frequency(a)))
+  if not s.can_transmit(a,frequency): return "Use 28.01–29.00 MHz, or learn Radio Operation for 26.00–28.00 MHz."
  if command == "phone":
   if s.item_kind(a,"mobile_phone").is_empty(): return "You need a mobile phone."
   if not s.phone_coverage(a): return "Your suburb phone mast has no power."
@@ -70,7 +75,10 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
   if not s.actors[target].human or s.actors[target].down: return "That contact cannot answer. Stand them up first."
   if s.item_kind(s.actors[target],"mobile_phone").is_empty(): return "That contact has no phone."
   if not s.phone_coverage(s.actors[target]): return "Your contact has no phone coverage."
- if command == "tune" and s.item_kind(a,"radio").is_empty(): return "You need a radio receiver."
+ if command == "tune":
+  if s.action_item(a,"radio",data).is_empty(): return "You need a radio receiver."
+  var frequency = float(data.get("frequency",C.PUBLIC_RADIO_FREQUENCY))
+  if not is_finite(frequency) or frequency < 25.0 or frequency > 30.0: return "Choose a frequency from 25.00 to 30.00 MHz."
  if command == "lookout":
   if s.item_kind(a,"binoculars").is_empty(): return "You need binoculars."
   if a.inside:
@@ -88,7 +96,8 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
 
 static func perform(s,a: Dictionary, command: String, target: int, data: Dictionary) -> String:
  var b = s.current_block(a)
- var text = str(data.get("text","Keep together. Help the wounded and guard the entrance.")).strip_edges().left(255)
+ var text_limit = C.FIELD_MESSAGE_LIMIT if command in ["tag","broadcast"] else 255
+ var text = str(data.get("text","Keep together. Help the wounded and guard the entrance.")).strip_edges().left(text_limit)
  match command:
   "feed":
    s.actors[target].fed += 1
@@ -107,13 +116,27 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    if command == "flare":
     s.consume(a,s.item_kind(a,"flare_gun"))
     radius = 10
-   for other in s.actors:
-    if other.down or other.human: continue
-    if maxi(absi(other.x-a.x),absi(other.y-a.y)) <= radius:
-     other.memory = b.id
-     other.memory_until = s.minute+90
+   for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
+    for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
+     for id in s.spatial.get(y*s.width+x,[]):
+      var other: Dictionary = s.actors[id]
+      if other.down or other.human or other.wants_revive: continue
+      other.memory = b.id
+      other.memory_until = s.minute+90
+      other.npc_signal = "groan"
+      s.wake_npc(other)
    return "%s %s over the neighbourhood, calling attention to %s." % [s.action_phrase(a,"send","sends"),"a red flare" if command == "flare" else ("a thunderous bellow" if radius == 10 else "a feeding groan"),b.name]
-  "gesture": return "%s towards %s." % [s.action_phrase(a,"gesture","gestures"),s.display_name(s.actors[target]) if target >= 0 else str(data.get("direction","the street"))]
+  "gesture":
+   if target >= 0:
+    var prey = s._visible_human(a)
+    if not prey.is_empty() and prey.id == target:
+     for other in s.occupants(b,a.inside):
+      if other.id == a.id or other.human or other.down or other.wants_revive or other.memory_until >= s.minute: continue
+      other.memory = s.current_block(prey).id
+      other.memory_until = s.minute+45
+      other.npc_signal = "gesture"
+      s.wake_npc(other)
+   return "%s towards %s." % [s.action_phrase(a,"gesture","gestures"),s.display_name(s.actors[target]) if target >= 0 else str(data.get("direction","the street"))]
   "say":
    if not a.human:
     var zamgrh = ""
@@ -126,6 +149,7 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    if a.id == 0:
     s.scent_heatmap = s.scent_death_snapshot(a)
     s.sense_report = "SCENT DEATH"
+   else: s.npc_planner.record_scent(s,a)
    return "%s the scents of death around the neighbourhood." % s.action_phrase(a,"read","reads")
   "scout":
    a.scout_site = b.id
@@ -135,20 +159,23 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
   "extract":
    var t = s.actors[target]
    t.tagged_until = s.minute+1440
+   t.tagged_skills = t.zombie_skills.duplicate()
    a.xp += 4
-   return "%s %s with a DNA sample; the lab network can track this tag for a day." % [s.action_phrase(a,"identify","identifies"),s.display_name(t)]
+   return "%s %s with a DNA sample. Zombie skills: %s. The tag lasts one day." % [s.action_phrase(a,"identify","identifies"),s.display_name(t),s.dna_profile(t)]
   "tag":
-   b.graffiti = text
-   var can = s.item_kind(a,"spray_can")
-   if s.rng.randf() < (0.1 if s.has_skill(a,"tagging") else 0.2): s.consume(a,can)
-   if not a.inside and s.has_skill(a,"tagging"):
-    if b.type in ["armoury","monument","police_department"]: a.xp += 2
-    elif b.type in ["mansion","power_station","bank","school"]: a.xp += 1
+   var previous = b.graffiti if not a.inside else b.graffiti_inside
+   s.set_graffiti(b,text,not a.inside)
+   var can = s.action_item(a,"spray_can",data)
+   var trained = s.has_skill(a,"tagging")
+   can.sprays_left = s.paint_remaining(a,can)-1
+   if can.sprays_left == 0: s.consume(a,can)
+   if not a.inside and trained and previous != text: a.xp += C.TAG_XP.get(b.type,0)
    return "%s a message: %s" % [s.action_phrase(a,"spray","sprays"),text]
   "install_radio":
    b.radio = true
    b.radio_hp = 6
-   s.consume(a,s.item_kind(a,"radio_transmitter"))
+   b.frequency = C.PUBLIC_RADIO_FREQUENCY
+   s.consume(a,s.action_item(a,"radio_transmitter",data))
    return "%s a radio transmitter." % s.action_phrase(a,"install","installs")
   "repair_radio":
    b.radio_hp = 6
@@ -161,15 +188,17 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
     a.xp += 5
    return "%s the radio transmitter's casing." % s.action_phrase(a,"smash","smashes")
   "tune_transmitter":
-   b.frequency = float(data.get("frequency",b.frequency))
+   b.frequency = snappedf(float(data.get("frequency",s.suggested_transmit_frequency(a))),0.01)
    return "%s the transmitter to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),b.frequency]
   "broadcast":
-   b.frequency = float(data.get("frequency",b.frequency))
+   b.frequency = snappedf(float(data.get("frequency",b.frequency)),0.01)
+   if bool(data.get("defense_call",false)) or text.to_lower() == "defend": s.record_defense_call(b)
    return "[Radio %.2f MHz] %s: %s" % [b.frequency,s.display_name(a),text]
   "phone": return "[Phone to %s] %s: %s" % [s.display_name(s.actors[target]),s.display_name(a),text]
   "tune":
-   a.channel = float(data.get("frequency",27.0))
-   return "%s the receiver to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),a.channel]
+   var receiver = s.action_item(a,"radio",data)
+   receiver.frequency = snappedf(float(data.get("frequency",C.PUBLIC_RADIO_FREQUENCY)),0.01)
+   return "%s the receiver to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),receiver.frequency]
   "lookout":
    if a.id == 0: s.survey_binoculars(a,str(data.get("direction","")))
    if a.inside:

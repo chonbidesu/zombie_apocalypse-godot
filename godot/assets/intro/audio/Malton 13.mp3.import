@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b67b4a1uc4owr"
+path="res://.godot/imported/Malton 13.mp3-e388b368c67952e9a51c34b810dadbeb.mp3str"
+
+[deps]
+
+source_file="res://assets/intro/audio/Malton 13.mp3"
+dest_files=["res://.godot/imported/Malton 13.mp3-e388b368c67952e9a51c34b810dadbeb.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

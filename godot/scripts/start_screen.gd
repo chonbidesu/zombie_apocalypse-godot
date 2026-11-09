@@ -13,6 +13,7 @@ var status: Label
 var buttons: Array[TextureButton] = []
 var music: AudioStreamPlayer
 var creation: CharacterCreation
+var intro: Control
 
 func _ready() -> void:
  DisplayServer.window_set_title("Zombie Apocalypse")
@@ -97,19 +98,33 @@ func open_creation() -> void:
  status.text = ""
  creation = (load("res://character_creation.tscn") as PackedScene).instantiate() as CharacterCreation
  creation.back_requested.connect(show_title)
- creation.character_confirmed.connect(start_new_game)
+ creation.character_confirmed.connect(show_intro)
  title_page.hide()
  parallax.set_process(false)
  add_child(creation)
 
 func show_title() -> void:
+ if is_instance_valid(intro):
+  intro.queue_free()
+ intro = null
  if is_instance_valid(creation):
   remove_child(creation)
   creation.queue_free()
  creation = null
  title_page.show()
+ music.volume_db = linear_to_db(0.3)
  parallax.set_process(true)
  buttons[0].grab_focus()
+
+func show_intro(occupation: String) -> void:
+ music.volume_db = linear_to_db(0.1)
+ intro = (load("res://intro.tscn") as PackedScene).instantiate()
+ intro.occupation = occupation
+ intro.reduced_motion = creation.reduce_motion.button_pressed
+ intro.finished.connect(start_new_game)
+ creation.queue_free()
+ creation = null
+ add_child(intro)
 
 func start_new_game(occupation: String) -> void:
  var simulation := Sim.new()

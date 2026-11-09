@@ -29,6 +29,7 @@ const RED = Color("df8d77")
 const GREEN = Color("a9c69a")
 
 var sim: Sim
+var simulation_backlog: float = 0.0
 var save_path: String = Sim.SAVE_PATH
 var page: Control
 var overlay: Control
@@ -102,8 +103,10 @@ func _animate_scene(delta: float) -> void:
 func _advance_session(delta: float) -> void:
  var was_resting := resting
  var was_down: bool = sim.player().down
- # Do not turn a stalled/render-blocked frame into a surprise burst of attacks.
- sim.elapse(minf(delta,0.25))
+ simulation_backlog += delta
+ var elapsed := minf(simulation_backlog,0.25)
+ simulation_backlog -= elapsed
+ sim.elapse(elapsed)
  if was_down != sim.player().down: refresh()
  if was_resting and not resting: notice = sim.last_rest_notice
  var feed_changed := feed.ingest(sim.messages)
@@ -404,6 +407,8 @@ func _inventory() -> void:
   var slot = button(page,"",bounds,func(): selected_item = item.uid; refresh(),item.uid == selected_item)
   slot.name = "InventoryItem_%d" % item.uid
   slot.tooltip_text = "%s · %d%% encumbrance" % [C.ITEMS[item.kind].name,C.ITEMS[item.kind].encumbrance]
+  if item.kind == "radio": slot.tooltip_text += " · %.2f MHz" % float(item.frequency)
+  if item.kind == "spray_can": slot.tooltip_text += " · %d sprays left" % sim.paint_remaining(p,item)
   slot.gui_input.connect(func(event):
    if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT: _item_menu(item))
   picture(slot,tex("items/"+item.kind+".png"),Rect2(11,1,39,39))
@@ -640,6 +645,7 @@ func _timing_text() -> String:
  return "READY  ·  1 game minute / second"
 
 func _action_button(command: String, text: String, bounds: Rect2, target: int = -1, data: Dictionary = {}) -> void:
+ if command == "broadcast" and not data.has("frequency"): data = {"frequency":sim.suggested_transmit_frequency(sim.player())}
  if not sim.action_feedback(sim.player(),command,target,data,true).is_empty(): return
  var ap_cost = sim.cost(sim.player(),command,target,data)
  var caption = text + (" · %d" % ap_cost if ap_cost > 0 else "")
@@ -750,6 +756,7 @@ func _load() -> void:
  refresh()
 
 func _reset_session_view() -> void:
+ simulation_backlog = 0.0
  map_origin = Vector2i(-1,-1)
  city_overview = false
  inventory_page = 0
@@ -1227,31 +1234,42 @@ func necrotech_mark(parent: Node, b: Dictionary, at: Vector2, size: float = 20) 
  logo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _message_modal() -> void:
- label(overlay,C.pretty(message_command)+": enter a message or choose a frequency.",Rect2(140,180,1100,42),24)
+ var hint = "Enter a message."
+ if message_command == "tag": hint = "Spray ‘Revive point’ outdoors to mark a meeting place for revivals."
+ if message_command == "broadcast": hint = "Broadcast ‘Defend’ to ask nearby tuned survivors for help."
+ if message_command == "tune": hint = "Choose a frequency for this receiver."
+ if message_command == "tune_transmitter": hint = "Choose a frequency for the installed transmitter."
+ label(overlay,hint,Rect2(140,180,1100,42),24)
  var input = LineEdit.new()
  input.position = Vector2(140,260)
  input.size = Vector2(1140,50)
- input.max_length = 255
- input.text = "Keep together. Help the wounded and guard the entrance."
+ input.max_length = C.FIELD_MESSAGE_LIMIT if message_command in ["tag","broadcast"] else 255
+ input.placeholder_text = "Write a message"
+ if message_command in ["say","gesture","phone"]: input.text = "Keep together. Help the wounded and guard the entrance."
+ input.visible = message_command not in ["tune","tune_transmitter"]
  overlay.add_child(input)
  var frequency = SpinBox.new()
  frequency.position = Vector2(140,340)
  frequency.size = Vector2(260,45)
- frequency.min_value = 25.0
- frequency.max_value = 30.0
+ var receiver = sim.action_item(sim.player(),"radio",message_data)
+ var transmitting = message_command in ["broadcast","tune_transmitter"]
+ frequency.min_value = (26.0 if sim.has_skill(sim.player(),"radio_operation") else C.PUBLIC_RADIO_FREQUENCY) if transmitting else 25.0
+ frequency.max_value = 29.0 if transmitting else 30.0
  frequency.step = 0.01
- frequency.value = sim.current_block(sim.player()).frequency if message_command in ["broadcast","tune_transmitter"] else sim.player().channel
+ frequency.value = sim.suggested_transmit_frequency(sim.player()) if transmitting else float(receiver.get("frequency",C.PUBLIC_RADIO_FREQUENCY))
+ frequency.visible = transmitting or message_command == "tune"
  overlay.add_child(frequency)
  var contacts = OptionButton.new()
  contacts.position = Vector2(440,340)
  contacts.size = Vector2(500,45)
  var ids: Array = []
- for a in sim.actors:
-  if a.id == 0 or not a.human: continue
-  if message_command == "phone" and sim.item_kind(a,"mobile_phone").is_empty(): continue
-  contacts.add_item(sim.display_name(a))
-  ids.append(a.id)
-  if a.id == message_target: contacts.select(contacts.item_count-1)
+ contacts.visible = message_command == "phone"
+ if contacts.visible:
+  for a in sim.actors:
+   if a.id == 0 or not a.human or sim.item_kind(a,"mobile_phone").is_empty(): continue
+   contacts.add_item(sim.display_name(a))
+   ids.append(a.id)
+   if a.id == message_target: contacts.select(contacts.item_count-1)
  overlay.add_child(contacts)
  button(overlay,"Send / apply",Rect2(140,430,260,48),func():
   var data = message_data.duplicate()

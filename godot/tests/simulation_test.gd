@@ -101,8 +101,7 @@ func _initialize() -> void:
  check(z.human and z.down and z.hp == 0,"Revival produces downed human")
  check(s.display_name(z) == z.first+" "+z.last,"Revival restores human name")
  s.advance(5)
- check(s.reason(z,"stand").is_empty(),"Revived human may stand")
- s.execute(z,"stand")
+ check(z.last_action == "stand","Revived NPC wakes on its standing deadline")
  check(z.human and not z.down and z.hp == 25,"Revived human stands correctly")
 
  s = isolated()
@@ -182,7 +181,7 @@ func _initialize() -> void:
  check(p.human and p.down and scientist.ap == 49,"Scientist revives player for one AP")
  var busy_ap = scientist.ap
  s._npc_turn(scientist)
- check(scientist.ap == busy_ap and scientist.busy_until == s.now()+1.5,"NPC revival uses the shorter recovery independent of AP cost")
+ check(scientist.ap == busy_ap and scientist.busy_until == s.now()+1.0,"NPC revival uses the fixed recovery independent of AP cost")
 
  # Save round-trip preserves simulation state and random continuation exactly.
  s = Sim.new()

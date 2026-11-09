@@ -1,5 +1,6 @@
 extends RefCounted
 const C = preload("res://scripts/catalog.gd")
+const Memory = preload("res://scripts/npc_utility/location_memory.gd")
 
 class Routes extends AStar2D:
  func _compute_cost(_from_id: int,_to_id: int) -> float: return 1.0
@@ -137,12 +138,12 @@ static func group_need(s,a: Dictionary) -> String:
  if allies.any(func(t): return not s.item_kind(t,need).is_empty() or t.supply_kind == need): return ""
  return need
 
-static func retreat(s,a: Dictionary,forced: bool = false) -> bool:
+static func retreat(s,a: Dictionary,forced: bool = false, siege: bool = false) -> bool:
  if not forced and a.ap > 8: return false
  var here = s.current_block(a)
  var hostiles = s.occupants(here,a.inside).any(func(t): return not t.human and not t.down)
- if a.inside and not hostiles: return false
- if not a.inside and s.is_building(here) and here.ruin == 0 and here.barricade <= 4 and not s.occupants(here,true).any(func(t): return not t.human and not t.down):
+ if a.inside and not hostiles and not siege: return false
+ if not a.inside and s.is_building(here) and here.ruin == 0 and here.barricade <= 4 and (not hostiles or here.barricade >= 2) and not s.occupants(here,true).any(func(t): return not t.human and not t.down):
   a.home = here.id
   a.supply_goal = -1
   a.supply_kind = ""
@@ -156,10 +157,12 @@ static func retreat(s,a: Dictionary,forced: bool = false) -> bool:
    if not s.is_building(site) or site.ruin > 0 or site.barricade > 4 or site.id == here.id: continue
    if site.fort != here.fort: continue
    if s.occupants(site,true).any(func(t): return not t.human and not t.down): continue
+   if s.occupants(site,false).any(func(t): return not t.human and not t.down and not t.wants_revive): continue
    var friends = s.occupants(site,true).filter(func(t): return t.human and not t.down).size()
    var distance = maxi(absi(x-a.x),absi(y-a.y))
-   var score = distance+(4 if friends == 0 else 0)+(2 if site.barricade == 0 else 0)
+   var score = distance+(4 if friends == 0 else 0)+(4 if site.barricade < 2 else 0)
    if site.id == a.home: score -= 2
+   score -= 2.0*s.npc_planner.memory.lookup(a.id,site.id,Memory.Kind.SHELTER,s.minute)
    if score < best_score:
     best = site
     best_score = score
@@ -221,10 +224,17 @@ static func prey(s,a: Dictionary,people: Array) -> Dictionary:
  return choices[a.id%choices.size()]
 
 static func can_call(s,a: Dictionary,people: Array) -> bool:
- if not s.has_skill(a,"feeding_groan") or a.next_groan > s.minute: return false
- var radius = mini(6,people.filter(func(t): return t.human and not t.down).size())
+ var prey_count = people.filter(func(t): return t.human and not t.down).size()
+ if a.next_groan > s.minute or not (s.has_skill(a,"feeding_groan") or s.has_skill(a,"bellow")): return false
+ var radius = 10 if prey_count >= 25 and s.has_skill(a,"bellow") else mini(6,prey_count)
  if radius == 0: return false
- return s.actors.any(func(t): return t.id != a.id and not t.human and not t.down and s.current_block(t).id != s.current_block(a).id and maxi(absi(t.x-a.x),absi(t.y-a.y)) <= radius)
+ for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
+  for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
+   if x == a.x and y == a.y: continue
+   for id in s.spatial.get(y*s.width+x,[]):
+    var other: Dictionary = s.actors[id]
+    if not other.human and not other.down and not other.wants_revive: return true
+ return false
 
 static func seek_revival(s,a: Dictionary) -> void:
  # Public clinic locations replace the multiplayer revive-point coordination.

@@ -18,6 +18,7 @@ func ready(s,a) -> void:
 func _initialize() -> void:
  human_balance_rules()
  scent_rules()
+ communication_rules()
  var s = Sim.new()
  s.start(4321)
  for a in s.actors:
@@ -219,16 +220,19 @@ func _initialize() -> void:
  s.give_item(p,"radio_transmitter")
  ready(s,p)
  p.human_skills.erase("radio_operation")
- check(not s.reason(p,"install_radio").is_empty(),"Installing a transmitter requires Radio Operation")
- p.human_skills.append("radio_operation")
- check(s.reason(p,"install_radio").is_empty(),"Trained survivor can install a transmitter in a repaired interior")
+ b.generator = false
+ check(not s.reason(p,"install_radio").is_empty(),"Installing a transmitter requires power")
+ b.generator = true
+ b.fuel_until = s.minute+1440
+ check(s.reason(p,"install_radio").is_empty(),"Any survivor can install a transmitter in a powered interior")
  s.execute(p,"install_radio")
  check(b.radio and b.radio_hp == 6 and s.item_kind(p,"radio_transmitter").is_empty(),"Installation consumes transmitter and records condition")
  p.human_skills.erase("radio_operation")
  ready(s,p)
- check(not s.reason(p,"broadcast",-1,{"frequency":29.0}).is_empty() and not s.reason(p,"tune_transmitter").is_empty(),"Radio Operation gates transmitter tuning and broadcast on every channel")
+ check(s.reason(p,"broadcast",-1,{"frequency":29.0}).is_empty() and not s.reason(p,"broadcast",-1,{"frequency":28.0}).is_empty(),"Untrained survivors can transmit only on the public band")
+ check(not s.reason(p,"tune_transmitter",-1,{"frequency":25.92}).is_empty(),"Reserved military channels cannot be used by ordinary transmitters")
  p.human_skills.append("radio_operation")
- check(s.act("tune_transmitter",-1,{"frequency":29.0}).ok and is_equal_approx(b.frequency,29.0),"Trained operator can tune the transmitter")
+ check(s.act("tune_transmitter",-1,{"frequency":27.0}).ok and is_equal_approx(b.frequency,27.0),"Radio Operation unlocks the restricted band")
  ready(s,p)
  b.radio_hp = 2
  check(not s.reason(p,"repair_radio").is_empty(),"Transmitter repair requires a toolbox")
@@ -251,7 +255,7 @@ func _initialize() -> void:
  s.give_item(p,"spray_can")
  ready(s,p)
  s.execute(p,"tag",-1,{"text":"Safe shelter"})
- check(b.graffiti == "Safe shelter","Spray-painted messages persist on the building")
+ check(b.graffiti_inside == "Safe shelter","Spray-painted messages persist on the interior wall")
  s.give_item(p,"painting")
  var painting = s.item_kind(p,"painting")
  s.execute(p,"decorate",-1,{"uid":painting.uid})
@@ -319,19 +323,74 @@ func _initialize() -> void:
  check(not s.fort_move_reason(p,s.blocks[3],s.blocks[2]).is_empty() and s.fort_move_reason(p,s.blocks[13],s.blocks[12]).is_empty(),"Fort walls channel entry through gatehouse")
  check(s.blocks[7].complex == s.blocks[8].complex and not s.blocks[7].complex.is_empty(),"Large building squares share a complex identity")
  var save_path = "user://content-expansion-test.json"
- var state = [p.grasp_target,p.trail_from,b.graffiti,b.decorations.duplicate(),b.radio,b.radio_hp]
+ var state = [p.grasp_target,p.trail_from,b.graffiti,b.graffiti_inside,b.decorations.duplicate(),b.radio,b.radio_hp]
  s.save_to(save_path)
  var restored = Sim.new()
  restored.load_from(save_path)
  var rp = restored.player()
  var rb = restored.current_block(rp)
- check(state == [rp.grasp_target,rp.trail_from,rb.graffiti,rb.decorations,rb.radio,rb.radio_hp],"Extended combat, scent and building state survives save/load")
+ check(state == [rp.grasp_target,rp.trail_from,rb.graffiti,rb.graffiti_inside,rb.decorations,rb.radio,rb.radio_hp],"Extended combat, scent and building state survives save/load")
  for occupation in ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer","Corpse"]:
   var new_game = Sim.new()
   new_game.start(42,occupation)
   check(new_game.player().job == occupation and new_game.player().human == (occupation != "Corpse"),"New-game occupation and form: "+occupation)
  print("CONTENT CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func communication_rules() -> void:
+ var s = Sim.new()
+ s.start(23)
+ var p = s.player()
+ var b = s.current_block(p)
+ s.give_item(p,"spray_can")
+ var spare: Dictionary = p.inventory.back()
+ s.give_item(p,"spray_can")
+ var can: Dictionary = p.inventory.back()
+ p.inside = false
+ ready(s,p)
+ check(not s.act("tag",-1,{"text":"   ","uid":can.uid}).ok and p.ap == 50,"Blank tags preserve paint and AP")
+ check(s.act("tag",-1,{"text":"Revive point","uid":can.uid}).ok and s.revive_sites.has(b.id),"Exterior tag registers a revive point")
+ check(s.paint_remaining(p,can) == 1 and s.paint_remaining(p,spare) == 2,"A selected spray can wears independently")
+ p.inside = true
+ ready(s,p)
+ check(s.act("tag",-1,{"text":"X".repeat(51),"uid":can.uid}).ok and b.graffiti_inside.length() == 50,"Interior tags have a fifty-character limit")
+ check(s.item_by_uid(p,can.uid).is_empty() and s.revive_sites.has(b.id),"An exhausted can is consumed and the exterior marker survives an interior tag")
+ check(not s.location_description(p).contains("Revive point"),"Survivors read the graffiti on their current side only")
+ p.inside = false
+ check(s.location_description(p).contains("Revive point"),"The exterior tag is readable from the street")
+ p.human_skills.append("tagging")
+ ready(s,p)
+ check(s.act("tag",-1,{"text":"Entrance clear","uid":spare.uid}).ok and s.paint_remaining(p,spare) == 2 and not s.revive_sites.has(b.id),"Tagging extends a fresh can and painting over a marker clears it")
+
+ s.give_item(p,"radio")
+ var first: Dictionary = p.inventory.back()
+ s.give_item(p,"radio")
+ var second: Dictionary = p.inventory.back()
+ ready(s,p)
+ check(s.act("tune",-1,{"frequency":26.0,"uid":first.uid}).ok and p.ap == 49,"A survivor can tune a handheld receiver to the restricted band for one AP")
+ ready(s,p)
+ check(s.act("tune",-1,{"frequency":29.0,"uid":second.uid}).ok and s.radio_receives(p,26.0) and s.radio_receives(p,29.0),"Two handheld receivers listen on independent channels")
+ p.inside = true
+ b.generator = true
+ b.fuel_until = s.minute+1440
+ s.give_item(p,"radio_transmitter")
+ ready(s,p)
+ check(s.act("install_radio").ok and is_equal_approx(b.frequency,C.PUBLIC_RADIO_FREQUENCY),"An installed transmitter starts on the public channel")
+ ready(s,p)
+ check(not s.act("broadcast",-1,{"text":" ","frequency":29.0}).ok and p.ap == 50,"A blank broadcast costs no AP")
+ check(s.act("broadcast",-1,{"text":"Defend","frequency":29.0}).ok and s.heard_defense_call(p).get("site",-1) == b.id,"Public broadcast delivers an offline defense call")
+ check(s.act("broadcast",-1,{"text":"Second message"}).ok == false,"Radio actions observe recovery")
+ ready(s,p)
+ check(s.act("broadcast",-1,{"text":"Y".repeat(51)}).ok and str(s.messages.back().text).ends_with("Y".repeat(50)) and not str(s.messages.back().text).ends_with("Y".repeat(51)),"Radio broadcasts have a fifty-character limit")
+ p.channel = 26.5
+ first.erase("frequency")
+ var path = "user://communication-test.json"
+ check(s.save_to(path) == OK,"Communication state saves")
+ var loaded = Sim.new()
+ check(loaded.load_from(path).is_empty(),"Communication state loads")
+ var listener = loaded.player()
+ check(loaded.radio_receives(listener,26.5) and is_equal_approx(loaded.item_by_uid(listener,second.uid).frequency,29.0),"Legacy receiver frequency migrates alongside a new receiver's channel")
+ check(loaded.current_block(listener).graffiti == "Entrance clear" and loaded.current_block(listener).graffiti_inside.length() == 50 and loaded.paint_remaining(listener,loaded.item_by_uid(listener,spare.uid)) == 2,"Both walls and a partially used can survive loading")
 
 func scent_rules() -> void:
  var s = Sim.new()

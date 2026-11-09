@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/intro/01_before/window_glass.gdshader" id="1"]
+
+[resource]
+shader = ExtResource("1")
+shader_parameter/glass_rect = Vector4(0.443787, 0.553169, 0.117160, 0.060150)
+shader_parameter/glass_opacity = 0.28

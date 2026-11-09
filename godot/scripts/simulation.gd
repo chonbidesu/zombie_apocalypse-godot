@@ -5,6 +5,9 @@ const Dialogue = preload("res://scripts/dialogue.gd")
 const Extended = preload("res://scripts/extended_rules.gd")
 const World = preload("res://scripts/world_builder.gd")
 const AI = preload("res://scripts/npc_ai.gd")
+const NpcGate = preload("res://scripts/npc_utility/action_gate.gd")
+const NpcSchedule = preload("res://scripts/npc_utility/scheduler.gd")
+const NpcPlanner = preload("res://scripts/npc_utility/planner.gd")
 const SAVE_PATH = "user://prototype-save.json"
 const DEFAULT_SEED = 4815
 var navigation: AStar2D
@@ -43,6 +46,10 @@ var scan_cells: Array = []
 const MAIN_DOORS_BLOCKED = "The building has been so heavily barricaded that you cannot leave by the main doors."
 var spatial: Dictionary = {}
 var npc_cursor: int = 0
+var npc_schedule = NpcSchedule.new()
+var npc_planner = NpcPlanner.new()
+var revive_sites: Dictionary[int, bool] = {}
+var radio_defense: Dictionary = {}
 var next_dialogue: float = 500.0
 var sense_report: String = "No recent field report."
 var scent_heatmap: Array[Dictionary] = []
@@ -52,6 +59,7 @@ const BINOCULAR_DIRECTION_REQUIRED = "Choose a compass direction."
 const SKYLINE_RADIUS = 10
 var scent_trackers: Dictionary = {}
 const BRAIN_ROT_REVIVAL_BLOCKED = "Brain Rot requires a powered NecroTech lab and NecroNet access."
+const BRAIN_ROT_EXTRACTION_BLOCKED = "Brain Rot prevents DNA extraction."
 const CORPSE_REVIVAL_BLOCKED = "You cannot revive that body."
 var metrics: Dictionary = {"attacks":0, "deaths":0, "revivals":0, "npc_actions":0}
 
@@ -87,8 +95,10 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  sense_report = "No recent field report."
  scent_heatmap.clear()
  metrics = {"attacks":0, "deaths":0, "revivals":0, "npc_actions":0}
+ radio_defense.clear()
  if not geography.is_empty():
   _start_geography(geography,occupation,config)
+  _reset_npc_runtime()
   return ""
  var names = _read_names()
  var pool: Array = ["hospital", "hospital", "necrotech_lab", "necrotech_lab", "police_department", "fire_station", "warehouse", "factory", "tower", "church", "mall", "park", "cemetery"]
@@ -169,6 +179,7 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  for a in actors: a.home = a.y*width+a.x
  rebuild_geography_index()
  reindex()
+ _reset_npc_runtime()
  discover()
  log_event("You reach Mercy General. Maya heals; Scott maintains shelter. June works at the lab east of here.")
  log_event("50 AP. Time flows independently. Actions spend energy; brief recovery prevents repeated clicks. Rest speeds time up.")
@@ -240,7 +251,12 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
   var a = _actor(["Maya","Scott","June","Ravi","Nora","Evan","Iris","Sam"][i%8],"Survivor %d" % (i+1),"Withered",job,group_site.x,group_site.y,true,is_building(group_site))
   _setup_player(a,job)
   # Offline populations include working specialists, not only first-day novices.
-  if job == "Doctor": a.human_skills.append("first_aid")
+  if job == "Doctor":
+   a.human_skills.append("first_aid")
+   # Some established doctors can run field revival services if a lab falls.
+   if (i/jobs.size())%2 == 0:
+    a.human_skills.append_array(["necro_employment","lab_experience"])
+    give_item(a,"syringe")
   if job in ["Firefighter","Consumer"]: a.human_skills.append("construction")
   if i%3 == 1:
    # Keep the crew's medic on medical duty and assign construction to a teammate.
@@ -251,7 +267,7 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
    a.human_skills.append("lab_experience")
    give_item(a,"syringe")
   if is_building(group_site) and not group_site.unbarricadable:
-   group_site.barricade = 2
+   group_site.barricade = 4
    group_site.doors = has_doors(group_site)
  for i in range(zombie_count):
   var site = blocks[rng.randi_range(0,blocks.size()-1)]
@@ -279,6 +295,8 @@ func suburb_name(a: Dictionary) -> String:
 
 func _actor(first: String, last: String, adjective: String, job: String, x: int, y: int, human: bool, inside: bool) -> Dictionary:
  var actor = {"id":actors.size(), "first":first, "last":last, "adjective":adjective, "job":job, "x":x, "y":y, "human":human, "inside":inside, "down":false, "hp":50, "ap":50, "xp":0, "human_skills":[], "zombie_skills":[], "inventory":[], "equipped":-1, "memory":-1, "memory_until":0, "ready_at":0, "busy_until":0.0, "next_think":480.0+rng.randf_range(1.0,8.0), "last_action":"","dormant":false,"home":y*width+x,"supply_goal":-1,"supply_kind":"","next_trip":500+actors.size()*3,"trust":{},"request_after":{},"speech":"","speech_until":0.0,"next_speech":500.0+actors.size()*7.0}
+ actor.original_human = human
+ actor.prefers_undead = actor.id > 0 and not human and int(actor.id)%3 != 0
  initialize_actor(actor)
  actors.append(actor)
  return actor
@@ -312,7 +330,9 @@ func can_barricade(b: Dictionary) -> bool:
 
 func give_item(a: Dictionary, kind: String) -> void:
  var def: Dictionary = C.ITEMS[kind]
- a.inventory.append({"uid":next_item_id, "kind":kind, "ammo":def.get("capacity", 0), "durability":def.get("durability", 0)})
+ var item = {"uid":next_item_id, "kind":kind, "ammo":def.get("capacity", 0), "durability":def.get("durability", 0)}
+ if kind == "radio": item.frequency = C.PUBLIC_RADIO_FREQUENCY
+ a.inventory.append(item)
  next_item_id += 1
 
 func block_at(x: int, y: int) -> Dictionary:
@@ -360,6 +380,87 @@ func reindex() -> void:
   var key = a.y*width+a.x
   if not spatial.has(key): spatial[key] = []
   spatial[key].append(a.id)
+
+func _reset_npc_runtime(saved_memory: Variant = []) -> void:
+ npc_planner.reset(width,height,actors.size())
+ npc_planner.memory.restore_records(saved_memory,minute)
+ revive_sites.clear()
+ for b in blocks:
+  if b.revive_point: revive_sites[b.id] = true
+ npc_schedule.clear()
+ for a in actors:
+  if a.id > 0 and not a.dormant:
+   _schedule_npc(a,_npc_due(a))
+
+func _npc_due(a: Dictionary) -> int:
+ return roundi(float(a.next_think)*C.CLOCK_STEPS_PER_MINUTE)
+
+func _schedule_npc(a: Dictionary, step: int) -> void:
+ if a.id == 0 or a.dormant: return
+ var due = maxi(step,clock_step+1)
+ a.next_think = float(due)/C.CLOCK_STEPS_PER_MINUTE
+ npc_schedule.add(a.id,due)
+
+func wake_npc(a: Dictionary) -> void:
+ var step = maxi(clock_step+1,ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001))
+ if _npc_due(a) > step: _schedule_npc(a,step)
+
+func set_graffiti(b: Dictionary, text: String, outside: bool) -> void:
+ if not outside:
+  b.graffiti_inside = text
+  return
+ b.graffiti = text
+ b.revive_point = b.fort.is_empty() and text.strip_edges().to_lower() == "revive point"
+ if b.revive_point: revive_sites[b.id] = true
+ else: revive_sites.erase(b.id)
+
+func radio_receives(a: Dictionary, frequency: float) -> bool:
+ if not a.human or a.down: return false
+ var key = _radio_key(frequency)
+ for item in a.inventory:
+  if item.kind == "radio" and _radio_key(item.frequency) == key: return true
+ var here = current_block(a)
+ return _station_receives(a,here) and _radio_key(here.frequency) == key
+
+func _station_receives(a: Dictionary, here: Dictionary) -> bool:
+ return a.inside and here.radio and here.radio_hp > 0 and powered(here)
+
+func can_transmit(a: Dictionary, frequency: float) -> bool:
+ if not is_finite(frequency) or frequency < 26.0 or frequency > 29.0: return false
+ return roundi(frequency*100.0) > 2800 or has_skill(a,"radio_operation")
+
+func suggested_transmit_frequency(a: Dictionary) -> float:
+ var station_frequency = float(current_block(a).frequency)
+ return station_frequency if can_transmit(a,station_frequency) else C.PUBLIC_RADIO_FREQUENCY
+
+func _radio_key(frequency: float) -> String:
+ return str(roundi(clampf(frequency,25.0,30.0)*100.0))
+
+func record_defense_call(b: Dictionary) -> void:
+ radio_defense[_radio_key(b.frequency)] = {"site":b.id,"until":minute+90}
+
+func heard_defense_call(a: Dictionary) -> Dictionary:
+ if radio_defense.is_empty() or not a.human or a.down: return {}
+ var here = current_block(a)
+ var best: Dictionary = radio_defense.get(_radio_key(here.frequency),{}) if _station_receives(a,here) else {}
+ for item in a.inventory:
+  if item.kind != "radio": continue
+  var call: Dictionary = radio_defense.get(_radio_key(item.frequency),{})
+  if int(call.get("until",0)) > int(best.get("until",minute)): best = call
+ return best if int(best.get("until",0)) > minute else {}
+
+func action_item(a: Dictionary, kind: String, data: Dictionary) -> Dictionary:
+ var item = item_by_uid(a,int(data.uid)) if data.has("uid") else item_kind(a,kind)
+ return item if item.get("kind","") == kind else {}
+
+func paint_remaining(a: Dictionary, can: Dictionary) -> int:
+ return int(can.get("sprays_left",C.SPRAYS_PER_CAN+int(has_skill(a,"tagging"))))
+
+func dna_profile(a: Dictionary) -> String:
+ var names: Array[String] = []
+ for skill in a.tagged_skills:
+  if C.SKILLS.has(skill) and C.SKILLS[skill].side == "zombie": names.append(C.SKILLS[skill].name)
+ return ", ".join(names) if not names.is_empty() else "none detected"
 
 func _relocate(a: Dictionary, from: int, to: int) -> void:
  if from == to: return
@@ -595,7 +696,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   a.scout_used = 0
  if a.human and a.inside and a.scout_site == current_block(a).id and current_block(a).ruin < 3 and a.scout_used < 5 and command not in ["scout","stand","move","equip","drop","repair","jump","manufacture"] and not uses_newspaper(a,command,data) and not (command == "dump" and within_fort(a,current_block(a))): a.scout_used += 1
  a.ap -= ap_spent
- a.busy_until = now()+recovery(command)
+ a.busy_until = now()+(recovery(command) if a.id == 0 else 1.0)
  a.last_action = command
  var b = current_block(a)
  var origin = {"x":a.x, "y":a.y, "inside":a.inside}
@@ -724,6 +825,15 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    t.ready_at = minute + 5
    t.equipped = -1
    t.memory = -1
+   t.tagged_until = 0
+   t.tagged_skills.clear()
+   t.supply_goal = -1
+   t.supply_kind = ""
+   if t.id > 0:
+    if t.original_human and a.id > 0:
+     t.home = a.home
+     t.next_trip = minute+90
+    _schedule_npc(t,t.ready_at*C.CLOCK_STEPS_PER_MINUTE)
    consume(a, item_kind(a, "syringe"))
    a.xp += 10
    add_trust(t,a,25)
@@ -862,6 +972,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    text = "%s a syringe (20 AP)." % action_phrase(a,"manufacture","manufactures")
   "scan":
    if a.id == 0: record_necronet_scan(a)
+   else: npc_planner.record_scan(self,a)
    text = "%s a view of DNA-tagged zombies on NecroNet." % action_phrase(a,"open","opens")
   "request":
    text = request_supplies(a,actors[target_id])
@@ -885,19 +996,30 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     text += " You land unharmed." if a.id == 0 else " They land unharmed."
   "wait": text = "%s." % action_phrase(a,"wait and watch","waits and watches")
   _: text = Extended.perform(self,a,command,target_id,data)
- if command in ["attack","extract","heal"] and target_id >= 0: start_scent_trail(actors[target_id],a)
+ if command in ["attack","bite","extract","heal"] and target_id >= 0:
+  var target: Dictionary = actors[target_id]
+  if a.human: start_scent_trail(target,a)
+  elif command in ["attack","bite"]: start_scent_trail(a,target)
  if a.ap <= 0 and a.id == 0: text += " Exhausted, you can go no further."
  if a.human and not a.down and a.infected and ap_spent > 0:
   a.hp = maxi(0,a.hp-ap_spent)
   if a.hp == 0: die(a)
   if a.id == 0: text += " Infection costs %d HP." % ap_spent
+ if a.id > 0: a.busy_until = float(NpcGate.ready_after_action(clock_step))/C.CLOCK_STEPS_PER_MINUTE
+ if a.id > 0 and command in ["scan","smell","broadcast","gesture"]: a.npc_special_at = minute+180
+ if command in ["move","enter","leave","break","attack","bite","drag","revive"]:
+  for id in spatial.get(current_block(a).id,[]):
+   var other: Dictionary = actors[id]
+   if id > 0 and id != a.id and other.human != a.human and not other.down: wake_npc(other)
  var p = player()
  var event_action = command
  if command == "break" and not a.human and not a.inside and p.inside and a.x == p.x and a.y == p.y:
   event_action = "breach_noise"
   text = "Pounding fists and scraping claws batter the barricades outside. " + ("The last barricade gives way." if b.barricade == 0 else "The barricades shudder but hold.")
  var visible = nearby(a,p) or nearby(origin,p)
- var remote = (command == "broadcast" and not item_kind(p,"radio").is_empty() and is_equal_approx(p.channel,b.frequency)) or (command == "phone" and target_id == 0)
+ var station_destroyed = command == "destroy_radio" and not b.radio
+ var remote = ((command == "broadcast" or station_destroyed) and radio_receives(p,b.frequency)) or (command == "phone" and target_id == 0)
+ if station_destroyed and remote and not visible: text = "[Radio %.2f MHz] A transmitter falls silent." % b.frequency
  var audible = a.x == p.x and a.y == p.y and command in ["break","barricade","enter","leave"]
  if a.id == 0 or visible or audible or remote or target_id == 0:
   var category = "PLAYER" if a.id == 0 else ("ALLY" if friendly else "ENEMY")
@@ -915,8 +1037,10 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   stop_rest("Rest interrupted. Danger or a change in your condition brings you back to normal speed.")
 
 func die(a: Dictionary, penalty: int = 0) -> void:
- if a.human and a.id > 0 and a.job not in ["Corpse","Resident"]:
-  a.wants_revive = not a.prefers_undead and a.id%3 != 0
+ if a.human and a.id > 0:
+  a.wants_revive = a.original_human
+  a.supply_goal = -1
+  a.supply_kind = ""
  clear_scent_trail(a)
  for id in scent_trackers.keys():
   var tracker = actors[id]
@@ -926,6 +1050,7 @@ func die(a: Dictionary, penalty: int = 0) -> void:
  a.headshot = penalty
  a.fed = 0
  a.tagged_until = 0
+ a.tagged_skills.clear()
  a.scout_site = -1
  set_pose(a,"die")
  a.speech = ""
@@ -937,7 +1062,8 @@ func die(a: Dictionary, penalty: int = 0) -> void:
  a.equipped = -1
  a.memory = -1
  a.ready_at = minute+30
- a.busy_until = 0.0
+ if a.id == 0: a.busy_until = 0.0
+ else: _schedule_npc(a,a.ready_at*C.CLOCK_STEPS_PER_MINUTE)
  metrics.deaths += 1
 
 func _search(a: Dictionary, b: Dictionary, name: String, store: String = "") -> String:
@@ -1042,20 +1168,18 @@ func recovery(command: String) -> float:
  return C.ACTION_RECOVERY.get(command,0.6)
 
 func elapse(real_seconds: float) -> void:
- # Consume real time in small slices so interruptions immediately cancel fast-forward.
+ # Consume only the real time needed for each step. A wake-up changes the rate
+ # for the rest of the frame, including any fraction before the next tick.
  var remaining = real_seconds
- while remaining > 0.000001:
-  var slice = minf(remaining,0.05)
-  remaining -= slice
-  var slice_speed = time_speed()
-  clock_fraction += slice*C.GAME_MINUTES_PER_SECOND*C.CLOCK_STEPS_PER_MINUTE*slice_speed
-  while clock_fraction >= 1.0-0.000001:
-   clock_fraction = maxf(0.0,clock_fraction-1.0)
-   _clock_step()
-   if time_speed() < slice_speed:
-    # A wake-up must not spend the accelerated time already budgeted to this slice.
-    clock_fraction = 0.0
-    break
+ while remaining > 0.000000001:
+  var rate = C.GAME_MINUTES_PER_SECOND*C.CLOCK_STEPS_PER_MINUTE*time_speed()
+  var until_step = (1.0-clock_fraction)/rate
+  if remaining+0.000000001 < until_step:
+   clock_fraction += remaining*rate
+   break
+  remaining = maxf(0.0,remaining-until_step)
+  clock_fraction = 0.0
+  _clock_step()
  discover()
 
 func advance(minutes: int) -> void:
@@ -1068,23 +1192,42 @@ func _clock_step() -> void:
  if clock_step % (1440*C.CLOCK_STEPS_PER_MINUTE) == 0: reanimate_bodies()
  if clock_step % (C.RECOVERY_MINUTES*C.CLOCK_STEPS_PER_MINUTE) == 0:
   for a in actors: a.ap = mini(C.AP_CAP,a.ap+1)
- # Characters have individual due times, not a synchronized global NPC turn.
- var npc_count = actors.size()-1
- var current_time = now()
- for offset in range(npc_count):
-  var index = 1+(npc_cursor+offset)%npc_count
-  var a = actors[index]
-  if a.dormant or a.next_think > current_time or a.busy_until > current_time: continue
-  var old_ap = a.ap
-  _npc_turn(a)
-  var delay = rng.randf_range(1.0,4.0) if a.ap != old_ap else rng.randf_range(5.0,10.0)
-  a.next_think = maxf(current_time,a.busy_until)+delay
- npc_cursor = (npc_cursor+1)%maxi(1,actors.size()-1)
+ var due = npc_schedule.take(clock_step)
+ var first = due.bsearch(npc_cursor)
+ for offset in range(due.size()):
+  var id: int = due[(first+offset)%due.size()]
+  var a: Dictionary = actors[id]
+  if a.dormant or _npc_due(a) != clock_step: continue
+  var recovery_step = ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001)
+  if recovery_step > clock_step:
+   _schedule_npc(a,recovery_step)
+   continue
+  if a.down:
+   if npc_planner.train_before_standing(self,a):
+    _schedule_npc(a,NpcGate.ready_after_action(clock_step))
+    continue
+   var stand_cost = cost(a,"stand")
+   if minute < a.ready_at or not NpcGate.can_act(a.ap,stand_cost,clock_step,recovery_step):
+    var afford = (clock_step/NpcGate.AP_INTERVAL_STEPS+maxi(0,stand_cost-a.ap))*NpcGate.AP_INTERVAL_STEPS
+    _schedule_npc(a,maxi(afford,int(a.ready_at)*C.CLOCK_STEPS_PER_MINUTE))
+    continue
+  var rest_ap = _npc_turn(a)
+  if a.down and _npc_due(a) > clock_step: continue
+  if a.busy_until > now():
+   _schedule_npc(a,NpcGate.ready_after_action(clock_step)+10+(id+clock_step)%17)
+  elif a.ap < rest_ap:
+   var afford = (clock_step/NpcGate.AP_INTERVAL_STEPS+rest_ap-int(a.ap))*NpcGate.AP_INTERVAL_STEPS
+   _schedule_npc(a,afford+id%19)
+  else:
+   _schedule_npc(a,clock_step+70+(id+clock_step)%61)
+ if not due.is_empty(): npc_cursor = 1+(npc_cursor%maxi(1,actors.size()-1))
  if resting and ((player().ap >= rest_target and (not player().down or minute >= player().ready_at)) or clock_step >= rest_end_step):
   stop_rest(("You awaken rested. " if sleeping else "Rest complete. ")+"%d AP available." % player().ap)
 
 func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> bool:
  if command == "break" and not a.human: data = {"unarmed":true}
+ var ready_step = ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001)
+ if not NpcGate.can_act(a.ap,cost(a,command,target_id,data),clock_step,ready_step): return false
  var rejection = reason(a, command, target_id, data)
  if not rejection.is_empty():
   if rejection == BRAIN_ROT_REVIVAL_BLOCKED: start_scent_trail(actors[target_id],a)
@@ -1093,120 +1236,8 @@ func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary 
  metrics.npc_actions += 1
  return true
 
-func _npc_turn(a: Dictionary) -> void:
- _learn_npc(a)
- if a.busy_until > now(): return
- if a.down:
-  if a.get("dormant",false): return
-  _try(a, "stand")
-  return
- _maybe_speak(a)
- if a.ap < 1: return
- var b = current_block(a)
- var present = occupants(b, a.inside)
- if a.human:
-  if a.prefers_undead and AI.return_to_undeath(self,a): return
-  if has_skill(a,"lab_experience"):
-   for other in present:
-    if not other.human and _try(a, "revive", other.id): return
-  if (a.hp <= 35 or a.infected) and _try(a, "heal", a.id): return
-  for other in present:
-   if other.human and (other.hp < 40 or other.infected) and not other.down and _try(a, "heal", other.id): return
-  if (a.hp <= 15 or a.ap <= 6) and AI.retreat(self,a,true): return
-  for other in present:
-   if not other.human and not other.down and not (other.wants_revive and not a.inside):
-    if has_skill(a,"necro_employment") and other.tagged_until <= minute and not item_kind(a,"dna_extractor").is_empty() and a.ap > 15 and a.hp > 30:
-     if _try(a,"extract",other.id): return
-    if AI.equip_best(self,a,other): return
-    if _try(a, "attack", other.id): return
-    if _try(a, "reload"): return
-  var return_distance = maxi(absi(blocks[a.home].x-a.x),absi(blocks[a.home].y-a.y))
-  if a.supply_goal >= 0 and (a.supply_kind.is_empty() or not item_kind(a,a.supply_kind).is_empty() or a.ap <= return_distance+12):
-   if a.ap <= return_distance+12:
-    a.supply_goal = a.home
-    a.supply_kind = ""
-   if human_expedition(a): return
-  if a.inside:
-   for other in present:
-    if other.down and not other.human and _try(a,"dump",other.id): return
-   if _try(a,"repair_generator"): return
-   if _try(a,"repair"): return
-   var threatened = occupants(b,false).filter(func(t): return not t.human and not t.down and not t.wants_revive).size() >= 5
-   if threatened:
-    threatened = not actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == b.id and (not t.inside or t.x != b.x or t.y != b.y))
-   if barricade_strength(b) < (21 if threatened else 10) and _try(a,"barricade"): return
-   if _try(a,"close"): return
-   if _try(a,"generator"): return
-   if (not powered(b) or b.fuel_until-minute <= 360) and _try(a,"fuel"): return
-   for other in present:
-    if other.id == a.id or not other.human or other.down: continue
-    for kind in ["first_aid_kit","toolbox","pistol_clip","shotgun_shell","fuel_can"]:
-     if item_kind(other,kind).is_empty() and not item_kind(a,kind).is_empty() and supply_needed_by(other,kind) and not supply_needed_by(a,kind):
-      if _try(a,"give",other.id,{"uid":item_kind(a,kind).uid}): return
-   if has_skill(a,"lab_experience"):
-    if item_kind(a,"syringe").is_empty() and _try(a,"manufacture"): return
-    for other in occupants(b,false):
-     if not other.human and not other.get("dormant",false) and not item_kind(a,"syringe").is_empty() and not has_skill(other,"brain_rot"):
-      if _try(a,"leave"): return
-  if a.ap < 8 and a.inside: return
-  if a.inside and b.id == a.home and b.type == "necrotech_lab" and has_skill(a,"lab_experience"):
-   if item_kind(a,"syringe").is_empty() and a.ap > 20: _try(a,"search")
-   return
-  if AI.regroup(self,a): return
-  if a.inside and b.id == a.home and AI.keeper(self,a):
-   var wanted = wanted_supply(a)
-   if a.ap > 20 and not wanted.is_empty() and item_search_chance(b,wanted,a) > 0: _try(a,"search")
-   return
-  if AI.retreat(self,a): return
-  if human_expedition(a): return
-  if not a.inside:
-   if _try(a,"enter"): return
-   _wander(a)
-  return
- else:
-  if a.wants_revive:
-   AI.seek_revival(self,a)
-   return
-  var victim = AI.prey(self,a,present)
-  if not victim.is_empty():
-   if AI.can_call(self,a,present):
-    a.next_groan = minute+180
-    if _try(a,"groan"): return
-   if has_skill(a,"feeding_drag") and a.inside and victim.hp <= 12 and _try(a,"drag",victim.id): return
-   _try(a,AI.zombie_attack(self,a,victim),victim.id,{"unarmed":true})
-   return
-  if has_skill(a,"digestion") and a.hp <= max_hp(a)-4:
-   for body in present:
-    if _try(a,"feed",body.id): return
-  var tracked = scent_trail_target(a)
-  var target = tracked if not tracked.is_empty() else (_visible_human(a) if has_skill(a,"scent_trail") else {})
-  if not target.is_empty():
-   a.memory = target.y*width+target.x
-   a.memory_until = minute+60
-  if target.is_empty() and (a.memory < 0 or minute > a.memory_until) and not a.inside:
-   var light = nearby_light(a)
-   if not light.is_empty():
-    a.memory = light.id
-    a.memory_until = minute+90
-  if a.memory >= 0 and minute <= a.memory_until:
-   var goal = blocks[a.memory]
-   if a.x == goal.x and a.y == goal.y:
-    if not a.inside:
-     if _try(a, "break"): return
-     if _try(a, "enter"): return
-    else:
-     if not target.is_empty() and not target.inside and _try(a,"leave"): return
-    a.memory = -1
-   else:
-    if AI.go(self,a,goal): return
-    a.memory = -1
-  if a.inside:
-   if _try(a,"destroy_generator"): return
-   if _try(a, "ruin" if b.get("ransack_hits",0) >= 5 else "ransack"): return
-  if not a.inside and powered(b):
-   if _try(a, "break"): return
-   if _try(a, "enter"): return
-  _wander(a)
+func _npc_turn(a: Dictionary) -> int:
+ return npc_planner.turn(self,a)
 
 func start_scent_trail(tracker: Dictionary, survivor: Dictionary) -> void:
  if tracker.human or tracker.down or not has_skill(tracker,"scent_trail") or not survivor.human or survivor.down: return
@@ -1328,8 +1359,8 @@ func _visible_human(a: Dictionary) -> Dictionary:
      if nearby(a, other) or (not other.inside and not a.inside) or (dx == 0 and dy == 0 and not doors_closed(b) and b.barricade == 0): return other
  return {}
 
-func _wander(a: Dictionary) -> void:
- if a.inside:
+func _wander(a: Dictionary, ground_move: bool = false) -> void:
+ if a.inside and not ground_move:
   _try(a, "leave")
   return
  var options: Array = []
@@ -1338,7 +1369,7 @@ func _wander(a: Dictionary) -> void:
    if dx == 0 and dy == 0: continue
    if a.x+dx in range(width) and a.y+dy in range(height):
     var b = block_at(a.x+dx, a.y+dy)
-    var move = {"dx":dx, "dy":dy}
+    var move = {"dx":dx, "dy":dy, "free_run":not ground_move}
     if not reason(a,"move",-1,move).is_empty(): continue
     options.append(move)
     if (not a.human and powered(b)) or (a.human and is_building(b) and b.barricade <= 4):
@@ -1363,20 +1394,11 @@ func learn(skill: String, actor_id: int = 0) -> String:
  a.xp -= skill_cost(a,skill)
  if def.side == "human": a.human_skills.append(skill)
  else: a.zombie_skills.append(skill)
+ if skill == "brain_rot":
+  a.tagged_until = 0
+  a.tagged_skills.clear()
  if actor_id == 0: log_event("Learned %s." % def.name)
  return ""
-
-func _learn_npc(a: Dictionary) -> void:
- if a.xp < 75: return
- var priorities: Array = ["construction","first_aid","firearms","hand_to_hand","free_running"] if a.human else ["vigour_mortis","lurching_gait","ankle_grab","memories","death_grip","rend_flesh","neck_lurch","feeding_groan","tangling_grasp","digestion","infectious_bite","scent_fear","scent_trail","scent_blood","death_lurch"]
- if a.human and a.job in ["Scientist","NecroTech Lab Assistant"]: priorities = ["lab_experience","necronet","construction","first_aid","free_running","firearms"]
- elif a.human and a.job in ["Doctor","Medic"]: priorities = ["first_aid","construction","surgery","firearms","hand_to_hand","free_running"]
- for skill in C.SKILLS:
-  if skill in ["brain_rot","flesh_rot"]: continue
-  if C.SKILLS[skill].side == ("human" if a.human else "zombie") and skill not in priorities: priorities.append(skill)
- if not a.human: priorities.append_array(["brain_rot","flesh_rot"])
- for skill in priorities:
-  if learn(skill, a.id).is_empty(): return
 
 func threats() -> bool:
  var p = player()
@@ -1442,7 +1464,7 @@ func log_event(text: String, category: String = "WORLD", actor_id: int = -1, act
 func save_to(path: String) -> Error:
  var file = FileAccess.open(path, FileAccess.WRITE)
  if file == null: return FileAccess.get_open_error()
- file.store_string(JSON.stringify({"version":3, "width":width,"height":height,"world_mode":world_mode,"world_title":world_title,"world_config":world_config,"geography_source":geography_source, "seed":str(world_seed), "rng":str(rng.state), "minute":minute, "clock_step":clock_step, "clock_fraction":clock_fraction, "event_sequence":event_sequence, "blocks":blocks, "actors":actors, "messages":messages, "next_item_id":next_item_id, "scan_report":scan_report, "scan_minute":scan_minute, "scan_cells":scan_cells, "npc_cursor":npc_cursor, "next_dialogue":next_dialogue, "sense_report":sense_report, "metrics":metrics}))
+ file.store_string(JSON.stringify({"version":3, "width":width,"height":height,"world_mode":world_mode,"world_title":world_title,"world_config":world_config,"geography_source":geography_source, "seed":str(world_seed), "rng":str(rng.state), "minute":minute, "clock_step":clock_step, "clock_fraction":clock_fraction, "event_sequence":event_sequence, "blocks":blocks, "actors":actors, "messages":messages, "next_item_id":next_item_id, "scan_report":scan_report, "scan_minute":scan_minute, "scan_cells":scan_cells, "npc_cursor":npc_cursor, "next_dialogue":next_dialogue, "sense_report":sense_report, "metrics":metrics,"npc_locations":npc_planner.memory.save_records(),"radio_defense":radio_defense}))
  return OK
 
 func load_from(path: String) -> String:
@@ -1511,6 +1533,8 @@ func load_from(path: String) -> String:
   for item in a.inventory:
    for key in ["uid", "ammo", "durability"]: item[key] = int(item[key])
    if item.has("wear"): item.wear = int(item.wear)
+   if item.kind == "radio": item.frequency = clampf(float(item.get("frequency",a.channel)),25.0,30.0)
+   if item.kind == "spray_can" and item.has("sprays_left"): item.sprays_left = clampi(int(item.sprays_left),1,C.SPRAYS_PER_CAN)
  for b in blocks:
   for key in ["id", "x", "y", "barricade", "ruin", "fuel_until"]: b[key] = int(b[key])
   if not b.has("ruined_at") and b.ruin >= 3: b.ruined_at = int(parsed.minute)
@@ -1545,8 +1569,18 @@ func load_from(path: String) -> String:
  scent_heatmap.clear()
  for actor in actors: _check_scent_trail(actor)
  metrics = parsed.metrics
+ radio_defense.clear()
+ var saved_calls = parsed.get("radio_defense",{})
+ if saved_calls is Dictionary:
+  for frequency in saved_calls:
+   var call = saved_calls[frequency]
+   if not str(frequency).is_valid_int() or int(frequency) not in range(2500,3001) or not call is Dictionary: continue
+   var site = int(call.get("site",-1))
+   var until = int(call.get("until",0))
+   if site >= 0 and site < blocks.size() and until > minute: radio_defense[str(frequency)] = {"site":site,"until":until}
  rebuild_geography_index()
  reindex()
+ _reset_npc_runtime(parsed.get("npc_locations",[]))
  return ""
 
 # Strength is stored as a visible band and damage below that band's maximum.
@@ -1717,7 +1751,10 @@ func location_description(a: Dictionary) -> String:
    if sees_survivor_hp(a,other): details.append("%d HP" % other.hp)
    if has_skill(a,"scent_blood") and other.infected: details.append("infected")
    if not details.is_empty(): survivor_details.append("%s (%s)" % [display_name(other),", ".join(details)])
-  else: zombies += 1
+  else:
+   zombies += 1
+   if a.human and has_skill(a,"necro_employment") and other.tagged_until > minute:
+    survivor_details.append("%s DNA: %s" % [display_name(other),dna_profile(other)])
  if humans > 0: observation += "There is another survivor here. " if humans == 1 else "There are %d other survivors here. " % humans
  if not survivor_details.is_empty(): observation += "; ".join(survivor_details) + ". "
  if zombies > 0: observation += "There is a lone zombie here. " if zombies == 1 else "There are %d zombies here. " % zombies
@@ -1725,7 +1762,8 @@ func location_description(a: Dictionary) -> String:
   observation += "There is one dead body here. " if bodies == 1 else "There are %d dead bodies here. " % bodies
   if has_skill(a,"scent_death") and revivifying > 0:
    observation += "One of them smells strange. " if revivifying == 1 else "%d of them smell strange. " % revivifying
- if not b.graffiti.is_empty(): observation += "A painted message reads: %s. " % (b.graffiti.left(80)+("…" if b.graffiti.length() > 80 else ""))
+ var graffiti: String = b.graffiti_inside if a.inside else b.graffiti
+ if not graffiti.is_empty(): observation += "A painted message reads: %s. " % (graffiti.left(80)+("…" if graffiti.length() > 80 else ""))
  if a.inside and not b.decorations.is_empty():
   var names: Array[String] = []
   for kind in b.decorations.slice(0,3): names.append(C.ITEMS[kind].name)
@@ -1745,7 +1783,7 @@ func reanimate_bodies() -> void:
   if a.id > 0 and a.get("dormant",false) and rng.randf() < C.DAILY_REANIMATION_CHANCE:
    a.dormant = false
    a.ready_at = minute
-   a.next_think = now()+rng.randf_range(1,60)
+   _schedule_npc(a,clock_step+rng.randi_range(10,600))
 
 func generator_condition(b: Dictionary) -> String:
  if b.generator_hp <= 0: return "destroyed"
@@ -1762,103 +1800,29 @@ func supply_needed_by(a: Dictionary, kind: String) -> bool:
   "pistol_clip": return not item_kind(a,"pistol").is_empty()
   "shotgun_shell": return not item_kind(a,"shotgun").is_empty()
   "syringe": return has_skill(a,"lab_experience")
+  "radio_transmitter": return has_skill(a,"radio_operation")
+  "spray_can": return has_skill(a,"lab_experience") or has_skill(a,"tagging")
   "fuel_can": return AI.shelter_worker(self,a)
  return false
 
 func wanted_supply(a: Dictionary) -> String:
- if a.hp < 40 and item_kind(a,"first_aid_kit").is_empty(): return "first_aid_kit"
- if item_kind(a,"toolbox").is_empty() and (has_skill(a,"construction") or (blocks[a.home].generator and blocks[a.home].generator_hp < C.GENERATOR_HP)): return "toolbox"
- if (a.job in ["Doctor","Medic"] or has_skill(a,"first_aid")) and item_kind(a,"first_aid_kit").is_empty(): return "first_aid_kit"
+ if (a.hp < 43 or a.infected or a.job in ["Doctor","Medic"]) and item_kind(a,"first_aid_kit").is_empty(): return "first_aid_kit"
  if has_skill(a,"lab_experience") and item_kind(a,"syringe").is_empty(): return "syringe"
  var home = blocks[a.home]
- if AI.shelter_worker(self,a):
-  if not home.generator and item_kind(a,"portable_generator").is_empty(): return "portable_generator"
-  if not powered(home) and item_kind(a,"fuel_can").is_empty(): return "fuel_can"
- var communal = AI.group_need(self,a)
- if not communal.is_empty(): return communal
- var armed = false
- for item in a.inventory:
-  if C.ITEMS[item.kind].has("damage"): armed = true
- if not armed: return "crowbar" if a.job == "Engineer" else "baseball_bat"
+ if item_kind(a,"toolbox").is_empty() and has_skill(a,"construction"): return "toolbox"
  if not item_kind(a,"pistol").is_empty() and item_kind(a,"pistol_clip").is_empty(): return "pistol_clip"
  if not item_kind(a,"shotgun").is_empty() and item_kind(a,"shotgun_shell").is_empty(): return "shotgun_shell"
+ if a.job in ["Private","Police Officer","Guard","Medic"] and item_kind(a,"pistol").is_empty() and item_kind(a,"shotgun").is_empty(): return "pistol"
+ if a.job == "Firefighter" and item_kind(a,"fire_axe").is_empty(): return "fire_axe"
+ if AI.shelter_worker(self,a):
+  if not home.generator and item_kind(a,"portable_generator").is_empty(): return "portable_generator"
+  if (not powered(home) or home.fuel_until-minute < 360) and item_kind(a,"fuel_can").is_empty(): return "fuel_can"
+ var armed = a.inventory.any(func(item): return C.ITEMS[item.kind].has("damage") and not C.ITEMS[item.kind].get("fragile",false))
+ if not armed:
+  return "crowbar" if a.job == "Engineer" else "baseball_bat"
+ if powered(home) and not home.radio and has_skill(a,"radio_operation") and item_kind(a,"radio_transmitter").is_empty(): return "radio_transmitter"
+ if has_skill(a,"lab_experience") and not revive_sites.has(home.id) and home.type in ["church","cathedral"] and item_kind(a,"spray_can").is_empty(): return "spray_can"
  return ""
-
-func human_expedition(a: Dictionary) -> bool:
- # Trips are directed toward resources, then back to a small shared shelter.
- if a.supply_goal >= 0:
-  if not a.supply_kind.is_empty() and not item_kind(a,a.supply_kind).is_empty():
-   a.supply_goal = a.home
-   a.supply_kind = ""
-  var goal = blocks[a.supply_goal]
-  if a.x != goal.x or a.y != goal.y:
-   if AI.go(self,a,goal): return true
-   a.avoid_site = goal.id
-   a.avoid_until = minute+180
-   a.supply_goal = -1
-   a.supply_kind = ""
-   a.next_trip = minute+30
-   return false
-  if not a.inside:
-   if _try(a,"enter"): return true
-   # A shelter that became impassable should not strand a returning survivor.
-   if goal.barricade > 4:
-    a.supply_goal = -1
-    a.supply_kind = ""
-    a.next_trip = minute+60
-   return false
-  if a.supply_kind.is_empty():
-   a.supply_goal = -1
-   a.next_trip = minute+120+a.id*3
-   return false
-  if encumbrance(a) >= C.ENCUMBRANCE_LIMIT or a.inventory.size() >= C.INVENTORY_ITEM_LIMIT:
-   for item in a.inventory:
-    if item.uid != a.equipped and not supply_needed_by(a,item.kind) and item.kind != a.supply_kind:
-     return _try(a,"drop",-1,{"uid":item.uid})
-   a.supply_goal = a.home
-   a.supply_kind = ""
-   return false
-  return _try(a,"search")
- if minute < a.next_trip: return false
- var kind = wanted_supply(a)
- if not kind.is_empty():
-  var best = -1
-  var best_score = 9999.0
-  var sources: Array = []
-  for type in sites_by_type:
-   if kind in search_loot(type): sources.append_array(sites_by_type[type])
-  for site in sources:
-   if not is_building(site) or site.barricade > 4 or (site.id == a.avoid_site and minute < a.avoid_until): continue
-   var trip = maxi(absi(site.x-a.x),absi(site.y-a.y))
-   if trip*2+10 > a.ap: continue
-   var score = maxf(absf(site.x-a.x),absf(site.y-a.y))*3 + minf(100.0,0.4/maxf(0.000001,item_search_chance(site,kind)))
-   if score < best_score:
-    best = site.id
-    best_score = score
-  if best >= 0:
-   a.supply_goal = best
-   a.supply_kind = kind
-   return human_expedition(a)
- # When supplied, join an undersized nearby group and help maintain its shelter.
- var destination = -1
- var distance = 999.0
- for site_id in spatial:
-  var site = blocks[site_id]
-  if not is_building(site) or site.barricade > 4: continue
-  var allies = 0
-  for other in occupants(site,true):
-   if other.id != a.id and other.human and not other.down: allies += 1
-  if allies < 1 or allies > 2 or site.id == current_block(a).id: continue
-  var d = maxf(absf(site.x-a.x),absf(site.y-a.y))
-  if d < distance or (d == distance and spatial[site_id][0] < spatial[destination][0]):
-   destination = site.id
-   distance = d
- if destination >= 0:
-  a.home = destination
-  a.supply_goal = destination
-  return human_expedition(a)
- a.next_trip = minute+120
- return false
 
 func nearby_light(a: Dictionary) -> Dictionary:
  var best: Dictionary = {}
@@ -1971,17 +1935,21 @@ func level(a: Dictionary) -> int:
  return maxi(1,a.human_skills.size()+a.zombie_skills.size())
 
 func initialize_actor(a: Dictionary) -> void:
+ if not a.has("original_human"):
+  a.original_human = a.job not in ["Corpse","Resident"]
+  if a.id > 0 and a.original_human and not a.human: a.wants_revive = true
  if not a.has("prefers_undead"):
   a.prefers_undead = a.id > 0 and a.job in ["Corpse","Resident"] and int(a.id)%3 != 0
+ if not a.get("tagged_skills") is Array: a.tagged_skills = []
  if a.has("trail_until"):
   # Old departure markers lack a survivor interaction to anchor the trail.
   if int(a.get("trail_from",-1)) >= 0: a.memory = -1
   a.trail_from = -1
   for key in ["trail_origin","trail_destination","trail_until"]: a.erase(key)
- var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_lost":false,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":""}
+ var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_lost":false,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":"","npc_purchases":0,"npc_observed":-1,"npc_observed_at":-1,"npc_signal":"","npc_special_at":0}
  for key in defaults:
   if not a.has(key): a[key] = defaults[key]
- for key in ["route_goal","avoid_site","avoid_until","next_groan","grasp_target","grasped_by","pose_sequence","trail_from","scout_site","scout_day","scout_used","fed","headshot","tagged_until"]: a[key] = int(a[key])
+ for key in ["route_goal","avoid_site","avoid_until","next_groan","grasp_target","grasped_by","pose_sequence","trail_from","scout_site","scout_day","scout_used","fed","headshot","tagged_until","npc_purchases","npc_observed","npc_observed_at","npc_special_at"]: a[key] = int(a[key])
  a.route = a.route.map(func(id): return int(id))
  a.pose_at = float(a.pose_at)
  a.channel = float(a.channel)
@@ -1991,9 +1959,11 @@ func initialize_block(b: Dictionary) -> void:
  if not b.has("ruined_at"): b.ruined_at = minute if int(b.get("ruin",0)) >= 3 else -1
  b.ransack_hits = int(b.ransack_hits)
  b.ruined_at = int(b.ruined_at)
- var defaults = {"barricade":0,"doors":false,"ruin":0,"generator":false,"generator_hp":C.GENERATOR_HP,"fuel_until":0,"known":false,"barricade_damage":0,"last_pounding":-9999,"zoo":"","unbarricadable":false,"radio":false,"radio_hp":0,"frequency":27.0,"graffiti":"","decorations":[],"complex":"","fort":"","mast":false}
+ var defaults = {"barricade":0,"doors":false,"ruin":0,"generator":false,"generator_hp":C.GENERATOR_HP,"fuel_until":0,"known":false,"barricade_damage":0,"last_pounding":-9999,"zoo":"","unbarricadable":false,"radio":false,"radio_hp":0,"frequency":C.PUBLIC_RADIO_FREQUENCY,"graffiti":"","graffiti_inside":"","decorations":[],"complex":"","fort":"","mast":false,"revive_point":false,"npc_entry":-1,"npc_ingress":false}
  for key in defaults:
   if not b.has(key): b[key] = defaults[key]
+ b.npc_entry = int(b.npc_entry)
+ if b.npc_entry < 0 or b.npc_entry >= width*height: b.npc_entry = -1
  if not can_be_ransacked(b):
   b.ruin = 0
   b.ransack_hits = 0

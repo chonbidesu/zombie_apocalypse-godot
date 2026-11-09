@@ -22,6 +22,9 @@ func snapshot(s) -> Dictionary:
  var zombies = 0
  var dormant = 0
  var returned = 0
+ var original_survivors = 0
+ var revival_queue = 0
+ var purchases = 0
  var hp = 0
  var groups = {}
  for a in s.actors:
@@ -30,27 +33,38 @@ func snapshot(s) -> Dictionary:
    humans += 1
    if not a.down:
     standing += 1
+    if s.initial_humans.has(a.id): original_survivors += 1
     hp += a.hp
     var key = "%d/%s" % [s.current_block(a).id,a.inside]
     groups[key] = int(groups.get(key,0))+1
   elif not a.down: zombies += 1
   if a.dormant: dormant += 1
+  if a.wants_revive: revival_queue += 1
+  purchases += int(a.get("npc_purchases",0))
   if s.travelled.has(a.id) and a.human and s.current_block(a).id == a.home: returned += 1
  var grouped = 0
  for n in groups.values():
   if n >= 2: grouped += n
  var world = s.population()
- return {"day":(s.minute-480)/1440,"human_form":humans,"survivors":standing,"mean_human_hp":float(hp)/maxi(1,standing),"active_zombies":zombies,"dormant":dormant,"powered":world.powered,"ruined":world.ruined,"grouped_survivors":grouped,"travelled_survivors":s.travelled.size(),"returned_home":returned,"blocked_moves":s.blocked_moves,"actions":s.actions.duplicate(),"deaths":s.metrics.deaths,"revivals":s.metrics.revivals}
+ return {"day":(s.minute-480)/1440,"human_form":humans,"survivors":standing,"original_survivors":original_survivors,"mean_human_hp":float(hp)/maxi(1,standing),"active_zombies":zombies,"revival_queue":revival_queue,"skill_purchases":purchases,"dormant":dormant,"powered":world.powered,"ruined":world.ruined,"grouped_survivors":grouped,"travelled_survivors":s.travelled.size(),"returned_home":returned,"blocked_moves":s.blocked_moves,"actions":s.actions.duplicate(),"deaths":s.metrics.deaths,"revivals":s.metrics.revivals}
 
 func _initialize() -> void:
  var label = "current"
  var only = "all"
  var population_args = PackedStringArray()
+ var equal_seeds = PackedStringArray()
+ var dense = false
+ var dense_population = 60
  var args = OS.get_cmdline_user_args()
  for arg in args:
   if arg.begins_with("--label="): label = arg.trim_prefix("--label=")
   if arg.begins_with("--only="): only = arg.trim_prefix("--only=")
   if arg.begins_with("--population="): population_args = arg.trim_prefix("--population=").split(",")
+  if arg.begins_with("--equal="): equal_seeds = arg.trim_prefix("--equal=").split(",")
+  if arg.begins_with("--dense-equal="):
+   equal_seeds = arg.trim_prefix("--dense-equal=").split(",")
+   dense = true
+  if arg.begins_with("--dense-population="): dense_population = clampi(int(arg.trim_prefix("--dense-population=")),1,250)
  if not population_args.is_empty():
   if population_args.size() != 5 or population_args[0] not in ["random","malton"] or int(population_args[2]) < 1:
    push_error("Expected --population=MODE,SEED,DAYS,SURVIVORS,ZOMBIES with mode random or malton and at least one day.")
@@ -65,13 +79,17 @@ func _initialize() -> void:
   jobs.append({"mode":"malton","seed":seed_value,"days":7})
  var report = {"label":label,"source_sha256":FileAccess.get_file_as_string("res://scripts/simulation.gd").sha256_text(),"runs":[]}
  report.source_files = {}
- for path in ["simulation","npc_ai","extended_rules","catalog"]:
+ for path in ["simulation","npc_ai","extended_rules","catalog","npc_utility/planner","npc_utility/supplies","npc_utility/scheduler","npc_utility/desire","npc_utility/progression","npc_utility/action_gate","npc_utility/location_memory"]:
   report.source_files[path] = FileAccess.get_file_as_string("res://scripts/"+path+".gd").sha256_text()
  if label == "diagnostic": jobs = [{"mode":"sandbox","seed":23,"days":5}]
  if label == "holdout": jobs = [{"mode":"random","seed":307,"days":14},{"mode":"random","seed":997,"days":14},{"mode":"malton","seed":307,"days":14},{"mode":"siege","seed":307,"days":5}]
  # Population trial arguments are mode, seed, days, survivors, zombies.
  if population_args.size() == 5:
   jobs = [{"mode":population_args[0],"seed":int(population_args[1]),"days":int(population_args[2])}]
+ if not equal_seeds.is_empty():
+  jobs.clear()
+  for seed_value in equal_seeds:
+   jobs.append({"mode":"random","seed":int(seed_value),"days":10,"equal":true,"dense":dense})
  var started = Time.get_ticks_msec()
  for job in jobs:
   if only != "all" and job.mode != only: continue
@@ -83,15 +101,39 @@ func _initialize() -> void:
     config.malls = 2
     config.survivors = 45
     config.zombies = 90
+    if job.get("dense",false):
+     config = W.defaults(20,20)
+     config.merge({"malls":1,"forts":1,"zoos":0,"cathedrals":1,"mansions":1,"power_stations":0,"stadiums":0,"survivors":dense_population},true)
+    if job.get("equal",false): config.zombies = config.survivors
    if population_args.size() == 5:
     config.survivors = int(population_args[3])
     config.zombies = int(population_args[4])
-   s.start(job.seed,"Private",config)
+   var error = s.start(job.seed,"Private",config)
+   if not error.is_empty():
+    push_error(error)
+    quit(2)
+    return
   var player = s.player()
   player.down = true
   player.x = 0
   player.y = 0
   player.inside = false
+  for a in s.actors:
+   if a.id == 0: continue
+   if a.human: s.initial_humans[a.id] = true
+   elif job.get("equal",false):
+    a.down = false
+    a.dormant = false
+    a.hp = s.max_hp(a)
+  if job.get("dense",false):
+   var lit = 0
+   for a in s.actors:
+    var site = s.current_block(a)
+    if a.id == 0 or not a.human or site.generator or site.type not in ["necrotech_lab","hospital"]: continue
+    site.generator = true
+    site.fuel_until = s.minute+1440
+    lit += 1
+    if lit >= 2: break
   if job.mode == "siege":
    for a in s.actors:
     if a.id == 0: continue
@@ -104,14 +146,15 @@ func _initialize() -> void:
     a.hp = 50
    s.blocks[44].barricade = 4
   s.reindex()
-  var run = {"mode":job.mode,"seed":job.seed,"initial":snapshot(s),"days":[]}
+  s._reset_npc_runtime()
+  var run = {"mode":job.mode,"seed":job.seed,"width":s.width,"height":s.height,"initial":snapshot(s),"days":[]}
   for day in range(job.days):
    s.advance(1440)
    run.days.append(snapshot(s))
    if label == "diagnostic":
     for a in s.actors:
      if a.id > 0 and a.human: print("ACTOR ",a.id," hp=",a.hp," ap=",a.ap," at=",s.current_block(a).id," inside=",a.inside," home=",a.home," goal=",a.supply_goal," need=",a.supply_kind," cades=",s.current_block(a).barricade)
-   print("BALANCE ",label," ",job.mode," seed=",job.seed," day=",day+1," humans=",run.days.back().survivors," revives=",s.metrics.revivals," blocks=",s.blocked_moves)
+   print("BALANCE ",label," ",job.mode," seed=",job.seed," day=",day+1," humans=",run.days.back().survivors," zombies=",run.days.back().active_zombies," revives=",s.metrics.revivals," blocks=",s.blocked_moves)
   report.runs.append(run)
   DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://reports"))
   var file = FileAccess.open("res://reports/balance-"+label+".json",FileAccess.WRITE)

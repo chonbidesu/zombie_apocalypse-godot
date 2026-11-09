@@ -3,6 +3,10 @@ extends RefCounted
 const SIZE = 10
 const AP_CAP = 50
 const RECOVERY_MINUTES = 30
+const FIELD_MESSAGE_LIMIT = 50
+const SPRAYS_PER_CAN = 2
+const PUBLIC_RADIO_FREQUENCY = 28.01
+const TAG_XP = {"armoury":2,"police_department":2,"monument":2,"bank":1,"school":1,"mansion":1,"power_station":1}
 const GAME_MINUTES_PER_SECOND = 1.0
 const REST_SPEED = 16.0
 const SLEEP_SPEED = 128.0
@@ -410,7 +414,7 @@ const SKILLS = {
   "cost": 100,
   "requires": "",
   "min_level": 0,
-  "description": "Install, tune and broadcast over radio transmitters."
+  "description": "Tune and broadcast on restricted frequencies from 26.00 to 28.00 MHz."
  },
  "firearms": {
   "name": "Basic Firearms Training",

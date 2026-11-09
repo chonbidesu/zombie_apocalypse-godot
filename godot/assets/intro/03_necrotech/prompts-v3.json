@@ -1,0 +1,73 @@
+{
+  "generator": "built-in image_gen",
+  "status": "Partial: static nude body generation rejected; not replaced or integrated into intro.",
+  "tube": {
+    "file": "specimen_casing-v2.png",
+    "size": [
+      887,
+      1774
+    ],
+    "alpha": true,
+    "static": true,
+    "reused": true
+  },
+  "bubbles": {
+    "file": "specimen_bubbles-v3.png",
+    "size": [
+      887,
+      1774
+    ],
+    "alpha": true,
+    "grid": [
+      3,
+      2
+    ],
+    "frames": 6,
+    "order": "row-major",
+    "fps": 6,
+    "sprite_frames": "specimen_bubbles-v3.tres",
+    "regions": [
+      [
+        0,
+        0,
+        296,
+        887
+      ],
+      [
+        296,
+        0,
+        295,
+        887
+      ],
+      [
+        591,
+        0,
+        296,
+        887
+      ],
+      [
+        0,
+        887,
+        296,
+        887
+      ],
+      [
+        296,
+        887,
+        295,
+        887
+      ],
+      [
+        591,
+        887,
+        296,
+        887
+      ]
+    ]
+  },
+  "prompts": {
+    "bubbles": "Use case: stylized-concept. Asset: transparent six-frame looping animation sprite sheet for a dark green science-fiction specimen tank. ONLY BUBBLES, no specimen or tank. Exactly SIX equal rectangular cells in a precise 3-column x 2-row grid, row-major playback. Overall portrait canvas target 1536x2048, each cell 512x1024. No grid lines or labels. Every cell contains exactly TWO narrow rising vertical columns of small sparse translucent bubbles, centered at x=27% and x=73% of its cell, between y=10% and y=90%. About 12 small bubbles per column, mixed tiny sizes; small glassy bubbles with restrained pale green/cyan rim highlights, transparent interiors, finely detailed cinematic pixel-textured game art. Frames 1 through 6 show the SAME bubble pattern shifting steadily upward by one sixth of the repeating vertical spacing; bubbles wrap from top back to bottom for a seamless loop. Maintain same column positions and bubble sizes across frames. No dense foam or spray. Generous blank space separates cells; no elements cross cell edges. GENUINE transparent RGBA background everywhere except bubble rims, no black white or colored backdrop, no painted checkerboard, no glow rectangle, no ground, no body, no tubes, no tank, no text, no numbers.",
+    "body_rejected": "Use case: stylized-concept. Create ONE static isolated full-body ADULT male undead medical specimen for a science-fiction horror game intro. Strict rear view: naked back and bare buttocks visible, absolutely no frontal nudity or genitals. Nonsexual clinical horror depiction. Upright weightless floating posture, head bowed forward, shoulders slightly hunched, limp arms hanging slightly away from sides, knees slightly bent, feet suspended. Ashen gray-green rotting skin with mottled dry decay and superficial deterioration, no blood or exposed internal organs. Small biomechanical attachments along spine and ribs, a few dark flexible medical tubes curling close around shoulders and flanks. Strange pale cyan-green light from beneath bathes the entire body, strong underlighting on calves, buttocks, arms and back. Finely detailed muted cinematic game concept art with subtly pixel-textured surfaces, weathered industrial aesthetic. Exactly one figure, one single frame. Full body and all attached tubes visible with generous transparent margin. Portrait canvas 1:2; silhouette centered, occupies x=20%..80%, y=8%..92%. Genuine transparent RGBA background, clean cutout alpha around body and hoses, soft light on skin only. No backdrop, white canvas, checkerboard painting, tank, glass, casing, bubbles, floor, clothing, text or labels."
+  }
+}
+

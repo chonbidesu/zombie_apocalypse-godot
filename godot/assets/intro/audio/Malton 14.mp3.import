@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://clc28563epih8"
+path="res://.godot/imported/Malton 14.mp3-84dbce7696db207e01ce721dc4128ad5.mp3str"
+
+[deps]
+
+source_file="res://assets/intro/audio/Malton 14.mp3"
+dest_files=["res://.godot/imported/Malton 14.mp3-84dbce7696db207e01ce721dc4128ad5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

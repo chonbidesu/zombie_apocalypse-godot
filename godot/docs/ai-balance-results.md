@@ -1,5 +1,34 @@
 # AI balance results — 4 November 2026
 
+## Live utility AI — 8 November 2026
+
+Each trial ran the live scheduler and action resolver for ten game days with an inactive player. Both NPC factions started fully awake at 50 AP. The 30×30 trials started with 45 per side. The 20×20 stress trials started with 60 per side and two occupied medical buildings powered for the first day unless a zombie destroyed the generator first. Seeds 307 and 997 were held out from the main three-seed tuning set. Standing zombies in this table include survivors waiting for revival.
+
+| Map | Seed | Standing humans | Standing zombies | Awaiting revival | Revivals | Attack and bite attempts |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 30×30 | 23 | 43 | 47 | 2 | 9 | 2,582 |
+| 30×30 | 71 | 41 | 49 | 4 | 13 | 2,620 |
+| 30×30 | 119 | 45 | 45 | 0 | 17 | 2,349 |
+| 20×20 | 23 | 27 | 93 | 33 | 39 | 5,393 |
+| 20×20 | 71 | 26 | 94 | 34 | 36 | 6,371 |
+| 20×20 | 119 | 52 | 68 | 8 | 45 | 5,983 |
+| 20×20 | 307 | 28 | 92 | 32 | 37 | 6,745 |
+| 20×20 | 997 | 47 | 73 | 13 | 34 | 4,610 |
+
+The 30×30 runs averaged **43 humans and 47 zombies** at day ten. The legacy policy averaged 51 and 37 on those same map seeds and population counts, with 99–129 revivals per run. The live policy supports fewer opportunistic conversions and gives returning survivors a clear clinic or field route. These comparisons include the full policy and starting-role changes.
+
+The dense trials averaged **36 humans and 84 zombies**. Twenty-four of those zombies on average were awaiting revival. Across all five seeds the original undead still accounted for 60 standing zombies at day ten. Field technicians increased the ways to obtain a revival, but the medical network did not keep pace with deaths at this density. The dense configuration remains zombie-favored and all five runs ended with their power out. There was sufficient interaction to expose that failure mode, with 4,610–6,745 attacks and 34–45 revivals per run.
+
+During tuning, a prototype generic noise cue made dark shelters too easy to find and was removed. Visible light, direct sight, contact-based scent and skill-gated calls supply pursuit signals in the current game. Survivors now keep AP for escape, group up when isolated, and delay powering a weak shelter when nearby zombies could overwhelm its garrison. The trials record 2–10 skill purchases per 30×30 run and 13–27 per dense run. Separate focused tests exercise late skills and rare situations such as Bellow, Brain Rot screening and powered radio defense calls.
+
+Raw reports include daily counts, actions and source hashes. [Legacy baseline](../reports/balance-npc-equal-baseline.json), [30×30 trials](../reports/balance-npc-live-equal.json), [20×20 trials](../reports/balance-npc-live-dense.json), [held-out maps](../reports/balance-npc-live-holdout.json), [2,160-NPC Malton smoke run](../reports/balance-npc-live-malton.json)
+
+```powershell
+godot --headless --path godot --script res://tests/balance_runs.gd -- --label=npc-live-equal --equal=23,71,119
+godot --headless --path godot --script res://tests/balance_runs.gd -- --label=npc-live-dense --dense-equal=23,71,119
+godot --headless --path godot --script res://tests/balance_runs.gd -- --label=npc-live-holdout --dense-equal=307,997
+```
+
 ## Population presets — 5 November 2026
 
 The presets change population density and faction mix. Medium is the default for Malton and generated cities. Generated maps scale both counts by area, and Custom accepts exact counts. The legacy test neighbourhood keeps its fixed setup.

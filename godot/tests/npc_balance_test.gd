@@ -30,6 +30,7 @@ func _initialize():
  combat_choices()
  scent_pursuit()
  undead_preference()
+ live_planner_rules()
  var s = fresh()
  var a = s.actors[1]
  a.human = true
@@ -367,5 +368,177 @@ func scent_pursuit() -> void:
   zombie.zombie_skills = ["scent_trail"] if skilled else []
   ready(s,zombie)
   s.reindex()
+  if skilled: s.start_scent_trail(zombie,human)
   s._npc_turn(zombie)
-  check(zombie.memory == (s.current_block(human).id if skilled else -1),"Zombie NPC pursues a survivor only with Scent Trail")
+  check(zombie.memory == (s.current_block(human).id if skilled else -1),"Zombie NPC remembers a survivor from an active Scent Trail")
+
+func live_planner_rules() -> void:
+ var s = fresh()
+ var p = s.player()
+ p.inside = false
+ var b = s.current_block(p)
+ s.give_item(p,"spray_can")
+ ready(s,p)
+ check(s.act("tag",-1,{"text":" Revive point "}).ok and s.revive_sites.has(b.id),"Exterior spray marks a shared revive point")
+ check(s.save_to("user://npc-planner-save.json") == OK,"Revive point saves")
+ var loaded = Sim.new()
+ check(loaded.load_from("user://npc-planner-save.json").is_empty() and loaded.revive_sites.has(b.id),"Revive point is indexed after loading")
+ s.set_graffiti(b,"Out of service",true)
+ check(not s.revive_sites.has(b.id),"Replacing the graffiti clears the point")
+
+ var medic = s.actors[3]
+ medic.human = true; medic.down = false; medic.x = p.x; medic.y = p.y; medic.inside = false
+ medic.inventory.clear()
+ s.give_item(medic,"dna_extractor")
+ s.give_item(medic,"syringe")
+ var patient = s.actors[1]
+ patient.x = p.x; patient.y = p.y; patient.down = false; patient.hp = 50
+ patient.wants_revive = true
+ s.reindex()
+ ready(s,medic)
+ patient.zombie_skills = ["brain_rot"]
+ s._npc_turn(medic)
+ check(not patient.human and not s.item_kind(medic,"syringe").is_empty(),"Field medic keeps their syringe when screening detects Brain Rot")
+ patient.zombie_skills = ["lurching_gait","ankle_grab"]
+ medic.x = patient.x; medic.y = patient.y; medic.inside = patient.inside
+ s.reindex()
+ ready(s,medic)
+ s._npc_turn(medic)
+ check(medic.last_action == "extract" and patient.tagged_until > s.minute and not s.item_kind(medic,"syringe").is_empty(),"Medic screens a standing patient before injecting")
+ check(s.dna_profile(patient).contains("Ankle Grab") and s.location_description(medic).contains("DNA:"),"DNA tag reveals the sampled zombie skills")
+ patient.zombie_skills.append("death_grip")
+ check(not s.dna_profile(patient).contains("Death Grip"),"DNA profile reports the sampled skills without live updates")
+ ready(s,medic)
+ s._npc_turn(medic)
+ check(patient.human and patient.down and s.item_kind(medic,"syringe").is_empty(),"Screened patient is revived on the next action")
+ check(s.cost(patient,"stand") == 1,"Ankle Grab reduces the cost of standing after revival")
+ s.die(patient)
+ patient.zombie_skills = ["lurching_gait"]
+ patient.xp = 100
+ patient.ap = 1
+ s._schedule_npc(patient,s.clock_step+1)
+ s.advance(1)
+ check(patient.down and patient.wants_revive and patient.zombie_skills.has("ankle_grab") and patient.last_action == "learn","Human-origin zombies can buy Ankle Grab before standing")
+
+ s = fresh()
+ p = s.player()
+ p.inside = false
+ var caller = s.actors[15]
+ caller.x = p.x; caller.y = p.y; caller.down = false; caller.dormant = false
+ caller.zombie_skills = ["memories","bellow","scent_trail"]
+ var recruit = s.actors[16]
+ recruit.x = p.x+1; recruit.y = p.y; recruit.down = false; recruit.dormant = false
+ s.reindex()
+ ready(s,caller)
+ s._npc_turn(caller)
+ check(caller.last_action == "bellow" and recruit.memory == s.current_block(p).id and recruit.npc_signal == "groan","Bellow gives nearby zombies a shared hunt target")
+ s.clock_step += 9
+ check(not s._try(caller,"attack",p.id,{"unarmed":true}),"NPC action is blocked before the one-second boundary")
+ s.clock_step += 1
+ check(s._try(caller,"attack",p.id,{"unarmed":true}) and caller.trail_from == p.id,"Attack at the recovery boundary establishes Scent Trail from contact")
+
+ s = fresh()
+ p = s.player()
+ b = s.current_block(p)
+ p.down = true
+ var engineer = s.actors[2]
+ engineer.x = p.x; engineer.y = p.y; engineer.inside = true; engineer.human = true; engineer.down = false
+ b.generator = true
+ s.set_barricade_strength(b,10)
+ s.give_item(engineer,"fuel_can")
+ for id in range(15,19):
+  var zombie = s.actors[id]
+  zombie.x = p.x; zombie.y = p.y; zombie.down = false; zombie.dormant = false
+ s.reindex()
+ ready(s,engineer)
+ s._npc_turn(engineer)
+ check(not s.powered(b) and not s.item_kind(engineer,"fuel_can").is_empty(),"Lone maintainer keeps the lights off during a siege")
+ for id in range(15,19): s.actors[id].down = true
+ ready(s,engineer)
+ s._npc_turn(engineer)
+ check(s.powered(b),"Maintainer restores power once the entrance is safe")
+
+ s = fresh()
+ p = s.player()
+ b = s.current_block(p)
+ for site in s.blocks: site.generator = false
+ s.set_barricade_strength(b,10)
+ b.generator = true; b.fuel_until = s.minute+1440
+ var walker = s.actors[15]
+ walker.x = p.x-1; walker.y = p.y; walker.down = false; walker.inside = false
+ s.reindex()
+ ready(s,walker)
+ s._npc_turn(walker)
+ check(walker.x == p.x and walker.y == p.y and not walker.inside,"Visible light draws a zombie to a barricaded shelter")
+ ready(s,walker)
+ s._npc_turn(walker)
+ check(walker.last_action == "break","Zombie attacks the lit shelter's barricades")
+
+ s = fresh()
+ engineer = s.actors[2]
+ s.player().down = true
+ engineer.x = 4; engineer.y = 4; engineer.inside = true; engineer.human = true; engineer.down = false
+ engineer.human_skills = ["construction","free_running"]
+ b = s.current_block(engineer)
+ for y in range(3,6):
+  for x in range(3,6): s.set_barricade_strength(s.block_at(x,y),21)
+ s.set_barricade_strength(b,10)
+ var entry = s.blocks[45]
+ s.set_barricade_strength(entry,10)
+ s.reindex()
+ check(s.npc_planner._shelter_target(s,engineer,b,[engineer]) == 21 and b.npc_entry == entry.id,"Free Runners assign a legal VSB entrance before raising a shelter to EHB")
+ check(entry.npc_ingress and s.npc_planner._shelter_target(s,engineer,entry,[engineer]) == 10,"The shared entry stays capped at VSB")
+ s.set_barricade_strength(entry,8)
+ check(s.npc_planner._shelter_target(s,engineer,b,[engineer]) == 10,"The entry is restored to VSB before raising the refuge")
+ entry.ruin = 3
+ check(s.npc_planner._shelter_target(s,engineer,b,[engineer]) == 10,"A collapsed route blocks further EHB work")
+
+ s = fresh()
+ p = s.player()
+ p.human_skills.append("radio_operation")
+ b = s.current_block(p)
+ b.generator = true; b.fuel_until = s.minute+1440
+ b.radio = true; b.radio_hp = 6; b.frequency = 29.0
+ s.set_barricade_strength(b,10)
+ engineer = s.actors[2]
+ engineer.x = 5; engineer.y = 4; engineer.inside = true; engineer.human = true; engineer.down = false
+ var station = s.current_block(engineer)
+ station.radio = true; station.radio_hp = 6; station.frequency = 29.0
+ s.reindex()
+ ready(s,p)
+ check(s.act("broadcast",-1,{"text":"Defend"}).ok and s.heard_defense_call(engineer).get("site",-1) == b.id,"Matching powered transmitter receives a defense call")
+ station.frequency = 27.0
+ check(s.heard_defense_call(engineer).is_empty(),"A mismatched frequency receives no call")
+ s.give_item(engineer,"radio")
+ ready(s,engineer)
+ check(s._try(engineer,"tune",-1,{"frequency":29.0}),"NPC tunes its handheld radio to the station's frequency")
+ check(s.heard_defense_call(engineer).get("site",-1) == b.id,"Matching handheld radio receives the same call")
+ ready(s,engineer)
+ check(s.npc_planner._respond_to_radio(s,engineer,station,0,0) and engineer.home == b.id,"A tuned builder travels to reinforce a defensible site")
+
+ s = fresh()
+ s.player().down = true
+ b = s.blocks[45]
+ medic = s.actors[3]
+ medic.human = true; medic.down = false; medic.x = b.x; medic.y = b.y; medic.inside = true
+ patient = s.actors[1]
+ patient.down = false; patient.x = b.x; patient.y = b.y; patient.inside = true
+ patient.tagged_until = s.minute+1440
+ patient.tagged_skills = ["death_grip","infectious_bite"]
+ s.reindex()
+ ready(s,medic)
+ s._npc_turn(medic)
+ check(not patient.human and not s.item_kind(medic,"syringe").is_empty(),"A hostile DNA profile rules out opportunistic revival")
+ patient.tagged_skills = ["ankle_grab"]
+ ready(s,medic)
+ s._npc_turn(medic)
+ check(patient.human and patient.down,"A low-risk DNA profile permits revival at the lab")
+
+ walker = s.actors[15]
+ walker.x = b.x; walker.y = b.y; walker.inside = true; walker.down = false
+ b.generator = false
+ s.reindex()
+ ready(s,walker)
+ check(not s.reason(walker,"ransack").is_empty(),"A standing survivor blocks ransacking")
+ medic.down = true
+ check(s.reason(walker,"ransack").is_empty(),"Ransack becomes legal once no survivor is standing inside")

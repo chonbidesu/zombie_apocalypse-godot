@@ -18,6 +18,8 @@ static func choices(a: Dictionary, b: Dictionary, context: Dictionary) -> Array:
  if not a.human:
   var sounds: Array = ["Grrrhh...","Mrrrraah...","Hrrrngh...","*a wet, rattling moan*","*drools onto the ground*","*low, hungry growling*"]
   if context.enemy: sounds.append_array(["GRAAAGH!","*snarls and bares broken teeth*"])
+  if "death_rattle" in a.zombie_skills:
+   sounds.append("BARHAH! HARMANZ!" if context.enemy else "Mrh? Graaagh.")
   if context.lit: sounds.append("*squints into the light and groans*")
   return sounds
  var lines: Array = ROLES.get(a.job,["We get through this together.","Check the corners before you settle in.","I wonder who is still out there."]).duplicate()

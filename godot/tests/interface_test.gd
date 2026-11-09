@@ -452,7 +452,7 @@ func run() -> void:
  scene.refresh()
  check(not scene.action_controls.any(func(entry): return entry.command == "close"),"Junkyard UI omits Close doors")
  var crowded_site = scene.sim.current_block(player)
- crowded_site.graffiti = "A long survivor message. ".repeat(20).left(255)
+ crowded_site.graffiti_inside = "A long survivor message. ".repeat(20).left(255)
  crowded_site.decorations = ["painting","pottery","tapestry","statue","skeleton","stuffed_animal","glass_piece","sculpture","painting","tapestry","painting","pottery","statue"]
  scene.refresh()
  await process_frame

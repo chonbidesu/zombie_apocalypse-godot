@@ -1,0 +1,18 @@
+{
+  "generator": "built-in image_gen",
+  "file": "specimen_tube_animation-v1.png",
+  "size": [
+    887,
+    1774
+  ],
+  "grid": [
+    3,
+    2
+  ],
+  "frame_count": 6,
+  "fps": 3,
+  "loop": true,
+  "order": "row-major",
+  "prompt": "Create a 6-frame animation sprite sheet for a pixel-art zombie laboratory game. One SAME specimen tank repeated in SIX equal cells: 3 columns x 2 rows, row-major order, target 1536x2048 (512x1024 per cell). Transparent RGBA background outside each tank, no text, numbers or labels. Every cell: same centred complete tall cylindrical glass tank with worn industrial steel cap and base, exact same size and position, 6% margins. Detailed muted cinematic pixel art, charcoal metal and green fluid. Inside is one ADULT MALE undead medical specimen viewed from BACK, upper back bare with gray-green mottled decaying skin and superficial skin breakdown, no blood or exposed organs. Lower torso and pelvis are completely obscured by an opaque dark green band of murky preservation fluid, no visible buttocks or genitals. Figure hunched forward with bowed head and rounded shoulders, loose hanging arms, bent knees, suspended feet. A few biomechanical ports on spine and side of ribcage connected by flexible tubes to rear tank equipment. An eerie pale cyan-green light from the BASE illuminates the back and shoulders from underneath. Two columns of tiny bubbles rise on either side. Six animation frames of same individual: gently bobbing up and down through one cycle, small motion of arms and flexible tubes, bubble positions progress upward and wrap, faint cyclic underlight. Shell, cap and base absolutely stationary in every frame, camera locked; only body, bubbles, tubes and glow animate. Not six different specimens; six frames of a single animated specimen. No background room, no floor, no nudity visible below waist, no erotic presentation.",
+  "limitation": "Original nude request rejected by image generator. Pelvis obscured by fluid in delivered variant. Generated frame casing has minor variation; not a pixel-locked shell."
+}

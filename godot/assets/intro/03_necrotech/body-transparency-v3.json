@@ -1,0 +1,22 @@
+{
+  "generator": "built-in image_gen",
+  "source": "specimen_body_frames-v2.png",
+  "output": "specimen_body_frames-transparent-v3.png",
+  "size": [
+    1086,
+    1448
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "fully_transparent_pixels": 1038138,
+  "prompt": "Use case: background-extraction. Edit the supplied existing game sprite sheet. Remove only the off-white background and replace it with genuine transparent alpha, including empty gaps between arms, bodies and attached hoses. Preserve all six existing figures and bubbles, their rear-facing poses, anatomy, original surface details, colors, underlighting, exact layout and relative size. Do not generate new figures, change clothing, alter anatomy, add or remove foreground elements, or redraw the artwork. Preserve the 3-column by 2-row frame layout and original 1086x1448 canvas dimensions. Output an RGBA PNG with clean transparent cutout edges and no white matte or painted checkerboard.",
+  "notes": "Background extraction succeeded. Generated edit retains six-frame layout and attached bubbles; small foreground rendering differences are visible. Existing source remains unchanged. Separate single-frame body-only extraction was rejected by generator.",
+  "single_frame_attempt": {
+    "prompt": "Use case: background-extraction. From the supplied existing six-frame game sprite sheet, extract ONLY the upper-left figure as ONE static isolated sprite. Preserve that existing rear-facing figure, its pose, attached hoses and biomechanical ports, surface details, colors and green underlighting. Remove the white background and every detached bubble. Include the entire figure from hair to toes and all attached hoses with clean alpha edges, including empty gaps inside curled hoses and between limbs. Center this one existing figure on a portrait 1:2 canvas with generous transparent margin. This is extraction of existing artwork: do not redesign the figure or invent another character. Output actual transparent RGBA PNG. No tank, no bubbles, no ground, no white matte, no painted checkerboard, no labels. Exactly one static frame.",
+    "status": "rejected"
+  }
+}
+

@@ -1,0 +1,299 @@
+[
+  {
+    "file": "01_before/skyline_far.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "01_before/skyline_mid.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "01_before/lab_window_interior.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "01_before/office_facade-v4.png",
+    "size": [
+      845,
+      1862
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "02_quarantine/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "02_quarantine/soldiers-v2.png",
+    "size": [
+      2172,
+      724
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "02_quarantine/civilians.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "03_necrotech/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "03_necrotech/specimen_tubes-v2.png",
+    "size": [
+      1671,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/private/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/private/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/medic/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/medic/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/scout/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/scout/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/necro/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/necro/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/doctor/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/doctor/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/police/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/police/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/firefighter/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/firefighter/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "04_origins/consumer/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "04_origins/consumer/foreground.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "05_corpse/background.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB",
+    "alpha_range": null
+  },
+  {
+    "file": "05_corpse/body_closed.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "05_corpse/body_open-v2.png",
+    "size": [
+      1670,
+      941
+    ],
+    "mode": "RGBA",
+    "alpha_range": [
+      0,
+      255
+    ]
+  }
+]

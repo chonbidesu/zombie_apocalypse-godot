@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="SpriteFrames" path="res://assets/intro/03_necrotech/specimen_tube_frames-v1.tres" id="1"]
+
+[node name="SpecimenTube" type="AnimatedSprite2D"]
+sprite_frames = ExtResource("1")
+animation = &"float"
+autoplay = "float"
