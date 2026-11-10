@@ -137,10 +137,10 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  var doctor = _actor("Maya", "Reed", "Mouldering", "Doctor", 4, 4, true, true)
  doctor.human_skills = ["diagnosis","first_aid"]
  for _i in range(3): give_item(doctor, "first_aid_kit")
- var engineer = _actor("Scott", "Dilkens", "Slimy", "Engineer", 4, 4, true, true)
+ var engineer = _actor("Sarah", "Dilkens", "Slimy", "Engineer", 4, 4, true, true)
  engineer.human_skills = ["construction"]
  give_item(engineer, "toolbox")
- var scientist = _actor("June", "Ellis", "Jaundiced", "Scientist", 5, 4, true, true)
+ var scientist = _actor("Julian", "Ellis", "Jaundiced", "Scientist", 5, 4, true, true)
  scientist.human_skills = ["necro_employment","lab_experience", "necronet"]
  give_item(scientist, "syringe")
  give_item(scientist, "syringe")
@@ -152,13 +152,13 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  give_item(guard, "knife")
  guard.equipped = guard.inventory[0].uid
  for i in range(10):
-  var h = _actor("Survivor %d" % (i+1), "West", "Withered", ["Doctor", "Engineer", "Guard"][i%3], [4,4,4,5,5,5,3,3,5,5][i], [3,3,3,5,5,5,4,4,4,4][i], true, true)
+  var h = _actor("", "", "", ["Doctor", "Engineer", "Guard"][i%3], [4,4,4,5,5,5,3,3,5,5][i], [3,3,3,5,5,5,4,4,4,4][i], true, true)
   if not is_building(block_at(h.x, h.y)): h.inside = false
   h.human_skills = [["first_aid"], ["construction"], ["firearms"]][i%3].duplicate()
   give_item(h, ["first_aid_kit", "toolbox", "baseball_bat"][i%3])
   if i%3 == 2: h.equipped = h.inventory[0].uid
  for i in range(18):
-  var z = _actor(["Evan", "Grace", "Oliver", "Nora", "Henry", "Iris"][i%6], "Walker %d" % i, ["Empty", "Ghastly", "Oozing", "Noxious", "Hollow", "Ichorous"][i%6], "Resident", rng.randi_range(0, 9), rng.randi_range(0, 9), false, false)
+  var z = _actor("", "", "", "Resident", rng.randi_range(0, 9), rng.randi_range(0, 9), false, false)
   z.zombie_skills = ["vigour_mortis", "memories", "ransack"]
   if i >= 3:
    z.down = true
@@ -176,12 +176,13 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  actors[17].x = 5
  actors[17].y = 4
  actors[17].hp = 20
+ ensure_unique_npc_names()
  for a in actors: a.home = a.y*width+a.x
  rebuild_geography_index()
  reindex()
  _reset_npc_runtime()
  discover()
- log_event("You reach Mercy General. Maya heals; Scott maintains shelter. June works at the lab east of here.")
+ log_event("You reach Mercy General. %s heals; %s maintains shelter. %s works at the lab east of here." % [doctor.first, engineer.first, scientist.first])
  log_event("50 AP. Time flows independently. Actions spend energy; brief recovery prevents repeated clicks. Rest speeds time up.")
  return ""
 
@@ -224,7 +225,13 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
   initialize_block(b)
   if b.unbarricadable: b.barricade = 0
  rebuild_geography_index()
- var opening = blocks.filter(func(b): return b.type == "hospital")
+ # Start where the character's former life (or death) makes sense. Prefer
+ # accessible buildings; generated maps may omit a particular workplace.
+ var starting_workplaces = {"Private":["armoury", "police_department"], "Medic":["hospital"], "Scout":["armoury", "police_department"], "Doctor":["hospital"], "NecroTech Lab Assistant":["necrotech_lab"], "Consumer":["mall"], "Police Officer":["police_department"], "Firefighter":["fire_station"], "Corpse":["hospital"]}
+ var opening: Array = []
+ for kind in starting_workplaces.get(occupation, ["hospital"]):
+  opening = blocks.filter(func(b): return b.type == kind and is_building(b) and not b.unbarricadable)
+  if not opening.is_empty(): break
  if opening.is_empty(): opening = blocks.filter(func(b): return is_building(b) and b.fort.is_empty() and not b.unbarricadable)
  var start_site: Dictionary = blocks[0] if opening.is_empty() else opening[rng.randi_range(0,opening.size()-1)]
  if world_mode == "malton":
@@ -248,7 +255,7 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
    var workplaces = clinics if clinic_group and not clinics.is_empty() else shelters
    group_site = workplaces[rng.randi_range(0,workplaces.size()-1)]
   var job = jobs[i%jobs.size()]
-  var a = _actor(["Maya","Scott","June","Ravi","Nora","Evan","Iris","Sam"][i%8],"Survivor %d" % (i+1),"Withered",job,group_site.x,group_site.y,true,is_building(group_site))
+  var a = _actor("","","",job,group_site.x,group_site.y,true,is_building(group_site))
   _setup_player(a,job)
   # Offline populations include working specialists, not only first-day novices.
   if job == "Doctor":
@@ -275,16 +282,17 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
    var x = clampi(p.x+rng.randi_range(-3,3),0,width-1)
    var y = clampi(p.y+rng.randi_range(-3,3),0,height-1)
    site = block_at(x,y)
-  var a = _actor(["Evan","Grace","Oliver","Nora","Henry","Iris"][i%6],"Walker %d" % (i+1),["Empty","Ghastly","Oozing","Hollow"][i%4],"Corpse",site.x,site.y,false,is_building(site) and i%3 == 0)
+  var a = _actor("","","","Corpse",site.x,site.y,false,is_building(site) and i%3 == 0)
   a.zombie_skills = ["vigour_mortis","memories","ransack"]
   if i >= maxi(1,int(zombie_count*0.16)):
    a.down = true
    a.hp = 0
    a.dormant = true
+ ensure_unique_npc_names()
  for a in actors: a.home = a.y*width+a.x
  reindex()
  discover()
- log_event("You arrive at %s in %s. Find allies and keep a shelter secure." % [start_site.name,start_site.get("suburb",world_title)])
+ log_event("You awaken at %s in %s." % [start_site.name,start_site.get("suburb",world_title)])
  log_event("%s: %d × %d blocks. Most of the dead are still motionless." % [world_title,width,height])
 
 func phone_coverage(a: Dictionary) -> bool:
@@ -312,6 +320,41 @@ func action_phrase(a: Dictionary, player_verb: String, npc_verb: String) -> Stri
 
 func display_name(a: Dictionary) -> String:
  return (a.first + " " + a.last) if a.human else (a.adjective + " " + a.first)
+
+func ensure_unique_npc_names() -> void:
+ # Use a separate random stream so naming never changes the simulation's rolls.
+ var naming_rng = RandomNumberGenerator.new()
+ naming_rng.seed = world_seed + 71391
+ var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/tables/character_names.json"))
+ var adjectives: Array = []
+ for prefix in ["", "Deeply ", "Dreadfully ", "Gruesomely ", "Horribly ", "Terribly ", "Utterly ", "Vilely ", "Grimly ", "Ghastly ", "Foully ", "Sickeningly ", "Hideously ", "Wretchedly "]:
+  for word in data.zombie_adjective: adjectives.append(prefix + word)
+ for i in range(adjectives.size()-1, 0, -1):
+  var j = naming_rng.randi_range(0,i)
+  var temp = adjectives[i]
+  adjectives[i] = adjectives[j]
+  adjectives[j] = temp
+ var used_names = {(player().first + " " + player().last).to_lower(): true}
+ var used_adjectives = {str(player().adjective).to_lower(): true}
+ var adjective_index = 0
+ for i in range(1,actors.size()):
+  var a: Dictionary = actors[i]
+  var full_name = (a.first + " " + a.last).to_lower()
+  if a.first.is_empty() or a.last.is_empty() or used_names.has(full_name):
+   # Legacy aliases use the same portraits as their corresponding occupations.
+   var male_jobs = ["Private", "Guard", "NecroTech Lab Assistant", "NecroTech Assistant", "Scientist", "Police Officer", "Corpse", "Resident"]
+   var first_names: Array = data.male_first_name if a.job in male_jobs else data.female_first_name
+   while true:
+    a.first = first_names[naming_rng.randi_range(0,first_names.size()-1)]
+    a.last = data.last_name[naming_rng.randi_range(0,data.last_name.size()-1)]
+    full_name = (a.first + " " + a.last).to_lower()
+    if not used_names.has(full_name): break
+  used_names[full_name] = true
+  if a.adjective.is_empty() or used_adjectives.has(a.adjective.to_lower()):
+   while used_adjectives.has(str(adjectives[adjective_index]).to_lower()): adjective_index += 1
+   a.adjective = adjectives[adjective_index]
+   adjective_index += 1
+  used_adjectives[a.adjective.to_lower()] = true
 
 func encumbrance(a: Dictionary) -> int:
  var total = 0

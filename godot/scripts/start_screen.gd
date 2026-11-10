@@ -6,6 +6,7 @@ const Parallax = preload("res://scripts/title_parallax.gd")
 const CharacterCreation = preload("res://scripts/character_creation/character_creation.gd")
 const Intro = preload("res://scripts/intro.gd")
 const Naming = preload("res://scripts/naming_screen.gd")
+const TutorialPrompt = preload("res://scripts/tutorial_prompt.gd")
 const TITLE_FONT = preload("res://assets/fonts/PixelifySans.ttf")
 var save_path: String = Sim.SAVE_PATH
 var title_page: Control
@@ -19,6 +20,8 @@ var intro: Intro
 var naming: Naming
 var chosen_occupation := ""
 var chosen_identity := {}
+var tutorial_prompt: TutorialPrompt
+var tutorials_enabled := false
 
 func _ready() -> void:
  DisplayServer.window_set_title("Zombie Apocalypse")
@@ -148,10 +151,23 @@ func show_intro(identity: Dictionary) -> void:
  intro = (load("res://intro.tscn") as PackedScene).instantiate() as Intro
  intro.occupation = chosen_occupation
  intro.reduced_motion = creation.reduce_motion.button_pressed
- intro.finished.connect(start_new_game)
+ intro.finished.connect(show_tutorial_prompt)
  creation.queue_free()
  creation = null
  add_child(intro)
+
+func show_tutorial_prompt(_occupation: String) -> void:
+ if is_instance_valid(intro): intro.queue_free()
+ intro = null
+ tutorial_prompt = TutorialPrompt.new()
+ tutorial_prompt.answered.connect(_tutorial_answered)
+ add_child(tutorial_prompt)
+
+func _tutorial_answered(enabled: bool) -> void:
+ tutorials_enabled = enabled
+ tutorial_prompt.queue_free()
+ tutorial_prompt = null
+ start_new_game(chosen_occupation)
 
 func start_new_game(occupation: String) -> void:
  var simulation := Sim.new()
@@ -161,6 +177,7 @@ func start_new_game(occupation: String) -> void:
   status.text = error
   return
  simulation.player().merge(chosen_identity, true)
+ simulation.ensure_unique_npc_names()
  enter_game(simulation,"A new life in Malton. You are a %s." % occupation)
 
 func load_game() -> void:
@@ -176,6 +193,8 @@ func enter_game(simulation: Sim, message: String) -> void:
  game.sim = simulation
  game.save_path = save_path
  game.notice = message
+ game.start_tutorial = tutorials_enabled
+ tutorials_enabled = false
  if get_tree().change_scene_to_node(game) != OK:
   game.free()
   show_title()

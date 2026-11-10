@@ -158,6 +158,11 @@ func run() -> void:
  menu.intro._skip_intro()
  menu.intro._process(1.3)
  await process_frame
+ check(is_instance_valid(menu.tutorial_prompt), "Intro leads to the tutorial choice")
+ menu.tutorial_prompt._submit_answer("maybe")
+ check(menu.tutorial_prompt.error_label.text != "", "Invalid tutorial answers stay on the prompt")
+ menu.tutorial_prompt._submit_answer(" nO ")
+ await process_frame
  var game := current_scene as Game
  game.set_process(false)
  var playlist := game.game_music

@@ -1,0 +1,530 @@
+{
+  "mode": "built-in image_gen",
+  "styles": {
+    "0": "TRADITIONAL CIVIC quarter: pale limestone and grey slate Victorian Gothic, classical porticos, carved masonry, formal symmetrical facades; hospital has substantial RED medical crosses and RED facade bands and police station has substantial BLUE facade bands and BLUE shield emblems, both also repeated inside. Preserve an old stone city character.",
+    "1": "HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.",
+    "2": "DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings."
+  },
+  "groups": [
+    [
+      "fire_station",
+      "police_department",
+      "hospital"
+    ],
+    [
+      "library",
+      "church",
+      "warehouse"
+    ],
+    [
+      "auto_repair",
+      "factory",
+      "school"
+    ],
+    [
+      "office",
+      "junkyard",
+      "museum"
+    ],
+    [
+      "nightclub",
+      "pub",
+      "bank"
+    ],
+    [
+      "cinema",
+      "hotel",
+      "railway_station"
+    ],
+    [
+      "tower",
+      "park",
+      "cemetery"
+    ],
+    [
+      "monument",
+      "carpark",
+      "wasteland"
+    ]
+  ],
+  "jobs": [
+    {
+      "style": 1,
+      "group": 0,
+      "type": "map",
+      "kinds": [
+        "fire_station",
+        "police_department",
+        "hospital"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT sprite atlas, exactly FOUR COLUMNS by THREE ROWS, canvas 1536x1152. Each cell square 384x384. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 repaired unlit (dark windows), 2 repaired powered (warm golden glowing windows), 3 RUINED unlit (collapsed roof, jagged walls, dark broken windows, rubble), 4 RUINED POWERED (same collapsed roof and rubble as column 3, surviving windows glow gold). Same building geometry, scale and straight-on elevated 3/4 camera across all four columns, full footprint centered within every cell with transparent padding, no roads/background, no cross-cell overlap. Each row must be four state versions of the SAME building.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. fire station: unmistakable large vermilion apparatus bay doors, fire-service emblem, hose tower\n2. police station: conspicuous COBALT BLUE horizontal facade band, blue entrance canopy, shield emblem and blue wall panels; blue accents visible on map and inside\n3. hospital: conspicuous CRIMSON RED facade strips, RED medical cross signs, red entrance canopy; repeat red cross and red wall stripe inside; ward with beds\nMaintain very conspicuous red hospital and blue police identification, even in ruins. Reference image is rendering technique only; create new architectural designs.",
+      "destination": "godot/assets/architecture/map-1-0.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-1c3d6a79-9410-4db7-bd80-ec9290d9f3df.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-1c3d6a79-9410-4db7-bd80-ec9290d9f3df.png"
+    },
+    {
+      "style": 2,
+      "group": 0,
+      "type": "map",
+      "kinds": [
+        "fire_station",
+        "police_department",
+        "hospital"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT sprite atlas, exactly FOUR COLUMNS by THREE ROWS, canvas 1536x1152. Each cell square 384x384. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 repaired unlit (dark windows), 2 repaired powered (warm golden glowing windows), 3 RUINED unlit (collapsed roof, jagged walls, dark broken windows, rubble), 4 RUINED POWERED (same collapsed roof and rubble as column 3, surviving windows glow gold). Same building geometry, scale and straight-on elevated 3/4 camera across all four columns, full footprint centered within every cell with transparent padding, no roads/background, no cross-cell overlap. Each row must be four state versions of the SAME building.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. fire station: unmistakable large vermilion apparatus bay doors, fire-service emblem, hose tower\n2. police station: conspicuous COBALT BLUE horizontal facade band, blue entrance canopy, shield emblem and blue wall panels; blue accents visible on map and inside\n3. hospital: conspicuous CRIMSON RED facade strips, RED medical cross signs, red entrance canopy; repeat red cross and red wall stripe inside; ward with beds\nMaintain very conspicuous red hospital and blue police identification, even in ruins. Reference image is rendering technique only; create new architectural designs.",
+      "destination": "godot/assets/architecture/map-2-0.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-cfb27b46-204c-4f2e-aabc-4d20f27b4068.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-cfb27b46-204c-4f2e-aabc-4d20f27b4068.png"
+    },
+    {
+      "style": 1,
+      "group": 1,
+      "type": "map",
+      "kinds": [
+        "library",
+        "church",
+        "warehouse"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. library: books emblem and tall reading windows; shelves and reading tables inside\n2. church: cross-topped steeple, broad nave; pews and altar inside\n3. warehouse: yellow loading doors and cargo pallets; tall racks and crates inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-1-1.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-0dcaa889-2b62-4d81-9498-759d36ef0b43.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-0dcaa889-2b62-4d81-9498-759d36ef0b43.png"
+    },
+    {
+      "style": 1,
+      "group": 1,
+      "type": "settings",
+      "kinds": [
+        "library",
+        "church",
+        "warehouse"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. library: books emblem and tall reading windows; shelves and reading tables inside\n2. church: cross-topped steeple, broad nave; pews and altar inside\n3. warehouse: yellow loading doors and cargo pallets; tall racks and crates inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-1-1.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-dab1e456-a7b3-47e0-ba0d-bf4a1cb5aab8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-dab1e456-a7b3-47e0-ba0d-bf4a1cb5aab8.png"
+    },
+    {
+      "style": 2,
+      "group": 1,
+      "type": "map",
+      "kinds": [
+        "library",
+        "church",
+        "warehouse"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. library: books emblem and tall reading windows; shelves and reading tables inside\n2. church: cross-topped steeple, broad nave; pews and altar inside\n3. warehouse: yellow loading doors and cargo pallets; tall racks and crates inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-2-1.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-1331231c-cb02-445c-a262-b79e19bd2eac.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-7e27534f-4db9-4602-8272-fae87a155861.png",
+      "original_source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-1331231c-cb02-445c-a262-b79e19bd2eac.png",
+      "cleanup_prompt": "Use case: background-extraction. Edit this game sprite atlas to remove ALL white/grey background and faint backdrop haze; make every background pixel genuinely fully transparent alpha=0. Keep all twelve building sprites unchanged: same exact artwork, geometry, positions, four columns and three rows, lighting, colors, dimensions, and damage. No added shadows, background, text, layout changes or cropping. Preserve pixels of the buildings and produce clean antialiased silhouettes. This is a transparent game sprite sheet, no checkerboard painted into image."
+    },
+    {
+      "style": 2,
+      "group": 1,
+      "type": "settings",
+      "kinds": [
+        "library",
+        "church",
+        "warehouse"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. library: books emblem and tall reading windows; shelves and reading tables inside\n2. church: cross-topped steeple, broad nave; pews and altar inside\n3. warehouse: yellow loading doors and cargo pallets; tall racks and crates inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-2-1.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-8a0e490e-5875-4716-9d54-99113721c429.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-8a0e490e-5875-4716-9d54-99113721c429.png"
+    },
+    {
+      "style": 1,
+      "group": 2,
+      "type": "map",
+      "kinds": [
+        "auto_repair",
+        "factory",
+        "school"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. auto repair: ORANGE garage doors, large wrench emblem; vehicle lift, tires and tools inside\n2. factory: ochre steel sawtooth roofs and chimney; industrial machinery and safety-yellow rails inside\n3. school: school courtyard and clock, green doors; desks and blackboard inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-1-2.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-3811612e-1084-4a5f-b3f2-910b47b97245.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-3811612e-1084-4a5f-b3f2-910b47b97245.png"
+    },
+    {
+      "style": 1,
+      "group": 2,
+      "type": "settings",
+      "kinds": [
+        "auto_repair",
+        "factory",
+        "school"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. auto repair: ORANGE garage doors, large wrench emblem; vehicle lift, tires and tools inside\n2. factory: ochre steel sawtooth roofs and chimney; industrial machinery and safety-yellow rails inside\n3. school: school courtyard and clock, green doors; desks and blackboard inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-1-2.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-9f7c0404-b90d-467b-8c16-428796636c4f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-9f7c0404-b90d-467b-8c16-428796636c4f.png"
+    },
+    {
+      "style": 2,
+      "group": 2,
+      "type": "map",
+      "kinds": [
+        "auto_repair",
+        "factory",
+        "school"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. auto repair: ORANGE garage doors, large wrench emblem; vehicle lift, tires and tools inside\n2. factory: ochre steel sawtooth roofs and chimney; industrial machinery and safety-yellow rails inside\n3. school: school courtyard and clock, green doors; desks and blackboard inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-2-2.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-afc4b7cc-61c6-4167-8376-8c01279ddb79.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-afc4b7cc-61c6-4167-8376-8c01279ddb79.png"
+    },
+    {
+      "style": 2,
+      "group": 2,
+      "type": "settings",
+      "kinds": [
+        "auto_repair",
+        "factory",
+        "school"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. auto repair: ORANGE garage doors, large wrench emblem; vehicle lift, tires and tools inside\n2. factory: ochre steel sawtooth roofs and chimney; industrial machinery and safety-yellow rails inside\n3. school: school courtyard and clock, green doors; desks and blackboard inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-2-2.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-002e7025-df66-4a6b-8f29-e5ee40a652f9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-002e7025-df66-4a6b-8f29-e5ee40a652f9.png"
+    },
+    {
+      "style": 1,
+      "group": 3,
+      "type": "map",
+      "kinds": [
+        "office",
+        "junkyard",
+        "museum"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. anonymous office building, no logos, bay or curtain-wall windows; desks and files inside\n2. junkyard: rust-red metal fence, heaps of scrap cars and steel; inside gate view of open scrap yard\n3. museum: public gallery entrance and sculpture; exhibits in glass cases inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-1-3.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-d28a256c-9b20-4ae9-8cba-ec2177c26c32.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-d28a256c-9b20-4ae9-8cba-ec2177c26c32.png"
+    },
+    {
+      "style": 1,
+      "group": 3,
+      "type": "settings",
+      "kinds": [
+        "office",
+        "junkyard",
+        "museum"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. anonymous office building, no logos, bay or curtain-wall windows; desks and files inside\n2. junkyard: rust-red metal fence, heaps of scrap cars and steel; inside gate view of open scrap yard\n3. museum: public gallery entrance and sculpture; exhibits in glass cases inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-1-3.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-4e65dd77-2086-4a6c-95e3-70bf6ce1a5cc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-4e65dd77-2086-4a6c-95e3-70bf6ce1a5cc.png"
+    },
+    {
+      "style": 2,
+      "group": 3,
+      "type": "settings",
+      "kinds": [
+        "office",
+        "junkyard",
+        "museum"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. anonymous office building, no logos, bay or curtain-wall windows; desks and files inside\n2. junkyard: rust-red metal fence, heaps of scrap cars and steel; inside gate view of open scrap yard\n3. museum: public gallery entrance and sculpture; exhibits in glass cases inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-2-3.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-a29cb5b7-c0c7-41a9-921b-8cff93aa55cd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-a29cb5b7-c0c7-41a9-921b-8cff93aa55cd.png"
+    },
+    {
+      "style": 1,
+      "group": 4,
+      "type": "map",
+      "kinds": [
+        "nightclub",
+        "pub",
+        "bank"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. nightclub: purple marquee and double doors; violet seating, bar and dance floor inside\n2. pub: burgundy awnings, hanging tankard symbol; wooden bar and tables inside\n3. bank: bronze doors and formal strong front; teller counters and vault inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-1-4.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-990dbba2-efda-47ba-918d-452a8e589792.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-990dbba2-efda-47ba-918d-452a8e589792.png"
+    },
+    {
+      "style": 1,
+      "group": 4,
+      "type": "settings",
+      "kinds": [
+        "nightclub",
+        "pub",
+        "bank"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows TOP TO BOTTOM:\n1. nightclub: purple marquee and double doors; violet seating, bar and dance floor inside\n2. pub: burgundy awnings, hanging tankard symbol; wooden bar and tables inside\n3. bank: bronze doors and formal strong front; teller counters and vault inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-1-4.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-3fb7e9cd-f36a-4927-bef0-7ad6c328ab1a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-3fb7e9cd-f36a-4927-bef0-7ad6c328ab1a.png"
+    },
+    {
+      "style": 2,
+      "group": 3,
+      "type": "map",
+      "kinds": [
+        "office",
+        "junkyard",
+        "museum"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. anonymous office building, no logos, bay or curtain-wall windows; desks and files inside\n2. junkyard: rust-red metal fence, heaps of scrap cars and steel; inside gate view of open scrap yard\n3. museum: public gallery entrance and sculpture; exhibits in glass cases inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-2-3.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-d5db0b61-66e0-47c2-9814-bf95cbc7895d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-d5db0b61-66e0-47c2-9814-bf95cbc7895d.png"
+    },
+    {
+      "style": 2,
+      "group": 4,
+      "type": "map",
+      "kinds": [
+        "nightclub",
+        "pub",
+        "bank"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. TRANSPARENT RGBA sprite atlas. Landscape 4:3 aspect ratio, exactly FOUR COLUMNS by THREE ROWS of equal square cells. 1536x1152 canvas. Every building isolated on genuine transparent empty alpha, not a colored backdrop. Rows are buildings in stated order. Columns LEFT TO RIGHT: 1 REPAIRED UNLIT, dark windows; 2 REPAIRED LIT, warm glowing windows; 3 RUINED UNLIT, collapsed roof, jagged walls and rubble, dark broken windows; 4 RUINED LIT, same collapsed roof and rubble as column 3 with surviving windows glowing gold. Same building design and camera across all four columns. Elevated front three-quarter view with mostly front facade and visible roof, no diamond ground tile. Fit each complete building inside its cell with 8% transparent padding. NO overlapping cells, no cast background shadow. Ruined states must have visibly missing roof sections. For outdoor types show four versions of the same ground plot with changes in debris and lantern lighting.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. nightclub: purple marquee and double doors; violet seating, bar and dance floor inside\n2. pub: burgundy awnings, hanging tankard symbol; wooden bar and tables inside\n3. bank: bronze doors and formal strong front; teller counters and vault inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/map-2-4.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-2a360617-d1ee-4da6-bcd9-2a06b06b7d11.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-2a360617-d1ee-4da6-bcd9-2a06b06b7d11.png"
+    },
+    {
+      "style": 2,
+      "group": 4,
+      "type": "settings",
+      "kinds": [
+        "nightclub",
+        "pub",
+        "bank"
+      ],
+      "prompt": "Use case: stylized-concept. Production game texture atlas for a zombie survival city. Detailed crisp pixel art with weathered painterly pixel textures, desaturated teal skies, warm earthy materials, readable silhouettes, no people, no zombies, no animals, no UI, no watermarks, no labels or captions. A NEAR-SQUARE texture atlas, aspect ratio 32:27, width 2048 height 1728. Exactly TWO COLUMNS and THREE ROWS of equal panels. Each panel is LANDSCAPE 16:9, 1024x576. This is NOT one wide landscape image: the whole sheet is nearly square. Six edge-to-edge scenes with boundaries at EXACTLY x=50% and y=33.333% and 66.667%; no gutters, captions, separators, or frames. LEFT column exterior street-level front view, RIGHT column corresponding interior. Rows are the three buildings in stated order. Clear walkable floor/pavement along bottom fifth for character sprites. Rich detailed pixel-art backgrounds. Buildings neglected but structurally standing. Open outdoor locations have a wide establishing view left and close view right.\nArchitectural family: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows TOP TO BOTTOM:\n1. nightclub: purple marquee and double doors; violet seating, bar and dance floor inside\n2. pub: burgundy awnings, hanging tankard symbol; wooden bar and tables inside\n3. bank: bronze doors and formal strong front; teller counters and vault inside\nKeep building functions recognizable. No figures. Exact grid alignment is essential.",
+      "destination": "godot/assets/architecture/settings-2-4.png",
+      "output_hint": "Generated images are saved to C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc as C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-5cb0d700-d1ec-4349-aa60-92a7d4c0c917.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-5cb0d700-d1ec-4349-aa60-92a7d4c0c917.png"
+    },
+    {
+      "group": 5,
+      "type": "map",
+      "style": 1,
+      "kinds": [
+        "cinema",
+        "hotel",
+        "railway_station"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-34eaa6d1-3c29-467f-86d9-3ab7fc96a219.png",
+      "destination": "godot/assets/architecture/map-1-5.png",
+      "prompt": "Recovered completed atlas from interrupted generation. Four state columns for cinema, hotel, railway station; settings exterior/interior columns. HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone."
+    },
+    {
+      "group": 5,
+      "type": "settings",
+      "style": 1,
+      "kinds": [
+        "cinema",
+        "hotel",
+        "railway_station"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-8ea25a47-c86d-462f-86a7-62270212c1b6.png",
+      "destination": "godot/assets/architecture/settings-1-5.png",
+      "prompt": "Recovered completed atlas from interrupted generation. Four state columns for cinema, hotel, railway station; settings exterior/interior columns. HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone."
+    },
+    {
+      "group": 5,
+      "type": "map",
+      "style": 2,
+      "kinds": [
+        "cinema",
+        "hotel",
+        "railway_station"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-551e3c1c-45d7-4885-be9b-995354860fe1.png",
+      "destination": "godot/assets/architecture/map-2-5.png",
+      "prompt": "Recovered completed atlas from interrupted generation. Four state columns for cinema, hotel, railway station; settings exterior/interior columns. DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings."
+    },
+    {
+      "group": 5,
+      "type": "settings",
+      "style": 2,
+      "kinds": [
+        "cinema",
+        "hotel",
+        "railway_station"
+      ],
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-963b0b4c-07d2-4c94-b6f9-6687981de03a.png",
+      "destination": "godot/assets/architecture/settings-2-5.png",
+      "prompt": "Recovered completed atlas from interrupted generation. Four state columns for cinema, hotel, railway station; settings exterior/interior columns. DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings."
+    },
+    {
+      "group": 6,
+      "style": 1,
+      "type": "settings",
+      "kinds": [
+        "tower",
+        "park",
+        "cemetery"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows top to bottom: 1. tall residential tower with balconies; apartment lobby inside; 2. park with green trees and fountain; park paths; 3. cemetery with gravestones and gate; graveyard paths. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-c51e87e1-c1d7-49f0-beb9-bd3d3dd0539a.png",
+      "destination": "godot/assets/architecture/settings-1-6.png"
+    },
+    {
+      "group": 6,
+      "style": 2,
+      "type": "map",
+      "kinds": [
+        "tower",
+        "park",
+        "cemetery"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. Transparent RGBA game sprite atlas, EXACTLY 4 equal columns by 3 equal rows; 4:3 overall aspect. In every row, the SAME structure in four states left to right: repaired UNLIT (dark windows); repaired LIT (warm glowing windows); RUINED unlit (collapsed roof, rubble, jagged walls, dark broken windows); RUINED LIT (same ruin damage, surviving windows glowing gold). Elevated front three-quarter camera, whole building fits in cell, no background or roads. Actual empty alpha around buildings, no white or grey backdrop. For parks, cemetery and open ground show same plot in all columns, minor lantern and debris differences.\nArchitecture: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows top to bottom: 1. tall residential tower with balconies; apartment lobby inside; 2. park with green trees and fountain; park paths; 3. cemetery with gravestones and gate; graveyard paths. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-7c32905d-d1c8-4395-a860-0757d57c13c6.png",
+      "destination": "godot/assets/architecture/map-2-6.png"
+    },
+    {
+      "group": 6,
+      "style": 2,
+      "type": "settings",
+      "kinds": [
+        "tower",
+        "park",
+        "cemetery"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows top to bottom: 1. tall residential tower with balconies; apartment lobby inside; 2. park with green trees and fountain; park paths; 3. cemetery with gravestones and gate; graveyard paths. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-a75e5690-a3f6-463a-bc18-1280980e6262.png",
+      "destination": "godot/assets/architecture/settings-2-6.png"
+    },
+    {
+      "group": 7,
+      "style": 1,
+      "type": "map",
+      "kinds": [
+        "monument",
+        "carpark",
+        "wasteland"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. Transparent RGBA game sprite atlas, EXACTLY 4 equal columns by 3 equal rows; 4:3 overall aspect. In every row, the SAME structure in four states left to right: repaired UNLIT (dark windows); repaired LIT (warm glowing windows); RUINED unlit (collapsed roof, rubble, jagged walls, dark broken windows); RUINED LIT (same ruin damage, surviving windows glowing gold). Elevated front three-quarter camera, whole building fits in cell, no background or roads. Actual empty alpha around buildings, no white or grey backdrop. For parks, cemetery and open ground show same plot in all columns, minor lantern and debris differences.\nArchitecture: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows top to bottom: 1. bronze statue monument on plinth in public square; 2. carpark with ticket kiosk, derelict cars and marked spaces; 3. overgrown wasteland former building lot, low ruined foundations. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-a7d2b7cc-4341-473a-b2f6-665b54e516f3.png",
+      "destination": "godot/assets/architecture/map-1-7.png"
+    },
+    {
+      "group": 7,
+      "style": 1,
+      "type": "settings",
+      "kinds": [
+        "monument",
+        "carpark",
+        "wasteland"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows top to bottom: 1. bronze statue monument on plinth in public square; 2. carpark with ticket kiosk, derelict cars and marked spaces; 3. overgrown wasteland former building lot, low ruined foundations. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-79741709-e234-4c57-a984-e0378cb8889d.png",
+      "destination": "godot/assets/architecture/settings-1-7.png"
+    },
+    {
+      "group": 7,
+      "style": 2,
+      "type": "map",
+      "kinds": [
+        "monument",
+        "carpark",
+        "wasteland"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. Transparent RGBA game sprite atlas, EXACTLY 4 equal columns by 3 equal rows; 4:3 overall aspect. In every row, the SAME structure in four states left to right: repaired UNLIT (dark windows); repaired LIT (warm glowing windows); RUINED unlit (collapsed roof, rubble, jagged walls, dark broken windows); RUINED LIT (same ruin damage, surviving windows glowing gold). Elevated front three-quarter camera, whole building fits in cell, no background or roads. Actual empty alpha around buildings, no white or grey backdrop. For parks, cemetery and open ground show same plot in all columns, minor lantern and debris differences.\nArchitecture: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows top to bottom: 1. bronze statue monument on plinth in public square; 2. carpark with ticket kiosk, derelict cars and marked spaces; 3. overgrown wasteland former building lot, low ruined foundations. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-402a9dce-dc72-4f82-bb13-caba408bb709.png",
+      "destination": "godot/assets/architecture/map-2-7.png"
+    },
+    {
+      "group": 7,
+      "style": 2,
+      "type": "settings",
+      "kinds": [
+        "monument",
+        "carpark",
+        "wasteland"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows top to bottom: 1. bronze statue monument on plinth in public square; 2. carpark with ticket kiosk, derelict cars and marked spaces; 3. overgrown wasteland former building lot, low ruined foundations. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-111ede9d-568f-4ca8-a9c7-f02e8dcf7b3b.png",
+      "destination": "godot/assets/architecture/settings-2-7.png"
+    },
+    {
+      "group": 6,
+      "style": 1,
+      "type": "map",
+      "kinds": [
+        "tower",
+        "park",
+        "cemetery"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. Transparent RGBA game sprite atlas, EXACTLY 4 equal columns by 3 equal rows; 4:3 overall aspect. In every row, the SAME structure in four states left to right: repaired UNLIT (dark windows); repaired LIT (warm glowing windows); RUINED unlit (collapsed roof, rubble, jagged walls, dark broken windows); RUINED LIT (same ruin damage, surviving windows glowing gold). Elevated front three-quarter camera, whole building fits in cell, no background or roads. Actual empty alpha around buildings, no white or grey backdrop. For parks, cemetery and open ground show same plot in all columns, minor lantern and debris differences.\nArchitecture: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows top to bottom: 1. tall residential tower with balconies; apartment lobby inside; 2. park with green trees and fountain; park paths; 3. cemetery with gravestones and gate; graveyard paths. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-7331d0ac-7672-489f-a088-7eb3a03f61e6.png",
+      "destination": "godot/assets/architecture/map-1-6.png"
+    },
+    {
+      "group": 0,
+      "style": 1,
+      "type": "settings",
+      "kinds": [
+        "fire_station",
+        "police_department",
+        "hospital"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone.\nRows top to bottom: 1. fire station with red apparatus doors and hose tower; 2. police station with conspicuous cobalt BLUE facade bands, BLUE canopy and shield badge; blue stripe and cells inside; 3. hospital with conspicuous RED facade bands, large red medical crosses, RED entrance canopy; wards and red wall stripe inside. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-389824b9-8439-4997-8d66-12224fdd7bfb.png",
+      "destination": "godot/assets/architecture/settings-1-0.png"
+    },
+    {
+      "group": 0,
+      "style": 0,
+      "type": "settings",
+      "kinds": [
+        "fire_station",
+        "police_department",
+        "hospital"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: TRADITIONAL CIVIC quarter: pale limestone and grey slate Victorian Gothic, classical porticos, carved masonry, formal symmetrical facades; hospital has substantial RED medical crosses and RED facade bands and police station has substantial BLUE facade bands and BLUE shield emblems, both also repeated inside. Preserve an old stone city character.\nRows top to bottom: 1. fire station with red apparatus doors and hose tower; 2. police station with conspicuous cobalt BLUE facade bands, BLUE canopy and shield badge; blue stripe and cells inside; 3. hospital with conspicuous RED facade bands, large red medical crosses, RED entrance canopy; wards and red wall stripe inside. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-10e308a4-9a13-447c-aa76-e745b495f34e.png",
+      "destination": "godot/assets/architecture/settings-0-0.png"
+    },
+    {
+      "group": 0,
+      "style": 2,
+      "type": "settings",
+      "kinds": [
+        "fire_station",
+        "police_department",
+        "hospital"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. OPAQUE game environment atlas, EXACTLY TWO COLUMNS and THREE ROWS. Overall aspect ratio 32:27, nearly square. Each cell is LANDSCAPE 16:9. LEFT COLUMN exterior street-level, RIGHT COLUMN matching interior. For open outdoor grounds use wide view left and close view right. Equal boundaries at x=50%, y=33.33% and 66.67%. Clear ground foreground bottom fifth for sprites. No frames, gutters, labels.\nArchitecture: DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings.\nRows top to bottom: 1. fire station with red apparatus doors and hose tower; 2. police station with conspicuous cobalt BLUE facade bands, BLUE canopy and shield badge; blue stripe and cells inside; 3. hospital with conspicuous RED facade bands, large red medical crosses, RED entrance canopy; wards and red wall stripe inside. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-c79d5736-b021-4b4a-a780-0356d62359dc.png",
+      "destination": "godot/assets/architecture/settings-2-0.png"
+    },
+    {
+      "group": 0,
+      "style": 0,
+      "type": "map",
+      "kinds": [
+        "fire_station",
+        "police_department",
+        "hospital"
+      ],
+      "prompt": "Use case: stylized-concept. Detailed crisp pixel-art zombie survival city textures, weathered subdued earth palette and teal sky, no people, zombies, UI or watermarks. Transparent RGBA game sprite atlas, EXACTLY 4 equal columns by 3 equal rows; 4:3 overall aspect. In every row, the SAME structure in four states left to right: repaired UNLIT (dark windows); repaired LIT (warm glowing windows); RUINED unlit (collapsed roof, rubble, jagged walls, dark broken windows); RUINED LIT (same ruin damage, surviving windows glowing gold). Elevated front three-quarter camera, whole building fits in cell, no background or roads. Actual empty alpha around buildings, no white or grey backdrop. For parks, cemetery and open ground show same plot in all columns, minor lantern and debris differences.\nArchitecture: TRADITIONAL CIVIC quarter: pale limestone and grey slate Victorian Gothic, classical porticos, carved masonry, formal symmetrical facades; hospital has substantial RED medical crosses and RED facade bands and police station has substantial BLUE facade bands and BLUE shield emblems, both also repeated inside. Preserve an old stone city character.\nRows top to bottom: 1. fire station with red apparatus doors and hose tower; 2. police station with conspicuous cobalt BLUE facade bands, BLUE canopy and shield badge; blue stripe and cells inside; 3. hospital with conspicuous RED facade bands, large red medical crosses, RED entrance canopy; wards and red wall stripe inside. Grid alignment essential.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-3431e905-4b01-4488-a36a-c2b8a28a871c.png",
+      "destination": "godot/assets/architecture/map-0-0.png"
+    },
+    {
+      "style": 1,
+      "type": "settings",
+      "group": "extra",
+      "prompt": "Use case: stylized-concept. Pixel-art zombie survival environment atlas. Exactly ONE COLUMN TWO equal ROWS, overall aspect ratio 8:9. Two landscape 16:9 panels edge-to-edge, boundary exactly halfway down. TOP: abandoned NecroTech biomedical laboratory INTERIOR, microscopes, centrifuges, sample refrigerators, syringe cabinets, teal medical fixtures, subtle green scientific signage, daylight from large windows, clear foreground floor, no people. BOTTOM: abandoned CITY STREET EXTERIOR lined with HERITAGE MERCANTILE quarter, architecture circa 1880-1925: warm red and honey brick, visible dark timber, copper green roofs, clay tiles, bay windows, pitched gables, iron balconies, brick industrial sheds. Strong variation in silhouette for each building type; avoid default grey Gothic stone., wide street foreground, no lamps or windows glowing, daylight teal sky. Detailed weathered crisp pixel art. No labels, no UI, no watermark, no characters, no zombies. Top lab architecture matches the buildings below; preserve flat clear ground along bottom fifth of each panel for sprites.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-ffdb8c81-7497-44d8-97ea-88d2b49a4696.png",
+      "destination": "godot/assets/architecture/settings-1-extra.png"
+    },
+    {
+      "style": 2,
+      "type": "settings",
+      "group": "extra",
+      "prompt": "Use case: stylized-concept. Pixel-art zombie survival environment atlas. Exactly ONE COLUMN TWO equal ROWS, overall aspect ratio 8:9. Two landscape 16:9 panels edge-to-edge, boundary exactly halfway down. TOP: abandoned NecroTech biomedical laboratory INTERIOR, microscopes, centrifuges, sample refrigerators, syringe cabinets, teal medical fixtures, subtle green scientific signage, daylight from large windows, clear foreground floor, no people. BOTTOM: abandoned CITY STREET EXTERIOR lined with DECO AND POSTWAR quarter, architecture circa 1930-1980: cream stucco and terracotta Art Deco, stepped parapets, rounded corners, streamlined canopies, green patinated copper; civic facilities with glazed curtain walls, turquoise metal frames and low modern wings; sawtooth factories. Strongly different silhouettes from Victorian buildings., wide street foreground, no lamps or windows glowing, daylight teal sky. Detailed weathered crisp pixel art. No labels, no UI, no watermark, no characters, no zombies. Top lab architecture matches the buildings below; preserve flat clear ground along bottom fifth of each panel for sprites.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c75b-66ea-7ac1-962c-79922ddd0bcc\\exec-edaca9c0-3bd9-45a9-bddb-9adfb8ad3c3d.png",
+      "destination": "godot/assets/architecture/settings-2-extra.png"
+    }
+  ]
+}

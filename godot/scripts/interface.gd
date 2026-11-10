@@ -1,5 +1,10 @@
 extends Control
 
+var start_tutorial := false
+var tutorial_step := 0
+var tutorial_opening := true
+var tutorial_appendix := false
+var appendix_side := "human"
 var initial_world_mode: String = "malton"
 var map_origin: Vector2i = Vector2i(-1,-1)
 var city_overview: bool = false
@@ -17,6 +22,7 @@ const MapArtwork = preload("res://scripts/minimap_art.gd")
 const MapCanvas = preload("res://scripts/minimap_canvas.gd")
 const GameMusic = preload("res://scripts/game_music.gd")
 var minimap_artwork := MapArtwork.new()
+var location_architecture := preload("res://scripts/location_architecture.gd").new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
 const INVENTORY_PAGE_SIZE = 10
 var inventory_page: int = 0
@@ -86,6 +92,7 @@ func _ready() -> void:
    notice = why
   else: notice = "Welcome to %s. Find allies and secure a shelter." % sim.world_title
  _reset_session_view()
+ if start_tutorial: modal = "tutorial"
  refresh()
 
 func _process(delta: float) -> void:
@@ -444,9 +451,8 @@ func _location(b: Dictionary) -> void:
   if b.ruin >= 3 or p.inside or sim.entrance_is_open(b):
    subtitle += " · " + ("Ruined" if b.ruin >= 3 else ("Ransacked" if b.ruin > 0 else "Intact"))
  label(page,subtitle,Rect2(402,124,690 if b.type == "mall" and sim.has_skill(p,"shopping") else 1005,26),19,MUTED)
- var filename = "settings/%s_%s.png" % ["office" if b.type == "necrotech_lab" and not p.inside else b.type, "inside" if p.inside else "outside"]
  rect(page,Rect2(400,159,1020,576),INK,GOLD)
- var art = picture(page,tex(filename),ENVIRONMENT_RECT)
+ var art = picture(page,location_architecture.setting_for(sim,b,p.inside),ENVIRONMENT_RECT)
  art.name = "EnvironmentArt"
  art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
  art.clip_contents = true
@@ -770,8 +776,80 @@ func _reset_session_view() -> void:
 
 func open_modal(which: String) -> void:
  if resting: sim.stop_rest()
+ if which == "help":
+  tutorial_step = 0
+  tutorial_opening = false
+  tutorial_appendix = false
+  appendix_side = "human"
+  which = "tutorial"
  modal = which
  refresh()
+
+func _tutorial_modal() -> void:
+ if tutorial_appendix:
+  _skill_appendix()
+  return
+ var p = sim.player()
+ var site = sim.current_block(p)
+ var origin: String = {
+  "Private":"Your last orders brought you to a military post.",
+  "Medic":"You remember treating casualties before everything went dark.",
+  "Scout":"You were preparing to reconnoitre the city.",
+  "Doctor":"You remember the hospital and the patients you could not save.",
+  "NecroTech Lab Assistant":"The lab's research was never meant to escape these walls.",
+  "Consumer":"The shops were crowded when the outbreak reached you.",
+  "Police Officer":"You were on duty when the calls stopped.",
+  "Firefighter":"Your last call ended in darkness.",
+  "Corpse":"The last thing you remember is dying. Now you are moving again."
+ }.get(p.job, "You wake in a city under quarantine.")
+ var pages: Array = []
+ if tutorial_opening:
+  pages.append(["YOU WAKE", "%s\n\nYou awaken inside %s, in %s. Take a moment to look around. The city is still dangerous; this guide pauses it while you read." % [origin, site.name, sim.suburb_name(p)]])
+ else:
+  pages.append(["FIELD GUIDE", "Use this guide to review movement, actions, energy and experience. Its advice reflects your current form.\n\nThe city is paused while you read."])
+ if p.human:
+  pages.append(["LOOK AND MOVE", "The 3×3 map at the upper left shows nearby blocks. Click a neighbouring block or use WASD / arrow keys; Q, E, Z and C move diagonally.\n\nUse Leave to go outside and Enter to shelter inside. Some barricades block entry. The larger Map [M] helps you plan a route."])
+  pages.append(["SUPPLIES AND PEOPLE", "Use Search inside buildings to find supplies; searches can fail. Select an item in your inventory to see how to use or equip it.\n\nSelect a nearby person to see available actions. Attack enemies with a weapon; heal injured people with a first aid kit when you can. Actions and their availability depend on your equipment and skills."])
+  pages.append(["ENERGY AND EXPERIENCE", "Actions cost AP, shown beside their buttons. AP recovers over time; R starts a rest, and danger can interrupt it. Space pauses the game.\n\nSuccessful attacks and useful actions such as healing can earn XP. Open Skills to see what you can learn and its cost. Your starting occupation gives you equipment and a skill to build on."])
+ else:
+  pages.append(["LOOK AND MOVE", "The 3×3 map at the upper left shows nearby blocks. Click a neighbouring block or use WASD / arrow keys; Q, E, Z and C move diagonally.\n\nUse Leave and Enter to move between the street and buildings. Barricades can prevent entry: use Break cades when available. Map [M] shows the wider city."])
+  pages.append(["THE HUNGER", "Select a nearby living person, then use Claws or Bite when available. Attacks can miss, and dangerous survivors fight back. Ransack an accessible building to damage it.\n\nIf you are down, recover enough AP and use Stand up. Death and revival do not erase your identity, XP or skills."])
+  pages.append(["ENERGY AND EXPERIENCE", "Actions cost AP, shown beside their buttons. AP recovers over time; R starts a rest, and danger can interrupt it. Space pauses the game.\n\nSuccessful attacks and breaking barricades can earn XP. Open Skills to spend XP on zombie abilities. Your human and zombie skills share the same XP pool."])
+ pages.append(["YOUR FIRST STEPS", "Explore nearby blocks, watch your health and AP, and choose your encounters carefully. The activity feed records what happens around you.\n\nOpen Help at any time for a controls reference. You can pause with Space or Escape. The city resumes when you close this guide."])
+ var current: Array = pages[tutorial_step]
+ label(overlay, "%s  /  %d OF %d" % [current[0], tutorial_step + 1, pages.size()], Rect2(140,170,1100,45), 28, GOLD)
+ var body = label(overlay, current[1], Rect2(140,235,1120,400), 25, CREAM)
+ body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ button(overlay,"Appendix: Skills",Rect2(530,770,270,48),func(): tutorial_appendix = true; refresh())
+ if tutorial_step > 0:
+  button(overlay,"Back",Rect2(140,770,160,48),func(): tutorial_step -= 1; refresh())
+ button(overlay,("Enter Malton" if tutorial_opening else "Close guide") if tutorial_step == pages.size()-1 else "Next",Rect2(1080,770,220,48),func():
+  if tutorial_step == pages.size()-1: modal = ""
+  else: tutorial_step += 1
+  refresh())
+
+func _skill_appendix() -> void:
+ label(overlay, "APPENDIX / SKILLS", Rect2(140,170,850,40), 28, GOLD)
+ for side in ["human", "zombie"]:
+  var choice: String = side
+  button(overlay, "%s skills" % choice.capitalize(), Rect2(140 if choice == "human" else 330,225,175,42), func(): appendix_side = choice; refresh(), appendix_side == choice)
+ var entries: Array[String] = []
+ for key in C.SKILLS:
+  var skill: Dictionary = C.SKILLS[key]
+  if skill.side != appendix_side: continue
+  var details: String = skill.description
+  if not str(skill.requires).is_empty(): details += "\nRequires: " + C.SKILLS[skill.requires].name + "."
+  if int(skill.min_level) > 0: details += "\nMinimum level: %d." % int(skill.min_level)
+  entries.append("%s\n%s" % [skill.name, details])
+ var list := RichTextLabel.new()
+ list.name = "SkillAppendix"
+ list.position = Vector2(140,285)
+ list.size = Vector2(1140,465)
+ list.add_theme_font_size_override("normal_font_size", 22)
+ list.add_theme_color_override("default_color", CREAM)
+ list.text = "\n\n".join(entries)
+ overlay.add_child(list)
+ button(overlay, "Back to guide", Rect2(140,770,220,48), func(): tutorial_appendix = false; refresh())
 
 func _modal() -> void:
  overlay = Control.new()
@@ -782,9 +860,10 @@ func _modal() -> void:
  overlay.position = Vector2(240,60)
  rect(overlay, Rect2(-240,-60,1920,1080), Color(0.01,0.03,0.02,0.92))
  rect(overlay, Rect2(100,80,1240,800), PANEL, GOLD)
- label(overlay, {"map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / ONE LIFE, TWO FORMS", "help":"SURVIVING DULSTON", "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
+ label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
  button(overlay, "Close [Esc]", Rect2(1170,103,140,38), func(): modal = ""; refresh())
- if modal == "message": _message_modal()
+ if modal == "tutorial": _tutorial_modal()
+ elif modal == "message": _message_modal()
  elif modal == "intelligence":
   var report = RichTextLabel.new()
   report.position = Vector2(140,170)
@@ -812,10 +891,6 @@ func _modal() -> void:
   history.scroll_following = true
   history.text = feed.format_rows(sim.messages,history_filter)
   overlay.add_child(history)
- elif modal == "help":
-  var help_text = "Explore with the 3×3 map, arrow keys or WASD. Q/E/Z/C move diagonally.\nEnter buildings to search and find shelter. Free running links intact interiors.\n\nSelect a person, then attack, heal, revive, or ask for supplies.\nSelect an inventory item to equip, give, or drop it. Undead can wield crowbars, bats and pipes; claws are stronger.\n\nAP measures energy, not time. Everyone regains 1 AP / 30 game minutes.\nActions resolve once, then briefly recover. Extra clicks cannot queue or spam.\nThe world runs continuously: 1 game minute / second; resting speeds it to 16×.\nDanger interrupts ordinary rest. Sleep runs at 128× speed with dark screens;\ncollapsing barricades or sustained injuries wake you. Space pauses; menus pause too.\n\nDeath preserves your identity, XP, skills and possessions. Stand as a zombie;\nseek June at the lab east of Mercy General for revival. Brain Rot requires\na powered lab and NecroNet access. Both skill trees use the same XP pool.\n\nMaya heals, Scott repairs and barricades, guards defend, and June revives.\nKeep their supplies stocked. They have the same AP limits as you.\n\nPrototype balance: 50 AP; revival 1 AP (Brain Rot: 10); standing 10 AP (Death Lurch: 5, Ankle Grab: 1);\nsyringe manufacture 20 AP. This is a local sandbox, not the full city war.\n\nGold: you  •  Green: allies  •  Red: enemies / danger  •  Grey: world\nRoutine activity is grouped; History preserves all local details.\nSpace: pause    R: rest    M: map    F11: full screen    Escape: pause / close / wake / cancel rest"
-  var body = label(overlay,help_text,Rect2(140,170,1160,680),21)
-  body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
  elif modal == "restart": _new_game_modal()
  elif modal == "jump":
   label(overlay,"Jumping from the window kills your survivor. You can spend AP to stand as a zombie.",Rect2(140,230,1140,60),24)
@@ -1052,14 +1127,15 @@ func _skills_modal() -> void:
  scroll.add_child(content)
  var height = {"human":0,"zombie":0}
  var tracks = {"military":"Military","science":"Scientific","civilian":"Civilian","scent":"Scent","offensive":"Offensive & Attack","utility":"Utility & Brain"}
+ var side = "human" if p.human else "zombie"
  var skills: Array = []
  for track in tracks:
-  skills.append_array(C.SKILLS.keys().filter(func(key): return C.SKILLS[key].category == track or (track == "military" and C.SKILLS[key].category == "hunter")))
+  skills.append_array(C.SKILLS.keys().filter(func(key): return C.SKILLS[key].side == side and (C.SKILLS[key].category == track or (track == "military" and C.SKILLS[key].category == "hunter"))))
  var last_track = ""
  for key in skills:
   var def = C.SKILLS[key]
   var owned = key in p.human_skills or key in p.zombie_skills
-  var x = 10 if def.side == "human" else 605
+  var x = 300
   var track = "military" if def.category == "hunter" else def.category
   if track != last_track:
    label(content,tracks[track].to_upper(),Rect2(x,height[def.side],555,32),23,GOLD)

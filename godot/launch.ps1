@@ -33,6 +33,8 @@ try {
         & $GodotPath --headless --path $projectDirectory --script res://tests/balance_runs.gd --log-file balance-runs.log -- "--label=$Balance"
         if ($LASTEXITCODE -ne 0) { throw 'Balance simulations failed.' }
     } elseif ($Gallery) {
+        & $GodotPath --path $projectDirectory --script res://tests/location_architecture_gallery.gd --log-file architecture-gallery.log
+        if ($LASTEXITCODE -ne 0) { throw 'Location architecture gallery failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/environment_inventory_test.gd --log-file environment-inventory-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Environment/inventory UI tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/style_refresh_test.gd --log-file style-refresh-tests.log
@@ -50,6 +52,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Character creation tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/simulation_test.gd --log-file tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Simulation tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/npc_naming_test.gd --log-file npc-naming-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'NPC naming tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/barricade_test.gd --log-file barricade-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Barricade tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/survival_test.gd --log-file survival-tests.log
@@ -66,6 +70,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Encumbrance/door tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/world_test.gd --log-file world-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'World tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/location_architecture_test.gd --log-file architecture-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Location architecture tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/fort_rules_test.gd --log-file fort-rules-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Fort rules tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/free_running_test.gd --log-file free-running-tests.log

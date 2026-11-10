@@ -67,19 +67,22 @@ func _initialize() -> void:
  check(not s.act("repair").ok,"Standing zombies prevent basic cleanup")
  other.down = true; s.reindex()
  # Immune and unpowerable categories are checked even with injected old state.
- for kind in ["junkyard","aquarium","bear_pit","elephant_house","giraffe_house","lion_enclosure","reptile_house"]:
+ for kind in C.OUTDOORS+["junkyard","aquarium","bear_pit","elephant_house","giraffe_house","lion_enclosure","reptile_house"]:
   b.type = kind; b.ruin = 3; b.ransack_hits = 5
   s.initialize_block(b)
   check(b.ruin == 0 and b.ransack_hits == 0,"Immune location drops invalid legacy ruin: "+kind)
   p.human = false; ready()
   check(not s.act("ransack").ok and not s.act("ruin").ok,"Immune type cannot be damaged: "+kind)
+  check(p.ap == 50 and b.ruin == 0 and b.ransack_hits == 0,"Rejected damage spends no AP or changes state: "+kind)
  p.human = true; p.inside = true
+ s.give_item(p,"portable_generator"); s.give_item(p,"fuel_can")
  for kind in C.OUTDOORS+["junkyard","stadium","power_station"]:
   b.type = kind; b.generator = true; b.generator_hp = 6; b.fuel_until = s.minute+100
   ready()
   check(not s.can_host_generator(b) and not s.powered(b),"Unsupported square can never be lit: "+kind)
   s.initialize_block(b)
   check(not b.generator and not s.act("generator").ok and not s.act("fuel").ok,"Legacy generator removed and actions rejected")
+  check(p.ap == 50 and not s.item_kind(p,"portable_generator").is_empty() and not s.item_kind(p,"fuel_can").is_empty(),"Rejected power actions preserve AP and supplies: "+kind)
  # Multi-AP actions other than repair may also overdraw, while NPCs conserve AP.
  b.type = "necrotech_lab"; p.human_skills = ["lab_experience","necronet"]; p.inventory.clear()
  b.generator = true; b.generator_hp = C.GENERATOR_HP; b.fuel_until = s.minute+100

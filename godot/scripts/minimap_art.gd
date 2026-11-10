@@ -1,4 +1,5 @@
 extends RefCounted
+const Architecture = preload("res://scripts/location_architecture.gd")
 ## Shared, padded architectural models. Complexes sample one model in world space;
 ## state selection belongs to each square, never to the whole complex.
 const GROUPS = [
@@ -64,6 +65,8 @@ static func state(sim, b: Dictionary) -> int:
  return 1 if sim.powered(b) else 0
 
 func source(kind: String, variant: int = 0, status: int = 0) -> Dictionary:
+ var architecture = Architecture.map_source(kind,variant,status)
+ if not architecture.is_empty(): return architecture
  if status == 3:
   if kind == "fort_property": return {"file":"fort-properties-lit-ruin","grid":Vector2i(2,1),"at":Vector2i(variant,0)}
   if kind == "mall_l": return {"file":"mall-l-lit-ruin","grid":Vector2i.ONE,"at":Vector2i.ZERO}
@@ -83,7 +86,8 @@ func source(kind: String, variant: int = 0, status: int = 0) -> Dictionary:
  return {"file":"outdoors","grid":Vector2i(3,3),"at":Vector2i(OUTDOORS.find(kind)%3,OUTDOORS.find(kind)/3)}
 
 func model(kind: String, status: int, variant: int) -> Texture2D:
- if kind == "junkyard": status = 0
+ # Open land and junkyards never gain power/ruin art, even through previews.
+ if kind == "junkyard" or kind in OUTDOORS or kind == "street": status = 0
  if kind in ["aquarium","bear_pit","elephant_house","giraffe_house","lion_enclosure","reptile_house"] and status >= 2: status = 0
  if kind in ["stadium","power_station"] and status in [1,3]: status = 2 if status == 3 else 0
  var key = "%s:%d:%d" % [kind,status,variant]
@@ -94,25 +98,33 @@ func model(kind: String, status: int, variant: int) -> Texture2D:
  var sheet: Texture2D = sheets[path]
  if sheet == null: return null
  var at: Vector2i = info.at
- if status != 3 and kind not in OUTDOORS and kind != "street": at.x = status
+ if not info.get("architecture",false) and status != 3 and kind not in OUTDOORS and kind != "street": at.x = status
  var cell = Vector2(sheet.get_size())/Vector2(info.grid)
  var start = Vector2i(Vector2(at)*cell)
  var end = Vector2i(Vector2(at+Vector2i.ONE)*cell)
+ # The tower sheets reserve extra vertical space for the tall first row.
+ if info.get("architecture",false) and kind in ["tower","park","cemetery"]:
+  var rows = [0.0,0.40,0.68,1.0]
+  start.y = roundi(sheet.get_height()*rows[at.y])
+  end.y = roundi(sheet.get_height()*rows[at.y+1])
  var image = sheet.get_image().get_region(Rect2i(start,end-start))
  # Architecture fills the plot. Height, setbacks and clipping belong to the
  # shared scene, rather than transparent padding inside each gameplay square.
- if kind not in ["fort_property","zoo_property"]:
+ if kind not in ["fort_property","zoo_property"] and not info.get("architecture",false):
   var used = image.get_used_rect()
   if status in [1,2] and kind not in OUTDOORS and kind != "street":
    used = sheet.get_image().get_region(Rect2i(0,start.y,int(cell.x),end.y-start.y)).get_used_rect().intersection(Rect2i(Vector2i.ZERO,image.get_size()))
   if used.has_area(): image = image.get_region(used)
- image.resize(768,768,Image.INTERPOLATE_LANCZOS)
+ var model_size = 384 if info.get("architecture",false) else 768
+ image.resize(model_size,model_size,Image.INTERPOLATE_LANCZOS)
  models[key] = ImageTexture.create_from_image(image)
  return models[key]
 
 func texture_for(sim, b: Dictionary, state_override: int = -1) -> Texture2D:
  var kind: String = "office" if b.type == "necrotech_lab" else b.type
  var variant = stable_variant(b.complex if not b.complex.is_empty() else b.name,4) if kind == "mall" else (stable_variant("%d,%d" % [b.x,b.y],6) if kind == "street" else 0)
+ if kind != "street" and Architecture.eligible(b): variant = Architecture.variant_for(sim,b)
+ if kind == "street" and Architecture.eligible(b): variant = Architecture.variant_for(sim,b)*2+stable_variant("%d,%d" % [b.x,b.y],2)
  var footprint = footprint_for(sim,b)
  var property = property_info(sim,b)
  if not property.is_empty():
@@ -154,7 +166,8 @@ func material_for(sim, b: Dictionary) -> ShaderMaterial:
  material.shader = preload("res://scripts/minimap_state.gdshader")
  material.set_shader_parameter("intact_model",intact.atlas)
  var bounds = texture.region
- material.set_shader_parameter("region",Vector4(bounds.position.x/768.0,bounds.position.y/768.0,bounds.size.x/768.0,bounds.size.y/768.0))
+ var atlas_size = texture.atlas.get_size()
+ material.set_shader_parameter("region",Vector4(bounds.position.x/atlas_size.x,bounds.position.y/atlas_size.y,bounds.size.x/atlas_size.x,bounds.size.y/atlas_size.y))
  material.set_shader_parameter("joined_edges",edges)
  material.set_shader_parameter("ruined",state(sim,b) == 2)
  materials[key] = material
