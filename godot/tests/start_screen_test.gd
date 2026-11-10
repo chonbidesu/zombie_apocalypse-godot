@@ -4,6 +4,7 @@ const TEST_SAVE = "user://start-screen-test.json"
 const Menu = preload("res://scripts/start_screen.gd")
 const Game = preload("res://scripts/interface.gd")
 const GameMusic = preload("res://scripts/game_music.gd")
+const Intro = preload("res://scripts/intro.gd")
 var failures: int = 0
 var checks: int = 0
 
@@ -31,11 +32,11 @@ func run() -> void:
  root.size = Vector2i(1536,864)
  var menu := await open_title()
  await process_frame
- var corpse_intro = (load("res://intro.tscn") as PackedScene).instantiate()
+ var corpse_intro := (load("res://intro.tscn") as PackedScene).instantiate() as Intro
  corpse_intro.occupation = "Corpse"
  menu.add_child(corpse_intro)
  corpse_intro.set_process(false)
- corpse_intro._show_page(1)
+ corpse_intro._show_page(Intro.Page.OUTBREAK)
  await process_frame
  check(is_equal_approx(corpse_intro.line_times[1] - corpse_intro.line_times[0] - corpse_intro.line_streams[0].get_length(), 1.0), "Narration recordings have a one-second pause")
  check(corpse_intro.line_labels[0].size.x >= 1400.0 and corpse_intro.line_labels[1].position.y > corpse_intro.line_labels[0].position.y, "Narration lines have full-width horizontal layouts")
@@ -45,12 +46,12 @@ func run() -> void:
  corpse_intro._advance()
  check(corpse_intro.narration_index == 1 and is_equal_approx(corpse_intro.line_times[1], corpse_intro.elapsed), "Advancing skips directly to the next line")
  corpse_intro._advance()
- check(corpse_intro.page == 2, "Advancing the last line opens the next screen")
- corpse_intro._show_page(3)
+ check(corpse_intro.page == Intro.Page.QUARANTINE, "Advancing the last line opens the next screen")
+ corpse_intro._show_page(Intro.Page.NECROTECH)
  check(corpse_intro.specimen.visible and corpse_intro.layers.size() == 1 and (corpse_intro.specimen.get_node("Contents") as AnimatedSprite2D).is_playing(), "NecroTech uses the animated single specimen")
  var contents := corpse_intro.specimen.get_node("Contents") as AnimatedSprite2D
  check(contents.material == null and contents.sprite_frames.resource_path.ends_with("specimen_body_frames-transparent-v3.tres"), "Specimen uses the transparent frames without a masking shader")
- corpse_intro._show_page(0)
+ corpse_intro._show_page(Intro.Page.OPENING)
  corpse_intro.elapsed = 0.0
  var roof: Rect2 = corpse_intro._opening_facade_rect()
  check(roof.position.y > 1080.0 and is_equal_approx(roof.size.y / roof.size.x, 1862.0 / 845.0), "Opening starts above the tall facade without stretching it")
@@ -77,22 +78,23 @@ func run() -> void:
  var close_line: Rect2 = corpse_intro._quarantine_rect(1)
  var close_background: Rect2 = corpse_intro._quarantine_rect(0)
  check(close_line.size.x > distant_line.size.x and is_equal_approx((close_line.end.y - close_background.position.y) / close_background.size.y, street_row) and is_equal_approx(close_line.size.x / close_line.size.y, distant_line.size.x / distant_line.size.y) and corpse_intro._quarantine_rect(2).size.x > distant_people.size.x * 3.0, "Checkpoint advances with the security line planted and undistorted")
- corpse_intro._skip_intro()
- check(corpse_intro.page == 4 and not corpse_intro.eyes.visible, "Skipping a corpse intro still presents the closed-eyed origin")
- check(corpse_intro.line_labels[1].text.ends_with("It's time to claim Malton.") and corpse_intro.title.text.is_empty(), "Corpse text uses the revised line without a heading")
- check(corpse_intro.line_streams.size() == 3 and corpse_intro.narration_end > 1.0, "Corpse origin queues its narrated passages and Rise")
+ click_at(corpse_intro.skip.get_global_rect().get_center())
+ check(corpse_intro.page == Intro.Page.ORIGIN and not corpse_intro.eyes.visible, "The Skip button on the corpse intro presents the closed-eyed origin")
+ check(corpse_intro.line_labels[1].text.ends_with("It's time to claim Malton."), "Corpse text uses the revised line")
+ check(corpse_intro.line_streams.size() == 3 and corpse_intro.line_streams[2] != null, "Corpse origin queues its narrated passages and Rise")
  var feet: Rect2 = corpse_intro._corpse_rect()
  corpse_intro.elapsed = 14.0
  var head: Rect2 = corpse_intro._corpse_rect()
  check(head.position.x < feet.position.x, "Corpse camera pans from the feet towards the head")
- corpse_intro._advance()
+ click_at(Vector2(960, 540))
+ check(corpse_intro.narration_index == 0, "Clicking the intro advances narration")
  corpse_intro._advance()
  corpse_intro._advance()
  var rise := InputEventKey.new()
  rise.keycode = KEY_A
  rise.pressed = true
- corpse_intro._input(rise)
- check(corpse_intro.ending and corpse_intro.eyes.visible, "A key opens the corpse's eyes")
+ root.push_input(rise, true)
+ check(corpse_intro.ending_time >= 0.0 and corpse_intro.eyes.visible, "A key opens the corpse's eyes")
  check(corpse_intro.narration.stream.resource_path.ends_with("Malton RISE.mp3") and corpse_intro.narration.playing, "Eye opening plays the Rise sound")
  corpse_intro._process(1.9)
  check(corpse_intro.curtain.color.a == 0.0, "Corpse awakening holds before fading")
@@ -145,12 +147,10 @@ func run() -> void:
  await process_frame
  var game := current_scene as Game
  game.set_process(false)
- var playlist := game.get_node("GameMusic") as GameMusic
- check(playlist.playing and playlist.track_index in [0,1],"Gameplay starts one of the original two tracks")
+ var playlist := game.game_music
+ check(playlist.playing and playlist._next_index == 1,"New Game starts the shuffled gameplay playlist")
  check(is_equal_approx(db_to_linear(playlist.volume_db),0.3),"Gameplay music uses the original 30% volume")
- var first_track := playlist.track_index
- playlist.next_track()
- check(playlist.playing and playlist.track_index != first_track,"The playlist advances when a song ends")
+ check_playlist_cycle(playlist)
  check(game.scene_file_path == "res://main.tscn" and game.sim.player().job == "Firefighter","Confirmation launches the selected occupation")
  check(game.sim.world_mode == "malton" and game.sim.width == 100,"New Game starts original Malton")
  check(game.sim.has_skill(game.sim.player(),"axe_proficiency"),"Selected occupation has its starting skill")
@@ -167,10 +167,58 @@ func run() -> void:
  await scene_changed
  game = current_scene as Game
  game.set_process(false)
- check((game.get_node("GameMusic") as GameMusic).playing,"Loading a saved game starts the gameplay playlist")
+ playlist = game.game_music
+ check(playlist.playing and playlist._next_index == 1,"Loading from the title starts the shuffled gameplay playlist")
  check(game.sim.player() == saved_actor and game.sim.minute == saved_minute,"Load Game preserves saved character and time without starting a new world")
  check(game.notice == "Loaded your neighbourhood.","Loaded game shows confirmation")
+ playlist.finished.emit()
+ var before_load := playlist.stream
+ game.save_path = "user://start-screen-intentionally-missing.json"
+ game._load()
+ check(playlist._next_index == 2 and playlist.stream == before_load,"A failed in-game load keeps the current track and queue")
+ game.save_path = TEST_SAVE
+ game._load()
+ check(playlist.playing and playlist._next_index == 1 and playlist.stream != before_load,"An in-game load shuffles and starts playback from the beginning")
+ playlist.finished.emit()
+ var before_restart := playlist.stream
+ game.new_world_mode = "sandbox"
+ game.open_modal("restart")
+ for button: Button in game.overlay.find_children("*", "Button", true, false):
+  if button.text == "Start new game":
+   button.pressed.emit()
+   break
+ check(game.sim.world_mode == "sandbox" and playlist.playing and playlist._next_index == 1 and playlist.stream != before_restart,"Restarting from world setup shuffles the playlist")
  await process_frame
  DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
  print("Start screen: %d checks, %d failures" % [checks,failures])
  quit(1 if failures else 0)
+
+func click_at(position: Vector2) -> void:
+ var click := InputEventMouseButton.new()
+ click.button_index = MOUSE_BUTTON_LEFT
+ click.position = position
+ click.pressed = true
+ root.push_input(click, true)
+ click = click.duplicate() as InputEventMouseButton
+ click.pressed = false
+ root.push_input(click, true)
+
+func check_playlist_cycle(playlist: GameMusic) -> void:
+ var heard: Array[String] = []
+ for i in range(playlist._tracks.size()):
+  heard.append(playlist.stream.resource_path.get_file())
+  playlist.finished.emit()
+ check(heard.size() == playlist._tracks.size() and heard.size() == _track_count() and heard.size() == _unique_track_count(heard),"A shuffle plays every imported gameplay track once")
+ check("road_runner.mp3" in heard and "forward_motion.mp3" in heard and "summoning.mp3" not in heard,"The gameplay playlist includes both original tracks and excludes title music")
+ check(playlist.playing and playlist.stream.resource_path.get_file() != heard[-1],"A new shuffle begins without repeating the last track")
+
+func _track_count() -> int:
+ var count := 0
+ for file in ResourceLoader.list_directory("res://assets/music/"):
+  if file != "summoning.mp3" and file.get_extension().to_lower() in ["mp3", "ogg", "wav"]: count += 1
+ return count
+
+func _unique_track_count(tracks: Array[String]) -> int:
+ var unique := {}
+ for track in tracks: unique[track] = true
+ return unique.size()

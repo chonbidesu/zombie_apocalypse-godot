@@ -15,6 +15,7 @@ const Feed = preload("res://scripts/event_feed.gd")
 const C = preload("res://scripts/catalog.gd")
 const MapArtwork = preload("res://scripts/minimap_art.gd")
 const MapCanvas = preload("res://scripts/minimap_canvas.gd")
+const GameMusic = preload("res://scripts/game_music.gd")
 var minimap_artwork := MapArtwork.new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
 const INVENTORY_PAGE_SIZE = 10
@@ -65,6 +66,7 @@ var actions_bottom: float = 971.0
 var player_portrait: TextureRect
 var lurch_rng := RandomNumberGenerator.new()
 var lurch_segments: Array = [{"until":0.55,"frame":0}]
+@onready var game_music := get_node_or_null("GameMusic") as GameMusic
 
 func _ready() -> void:
  lurch_rng.randomize()
@@ -83,7 +85,7 @@ func _ready() -> void:
    sim.start()
    notice = why
   else: notice = "Welcome to %s. Find allies and secure a shelter." % sim.world_title
- feed.reset(sim.messages)
+ _reset_session_view()
  refresh()
 
 func _process(delta: float) -> void:
@@ -764,6 +766,7 @@ func _reset_session_view() -> void:
  selected_actor = -1
  selected_item = -1
  feed.reset(sim.messages)
+ if game_music: game_music.restart_playlist()
 
 func open_modal(which: String) -> void:
  if resting: sim.stop_rest()

@@ -4,6 +4,7 @@ const Sim = preload("res://scripts/simulation.gd")
 const Game = preload("res://scripts/interface.gd")
 const Parallax = preload("res://scripts/title_parallax.gd")
 const CharacterCreation = preload("res://scripts/character_creation/character_creation.gd")
+const Intro = preload("res://scripts/intro.gd")
 const TITLE_FONT = preload("res://assets/fonts/PixelifySans.ttf")
 var save_path: String = Sim.SAVE_PATH
 var title_page: Control
@@ -13,7 +14,7 @@ var status: Label
 var buttons: Array[TextureButton] = []
 var music: AudioStreamPlayer
 var creation: CharacterCreation
-var intro: Control
+var intro: Intro
 
 func _ready() -> void:
  DisplayServer.window_set_title("Zombie Apocalypse")
@@ -118,7 +119,7 @@ func show_title() -> void:
 
 func show_intro(occupation: String) -> void:
  music.volume_db = linear_to_db(0.1)
- intro = (load("res://intro.tscn") as PackedScene).instantiate()
+ intro = (load("res://intro.tscn") as PackedScene).instantiate() as Intro
  intro.occupation = occupation
  intro.reduced_motion = creation.reduce_motion.button_pressed
  intro.finished.connect(start_new_game)

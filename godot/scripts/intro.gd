@@ -2,27 +2,45 @@ extends Control
 
 signal finished(occupation: String)
 
+enum Page { OPENING, OUTBREAK, QUARANTINE, NECROTECH, ORIGIN }
+
 const FONT = preload("res://assets/fonts/PixelifySans.ttf")
 const ROOT = "res://assets/intro/"
-const ORIGINS = {"Private":"private", "Medic":"medic", "Scout":"scout", "Doctor":"doctor", "NecroTech Lab Assistant":"necro", "Consumer":"consumer", "Police Officer":"police", "Firefighter":"firefighter"}
-const TITLES = ["", "", "QUARANTINE", "NECROTECH", ""]
-const VOICES = {"Private":"9a", "Medic":"9b", "Scout":"9c", "Doctor":"9d", "NecroTech Lab Assistant":"9e", "Consumer":"9f", "Police Officer":"9g", "Firefighter":"9h"}
-const TEXTS = [
- "Before the outbreak, Malton was an ordinary city.\n\nBehind the doors of its office buildings, NecroTech carried out research few people knew about.",
- "Then people began to die.\n\nAnd the dead began to rise.",
- "The government sealed Malton under quarantine.\n\nThose inside were left to face the dead.",
- "NecroTech had been studying the dead. Its scientists also found a way to bring them back.\n\nWhat happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."
+const STAGE_SIZE := Vector2(1920, 1080)
+const BASE_FRAME := Rect2(-77, -43, 2074, 1166)
+const ZOOM_ANCHOR := Vector2(960, 490)
+const FACADE_SIZE := Vector2(845, 1862)
+const LAB_PANE := Rect2(370, 1025, 109, 122)
+const LINE_GAP_SECONDS := 1.0
+const FADE_OUT_SECONDS := 1.1
+const AWAKENING_HOLD_SECONDS := 2.0
+const ORIGINS := {
+ "Private": ["private", "9a"],
+ "Medic": ["medic", "9b"],
+ "Scout": ["scout", "9c"],
+ "Doctor": ["doctor", "9d"],
+ "NecroTech Lab Assistant": ["necro", "9e"],
+ "Consumer": ["consumer", "9f"],
+ "Police Officer": ["police", "9g"],
+ "Firefighter": ["firefighter", "9h"]
+}
+# Each caption is paired with its recording ID.
+const SHARED_NARRATION := [
+ [["1", "Before the outbreak, Malton was an ordinary city."],
+  ["2", "Behind the doors of its office buildings, NecroTech carried out research few people knew about."]],
+ [["3", "Then people began to die."],
+  ["4", "And the dead began to rise."]],
+ [["5", "The government sealed Malton under quarantine."],
+  ["6", "Those inside were left to face the dead."]],
+ [["7", "NecroTech had been studying the dead. Its scientists also found a way to bring them back."],
+  ["8", "What happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."]]
 ]
 var occupation := ""
 var reduced_motion := false
-var page := 0
+var page: Page = Page.OPENING
 var elapsed := 0.0
-var ending := false
-var ending_time := 0.0
-var held_drift := 0.0
+var ending_time := -1.0
 var layers: Array[Texture2D] = []
-var title: Label
-var copy: Label
 var prompt: Label
 var skip: Button
 var eyes: TextureRect
@@ -30,25 +48,27 @@ var curtain: ColorRect
 var facade_view: TextureRect
 var opening_scrim: ColorRect
 var specimen: Node2D
+var specimen_contents: AnimatedSprite2D
 var narration: AudioStreamPlayer
 var line_labels: Array[Label] = []
 var line_times: Array[float] = []
 var line_streams: Array[AudioStream] = []
 var narration_index := -1
-var narration_end := 0.0
 
 func _ready() -> void:
- mouse_filter = Control.MOUSE_FILTER_STOP
- set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
- texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
- facade_view = TextureRect.new()
- facade_view.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
- facade_view.stretch_mode = TextureRect.STRETCH_SCALE
- facade_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ _build_controls()
+ _show_page(Page.OPENING)
+
+func _build_controls() -> void:
+ facade_view = _texture_layer()
  facade_view.material = load(ROOT + "01_before/window_glass.tres")
- add_child(facade_view)
- specimen = (load(ROOT + "03_necrotech/specimen_tube-v3.tscn") as PackedScene).instantiate()
+ specimen = (load(ROOT + "03_necrotech/specimen_tube-v3.tscn") as PackedScene).instantiate() as Node2D
  add_child(specimen)
+ specimen_contents = specimen.get_node("Contents") as AnimatedSprite2D
+ eyes = _texture_layer()
+ var material := ShaderMaterial.new()
+ material.shader = preload("res://scripts/intro_eyes.gdshader")
+ eyes.material = material
  narration = AudioStreamPlayer.new()
  add_child(narration)
  opening_scrim = ColorRect.new()
@@ -57,15 +77,7 @@ func _ready() -> void:
  opening_scrim.color = Color(0.015, 0.018, 0.02, 0.82)
  opening_scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
  add_child(opening_scrim)
- title = _label(30, Color("d6ac6a"))
- title.position = Vector2(120, 725)
- title.size = Vector2(1500, 50)
- copy = _label(30, Color("fff2d8"))
- copy.position = Vector2(120, 780)
- copy.size = Vector2(1450, 190)
- copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
- copy.hide()
- for i in range(4):
+ for i in range(3):
   var line := _label(30, Color("fff2d8"))
   line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
   line_labels.append(line)
@@ -81,27 +93,19 @@ func _ready() -> void:
  skip.add_theme_font_size_override("font_size", 20)
  skip.pressed.connect(_skip_intro)
  add_child(skip)
- eyes = TextureRect.new()
- eyes.position = Vector2(-77, -43)
- eyes.size = Vector2(2074, 1166)
- eyes.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
- eyes.stretch_mode = TextureRect.STRETCH_SCALE
- eyes.mouse_filter = Control.MOUSE_FILTER_IGNORE
- var shader := Shader.new()
- shader.code = "shader_type canvas_item; void fragment() { vec4 c = texture(TEXTURE, UV); float m = smoothstep(0.73, 0.75, UV.x) * (1.0-smoothstep(0.85, 0.87, UV.x)) * smoothstep(0.30, 0.32, UV.y) * (1.0-smoothstep(0.47, 0.49, UV.y)); COLOR = vec4(c.rgb, c.a * m); }"
- var material := ShaderMaterial.new()
- material.shader = shader
- eyes.material = material
- add_child(eyes)
- eyes.hide()
- # Keep text above the face overlay.
- move_child(eyes, 2)
  curtain = ColorRect.new()
  curtain.color = Color.BLACK
  curtain.mouse_filter = Control.MOUSE_FILTER_IGNORE
  curtain.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  add_child(curtain)
- _show_page(0)
+
+func _texture_layer() -> TextureRect:
+ var layer := TextureRect.new()
+ layer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+ layer.stretch_mode = TextureRect.STRETCH_SCALE
+ layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ add_child(layer)
+ return layer
 
 func _label(font_size: int, color: Color) -> Label:
  var label := Label.new()
@@ -118,117 +122,126 @@ func _label(font_size: int, color: Color) -> Label:
 func _load_layer(path: String) -> Texture2D:
  return load(ROOT + path) as Texture2D
 
-func _show_page(index: int) -> void:
- page = index
+func _show_page(next_page: Page) -> void:
+ page = next_page
  elapsed = 0.0
  narration.stop()
  narration_index = -1
- line_times.clear()
- line_streams.clear()
+ _load_page_art()
+ _prepare_narration()
+ curtain.color.a = 1.0
+ _update_art()
+ queue_redraw()
+
+func _load_page_art() -> void:
  layers.clear()
  eyes.hide()
  match page:
-  0:
-   for path in ["01_before/skyline_far.png", "01_before/skyline_mid.png", "01_before/lab_window_interior.png", "01_before/office_facade-v4.png"]: layers.append(_load_layer(path))
-  2:
+  Page.OPENING:
+   for path in ["01_before/skyline_far.png", "01_before/skyline_mid.png", "01_before/lab_window_interior.png"]: layers.append(_load_layer(path))
+   facade_view.texture = _load_layer("01_before/office_facade-v4.png")
+  Page.QUARANTINE:
    for path in ["02_quarantine/background.png", "02_quarantine/soldiers-v2.png", "02_quarantine/civilians.png"]: layers.append(_load_layer(path))
-  3:
+  Page.NECROTECH:
    layers.append(_load_layer("03_necrotech/background.png"))
-  4:
-   var folder: String = "05_corpse/" if occupation == "Corpse" else "04_origins/%s/" % ORIGINS.get(occupation, "consumer")
+  Page.ORIGIN:
+   var origin: Array = ORIGINS.get(occupation, ORIGINS.Consumer)
+   var folder := "05_corpse/" if occupation == "Corpse" else "04_origins/%s/" % origin[0]
    layers.append(_load_layer(folder + "background.png"))
    layers.append(_load_layer(folder + ("body_closed-v3.png" if occupation == "Corpse" else "foreground.png")))
    if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open-v3.png")
- title.text = ""
- facade_view.visible = page == 0
- specimen.visible = page == 3
- var contents := specimen.get_node("Contents") as AnimatedSprite2D
- if page == 3 and not reduced_motion: contents.play()
- else: contents.pause()
- opening_scrim.visible = page != 1
- if page == 0: facade_view.texture = layers[3]
- if page < 4:
-  copy.text = TEXTS[page]
- elif occupation == "Corpse":
-  copy.text = "Your old life is gone, but something remains.\n\nThe living hide behind barricades. The dead roam the streets. It's time to claim Malton."
- else:
-  copy.text = "Before the outbreak, you were a %s.\n\nNow, you must find shelter, gather supplies, and survive in a city where death is not the end." % occupation
- var texts: Array = []
- var tracks: Array = []
- match page:
-  0: texts = ["Before the outbreak, Malton was an ordinary city.", "Behind the doors of its office buildings, NecroTech carried out research few people knew about."]; tracks = ["1", "2"]
-  1: texts = ["Then people began to die.", "And the dead began to rise."]; tracks = ["3", "4"]
-  2: texts = ["The government sealed Malton under quarantine.", "Those inside were left to face the dead."]; tracks = ["5", "6"]
-  3: texts = ["NecroTech had been studying the dead. Its scientists also found a way to bring them back.", "What happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."]; tracks = ["7", "8"]
-  4:
-   if occupation == "Corpse":
-    texts = ["Your old life is gone, but something remains.", "The living hide behind barricades. The dead roam the streets. It's time to claim Malton.", "RISE"]
-    tracks = ["12", "13", "14"]
-   else:
-    texts = ["Before the outbreak, you were a %s." % occupation, "Now, you must find shelter, gather supplies, and survive in a city where death is not the end.", "ENTER MALTON"]
-    tracks = [VOICES.get(occupation, "9f"), "10", "11"]
+ facade_view.visible = page == Page.OPENING
+ specimen.visible = page == Page.NECROTECH
+ if specimen.visible and not reduced_motion: specimen_contents.play()
+ else: specimen_contents.pause()
+ opening_scrim.visible = page != Page.OUTBREAK
+
+func _page_narration() -> Array:
+ if page != Page.ORIGIN: return SHARED_NARRATION[page]
+ if occupation == "Corpse":
+  return [
+   ["12", "Your old life is gone, but something remains."],
+   ["13", "The living hide behind barricades. The dead roam the streets. It's time to claim Malton."],
+   ["14", "RISE"]
+  ]
+ var origin: Array = ORIGINS.get(occupation, ORIGINS.Consumer)
+ return [
+  [origin[1], "Before the outbreak, you were a %s." % occupation],
+  ["10", "Now, you must find shelter, gather supplies, and survive in a city where death is not the end."],
+  ["11", "ENTER MALTON"]
+ ]
+
+func _prepare_narration() -> void:
+ line_times.clear()
+ line_streams.clear()
+ var lines := _page_narration()
+ var centered := page == Page.OUTBREAK
+ var width := 1400.0 if centered else 1450.0
  var next_time := 0.8
- var y := 410.0 if page == 1 else 780.0
+ var y := 410.0 if centered else 780.0
  for i in range(line_labels.size()):
   var label := line_labels[i]
-  label.visible = i < texts.size()
-  if i >= texts.size(): continue
-  label.text = texts[i]
-  label.position = Vector2(260, y) if page == 1 else Vector2(120, y)
-  var width := 1400.0 if page == 1 else 1450.0
+  label.visible = i < lines.size()
+  if not label.visible: continue
+  label.text = lines[i][1]
+  label.position = Vector2(260 if centered else 120, y)
   var text_height := maxf(42.0, FONT.get_multiline_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, width, 30).y)
   label.size = Vector2(width, text_height)
-  label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if page == 1 else HORIZONTAL_ALIGNMENT_LEFT
+  label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if centered else HORIZONTAL_ALIGNMENT_LEFT
   label.modulate.a = 0.0
-  y += text_height + (22.0 if texts.size() < 3 else 5.0)
-  var stream := load(ROOT + "audio/Malton %s.mp3" % tracks[i]) as AudioStream
+  y += text_height + (22.0 if lines.size() < 3 else 5.0)
+  var stream := _recording(lines[i][0])
   line_streams.append(stream)
   line_times.append(next_time)
-  next_time += (stream.get_length() if stream else 0.0) + 1.0
- narration_end = next_time
+  next_time += (stream.get_length() if stream else 0.0) + LINE_GAP_SECONDS
  prompt.text = "CLICK OR PRESS ANY KEY TO ADVANCE"
- if page == 1:
-  copy.position = Vector2(260, 410)
-  copy.size = Vector2(1400, 260)
-  copy.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
- else:
-  copy.position = Vector2(120, 780)
-  copy.size = Vector2(1450, 190)
-  copy.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
- queue_redraw()
+ prompt.modulate.a = 0.0
+
+func _recording(id: String) -> AudioStream:
+ return load(ROOT + "audio/Malton %s.mp3" % id) as AudioStream
 
 func _process(delta: float) -> void:
  elapsed += delta
- if page == 0:
+ _update_art()
+ queue_redraw()
+ if ending_time >= 0.0:
+  _update_ending(delta)
+ else:
+  _update_narration()
+
+func _update_art() -> void:
+ if page == Page.OPENING:
   var facade := _opening_facade_rect()
   facade_view.position = facade.position
   facade_view.size = facade.size
- if page == 3:
-  var progress := 1.0 if reduced_motion else 1.0 - pow(1.0 - clampf(elapsed / 14.0, 0.0, 1.0), 3.0)
+ elif page == Page.NECROTECH:
+  var progress := _lab_retreat()
   specimen.position = Vector2(lerpf(2270.0, 1570.0, progress), 535)
   specimen.scale = Vector2.ONE * lerpf(0.65, 0.48, progress)
- if page == 4 and occupation == "Corpse":
+ elif eyes.visible:
   var body := _corpse_rect()
   eyes.position = body.position
   eyes.size = body.size
- if ending:
-  ending_time += delta
-  curtain.color.a = clampf((ending_time - (2.0 if occupation == "Corpse" else 0.1)) / 1.1, 0.0, 1.0)
-  var finish_at := maxf(3.2, narration.stream.get_length() + 0.1) if occupation == "Corpse" and narration.stream else 1.2
-  if ending_time >= finish_at:
-   set_process(false)
-   finished.emit(occupation)
- else:
-  curtain.color.a = 1.0 - clampf(elapsed / 0.65, 0.0, 1.0)
-  var fade_duration := 1.4 if page == 1 else 0.9
-  for i in range(line_times.size()):
-   line_labels[i].modulate.a = clampf((elapsed - line_times[i]) / fade_duration, 0.0, 1.0)
-  if narration_index + 1 < line_times.size() and elapsed >= line_times[narration_index + 1]:
-   narration_index += 1
-   narration.stream = line_streams[narration_index]
-   if narration.stream: narration.play()
-  prompt.modulate.a = clampf(elapsed / 0.5, 0.0, 1.0)
- queue_redraw()
+
+func _update_narration() -> void:
+ curtain.color.a = 1.0 - clampf(elapsed / 0.65, 0.0, 1.0)
+ var fade_duration := 1.4 if page == Page.OUTBREAK else 0.9
+ for i in range(line_times.size()):
+  line_labels[i].modulate.a = clampf((elapsed - line_times[i]) / fade_duration, 0.0, 1.0)
+ var next := narration_index + 1
+ if next < line_times.size() and elapsed >= line_times[next]: _play_line(next)
+ prompt.modulate.a = clampf(elapsed / 0.5, 0.0, 1.0)
+
+func _update_ending(delta: float) -> void:
+ ending_time += delta
+ var hold := AWAKENING_HOLD_SECONDS if occupation == "Corpse" else 0.1
+ curtain.color.a = clampf((ending_time - hold) / FADE_OUT_SECONDS, 0.0, 1.0)
+ var finish_at := 1.2
+ if occupation == "Corpse":
+  finish_at = maxf(3.2, narration.stream.get_length() + 0.1) if narration.stream else 3.2
+ if ending_time >= finish_at:
+  set_process(false)
+  finished.emit(occupation)
 
 func _opening_facade_rect() -> Rect2:
  var travel := 1.0 if reduced_motion else smoothstep(2.5, 9.3, elapsed)
@@ -237,7 +250,7 @@ func _opening_facade_rect() -> Rect2:
  var top := lerpf(2100.0, -1983.0, travel)
  var anchor := Vector2(960, 485)
  var origin := anchor + (Vector2(0, top) - anchor) * zoom
- return Rect2(origin, Vector2(1920, 1920.0 * 1862.0 / 845.0) * zoom)
+ return Rect2(origin, FACADE_SIZE * (STAGE_SIZE.x / FACADE_SIZE.x) * zoom)
 
 func _opening_light() -> float:
  if reduced_motion: return 1.0
@@ -250,26 +263,23 @@ func _opening_light() -> float:
 
 func _quarantine_rect(index: int) -> Rect2:
  var progress := 0.0 if reduced_motion else smoothstep(0.0, 8.0, elapsed)
- var anchor := Vector2(960, 490)
- var base := Rect2(-77, -43, 2074, 1166)
  var factor := 1.0 + progress * (0.12 if index == 0 else (0.5 if index == 1 else 2.5))
  if index == 1:
   var line := Rect2(-577, 184, 2574, 2574.0 / 3.0)
   # Keep the line's base on the same street row as the background zooms.
-  var street_row := (line.end.y - base.position.y) / base.size.y
-  var background := _zoom_rect(base, 1.0 + progress * 0.12, anchor)
+  var street_row := (line.end.y - BASE_FRAME.position.y) / BASE_FRAME.size.y
+  var background := _zoom_rect(BASE_FRAME, 1.0 + progress * 0.12)
   var grounded_y := background.position.y + street_row * background.size.y
-  var zoomed := _zoom_rect(line, factor, Vector2(anchor.x, line.end.y))
+  var zoomed := _zoom_rect(line, factor, Vector2(ZOOM_ANCHOR.x, line.end.y))
   zoomed.position.y += grounded_y - line.end.y
   return zoomed
+ return _zoom_rect(BASE_FRAME, factor)
+
+func _zoom_rect(base: Rect2, factor: float, anchor: Vector2 = ZOOM_ANCHOR) -> Rect2:
  return Rect2(anchor + (base.position - anchor) * factor, base.size * factor)
 
-func _advance_time() -> float:
- if page == 4 and not line_times.is_empty(): return line_times[-1]
- return maxf(narration_end, 11.2 if page == 0 and not reduced_motion else 0.8)
-
-func _zoom_rect(base: Rect2, factor: float, anchor: Vector2 = Vector2(960, 490)) -> Rect2:
- return Rect2(anchor + (base.position - anchor) * factor, base.size * factor)
+func _lab_retreat() -> float:
+ return 1.0 if reduced_motion else 1.0 - pow(1.0 - clampf(elapsed / 14.0, 0.0, 1.0), 3.0)
 
 func _corpse_rect() -> Rect2:
  var progress := 1.0 if reduced_motion else smoothstep(0.0, 14.0, elapsed)
@@ -278,44 +288,50 @@ func _corpse_rect() -> Rect2:
  return Rect2(Vector2(lerpf(420.0, -2360.0, progress), -510.0), Vector2(4148, 2332))
 
 func _draw() -> void:
- draw_rect(Rect2(Vector2.ZERO, Vector2(1920,1080)), Color.BLACK)
- var drift := 0.0 if reduced_motion else (held_drift if ending else sin(elapsed * 0.18))
- var base := Rect2(-77, -43, 2074, 1166)
- if page == 0 and layers.size() == 4:
-  var descent := 1.0 if reduced_motion else smoothstep(0.0, 9.3, elapsed)
-  draw_texture_rect(layers[0], Rect2(base.position + Vector2(0, -descent * 20), base.size), false)
-  draw_texture_rect(layers[1], Rect2(base.position + Vector2(0, 145 - descent * 240), base.size), false)
-  var facade := _opening_facade_rect()
-  var scale_factor := facade.size.x / 845.0
-  # Crop the lab to fill the narrow pane, with overscan behind its frame.
-  var lab := Rect2(facade.position + Vector2(370, 1025) * scale_factor, Vector2(109, 122) * scale_factor)
-  draw_rect(lab, Color.BLACK)
-  var light := _opening_light()
-  var source_width := 941.0 * 109.0 / 122.0
-  draw_texture_rect_region(layers[2], lab, Rect2((1672.0 - source_width) / 2.0, 0, source_width, 941), Color(light,light,light))
- elif page != 1:
-  for i in range(layers.size()):
-   var speed := 10.0 if i == 0 else (24.0 if i == 1 else 42.0)
-   var destination := Rect2(base.position + Vector2(drift * speed, drift * speed * 0.25), base.size)
-   if page == 2: destination = _quarantine_rect(i)
-   elif page == 3:
-    var retreat := 1.0 if reduced_motion else 1.0 - pow(1.0 - clampf(elapsed / 14.0, 0.0, 1.0), 3.0)
-    destination = _zoom_rect(base, lerpf(1.4, 1.0, retreat))
-   elif page == 4 and occupation != "Corpse":
-    var approach := 0.0 if reduced_motion else smoothstep(0.0, 18.0, elapsed)
-    destination = _zoom_rect(base, 1.0 + approach * (0.12 if i == 0 else 0.85))
-   elif page == 4 and occupation == "Corpse": destination = _corpse_rect()
-   draw_texture_rect(layers[i], destination, false)
+ draw_rect(Rect2(Vector2.ZERO, STAGE_SIZE), Color.BLACK)
+ match page:
+  Page.OPENING:
+   _draw_opening()
+  Page.QUARANTINE:
+   for i in range(layers.size()):
+    draw_texture_rect(layers[i], _quarantine_rect(i), false)
+  Page.NECROTECH:
+   draw_texture_rect(layers[0], _zoom_rect(BASE_FRAME, lerpf(1.4, 1.0, _lab_retreat())), false)
+  Page.ORIGIN:
+   var approach := 0.0 if reduced_motion else smoothstep(0.0, 18.0, elapsed)
+   for i in range(layers.size()):
+    var frame := _corpse_rect() if occupation == "Corpse" else _zoom_rect(BASE_FRAME, 1.0 + approach * (0.12 if i == 0 else 0.85))
+    draw_texture_rect(layers[i], frame, false)
 
-func _input(event: InputEvent) -> void:
- if ending: return
+func _draw_opening() -> void:
+ var descent := 1.0 if reduced_motion else smoothstep(0.0, 9.3, elapsed)
+ draw_texture_rect(layers[0], Rect2(BASE_FRAME.position + Vector2(0, -descent * 20), BASE_FRAME.size), false)
+ draw_texture_rect(layers[1], Rect2(BASE_FRAME.position + Vector2(0, 145 - descent * 240), BASE_FRAME.size), false)
+ var scale_factor := facade_view.size.x / FACADE_SIZE.x
+ # Crop the lab to fill the narrow pane, with overscan behind its frame.
+ var lab := Rect2(facade_view.position + LAB_PANE.position * scale_factor, LAB_PANE.size * scale_factor)
+ draw_rect(lab, Color.BLACK)
+ var light := _opening_light()
+ var source_size := layers[2].get_size()
+ var source_width := source_size.y * LAB_PANE.size.aspect()
+ draw_texture_rect_region(layers[2], lab, Rect2((source_size.x - source_width) / 2.0, 0, source_width, source_size.y), Color(light, light, light))
+
+func _unhandled_key_input(event: InputEvent) -> void:
+ if ending_time >= 0.0: return
  if event is InputEventKey and event.pressed and not event.echo and event.keycode != KEY_F11:
   _advance()
   get_viewport().set_input_as_handled()
- elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-  if skip.get_global_rect().has_point(event.position): return
+
+func _gui_input(event: InputEvent) -> void:
+ if ending_time >= 0.0: return
+ if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
   _advance()
-  get_viewport().set_input_as_handled()
+  accept_event()
+
+func _play_line(index: int) -> void:
+ narration_index = index
+ narration.stream = line_streams[index]
+ if narration.stream: narration.play()
 
 func _advance() -> void:
  if narration_index + 1 < line_times.size():
@@ -323,36 +339,26 @@ func _advance() -> void:
   narration.stop()
   var shift: float = line_times[next] - elapsed
   for i in range(next, line_times.size()): line_times[i] -= shift
-  narration_end -= shift
   for i in range(next): line_labels[i].modulate.a = 1.0
-  narration_index = next
-  narration.stream = line_streams[next]
-  if narration.stream: narration.play()
-  return
- if page < 4:
-  _show_page(page + 1)
+  _play_line(next)
+ elif page != Page.ORIGIN:
+  _show_page((page + 1) as Page)
  else:
-  narration.stop()
-  held_drift = sin(elapsed * 0.18)
-  ending = true
-  ending_time = 0.0
-  skip.hide()
-  prompt.hide()
-  if occupation == "Corpse":
-   var body := _corpse_rect()
-   eyes.position = body.position
-   eyes.size = body.size
-   eyes.show()
-   narration.stream = load(ROOT + "audio/Malton RISE.mp3") as AudioStream
-   if narration.stream: narration.play()
+  _begin_ending()
 
 func _skip_intro() -> void:
- if ending: return
- narration.stop()
+ if ending_time >= 0.0: return
  # A corpse always gets its player-triggered awakening.
- if occupation == "Corpse": _show_page(4)
- else:
-  ending = true
-  ending_time = 0.0
-  skip.hide()
-  prompt.hide()
+ if occupation == "Corpse": _show_page(Page.ORIGIN)
+ else: _begin_ending()
+
+func _begin_ending() -> void:
+ narration.stop()
+ ending_time = 0.0
+ skip.hide()
+ prompt.hide()
+ if occupation == "Corpse":
+  eyes.show()
+  _update_art()
+  narration.stream = _recording("RISE")
+  if narration.stream: narration.play()
