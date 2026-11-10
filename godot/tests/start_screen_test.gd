@@ -141,6 +141,19 @@ func run() -> void:
  creation.confirm.pressed.emit()
  creation.advance_cinematic(5.4)
  await process_frame
+ check(is_instance_valid(menu.naming) and menu.intro == null, "Confirmation opens naming before the intro")
+ menu.naming.fields[0].text = "   "
+ menu.naming._confirm()
+ check(is_instance_valid(menu.naming) and menu.naming.error_label.text != "", "Empty names cannot advance to the intro")
+ menu.naming.fields[0].text = "  Jamie  "
+ menu.naming.fields[1].text = "Rivera"
+ menu.naming.fields[2].text = "Ghastly"
+ menu.naming._update_preview("")
+ check(menu.naming.preview.text.contains("Jamie Rivera") and menu.naming.preview.text.contains("Ghastly Jamie"), "Naming previews both identities")
+ menu.naming._confirm()
+ check(menu.naming.reviewing and menu.intro == null, "Naming presents the recovered record before acceptance")
+ menu.naming._accept()
+ await process_frame
  check(is_instance_valid(menu.intro) and menu.intro.occupation == "Firefighter", "Confirmation opens the intro with the selected occupation")
  menu.intro._skip_intro()
  menu.intro._process(1.3)
@@ -152,6 +165,10 @@ func run() -> void:
  check(is_equal_approx(db_to_linear(playlist.volume_db),0.3),"Gameplay music uses the original 30% volume")
  check_playlist_cycle(playlist)
  check(game.scene_file_path == "res://main.tscn" and game.sim.player().job == "Firefighter","Confirmation launches the selected occupation")
+ check(game.sim.display_name(game.sim.player()) == "Jamie Rivera", "The living player uses the entered name")
+ game.sim.player().human = false
+ check(game.sim.display_name(game.sim.player()) == "Ghastly Jamie", "The undead player uses the adjective and first name")
+ game.sim.player().human = true
  check(game.sim.world_mode == "malton" and game.sim.width == 100,"New Game starts original Malton")
  check(game.sim.has_skill(game.sim.player(),"axe_proficiency"),"Selected occupation has its starting skill")
  check(FileAccess.get_file_as_string(TEST_SAVE) == "{}","New Game does not overwrite the existing save")

@@ -5,6 +5,7 @@ const Game = preload("res://scripts/interface.gd")
 const Parallax = preload("res://scripts/title_parallax.gd")
 const CharacterCreation = preload("res://scripts/character_creation/character_creation.gd")
 const Intro = preload("res://scripts/intro.gd")
+const Naming = preload("res://scripts/naming_screen.gd")
 const TITLE_FONT = preload("res://assets/fonts/PixelifySans.ttf")
 var save_path: String = Sim.SAVE_PATH
 var title_page: Control
@@ -15,6 +16,9 @@ var buttons: Array[TextureButton] = []
 var music: AudioStreamPlayer
 var creation: CharacterCreation
 var intro: Intro
+var naming: Naming
+var chosen_occupation := ""
+var chosen_identity := {}
 
 func _ready() -> void:
  DisplayServer.window_set_title("Zombie Apocalypse")
@@ -99,12 +103,14 @@ func open_creation() -> void:
  status.text = ""
  creation = (load("res://character_creation.tscn") as PackedScene).instantiate() as CharacterCreation
  creation.back_requested.connect(show_title)
- creation.character_confirmed.connect(show_intro)
+ creation.character_confirmed.connect(show_naming)
  title_page.hide()
  parallax.set_process(false)
  add_child(creation)
 
 func show_title() -> void:
+ if is_instance_valid(naming): naming.queue_free()
+ naming = null
  if is_instance_valid(intro):
   intro.queue_free()
  intro = null
@@ -117,10 +123,30 @@ func show_title() -> void:
  parallax.set_process(true)
  buttons[0].grab_focus()
 
-func show_intro(occupation: String) -> void:
+func show_naming(occupation: String) -> void:
+ chosen_occupation = occupation
+ creation.hide()
+ creation.process_mode = Node.PROCESS_MODE_DISABLED
+ naming = Naming.new()
+ naming.reduced_motion = creation.reduce_motion.button_pressed
+ naming.confirmed.connect(show_intro)
+ naming.back_requested.connect(back_to_creation)
+ add_child(naming)
+
+func back_to_creation() -> void:
+ naming.queue_free()
+ naming = null
+ creation.process_mode = Node.PROCESS_MODE_INHERIT
+ creation.deselect_character()
+ creation.show()
+
+func show_intro(identity: Dictionary) -> void:
+ chosen_identity = identity
+ naming.queue_free()
+ naming = null
  music.volume_db = linear_to_db(0.1)
  intro = (load("res://intro.tscn") as PackedScene).instantiate() as Intro
- intro.occupation = occupation
+ intro.occupation = chosen_occupation
  intro.reduced_motion = creation.reduce_motion.button_pressed
  intro.finished.connect(start_new_game)
  creation.queue_free()
@@ -134,6 +160,7 @@ func start_new_game(occupation: String) -> void:
   show_title()
   status.text = error
   return
+ simulation.player().merge(chosen_identity, true)
  enter_game(simulation,"A new life in Malton. You are a %s." % occupation)
 
 func load_game() -> void:

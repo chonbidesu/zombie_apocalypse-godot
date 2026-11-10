@@ -44,6 +44,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/start_screen_test.gd --log-file start-screen-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Start screen tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/naming_screen_test.gd --log-file naming-screen-test.log
+        if ($LASTEXITCODE -ne 0) { throw 'Naming screen tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/character_creation_test.gd --log-file character-creation-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Character creation tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/simulation_test.gd --log-file tests.log
