@@ -9,6 +9,9 @@ const HOLDS := [3.5, 9.0]
 
 var page := 0
 var elapsed := 0.0
+var advancing := false
+var advance_elapsed := 0.0
+var advance_alpha := 0.0
 var content: Control
 var author: Control
 var tribute: Control
@@ -67,15 +70,36 @@ func _label(copy: String, font_size: int, color: Color) -> Label:
  return label
 
 func _process(delta: float) -> void:
+ if advancing:
+  advance_elapsed += delta
+  content.modulate.a = advance_alpha * (1.0 - clampf(advance_elapsed / FADE, 0.0, 1.0))
+  if advance_elapsed >= FADE: _next_page()
+  return
  elapsed += delta
  var duration: float = FADE * 2.0 + HOLDS[page]
  content.modulate.a = clampf(minf(elapsed / FADE, (duration - elapsed) / FADE), 0.0, 1.0)
  if elapsed >= duration:
-  if page == 0:
-   page = 1
-   elapsed = 0.0
-   author.hide()
-   tribute.show()
-  else:
-   set_process(false)
-   finished.emit()
+  _next_page()
+
+func _input(event: InputEvent) -> void:
+ var key_press: bool = event is InputEventKey and event.pressed and not event.echo and event.keycode != KEY_F11
+ var click: bool = event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT
+ if key_press or click:
+  get_viewport().set_input_as_handled()
+  if not advancing:
+   advancing = true
+   advance_elapsed = 0.0
+   advance_alpha = content.modulate.a
+
+func _next_page() -> void:
+ if page == 0:
+  page = 1
+  elapsed = 0.0
+  advancing = false
+  content.modulate.a = 0.0
+  author.hide()
+  tribute.show()
+ else:
+  set_process(false)
+  set_process_input(false)
+  finished.emit()

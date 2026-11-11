@@ -44,6 +44,7 @@ var cinema_time: float = -1.0
 var material_room: ShaderMaterial
 var stage: Control
 var title_label: Label
+var subtitle_label: Label
 var hint: Label
 var details: Label
 var cancel: Button
@@ -84,8 +85,10 @@ func _ready() -> void:
   world.add_child(actor)
   actors[i] = actor
   actor.z_index = [8,11,10,4,40,20,31,25,52][i]
- title_label = make_label(34,Color("e7dfb9"))
- title_label.text = "MALTON  /  CHOOSE YOUR SURVIVOR"
+ title_label = make_label(48,Color("e7dfb9"))
+ title_label.text = "MALTON REBORN"
+ subtitle_label = make_label(26,Color("d2bd8b"))
+ subtitle_label.text = "CHOOSE YOUR SURVIVOR"
  hint = make_label(18,Color("bdbb9d"))
  info_panel = ColorRect.new()
  info_panel.color = Color(0.035,0.065,0.052,0.94)
@@ -159,7 +162,9 @@ func layout() -> void:
  fade.size = size
  stage.scale = size/ROOM_SIZE
  title_label.position = Vector2(28,20)
- title_label.size = Vector2(900,110)
+ title_label.size = Vector2(900,60)
+ subtitle_label.position = Vector2(30,80)
+ subtitle_label.size = Vector2(900,40)
  hint.position = Vector2(32,137)
  hint.size = Vector2(1150,55)
  info_panel.position = Vector2(20,795)
@@ -226,7 +231,7 @@ func confirm_selection() -> void:
  if selected < 0 or cinema_time >= 0.0: return
  cinema_time = 0.0
  hovered = -1
- for control in [title_label,hint,details,info_panel,confirm,cancel,back]: control.hide()
+ for control in [title_label,subtitle_label,hint,details,info_panel,confirm,cancel,back]: control.hide()
  for button in sex_buttons: button.hide()
 
 func deselect_character() -> void:
@@ -241,7 +246,7 @@ func deselect_character() -> void:
  for actor in actors:
   actor.modulate = Color.WHITE
   actor.reset()
- for control in [title_label,hint,back]: control.show()
+ for control in [title_label,subtitle_label,hint,back]: control.show()
  for control in [details,info_panel,confirm,cancel]: control.hide()
  for button in sex_buttons: button.hide()
  active_group = -1

@@ -68,6 +68,7 @@ var departing_actors: Array[Dictionary] = []
 var actor_visuals: Dictionary = {}
 var actor_tooltip: PanelContainer
 var actor_tooltip_label: Label
+var retained_hover_button: Button
 var animation_time: float = 0.0
 var damage_overlay: Control
 var game_sounds: Node
@@ -262,8 +263,22 @@ func picture(parent: Node, texture: Texture2D, bounds: Rect2) -> TextureRect:
  parent.add_child(node)
  return node
 
-func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accent: bool = false) -> Button:
- var node = Button.new()
+func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accent: bool = false, hover_key: String = "") -> Button:
+ var key = hover_key if not hover_key.is_empty() else "%s/%s/%s" % [bounds.position,bounds.size,text]
+ var node: Button
+ if is_instance_valid(retained_hover_button) and retained_hover_button.get_parent() == parent and retained_hover_button.get_meta("hover_key","") == key:
+  node = retained_hover_button
+  retained_hover_button = null
+  for connection in node.pressed.get_connections(): node.pressed.disconnect(connection.callable)
+  for connection in node.gui_input.get_connections(): node.gui_input.disconnect(connection.callable)
+  for child in node.get_children():
+   node.remove_child(child)
+   child.queue_free()
+  parent.move_child(node,parent.get_child_count()-1)
+ else:
+  node = Button.new()
+  parent.add_child(node)
+ node.set_meta("hover_key",key)
  node.text = text
  node.position = bounds.position
  node.size = bounds.size
@@ -289,7 +304,6 @@ func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accen
  node.add_theme_color_override("font_disabled_color", Color("778074"))
  node.add_theme_font_size_override("font_size", 18)
  node.pressed.connect(callback)
- parent.add_child(node)
  return node
 
 func refresh() -> void:
@@ -299,9 +313,15 @@ func refresh() -> void:
   page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
   add_child(page)
   move_child(page,0)
+ var hovered = get_viewport().gui_get_hovered_control()
+ var hover_parent = hovered.get_parent() if is_instance_valid(hovered) else null
+ var on_dashboard = hover_parent == page or (is_instance_valid(hover_parent) and hover_parent.name == "CityMinimap" and hover_parent.get_parent() == page)
+ retained_hover_button = hovered if hovered is Button and on_dashboard and modal.is_empty() and not sim.player().down and not sim.sleeping else null
  for child in page.get_children():
   # Hover and tooltip timing belong to the actor controls across refreshes.
   if child.name == "SceneActors" and not sim.player().down and not sim.sleeping: continue
+  if child == retained_hover_button: continue
+  if is_instance_valid(retained_hover_button) and child == retained_hover_button.get_parent(): continue
   page.remove_child(child)
   child.queue_free()
  actor_buttons.clear()
@@ -320,6 +340,10 @@ func refresh() -> void:
  _people()
  _actions()
  _log()
+ if is_instance_valid(retained_hover_button):
+  retained_hover_button.get_parent().remove_child(retained_hover_button)
+  retained_hover_button.queue_free()
+  retained_hover_button = null
  rect(page, Rect2(20, 1044, 1880, 28), INK)
  label(page, "You are asleep. Wake to return to the city." if sim.sleeping else (sim.location_description(p) if p.down else notice), Rect2(28, 1045, 1860, 26), 18, GOLD)
  if paused:
@@ -357,7 +381,18 @@ func _local_map() -> void:
   darkness.name = "DarkMinimap"
   return
  picture(page, tex("panels/viewport_frame.png"), Rect2(20, 88, 358, 358))
- var city = map_region(page,Rect2i(p.x-1,p.y-1,3,3),Vector2(40,108),106)
+ var city: Control
+ if is_instance_valid(retained_hover_button) and retained_hover_button.get_parent().name == "CityMinimap":
+  city = retained_hover_button.get_parent()
+  for child in city.get_children():
+   if child == retained_hover_button: continue
+   city.remove_child(child)
+   child.queue_free()
+  city.tiles.clear()
+  city.footprint = Rect2i(p.x-1,p.y-1,3,3)
+  city.build()
+  page.move_child(city,page.get_child_count()-1)
+ else: city = map_region(page,Rect2i(p.x-1,p.y-1,3,3),Vector2(40,108),106)
  city.name = "CityMinimap"
  for dy in range(-1, 2):
   for dx in range(-1, 2):
@@ -366,7 +401,7 @@ func _local_map() -> void:
     rect(city, bounds, INK)
     continue
    var b = sim.block_at(p.x+dx, p.y+dy)
-   var tile = button(city, "", bounds, func(): dispatch("move", -1, {"dx":dx,"dy":dy}), dx == 0 and dy == 0)
+   var tile = button(city, "", bounds, func(): dispatch("move", -1, {"dx":dx,"dy":dy}), dx == 0 and dy == 0,"map/%s/%s" % [b.id,bounds.position])
    tile.name = "MapTile_%d" % b.id
    tile.flat = true
    tile.z_index = 1000
@@ -476,7 +511,7 @@ func _inventory() -> void:
    rect(page,bounds,INK,Color("35483a"))
    continue
   var item = p.inventory[i]
-  var slot = button(page,"",bounds,func(): selected_item = item.uid; refresh(),item.uid == selected_item)
+  var slot = button(page,"",bounds,func(): selected_item = item.uid; refresh(),item.uid == selected_item,"inventory/%d/%s" % [item.uid,bounds.position])
   slot.name = "InventoryItem_%d" % item.uid
   slot.tooltip_text = "%s · %d%% encumbrance" % [C.ITEMS[item.kind].name,C.ITEMS[item.kind].encumbrance]
   if item.kind == "radio": slot.tooltip_text += " · %.2f MHz" % float(item.frequency)
@@ -772,7 +807,7 @@ func _action_button(command: String, text: String, bounds: Rect2, target: int = 
    message_data = data.duplicate()
    open_modal("message")
   elif command == "jump" and sim.player().human: open_modal("jump")
-  else: dispatch(command,target,data))
+  else: dispatch(command,target,data),false,"action/%s/%s/%s/%s" % [command,target,data,bounds.position])
  node.add_theme_font_size_override("font_size", 14)
  var caption_size = 14
  while caption_size > 11 and theme.default_font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,caption_size).x > bounds.size.x-10: caption_size -= 1

@@ -66,6 +66,33 @@ func run() -> void:
  check(scene.sim.minute == start_time+2,"Real-time clock advances while choosing actions")
  check(scene.page.get_node("SceneActors/Actor_1") == hovered and hovered.is_hovered(),"Clock refreshes preserve the hovered NPC control and tooltip target")
  check(is_instance_valid(scene.actor_tooltip) and scene.actor_tooltip.visible and scene.actor_tooltip_label.text == hovered.get_meta("actor_tooltip"),"NPC tooltip stays visible through clock refreshes")
+ scene.sim.give_item(p,"gps_unit")
+ scene.refresh()
+ var item = scene.sim.item_kind(p,"gps_unit")
+ var item_button = scene.page.get_node("InventoryItem_%d" % item.uid)
+ motion.position = item_button.get_global_rect().get_center()
+ root.push_input(motion,true)
+ await process_frame
+ for i in range(20): scene._process(0.1)
+ check(scene.page.get_node("InventoryItem_%d" % item.uid) == item_button and item_button.is_hovered(),"Inventory hover survives clock refreshes")
+ check(item_button.tooltip_text.contains("GPS"),"Retained inventory item keeps its tooltip")
+ var action = scene.action_controls.filter(func(entry): return entry.command == "search")[0].node
+ motion.position = action.get_global_rect().get_center()
+ root.push_input(motion,true)
+ await process_frame
+ for i in range(20): scene._process(0.1)
+ check(scene.action_controls.filter(func(entry): return entry.command == "search")[0].node == action and action.is_hovered(),"Action hover survives clock refreshes")
+ check(not action.tooltip_text.is_empty(),"Retained action keeps its tooltip")
+ var map_tile = scene.page.get_node("CityMinimap").get_node("MapTile_%d" % scene.sim.block_at(p.x+1,p.y).id)
+ motion.position = map_tile.get_global_rect().get_center()
+ root.push_input(motion,true)
+ await process_frame
+ check(map_tile.is_hovered(),"Pointer reaches the minimap tile")
+ for i in range(20): scene._process(0.1)
+ check(is_instance_valid(map_tile) and map_tile.is_inside_tree() and map_tile.is_hovered(),"Minimap hover survives clock refreshes")
+ if is_instance_valid(map_tile): check(not map_tile.tooltip_text.is_empty(),"Retained minimap tile keeps its tooltip")
+ scene.sim.consume(p,item)
+ start_time = scene.sim.minute
  var mouse = InputEventMouseButton.new()
  mouse.button_index = MOUSE_BUTTON_LEFT
  mouse.pressed = true
@@ -77,7 +104,7 @@ func run() -> void:
  await process_frame
  scene._update_actor_tooltip()
  check(not scene.actor_tooltip.visible,"NPC tooltip hides when the pointer leaves")
- check(p.ap == 49 and scene.sim.minute == start_time+2,"Mouse search button commits action")
+ check(p.ap == 49 and scene.sim.minute == start_time,"Mouse search button commits action")
  for i in range(25): scene._process(0.1)
  start_time = scene.sim.minute
  var event = InputEventKey.new()
