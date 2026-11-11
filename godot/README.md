@@ -23,7 +23,7 @@ The minimap now assembles a connected aerial city with shared roads, three archi
 
 ## Playing
 
-Normal launch opens `start_screen.tscn` with the Python title's five scrolling city layers, original buttons and looping music. New Game opens the character creation room. Select an occupation and Confirm to play its introduction and start the original 100×100 Malton map. The illustrated intro advances by click or key, can be skipped, and respects the creation room's reduced-motion setting. Corpse starts always pause at Rise for the player's input before the awakening and fade. Back returns to the title. Load resumes the Godot save slot and reports missing or invalid saves. The slot updates when you save. F11 toggles fullscreen, and the title buttons support keyboard focus and activation.
+Normal launch opens `start_screen.tscn` with five scrolling city layers, a Malton Reborn menu and looping music. New Game opens the character creation room. Select an occupation and Confirm to play its introduction and start the original 100×100 Malton map. The illustrated intro advances by click or key, can be skipped, and respects the creation room's reduced-motion setting. Corpse starts always pause at Rise for the player's input before the awakening and fade. Back returns to the title. Load resumes the Godot save slot and reports missing or invalid saves. The slot updates when you save. F11 toggles fullscreen, and the title buttons support keyboard focus and activation.
 
 The character room uses artwork in `assets/character_creation/`. Superseded Godot artwork and the menu's art prompts are in [the archive](../archive/godot/README.md), outside the Godot project.
 

@@ -13,7 +13,9 @@ var title_page: Control
 var parallax: Parallax
 var heading: Label
 var status: Label
-var buttons: Array[TextureButton] = []
+var buttons: Array[Button] = []
+var eyebrow: Label
+var tagline: Label
 var music: AudioStreamPlayer
 var creation: CharacterCreation
 var intro: Intro
@@ -25,15 +27,27 @@ var tutorial_prompt: TutorialPrompt
 var tutorials_enabled := false
 
 func _ready() -> void:
- DisplayServer.window_set_title("Zombie Apocalypse")
+ DisplayServer.window_set_title("Malton Reborn")
  title_page = Control.new()
  add_child(title_page)
  title_page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  parallax = Parallax.new()
  title_page.add_child(parallax)
  parallax.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ var shade := ColorRect.new()
+ shade.color = Color(0.025,0.035,0.035,0.52)
+ shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ title_page.add_child(shade)
+ shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+ eyebrow = Label.new()
+ eyebrow.text = "A CITY THAT REFUSES TO DIE"
+ eyebrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ eyebrow.add_theme_font_override("font",TITLE_FONT)
+ eyebrow.add_theme_color_override("font_color",Color("d2bd8b"))
+ eyebrow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ title_page.add_child(eyebrow)
  heading = Label.new()
- heading.text = "Zombie Apocalypse"
+ heading.text = "MALTON REBORN"
  heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
  heading.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
  heading.add_theme_font_override("font",TITLE_FONT)
@@ -42,9 +56,16 @@ func _ready() -> void:
  heading.add_theme_constant_override("shadow_offset_y",4)
  heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
  title_page.add_child(heading)
- make_button("New Game",preload("res://assets/title/menu_newgame.png"),open_creation)
- make_button("Load Game",preload("res://assets/title/menu_load.png"),load_game)
- make_button("Exit",preload("res://assets/title/menu_exit.png"),func(): get_tree().quit())
+ tagline = Label.new()
+ tagline.text = "THE CITY IS STILL ALIVE"
+ tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ tagline.add_theme_font_override("font",TITLE_FONT)
+ tagline.add_theme_color_override("font_color",Color("d2bd8b"))
+ tagline.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ title_page.add_child(tagline)
+ make_button("New Game",open_creation)
+ make_button("Load Game",load_game)
+ make_button("Quit",func(): get_tree().quit())
  status = Label.new()
  status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
  status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -64,36 +85,57 @@ func _ready() -> void:
  layout()
  buttons[0].grab_focus()
 
-func make_button(caption: String, texture: Texture2D, action: Callable) -> void:
- var button := TextureButton.new()
+func menu_style(background: Color, border: Color) -> StyleBoxFlat:
+ var style := StyleBoxFlat.new()
+ style.bg_color = background
+ style.border_color = border
+ style.set_border_width_all(1)
+ style.set_corner_radius_all(3)
+ return style
+
+func make_button(caption: String, action: Callable) -> void:
+ var button := Button.new()
  button.name = caption.replace(" ","")
- button.texture_normal = texture
- button.ignore_texture_size = true
- button.stretch_mode = TextureButton.STRETCH_SCALE
- button.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
- button.tooltip_text = caption
+ button.text = caption.to_upper()
+ button.add_theme_font_override("font",TITLE_FONT)
+ button.add_theme_color_override("font_color",Color("e8e3d2"))
+ button.add_theme_color_override("font_hover_color",Color("fff4d3"))
+ button.add_theme_color_override("font_focus_color",Color("fff4d3"))
+ button.add_theme_color_override("font_pressed_color",Color.WHITE)
+ button.add_theme_stylebox_override("normal",menu_style(Color(0.05,0.07,0.065,0.83),Color(0.65,0.63,0.51,0.48)))
+ button.add_theme_stylebox_override("hover",menu_style(Color(0.19,0.22,0.18,0.94),Color("d2bd8b")))
+ button.add_theme_stylebox_override("pressed",menu_style(Color(0.28,0.29,0.22,0.98),Color("e6d2a1")))
+ var focus := StyleBoxFlat.new()
+ focus.bg_color = Color.TRANSPARENT
+ focus.border_color = Color("e6d2a1")
+ focus.set_border_width_all(2)
+ focus.set_corner_radius_all(3)
+ button.add_theme_stylebox_override("focus",focus)
  button.focus_mode = Control.FOCUS_ALL
  button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
  button.pressed.connect(action)
- button.mouse_entered.connect(func(): button.modulate = Color(1.2,1.2,1.2))
- button.mouse_exited.connect(func(): button.modulate = Color.WHITE if not button.has_focus() else Color(1.2,1.2,1.2))
- button.focus_entered.connect(func(): button.modulate = Color(1.2,1.2,1.2))
- button.focus_exited.connect(func(): button.modulate = Color.WHITE)
  title_page.add_child(button)
  buttons.append(button)
 
 func layout() -> void:
  if not is_instance_valid(status): return
  var scale_factor := minf(size.x/1200.0,size.y/800.0)
- heading.position = Vector2(0,size.y*0.2-70*scale_factor)
- heading.size = Vector2(size.x,140*scale_factor)
- heading.add_theme_font_size_override("font_size",int(102*scale_factor))
+ eyebrow.position = Vector2(0,size.y*0.17)
+ eyebrow.size = Vector2(size.x,28*scale_factor)
+ eyebrow.add_theme_font_size_override("font_size",int(16*scale_factor))
+ heading.position = Vector2(0,size.y*0.21)
+ heading.size = Vector2(size.x,100*scale_factor)
+ heading.add_theme_font_size_override("font_size",int(76*scale_factor))
+ tagline.position = Vector2(0,size.y*0.21+105*scale_factor)
+ tagline.size = Vector2(size.x,25*scale_factor)
+ tagline.add_theme_font_size_override("font_size",int(15*scale_factor))
  for i in range(buttons.size()):
-  buttons[i].size = Vector2(232,102)*scale_factor
-  buttons[i].position = Vector2((size.x-buttons[i].size.x)/2,size.y*float(i+2)/5.0)
- status.position = Vector2(size.x*0.1,size.y*0.335)
- status.size = Vector2(size.x*0.8,size.y*0.06)
- status.add_theme_font_size_override("font_size",int(20*scale_factor))
+  buttons[i].size = Vector2(300,52)*scale_factor
+  buttons[i].position = Vector2((size.x-buttons[i].size.x)/2,size.y*0.50+i*65*scale_factor)
+  buttons[i].add_theme_font_size_override("font_size",int(23*scale_factor))
+ status.position = Vector2(size.x*0.1,size.y*0.50+205*scale_factor)
+ status.size = Vector2(size.x*0.8,60*scale_factor)
+ status.add_theme_font_size_override("font_size",int(18*scale_factor))
 
 func _unhandled_key_input(event: InputEvent) -> void:
  if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F11:
@@ -116,6 +158,8 @@ func open_creation() -> void:
 func show_title() -> void:
  if is_instance_valid(naming): naming.queue_free()
  naming = null
+ if is_instance_valid(tutorial_prompt): tutorial_prompt.queue_free()
+ tutorial_prompt = null
  if is_instance_valid(intro):
   intro.queue_free()
  intro = null
@@ -133,6 +177,12 @@ func show_naming(occupation: String) -> void:
  chosen_sex = creation.selected_sex()
  creation.hide()
  creation.process_mode = Node.PROCESS_MODE_DISABLED
+ tutorials_enabled = false
+ show_tutorial_prompt()
+
+func _show_identity_prompt() -> void:
+ tutorial_prompt.queue_free()
+ tutorial_prompt = null
  naming = Naming.new()
  naming.confirmed.connect(show_intro)
  naming.back_requested.connect(back_to_creation)
@@ -152,23 +202,20 @@ func show_intro(identity: Dictionary) -> void:
  music.volume_db = linear_to_db(0.1)
  intro = (load("res://intro.tscn") as PackedScene).instantiate() as Intro
  intro.occupation = chosen_occupation
- intro.finished.connect(show_tutorial_prompt)
+ intro.finished.connect(start_new_game)
  creation.queue_free()
  creation = null
  add_child(intro)
 
-func show_tutorial_prompt(_occupation: String) -> void:
- if is_instance_valid(intro): intro.queue_free()
- intro = null
+func show_tutorial_prompt() -> void:
  tutorial_prompt = TutorialPrompt.new()
  tutorial_prompt.answered.connect(_tutorial_answered)
+ tutorial_prompt.boot_finished.connect(_show_identity_prompt)
  add_child(tutorial_prompt)
 
 func _tutorial_answered(enabled: bool) -> void:
  tutorials_enabled = enabled
- tutorial_prompt.queue_free()
- tutorial_prompt = null
- start_new_game(chosen_occupation)
+ tutorial_prompt.begin_boot()
 
 func start_new_game(occupation: String) -> void:
  var simulation := Sim.new()

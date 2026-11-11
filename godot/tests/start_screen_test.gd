@@ -141,7 +141,17 @@ func run() -> void:
  creation.confirm.pressed.emit()
  creation.advance_cinematic(5.4)
  await process_frame
- check(is_instance_valid(menu.naming) and menu.intro == null, "Confirmation opens naming before the intro")
+ check(is_instance_valid(menu.tutorial_prompt) and menu.naming == null and menu.intro == null, "Confirmation opens the tutorial choice before naming")
+ check(not menu.tutorial_prompt.narration.playing and menu.tutorial_prompt.narration.stream == null, "Tutorial choice starts without naming narration")
+ menu.tutorial_prompt._submit_answer("maybe")
+ check(menu.tutorial_prompt.error_label.text != "" and menu.tutorial_prompt.boot_elapsed < 0.0, "Invalid answers stay on the choice")
+ menu.tutorial_prompt._submit_answer(" nO ")
+ check(not menu.tutorials_enabled and menu.tutorial_prompt.boot_elapsed == 0.0 and menu.naming == null, "Negative choice starts a silent boot")
+ check(menu.tutorial_prompt.boot_text.text.contains("INITIALIZE") and not menu.tutorial_prompt.boot_text.text.contains("READY"), "Startup begins with the initialization line")
+ menu.tutorial_prompt._process(1.2)
+ check(menu.tutorial_prompt.boot_text.text.contains("CHECKING") and menu.naming == null, "Startup reveals system checks before naming")
+ menu.tutorial_prompt._process(1.3)
+ check(is_instance_valid(menu.naming) and menu.intro == null and menu.naming.narration.playing, "Boot finishes before naming narration starts")
  menu.naming.fields[0].text = "   "
  menu.naming._confirm()
  check(is_instance_valid(menu.naming) and menu.naming.error_label.text != "", "Empty names cannot advance to the intro")
@@ -158,11 +168,6 @@ func run() -> void:
  menu.intro._skip_intro()
  menu.intro._process(1.3)
  await process_frame
- check(is_instance_valid(menu.tutorial_prompt), "Intro leads to the tutorial choice")
- menu.tutorial_prompt._submit_answer("maybe")
- check(menu.tutorial_prompt.error_label.text != "", "Invalid tutorial answers stay on the prompt")
- menu.tutorial_prompt._submit_answer(" nO ")
- await process_frame
  var game := current_scene as Game
  game.set_process(false)
  var playlist := game.game_music
@@ -170,6 +175,7 @@ func run() -> void:
  check(is_equal_approx(db_to_linear(playlist.volume_db),0.3),"Gameplay music uses the original 30% volume")
  check_playlist_cycle(playlist)
  check(game.scene_file_path == "res://main.tscn" and game.sim.player().job == "Firefighter","Confirmation launches the selected occupation")
+ check(game.modal != "tutorial", "Negative choice remains effective after naming and intro")
  check(game.sim.display_name(game.sim.player()) == "Jamie Rivera", "The living player uses the entered name")
  game.sim.player().human = false
  check(game.sim.display_name(game.sim.player()) == "Ghastly Jamie", "The undead player uses the adjective and first name")
