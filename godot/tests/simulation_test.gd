@@ -153,6 +153,7 @@ func _initialize() -> void:
  p = s.player()
  p.hp = 30
  var doctor = s.actors[1]
+ doctor.human_skills.append("first_aid")
  doctor.x = p.x
  doctor.y = p.y
  doctor.inside = true
@@ -172,6 +173,7 @@ func _initialize() -> void:
  check(s.current_block(p).ruin == 0 and engineer.ap == 49,"Engineer repairs shelter")
  s.die(p)
  var scientist = s.actors[3]
+ scientist.human_skills.append("lab_experience")
  scientist.x = 4
  scientist.y = 4
  scientist.inside = true

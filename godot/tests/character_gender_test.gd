@@ -161,6 +161,8 @@ func run() -> void:
   menu.creation.select_sex(sex)
   menu.creation.confirm_selection()
   menu.creation.advance_cinematic(5.4)
+  menu.tutorial_prompt._submit_answer("no")
+  menu.tutorial_prompt._process(2.5)
   check(menu.chosen_sex == sex and is_instance_valid(menu.naming),"Selection reaches naming: "+job)
   menu.show_intro({"first":"Jamie","last":"Rivera","adjective":"Ashen"})
   menu.start_new_game(job)

@@ -6,7 +6,7 @@ var pending: Array = []
 var timer: float = 0.0
 const INTERVAL = 0.8
 const MAX_PENDING = 24
-const SPEECH_ACTIONS = ["speech","say","broadcast","phone","request"]
+const SPEECH_ACTIONS = ["speech","say","broadcast","phone","request","groan","bellow"]
 
 func reset(history: Array = []) -> void:
  last_seen = 0

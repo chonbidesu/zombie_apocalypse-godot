@@ -22,7 +22,6 @@ const XP_RATES = [
  "Zombie skills cost 100 XP"
 ]
 const ActorLayer = preload("res://scripts/character_creation/actor_layer.gd")
-const GenderButton = preload("res://scripts/character_creation/gender_button.gd")
 const C = preload("res://scripts/catalog.gd")
 const ALTERNATE_SHEETS = ["private_female","medic_male","scout_male","doctor_male","necro_female","consumer_male","police_female","firefighter_male","corpse-refined"]
 const ATLAS_PATH = "res://assets/character_creation/corrected/%s.png"
@@ -98,13 +97,13 @@ func _ready() -> void:
  cancel = make_button("CANCEL", deselect_character)
  var sex_group := ButtonGroup.new()
  for sex in ["male","female"]:
-  var button := make_button("",select_sex.bind(sex),GenderButton.new())
-  button.sex = sex
-  button.name = "Male" if sex == "male" else "Female"
-  button.tooltip_text = "Male" if sex == "male" else "Female"
+  var caption := "Body Type 1" if sex == "male" else "Body Type 2"
+  var button := make_button(caption,select_sex.bind(sex))
+  button.name = "BodyType1" if sex == "male" else "BodyType2"
+  button.tooltip_text = caption
   button.toggle_mode = true
   button.button_group = sex_group
-  button.add_theme_font_size_override("font_size",36)
+  button.add_theme_font_size_override("font_size",22)
   var pressed_style := StyleBoxFlat.new()
   pressed_style.bg_color = Color("bba568")
   pressed_style.border_color = Color("f6e6b2")
@@ -139,7 +138,8 @@ func make_label(font_size: int, tint: Color) -> Label:
  stage.add_child(label)
  return label
 
-func make_button(caption: String, action: Callable, button: Button = Button.new()) -> Button:
+func make_button(caption: String, action: Callable) -> Button:
+ var button := Button.new()
  button.text = caption
  button.add_theme_font_size_override("font_size",24)
  var style = StyleBoxFlat.new()
@@ -171,8 +171,8 @@ func layout() -> void:
  confirm.position = Vector2(1400,835)
  confirm.size = Vector2(235,65)
  for i in sex_buttons.size():
-  sex_buttons[i].position = Vector2(930+i*105,830)
-  sex_buttons[i].size = Vector2(90,65)
+  sex_buttons[i].position = Vector2(930,805+i*62)
+  sex_buttons[i].size = Vector2(195,52)
  back.position = Vector2(1400,28)
  back.size = Vector2(235,55)
 

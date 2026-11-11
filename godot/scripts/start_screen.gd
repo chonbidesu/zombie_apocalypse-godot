@@ -7,6 +7,10 @@ const CharacterCreation = preload("res://scripts/character_creation/character_cr
 const Intro = preload("res://scripts/intro.gd")
 const Naming = preload("res://scripts/naming_screen.gd")
 const TutorialPrompt = preload("res://scripts/tutorial_prompt.gd")
+const SaveSlots = preload("res://scripts/save_slots.gd")
+const Attribution = preload("res://scripts/attribution.gd")
+var attribution: Attribution
+var slot_chooser: Control
 const TITLE_FONT = preload("res://assets/fonts/PixelifySans.ttf")
 var save_path: String = Sim.SAVE_PATH
 var title_page: Control
@@ -15,7 +19,6 @@ var heading: Label
 var status: Label
 var buttons: Array[Button] = []
 var eyebrow: Label
-var tagline: Label
 var music: AudioStreamPlayer
 var creation: CharacterCreation
 var intro: Intro
@@ -40,7 +43,7 @@ func _ready() -> void:
  title_page.add_child(shade)
  shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
  eyebrow = Label.new()
- eyebrow.text = "A CITY THAT REFUSES TO DIE"
+ eyebrow.text = "THE CITY THAT REFUSES TO DIE"
  eyebrow.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
  eyebrow.add_theme_font_override("font",TITLE_FONT)
  eyebrow.add_theme_color_override("font_color",Color("d2bd8b"))
@@ -56,14 +59,7 @@ func _ready() -> void:
  heading.add_theme_constant_override("shadow_offset_y",4)
  heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
  title_page.add_child(heading)
- tagline = Label.new()
- tagline.text = "THE CITY IS STILL ALIVE"
- tagline.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
- tagline.add_theme_font_override("font",TITLE_FONT)
- tagline.add_theme_color_override("font_color",Color("d2bd8b"))
- tagline.mouse_filter = Control.MOUSE_FILTER_IGNORE
- title_page.add_child(tagline)
- make_button("New Game",open_creation)
+ make_button("New Game",open_attribution)
  make_button("Load Game",load_game)
  make_button("Quit",func(): get_tree().quit())
  status = Label.new()
@@ -126,9 +122,6 @@ func layout() -> void:
  heading.position = Vector2(0,size.y*0.21)
  heading.size = Vector2(size.x,100*scale_factor)
  heading.add_theme_font_size_override("font_size",int(76*scale_factor))
- tagline.position = Vector2(0,size.y*0.21+105*scale_factor)
- tagline.size = Vector2(size.x,25*scale_factor)
- tagline.add_theme_font_size_override("font_size",int(15*scale_factor))
  for i in range(buttons.size()):
   buttons[i].size = Vector2(300,52)*scale_factor
   buttons[i].position = Vector2((size.x-buttons[i].size.x)/2,size.y*0.50+i*65*scale_factor)
@@ -144,8 +137,20 @@ func _unhandled_key_input(event: InputEvent) -> void:
   window.mode = Window.MODE_WINDOWED if fullscreen else Window.MODE_FULLSCREEN
   get_viewport().set_input_as_handled()
 
+func open_attribution() -> void:
+ if is_instance_valid(attribution) or is_instance_valid(creation): return
+ status.text = ""
+ title_page.hide()
+ parallax.set_process(false)
+ attribution = Attribution.new()
+ attribution.finished.connect(open_creation)
+ add_child(attribution)
+
 func open_creation() -> void:
  if is_instance_valid(creation): return
+ if is_instance_valid(attribution):
+  attribution.queue_free()
+  attribution = null
  chosen_sex = ""
  status.text = ""
  creation = (load("res://character_creation.tscn") as PackedScene).instantiate() as CharacterCreation
@@ -156,6 +161,8 @@ func open_creation() -> void:
  add_child(creation)
 
 func show_title() -> void:
+ if is_instance_valid(attribution): attribution.queue_free()
+ attribution = null
  if is_instance_valid(naming): naming.queue_free()
  naming = null
  if is_instance_valid(tutorial_prompt): tutorial_prompt.queue_free()
@@ -230,11 +237,25 @@ func start_new_game(occupation: String) -> void:
  enter_game(simulation,"A new life in Malton. You are a %s." % occupation)
 
 func load_game() -> void:
+ if is_instance_valid(slot_chooser): return
+ slot_chooser = SaveSlots.new()
+ slot_chooser.base_path = save_path
+ slot_chooser.closed.connect(_close_slots)
+ slot_chooser.selected.connect(_load_slot)
+ add_child(slot_chooser)
+
+func _close_slots() -> void:
+ slot_chooser.queue_free()
+ slot_chooser = null
+
+func _load_slot(path: String) -> void:
  var simulation := Sim.new()
- var error := simulation.load_from(save_path)
+ var error := simulation.load_from(path)
  if not error.is_empty():
-  status.text = "No saved game yet. Choose New Game to begin." if not FileAccess.file_exists(save_path) else "Could not load game: " + error
+  _close_slots()
+  status.text = "Could not load game: " + error
   return
+ _close_slots()
  enter_game(simulation,"Loaded your neighbourhood.")
 
 func enter_game(simulation: Sim, message: String) -> void:

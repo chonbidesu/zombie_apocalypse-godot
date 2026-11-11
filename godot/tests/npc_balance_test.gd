@@ -387,6 +387,7 @@ func live_planner_rules() -> void:
  check(not s.revive_sites.has(b.id),"Replacing the graffiti clears the point")
 
  var medic = s.actors[3]
+ medic.human_skills.append("lab_experience")
  medic.human = true; medic.down = false; medic.x = p.x; medic.y = p.y; medic.inside = false
  medic.inventory.clear()
  s.give_item(medic,"dna_extractor")
@@ -520,6 +521,7 @@ func live_planner_rules() -> void:
  s.player().down = true
  b = s.blocks[45]
  medic = s.actors[3]
+ medic.human_skills.append("lab_experience")
  medic.human = true; medic.down = false; medic.x = b.x; medic.y = b.y; medic.inside = true
  patient = s.actors[1]
  patient.down = false; patient.x = b.x; patient.y = b.y; patient.inside = true
@@ -535,6 +537,7 @@ func live_planner_rules() -> void:
  check(patient.human and patient.down,"A low-risk DNA profile permits revival at the lab")
 
  walker = s.actors[15]
+ walker.zombie_skills.append_array(["memories","ransack"])
  walker.x = b.x; walker.y = b.y; walker.inside = true; walker.down = false
  b.generator = false
  s.reindex()

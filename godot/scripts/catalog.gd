@@ -148,6 +148,8 @@ const ITEMS = {
  },
  "toolbox": {
   "name": "Toolbox",
+  "damage": 2,
+  "hit": 10,
   "encumbrance": 16
  },
  "portable_generator": {
@@ -156,6 +158,8 @@ const ITEMS = {
  },
  "fuel_can": {
   "name": "Fuel can",
+  "damage": 1,
+  "hit": 10,
   "encumbrance": 10
  },
  "length_of_pipe": {

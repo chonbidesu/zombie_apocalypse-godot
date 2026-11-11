@@ -203,6 +203,7 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 	var rest: float = Desire.rest(a.ap, (0.56 + wall / 50.0) if a.inside and enemies == 0 and here.ruin == 0 else 0.0, danger)
 	if danger < 0.55 and _score < 0.66:
 		if _respond_to_radio(s, a, here, enemies, outside): return 0
+		if _respond_to_call(s, a, here, enemies, outside): return 0
 		if a.inside and a.ap >= 20 and a.supply_goal < 0 and here.id == a.home and here.npc_entry >= 0 and s.has_skill(a, "construction"):
 			var entry: Dictionary = s.blocks[here.npc_entry]
 			if entry.ruin == 0 and s.barricade_strength(entry) < 10 and _outside_hostiles(s, entry) == 0 and s.can_free_run_between(a, here, entry):
@@ -237,6 +238,14 @@ static func _tagged_threat(s, other: Dictionary) -> int:
 	for skill in ["infectious_bite", "tangling_grasp", "death_grip", "rend_flesh", "bellow", "feeding_groan"]:
 		if skill in other.tagged_skills: score += 1
 	return score
+
+
+func _respond_to_call(s, a: Dictionary, here: Dictionary, enemies: int, outside: int) -> bool:
+	if a.job not in ["Police Officer", "Firefighter"] and Catalog.occupation_category(a.job) != "military": return false
+	if enemies > 0 or outside > 0 or a.supply_goal >= 0 or a.ap < 18 or a.hp < 30: return false
+	var site_id: int = int(a.get("heard_call_site", -1))
+	if int(a.get("heard_call_until", 0)) <= s.minute or site_id < 0 or site_id >= s.blocks.size() or site_id == here.id: return false
+	return AI.go(s, a, s.blocks[site_id])
 
 
 func _respond_to_radio(s, a: Dictionary, here: Dictionary, enemies: int, outside: int) -> bool:

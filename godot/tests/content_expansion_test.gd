@@ -17,6 +17,8 @@ func ready(s,a) -> void:
 
 func _initialize() -> void:
  human_balance_rules()
+ item_weapon_rules()
+ call_hearing_rules()
  scent_rules()
  communication_rules()
  var s = Sim.new()
@@ -468,6 +470,92 @@ func scent_rules() -> void:
  p.human = true
  ready(s,p)
  check(not s.act("smell").ok and s.location_description(p).contains("There are 2 dead bodies here. One of them smells strange."),"Living Scent Death users identify corpses without the tactical map")
+
+func call_hearing_rules() -> void:
+ var s = Sim.new()
+ s.start(912)
+ for actor in s.actors:
+  actor.down = true
+ var p = s.player()
+ var caller = s.actors[1]
+ var zombie = s.actors[2]
+ var responder = s.actors[3]
+ var civilian = s.actors[4]
+ caller.x = 0; caller.y = 0; caller.human = false; caller.down = false; caller.inside = false
+ caller.zombie_skills = ["feeding_groan","bellow"]
+ p.x = 6; p.y = 0; p.down = false; p.inside = false
+ zombie.x = 6; zombie.y = 1; zombie.human = false; zombie.down = false; zombie.wants_revive = false
+ responder.x = 6; responder.y = 2; responder.human = true; responder.down = false; responder.job = "Police Officer"
+ civilian.x = 7; civilian.y = 0; civilian.human = true; civilian.down = false; civilian.job = "Consumer"
+ s.reindex()
+ s.messages.clear()
+ s.execute(caller,"groan")
+ check(p.get("heard_call","") == "groan" and zombie.memory == s.current_block(caller).id and responder.get("heard_call","") == "groan","Groans reach players, zombies and human NPCs six blocks away")
+ check(civilian.get("heard_call","") == "" and s.messages.any(func(e): return e.action == "groan"),"Groans appear in the player's feed but do not reach seven blocks")
+ check(not s.npc_planner._respond_to_call(s,civilian,s.current_block(civilian),0,0),"Civilian occupations do not investigate calls")
+ check(s.npc_planner._respond_to_call(s,responder,s.current_block(responder),0,0),"Police investigate a call when able")
+ p.x = 9; p.y = 0
+ civilian.x = 9; civilian.y = 1
+ s.reindex()
+ s.messages.clear()
+ s.execute(caller,"bellow")
+ check(p.heard_call == "bellow" and civilian.heard_call == "bellow" and s.messages.any(func(e): return e.action == "bellow"),"Bellows reach both player and civilian beyond groan range")
+ for job in ["Firefighter","Private","Medic","Scout","Guard"]:
+  responder.job = job
+  responder.x = 6; responder.y = 2; responder.inside = false; responder.ap = 50; responder.busy_until = s.now()
+  responder.supply_goal = -1; responder.route.clear(); responder.route_goal = -1
+  s.reindex()
+  check(s.npc_planner._respond_to_call(s,responder,s.current_block(responder),0,0),job+" can investigate calls")
+ var template: Dictionary = s.blocks[0].duplicate(true)
+ s.blocks.clear()
+ s.width = 22
+ for y in range(10):
+  for x in range(22):
+   var block = template.duplicate(true)
+   block.id = y*22+x; block.x = x; block.y = y
+   s.blocks.append(block)
+ caller.x = 0; caller.y = 0
+ p.x = 10; p.y = 0; p.human = false
+ zombie.x = 10; zombie.y = 1; zombie.memory = -1
+ civilian.x = 11; civilian.y = 0; civilian.heard_call = ""
+ s.reindex()
+ s.messages.clear()
+ s.execute(caller,"bellow")
+ check(p.heard_call == "bellow" and zombie.memory == 0 and civilian.heard_call == "" and s.messages.any(func(e): return e.action == "bellow"),"Bellow reaches zombie players and NPCs at ten blocks, but not eleven")
+ p.x = 11
+ s.reindex()
+ s.messages.clear()
+ s.execute(caller,"bellow")
+ check(not s.messages.any(func(e): return e.action == "bellow"),"Bellow stays out of the player feed beyond ten blocks")
+
+func item_weapon_rules() -> void:
+ var s = Sim.new()
+ s.start(1201)
+ var p = s.player()
+ var t = s.actors[1]
+ p.human = true
+ p.inside = false
+ p.human_skills = ["hand_to_hand"]
+ p.inventory.clear()
+ t.human = false
+ t.down = false
+ t.hp = 1000
+ s.give_item(p,"fuel_can")
+ var can = p.inventory.back()
+ p.equipped = can.uid
+ check(s.attack_stats(p,t,"attack",can).damage == 1 and s.attack_stats(p,t,"attack",can).hit == 25,"Fuel cans are usable melee weapons")
+ for attempt in range(100):
+  if s.item_by_uid(p,can.uid).is_empty(): break
+  s.execute(p,"attack",t.id)
+ check(t.get("fuel_soaked",false) and s.item_by_uid(p,can.uid).is_empty(),"A successful fuel can attack soaks its target and consumes the can")
+ check(s.attack_stats(p,t,"attack",{"kind":"flare_gun"}).damage == 30,"Flares deal double damage to soaked targets")
+ s.give_item(p,"toolbox")
+ check(s.attack_stats(p,t,"attack",p.inventory.back()).damage == 2,"Toolboxes can be used as weapons")
+ s.give_item(p,"flare_gun")
+ p.inside = true
+ check(not s.reason(p,"flare",-1,{},true).is_empty(),"Signal flares cannot be fired indoors")
+ p.inside = false
+ check(s.reason(p,"flare",-1,{},true).is_empty(),"Signal flares can be fired outdoors")
 
 func human_balance_rules() -> void:
  var s = Sim.new()

@@ -126,12 +126,22 @@ func run() -> void:
  var original_mode := root.mode
  menu.buttons[0].pressed.emit()
  await process_frame
- check(menu.creation.visible and menu.creation.back.visible and not menu.creation.confirm.visible,"New Game enters character creation directly")
+ check(is_instance_valid(menu.attribution) and menu.creation == null and menu.attribution.page == 0, "New Game opens the author credit first")
+ menu.attribution._process(0.6)
+ check(menu.attribution.content.modulate.a > 0.0 and menu.attribution.content.modulate.a < 1.0, "Author credit fades in")
+ menu.attribution._process(10.0)
+ check(menu.attribution.page == 1 and menu.attribution.tribute.visible, "The Urban Dead tribute follows the author credit")
+ menu.attribution._process(20.0)
+ await process_frame
+ check(menu.creation.visible and menu.creation.back.visible and not menu.creation.confirm.visible,"Credits lead to character creation")
  check(not menu.title_page.visible and root.mode == original_mode,"Creation respects the existing window mode")
  menu.creation.back.pressed.emit()
  await process_frame
  check(menu.creation == null and menu.title_page.visible,"Back returns to the parallax title")
  menu.buttons[0].pressed.emit()
+ await process_frame
+ menu.attribution._process(10.0)
+ menu.attribution._process(20.0)
  await process_frame
  var creation := menu.creation
  creation.set_process(false)

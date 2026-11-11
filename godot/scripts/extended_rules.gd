@@ -91,7 +91,9 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
   if item.is_empty() or C.ITEMS[item.kind].get("action","") != command: return "Select an appropriate carried item."
   if command in ["drink","eat"] and a.hp >= max_hp(a): return "You are already at full health."
   if command == "decorate" and b.decorations.size() >= 13: return "There is no room for another decoration."
- if command == "flare" and s.item_kind(a,"flare_gun").is_empty(): return "You need a flare gun."
+ if command == "flare":
+  if s.action_item(a,"flare_gun",data).is_empty(): return "You need a flare gun."
+  if a.inside: return "Fire signal flares outdoors."
  return ""
 
 static func perform(s,a: Dictionary, command: String, target: int, data: Dictionary) -> String:
@@ -111,21 +113,25 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    s.clear_grasp(s.actors[target])
    return "%s %s into the street!" % [s.action_phrase(a,"drag","drags"),s.display_name(s.actors[target])]
   "groan","bellow","flare":
-   var humans = s.occupants(b,a.inside).filter(func(t): return t.human and not t.down).size()
-   var radius = 10 if command == "bellow" and humans >= 25 else mini(6,maxi(1,humans))
+   var radius = 10 if command == "bellow" else 6
    if command == "flare":
-    s.consume(a,s.item_kind(a,"flare_gun"))
-    radius = 10
+    s.consume(a,s.action_item(a,"flare_gun",data))
+    radius = 14
    for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
     for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
      for id in s.spatial.get(y*s.width+x,[]):
       var other: Dictionary = s.actors[id]
-      if other.down or other.human or other.wants_revive: continue
+      if other.down or other.id == a.id: continue
+      if command != "flare":
+       other.heard_call = command
+       other.heard_call_site = b.id
+       other.heard_call_until = s.minute+90
+      if other.human or other.wants_revive: continue
       other.memory = b.id
       other.memory_until = s.minute+90
       other.npc_signal = "groan"
       s.wake_npc(other)
-   return "%s %s over the neighbourhood, calling attention to %s." % [s.action_phrase(a,"send","sends"),"a red flare" if command == "flare" else ("a thunderous bellow" if radius == 10 else "a feeding groan"),b.name]
+   return "%s %s over the neighbourhood, calling attention to %s." % [s.action_phrase(a,"send","sends"),"a red flare" if command == "flare" else ("a thunderous bellow" if command == "bellow" else "a feeding groan"),b.name]
   "gesture":
    if target >= 0:
     var prey = s._visible_human(a)

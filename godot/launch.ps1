@@ -58,6 +58,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'NPC naming tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/npc_sex_test.gd --log-file npc-sex-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'NPC sex tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/npc_starting_skills_test.gd --log-file npc-starting-skills-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'NPC starting skills tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/barricade_test.gd --log-file barricade-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Barricade tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/survival_test.gd --log-file survival-tests.log
@@ -94,6 +96,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Interface tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/damage_feedback_test.gd --log-file damage-feedback-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Damage feedback tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/location_transition_test.gd --log-file location-transition-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Location transition tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/map_labels_test.gd --log-file map-labels-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Map label tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/connected_minimap_test.gd --log-file connected-minimap-tests.log

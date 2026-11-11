@@ -141,18 +141,18 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  var p = _actor("Alex", "Morgan", "Ashen", occupation, 4, 4, true, true)
  _setup_player(p,occupation)
  var doctor = _actor("Maya", "Reed", "Mouldering", "Doctor", 4, 4, true, true)
- doctor.human_skills = ["diagnosis","first_aid"]
+ _setup_starting_skills(doctor,"Doctor")
  for _i in range(3): give_item(doctor, "first_aid_kit")
  var engineer = _actor("Sarah", "Dilkens", "Slimy", "Engineer", 4, 4, true, true)
- engineer.human_skills = ["construction"]
+ _setup_starting_skills(engineer,"Engineer")
  give_item(engineer, "toolbox")
  var scientist = _actor("Julian", "Ellis", "Jaundiced", "Scientist", 5, 4, true, true)
- scientist.human_skills = ["necro_employment","lab_experience", "necronet"]
+ _setup_starting_skills(scientist,"Scientist")
  give_item(scientist, "syringe")
  give_item(scientist, "syringe")
  give_item(scientist, "fuel_can")
  var guard = _actor("Ravi", "Price", "Ravenous", "Guard", 3, 4, true, true)
- guard.human_skills = ["firearms"]
+ _setup_starting_skills(guard,"Guard")
  give_item(guard, "pistol")
  give_item(guard, "pistol_clip")
  give_item(guard, "knife")
@@ -160,12 +160,12 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  for i in range(10):
   var h = _actor("", "", "", ["Doctor", "Engineer", "Guard"][i%3], [4,4,4,5,5,5,3,3,5,5][i], [3,3,3,5,5,5,4,4,4,4][i], true, true)
   if not is_building(block_at(h.x, h.y)): h.inside = false
-  h.human_skills = [["first_aid"], ["construction"], ["firearms"]][i%3].duplicate()
+  _setup_starting_skills(h,h.job)
   give_item(h, ["first_aid_kit", "toolbox", "baseball_bat"][i%3])
   if i%3 == 2: h.equipped = h.inventory[0].uid
  for i in range(18):
   var z = _actor("", "", "", "Resident", rng.randi_range(0, 9), rng.randi_range(0, 9), false, false)
-  z.zombie_skills = ["vigour_mortis", "memories", "ransack"]
+  _setup_starting_skills(z,"Resident")
   if i >= 3:
    z.down = true
    z.hp = 0
@@ -263,21 +263,13 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
   var job = jobs[i%jobs.size()]
   var a = _actor("","","",job,group_site.x,group_site.y,true,is_building(group_site))
   _setup_player(a,job)
-  # Offline populations include working specialists, not only first-day novices.
   if job == "Doctor":
-   a.human_skills.append("first_aid")
-   # Some established doctors can run field revival services if a lab falls.
    if (i/jobs.size())%2 == 0:
-    a.human_skills.append_array(["necro_employment","lab_experience"])
     give_item(a,"syringe")
-  if job in ["Firefighter","Consumer"]: a.human_skills.append("construction")
   if i%3 == 1:
-   # Keep the crew's medic on medical duty and assign construction to a teammate.
    var builder = actors[a.id-1] if job == "Medic" else a
-   if not has_skill(builder,"construction"): builder.human_skills.append("construction")
    give_item(builder,"toolbox")
   if job == "NecroTech Lab Assistant":
-   a.human_skills.append("lab_experience")
    give_item(a,"syringe")
   if is_building(group_site) and not group_site.unbarricadable:
    group_site.barricade = 4
@@ -289,7 +281,7 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
    var y = clampi(p.y+rng.randi_range(-3,3),0,height-1)
    site = block_at(x,y)
   var a = _actor("","","","Corpse",site.x,site.y,false,is_building(site) and i%3 == 0)
-  a.zombie_skills = ["vigour_mortis","memories","ransack"]
+  _setup_starting_skills(a,"Corpse")
   if i >= maxi(1,int(zombie_count*0.16)):
    a.down = true
    a.hp = 0
@@ -846,6 +838,13 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     a.xp += actual
     set_pose(t,"hurt")
     text = "%s %s for %d damage." % [action_phrase(a,"bite","bites") if command == "bite" else action_phrase(a,"hit","hits"),display_name(t),actual]
+    if weapon.get("kind","") == "fuel_can":
+     t.fuel_soaked = true
+     consume(a,weapon)
+     text += " They are soaked in fuel."
+    elif weapon.get("kind","") == "flare_gun" and t.get("fuel_soaked",false):
+     t.fuel_soaked = false
+     text += " The fuel ignites."
     if not a.human:
      if command == "bite":
       if has_skill(a,"digestion"): a.hp = mini(max_hp(a),a.hp+actual)
@@ -1093,9 +1092,10 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   text = "Pounding fists and scraping claws batter the barricades outside. " + ("The last barricade gives way." if b.barricade == 0 else "The barricades shudder but hold.")
  var visible = nearby(a,p) or nearby(origin,p)
  var station_destroyed = command == "destroy_radio" and not b.radio
- var remote = ((command == "broadcast" or station_destroyed) and radio_receives(p,b.frequency)) or (command == "phone" and target_id == 0)
+ var remote = ((command == "broadcast" or station_destroyed) and radio_receives(p,b.frequency)) or (command == "phone" and target_id == 0) or (command == "flare" and not p.down and maxi(absi(a.x-p.x),absi(a.y-p.y)) <= 14)
  if station_destroyed and remote and not visible: text = "[Radio %.2f MHz] A transmitter falls silent." % b.frequency
- var audible = a.x == p.x and a.y == p.y and command in ["break","barricade","enter","leave"]
+ var call_audible = not p.down and command in ["groan","bellow"] and maxi(absi(a.x-p.x),absi(a.y-p.y)) <= (10 if command == "bellow" else 6)
+ var audible = call_audible or (a.x == p.x and a.y == p.y and command in ["break","barricade","enter","leave"])
  if not sleeping and (a.id == 0 or visible or audible):
   var sound = ""
   match command:
@@ -1142,6 +1142,7 @@ func die(a: Dictionary, penalty: int = 0) -> void:
  clear_grasp(a)
  a.headshot = penalty
  a.fed = 0
+ a.fuel_soaked = false
  a.tagged_until = 0
  a.tagged_skills.clear()
  a.scout_site = -1
@@ -2056,7 +2057,7 @@ func initialize_actor(a: Dictionary) -> void:
   if int(a.get("trail_from",-1)) >= 0: a.memory = -1
   a.trail_from = -1
   for key in ["trail_origin","trail_destination","trail_until"]: a.erase(key)
- var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_lost":false,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":"","npc_purchases":0,"npc_observed":-1,"npc_observed_at":-1,"npc_signal":"","npc_special_at":0}
+ var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"heard_call":"","heard_call_site":-1,"heard_call_until":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_lost":false,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":"","npc_purchases":0,"npc_observed":-1,"npc_observed_at":-1,"npc_signal":"","npc_special_at":0}
  for key in defaults:
   if not a.has(key): a[key] = defaults[key]
  for key in ["route_goal","avoid_site","avoid_until","next_groan","grasp_target","grasped_by","pose_sequence","trail_from","scout_site","scout_day","scout_used","fed","headshot","tagged_until","npc_purchases","npc_observed","npc_observed_at","npc_special_at"]: a[key] = int(a[key])
@@ -2115,7 +2116,7 @@ func roll_attack_hit(hit: float) -> bool:
  if hit == floor(hit): return rng.randi_range(1,100) <= hit
  return rng.randf()*100.0 < hit
 
-func attack_stats(a: Dictionary, _target: Dictionary, command: String, weapon: Dictionary = {}) -> Dictionary:
+func attack_stats(a: Dictionary, target: Dictionary, command: String, weapon: Dictionary = {}) -> Dictionary:
  var hit = 10.0
  var damage = 1
  var ranged = false
@@ -2137,6 +2138,7 @@ func attack_stats(a: Dictionary, _target: Dictionary, command: String, weapon: D
    hit = def.hit
    damage = def.damage
    ranged = def.has("capacity") or def.get("ranged",false)
+   if weapon.kind == "flare_gun" and target.get("fuel_soaked",false): damage *= 2
   if ranged:
    if has_skill(a,"firearms"): hit += 12.5 if weapon.kind == "flare_gun" else 15
    if weapon.kind == "pistol": hit += (25 if has_skill(a,"pistol_training") else 0)+(10 if has_skill(a,"advanced_pistol") else 0)
@@ -2197,12 +2199,19 @@ func fort_move_reason(a: Dictionary, origin: Dictionary, destination: Dictionary
   return "The gatehouse is too heavily barricaded to Free Run out. Click an adjacent map square to exit at ground level."
  return ""
 
-func _setup_player(a: Dictionary, occupation: String) -> void:
+func _starting_setup(occupation: String) -> Array:
  var setups = {"Private":[["firearms"],["pistol","pistol_clip"]],"Medic":[["first_aid"],["pistol","first_aid_kit"]],"Scout":[["free_running"],["binoculars"]],"NecroTech Lab Assistant":[["necro_employment"],["dna_extractor"]],"Doctor":[["diagnosis"],["first_aid_kit","first_aid_kit"]],"Police Officer":[["firearms"],["pistol","pistol_clip","flak_jacket","radio"]],"Firefighter":[["axe_proficiency"],["fire_axe","first_aid_kit"]],"Consumer":[["shopping"],["baseball_bat","mobile_phone"]],"Corpse":[[],[]],"Volunteer":[["construction","necro_employment","lab_experience"],["baseball_bat","first_aid_kit","toolbox","syringe"]]}
- var setup = setups.get(occupation,setups.Volunteer)
- a.human_skills = setup[0].duplicate()
- a.human = occupation != "Corpse"
- if not a.human: a.zombie_skills = ["vigour_mortis"]
+ var aliases = {"Guard":"Private","Scientist":"NecroTech Lab Assistant","Engineer":"Volunteer","Resident":"Corpse"}
+ return setups.get(aliases.get(occupation,occupation),setups.Volunteer)
+
+func _setup_starting_skills(a: Dictionary, occupation: String) -> void:
+ a.human_skills = _starting_setup(occupation)[0].duplicate()
+ a.zombie_skills = ["vigour_mortis"] if occupation in ["Corpse","Resident"] else []
+
+func _setup_player(a: Dictionary, occupation: String) -> void:
+ var setup = _starting_setup(occupation)
+ _setup_starting_skills(a,occupation)
+ a.human = occupation not in ["Corpse","Resident"]
  for kind in setup[1]: give_item(a,kind)
  for item in a.inventory:
   if C.ITEMS[item.kind].has("damage"):

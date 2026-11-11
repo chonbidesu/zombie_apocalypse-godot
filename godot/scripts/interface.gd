@@ -23,9 +23,12 @@ const MapCanvas = preload("res://scripts/minimap_canvas.gd")
 const GameMusic = preload("res://scripts/game_music.gd")
 const DamageOverlay = preload("res://scripts/damage_overlay.gd")
 const GameSounds = preload("res://scripts/game_sounds.gd")
+const SaveSlots = preload("res://scripts/save_slots.gd")
+var slot_chooser: Control
 var minimap_artwork := MapArtwork.new()
 var location_architecture := preload("res://scripts/location_architecture.gd").new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
+const INTERIOR_ZOOM = 1.1
 const INVENTORY_PAGE_SIZE = 10
 var inventory_page: int = 0
 var foot_bounds: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/tables/actor_frame_bounds.json"))
@@ -68,6 +71,7 @@ var actor_tooltip_label: Label
 var animation_time: float = 0.0
 var damage_overlay: Control
 var game_sounds: Node
+var scene_transition: Dictionary = {}
 var context_open: bool = false
 var mall_store: String = "drugstore"
 var message_command: String = "say"
@@ -112,12 +116,13 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
  _animate_scene(delta)
- if paused or context_open or not modal.is_empty(): return
+ if paused or context_open or not modal.is_empty() or is_instance_valid(slot_chooser): return
  _advance_session(delta)
 
 func _animate_scene(delta: float) -> void:
  _update_actor_tooltip()
  animation_time += delta
+ _animate_scene_transition()
  if is_instance_valid(overlay) and modal == "map":
   for marker in overlay.find_children("GPS*","Panel",true,false):
    marker.visible = fmod(animation_time,1.0) < 0.5
@@ -288,6 +293,7 @@ func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accen
  return node
 
 func refresh() -> void:
+ if sim.player().down or sim.sleeping or not modal.is_empty(): _clear_scene_transition()
  if not is_instance_valid(page):
   page = Control.new()
   page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -513,6 +519,12 @@ func _location(b: Dictionary) -> void:
  art.name = "EnvironmentArt"
  art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
  art.clip_contents = true
+ var artwork = picture(art,art.texture,Rect2(Vector2.ZERO,ENVIRONMENT_RECT.size))
+ artwork.name = "Artwork"
+ artwork.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+ artwork.pivot_offset = ENVIRONMENT_RECT.size/2.0
+ artwork.scale = Vector2.ONE*(INTERIOR_ZOOM if p.inside and sim.is_building(b) else 1.0)
+ art.texture = null
  if not p.inside: necrotech_mark(page,b,Vector2(895,365),28)
  var text = sim.location_description(p)
  var font_size = description_font_size(text)
@@ -812,6 +824,65 @@ func _update_log() -> void:
  log_view.text = content
  if not was_at_end: bar.set_deferred("value",old_scroll)
 
+func _scene_snapshot() -> Control:
+ var snapshot = Control.new()
+ snapshot.size = ENVIRONMENT_RECT.size
+ snapshot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ rect(snapshot,Rect2(Vector2.ZERO,ENVIRONMENT_RECT.size),INK).mouse_filter = Control.MOUSE_FILTER_IGNORE
+ for name in ["EnvironmentArt","SceneActors"]:
+  var source = page.get_node_or_null(name)
+  if source == null: continue
+  var copy: Control = source.duplicate(0)
+  copy.position = Vector2.ZERO
+  _ignore_snapshot_input(copy)
+  snapshot.add_child(copy)
+ return snapshot
+
+func _ignore_snapshot_input(node: Node) -> void:
+ if node is Control: node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ for child in node.get_children(): _ignore_snapshot_input(child)
+
+func _start_scene_transition(previous: Control, command: String, direction: Vector2) -> void:
+ _clear_scene_transition()
+ var next = _scene_snapshot()
+ var mask = Control.new()
+ mask.name = "LocationTransition"
+ mask.position = ENVIRONMENT_RECT.position
+ mask.size = ENVIRONMENT_RECT.size
+ mask.clip_contents = true
+ mask.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ add_child(mask)
+ rect(mask,Rect2(Vector2.ZERO,ENVIRONMENT_RECT.size),Color.BLACK).mouse_filter = Control.MOUSE_FILTER_IGNORE
+ mask.add_child(previous)
+ mask.add_child(next)
+ scene_transition = {"mask":mask,"previous":previous,"next":next,"command":command,"direction":direction,"since":animation_time,"duration":0.26 if command == "move" else 0.38}
+ _animate_scene_transition()
+
+func _animate_scene_transition() -> void:
+ if scene_transition.is_empty(): return
+ var progress = clampf((animation_time-float(scene_transition.since))/float(scene_transition.duration),0.0,1.0)
+ if progress >= 1.0:
+  _clear_scene_transition()
+  return
+ var previous: Control = scene_transition.previous
+ var next: Control = scene_transition.next
+ if scene_transition.command == "move":
+  next.position = scene_transition.direction*ENVIRONMENT_RECT.size*(1.0-progress)
+ else:
+  previous.modulate.a = 1.0-clampf(progress*2.0,0.0,1.0)
+  next.modulate.a = clampf(progress*2.0-1.0,0.0,1.0)
+  var from_zoom = 1.0 if scene_transition.command == "enter" else INTERIOR_ZOOM
+  var to_zoom = INTERIOR_ZOOM if scene_transition.command == "enter" else 1.0
+  var zoom = lerpf(from_zoom,to_zoom,progress)
+  for snapshot in [previous,next]:
+   var artwork = snapshot.get_node_or_null("EnvironmentArt/Artwork")
+   if artwork != null: artwork.scale = Vector2.ONE*zoom
+
+func _clear_scene_transition() -> void:
+ if not scene_transition.is_empty() and is_instance_valid(scene_transition.get("mask")):
+  scene_transition.mask.queue_free()
+ scene_transition.clear()
+
 func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
  if paused or resting or not modal.is_empty(): return
  if command == "lookout" and sim.player().inside and not data.has("direction"):
@@ -822,6 +893,9 @@ func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
    refresh()
   return
  if command == "search": data = {"store":mall_store}
+ var previous_scene: Control
+ if command in ["move","enter","leave"] and sim.action_feedback(sim.player(),command,target,data).is_empty():
+  previous_scene = _scene_snapshot()
  var result = sim.act(command,target,data)
  if result.ok and command == "view_map":
   open_city_map()
@@ -833,6 +907,10 @@ func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
  elif result.ok and command == "lookout": modal = "binocular_survey"
  elif result.ok and command == "locate": modal = "intelligence"
  refresh()
+ if is_instance_valid(previous_scene):
+  if result.ok and not sim.player().down:
+   _start_scene_transition(previous_scene,command,Vector2(data.get("dx",0),data.get("dy",0)))
+  else: previous_scene.queue_free()
 
 func begin_sleep() -> void:
  if paused or not modal.is_empty(): return
@@ -849,17 +927,38 @@ func begin_rest(amount: int) -> void:
  refresh()
 
 func _save() -> void:
- if resting: sim.stop_rest()
- notice = "Saved to " + ProjectSettings.globalize_path(save_path) if sim.save_to(save_path) == OK else "Could not save."
- refresh()
+ _show_slots(true)
 
 func _load() -> void:
- var result := sim.load_from(save_path)
+ _show_slots(false)
+
+func _show_slots(saving: bool) -> void:
+ if is_instance_valid(slot_chooser): return
+ slot_chooser = SaveSlots.new()
+ slot_chooser.base_path = save_path
+ slot_chooser.saving = saving
+ slot_chooser.closed.connect(_close_slots)
+ slot_chooser.selected.connect(func(path): _select_slot(path,saving))
+ add_child(slot_chooser)
+
+func _close_slots() -> void:
+ slot_chooser.queue_free()
+ slot_chooser = null
+
+func _select_slot(path: String, saving: bool) -> void:
+ _close_slots()
+ if saving:
+  if resting: sim.stop_rest()
+  notice = "Game saved." if sim.save_to(path) == OK else "Could not save."
+  refresh()
+  return
+ var result := sim.load_from(path)
  notice = "Loaded your neighbourhood." if result.is_empty() else result
  if result.is_empty(): _reset_session_view()
  refresh()
 
 func _reset_session_view() -> void:
+ _clear_scene_transition()
  if is_instance_valid(damage_overlay):
   damage_overlay.splashes.clear()
   damage_overlay.queue_redraw()
@@ -1267,7 +1366,7 @@ func _item_menu(item: Dictionary) -> void:
  var commands: Array = []
  var use_action = {"first_aid_kit":"heal", "pistol_clip":"reload", "shotgun_shell":"reload", "toolbox":"repair", "portable_generator":"generator", "fuel_can":"fuel", "syringe":"revive"}
  if C.ITEMS[item.kind].has("damage"): commands.append(["equip","Equip / unequip",-1])
- elif use_action.has(item.kind): commands.append([use_action[item.kind],"Use",0 if item.kind == "first_aid_kit" else selected_actor])
+ if use_action.has(item.kind): commands.append([use_action[item.kind],"Use",0 if item.kind == "first_aid_kit" else selected_actor])
  if C.ITEMS[item.kind].has("action"): commands.append([C.ITEMS[item.kind].action,"Use "+C.ITEMS[item.kind].name,selected_actor])
  if item.kind == "flare_gun": commands.append(["flare","Fire signal flare",-1])
  commands.append(["give","Give to selected survivor",selected_actor])

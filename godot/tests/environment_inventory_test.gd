@@ -20,7 +20,7 @@ func run() -> void:
  scene.set_process(false)
  var p = scene.sim.player()
  var art = scene.page.get_node("EnvironmentArt")
- check(art.stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_CENTERED and art.size.y == 572,"Full-height environment art is fitted without cropping")
+ check(art.get_node("Artwork").stretch_mode == TextureRect.STRETCH_KEEP_ASPECT_COVERED and art.size.y == 572 and art.clip_contents,"Environment artwork covers the setting frame without distortion")
  check(scene.page.get_node("PlayerHealth").get_visible_line_count() == 1 and scene.page.get_node("PlayerEnergy").get_visible_line_count() == 1,"Personal HP/XP and AP values remain visible")
  var floor_ok = true
  scene.paused = true

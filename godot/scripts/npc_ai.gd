@@ -226,8 +226,8 @@ static func prey(s,a: Dictionary,people: Array) -> Dictionary:
 static func can_call(s,a: Dictionary,people: Array) -> bool:
  var prey_count = people.filter(func(t): return t.human and not t.down).size()
  if a.next_groan > s.minute or not (s.has_skill(a,"feeding_groan") or s.has_skill(a,"bellow")): return false
- var radius = 10 if prey_count >= 25 and s.has_skill(a,"bellow") else mini(6,prey_count)
- if radius == 0: return false
+ if prey_count == 0: return false
+ var radius = 10 if s.has_skill(a,"bellow") and (prey_count >= 25 or not s.has_skill(a,"feeding_groan")) else 6
  for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
   for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
    if x == a.x and y == a.y: continue

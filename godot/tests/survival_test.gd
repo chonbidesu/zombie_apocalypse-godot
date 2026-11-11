@@ -53,6 +53,7 @@ func _initialize() -> void:
   s.execute(p,"barricade")
  check(b.barricade == 7 and b.barricade_damage == 0,"Re-cading restores damaged sublevels before raising level")
  var zombie = s.actors[15]
+ zombie.zombie_skills.append_array(["memories","ransack"])
  zombie.x = p.x
  zombie.y = p.y
  zombie.down = false
@@ -179,6 +180,7 @@ func _initialize() -> void:
  check(JSON.stringify(s.actors) == JSON.stringify(loaded.actors) and JSON.stringify(s.blocks) == JSON.stringify(loaded.blocks),"Daily waking and survivor trips replay exactly after save/load")
  s = isolated()
  var engineer = s.actors[2]
+ engineer.human_skills = ["construction"]
  engineer.x = 4
  engineer.y = 4
  engineer.inside = true
