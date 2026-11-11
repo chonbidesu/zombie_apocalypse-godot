@@ -3,19 +3,18 @@ const Sim = preload("res://scripts/simulation.gd")
 
 func _initialize() -> void:
  var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/tables/character_names.json"))
- var male_jobs = ["Private", "Guard", "NecroTech Lab Assistant", "Scientist", "Police Officer", "Corpse", "Resident"]
  var city = Sim.new()
  assert(city.start(42,"Volunteer",{"mode":"malton","survivors":32,"zombies":24}).is_empty())
  for actor in city.actors.slice(1):
-  var pool: Array = data.male_first_name if actor.job in male_jobs else data.female_first_name
+  var pool: Array = data.male_first_name if actor.sex == "male" else data.female_first_name
   assert(actor.first in pool)
  var s = Sim.new()
  s.start(42)
- var original_identity = [s.actors[5].first, s.actors[5].last, s.actors[5].adjective]
+ var original_identity = [s.actors[5].first, s.actors[5].last, s.actors[5].adjective, s.actors[5].sex]
  assert(s.save_to("user://npc-naming-test.json") == OK)
  var restored = Sim.new()
  assert(restored.load_from("user://npc-naming-test.json").is_empty())
- assert([restored.actors[5].first, restored.actors[5].last, restored.actors[5].adjective] == original_identity)
+ assert([restored.actors[5].first, restored.actors[5].last, restored.actors[5].adjective, restored.actors[5].sex] == original_identity)
  for i in range(6000 - (s.actors.size() - 1)):
   s._actor("", "", "", "Resident", 0, 0, i % 2 == 0, false)
  s.ensure_unique_npc_names()
@@ -23,7 +22,7 @@ func _initialize() -> void:
  var adjectives = {}
  for a in s.actors:
   if a.id > 0:
-   var pool: Array = data.male_first_name if a.job in male_jobs else data.female_first_name
+   var pool: Array = data.male_first_name if a.sex == "male" else data.female_first_name
    assert(a.first in pool)
   var full = (a.first + " " + a.last).to_lower()
   var adjective = a.adjective.to_lower()

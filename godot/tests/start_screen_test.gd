@@ -212,6 +212,11 @@ func run() -> void:
  check(game.sim.world_mode == "sandbox" and playlist.playing and playlist._next_index == 1 and playlist.stream != before_restart,"Restarting from world setup shuffles the playlist")
  await process_frame
  DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
+ current_scene.queue_free()
+ await process_frame
+ # AudioServer retires stopped MP3 playbacks on its mixer thread. Allow
+ # queued scene deletion and the audio fade-out to finish before shutdown.
+ await create_timer(0.1).timeout
  print("Start screen: %d checks, %d failures" % [checks,failures])
  quit(1 if failures else 0)
 

@@ -5,10 +5,10 @@ var group: int
 var slot: int
 var idle_time: float = 0.0
 var action_time: float = -1.0
+# Alpha bitmaps are only for hit testing and shadow contacts, never art repair.
 var masks: Array[BitMap] = []
 const ContactShadow = preload("res://scripts/character_creation/contact_shadow.gd")
 var shadow: ContactShadow
-var ink := ShaderMaterial.new()
 var registered_offset: Vector2
 const STRUGGLE = [0,0,0,1,2,1,3,0,0,2,1,3]
 const BREATHE = [0,1,2,3,2,1]
@@ -27,7 +27,24 @@ const ACTION_HOLDS = [
 func setup(sheet: Texture2D, bounds: Rect2, group_index: int, index: int, shadow_parent: Node2D) -> void:
  group = group_index
  slot = index
+ visual = AnimatedSprite2D.new()
+ visual.centered = false
+ add_child(visual)
+ set_sheet(sheet)
  var cell := Vector2(sheet.get_width()/4.0,sheet.get_height()/3.0)
+ registered_offset = Vector2(-cell.x/2.0,-mask_bottom(masks[0]))
+ position = bounds.position+Vector2(bounds.size.x/2.0,bounds.size.y)
+ scale = Vector2.ONE*(bounds.size.x/cell.x if slot == 8 else bounds.size.y/cell.y)
+ visual.position = registered_offset
+ shadow = ContactShadow.new()
+ shadow.setup(slot,group,position,scale,registered_offset)
+ shadow_parent.add_child(shadow)
+
+func set_sheet(sheet: Texture2D) -> void:
+ # Swap drawings and hit masks together, preserving the room's registered
+ # placement, animation timings and existing shadow node.
+ var cell := Vector2(sheet.get_width()/4.0,sheet.get_height()/3.0)
+ masks.clear()
  var frames := SpriteFrames.new()
  frames.remove_animation("default")
  frames.add_animation("idle")
@@ -43,32 +60,18 @@ func setup(sheet: Texture2D, bounds: Rect2, group_index: int, index: int, shadow
   mask.create_from_image_alpha(pixels.get_region(Rect2i(atlas.region)),0.45)
   masks.append(mask)
   frames.add_frame("idle" if i < 4 else "choice",atlas)
- registered_offset = Vector2(-cell.x/2.0,-mask_bottom(masks[0]))
- position = bounds.position+Vector2(bounds.size.x/2.0,bounds.size.y)
- scale = Vector2.ONE*(bounds.size.x/cell.x if slot == 8 else bounds.size.y/cell.y)
- visual = AnimatedSprite2D.new()
  visual.sprite_frames = frames
- visual.animation = "idle"
- visual.centered = false
- visual.position = registered_offset
- add_child(visual)
- ink.shader = preload("res://scripts/character_creation/idle.gdshader")
- ink.set_shader_parameter("subject",slot)
- ink.set_shader_parameter("atlas_texture",sheet)
- if slot==3:
-  ink.set_shader_parameter("doctor_portrait",load("res://assets/character_creation/doctor-portrait.png"))
- visual.material = ink
- shadow = ContactShadow.new()
- shadow.setup(slot,group,position,scale,registered_offset)
- shadow_parent.add_child(shadow)
+ if is_instance_valid(shadow):
+  shadow.last_frame = null
+ reset()
 
-func tick(delta: float, intensity: float, reduced: bool) -> void:
+func tick(delta: float, intensity: float) -> void:
  visual.modulate = Color(0.045,0.055,0.07).lerp(Color(1.10,1.02,0.87),intensity)
  if action_time >= 0.0:
   action_time += delta
   visual.animation = "choice"
   visual.frame = choice_frame(action_time)
- elif not reduced and intensity>0.1:
+ elif intensity>0.1:
   idle_time += delta
   visual.animation = "idle"
   if slot==8:
@@ -80,13 +83,10 @@ func tick(delta: float, intensity: float, reduced: bool) -> void:
   visual.animation = "idle"
   visual.frame = 0
 
- ink.set_shader_parameter("idle",action_time<0 and intensity>0.1 and not reduced)
- ink.set_shader_parameter("choice_frame",visual.frame if action_time>=0 else -1)
  var index := visual.frame+(4 if action_time>=0 else 0)
  if intensity>0.01:
   var shadow_frame := visual.sprite_frames.get_frame_texture(visual.animation,visual.frame) as AtlasTexture
-  var support_mask := masks[0] if slot in [4,8] or (slot in [5,6,7] and action_time<0) else masks[index]
-  shadow.set_pose(shadow_frame,support_mask)
+  shadow.set_pose(shadow_frame,masks[index])
  shadow.modulate.a = intensity
  shadow.visible = intensity>0.01
 

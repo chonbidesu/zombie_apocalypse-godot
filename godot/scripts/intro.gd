@@ -36,7 +36,6 @@ const SHARED_NARRATION := [
   ["8", "What happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."]]
 ]
 var occupation := ""
-var reduced_motion := false
 var page: Page = Page.OPENING
 var elapsed := 0.0
 var ending_time := -1.0
@@ -152,7 +151,7 @@ func _load_page_art() -> void:
    if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open-v3.png")
  facade_view.visible = page == Page.OPENING
  specimen.visible = page == Page.NECROTECH
- if specimen.visible and not reduced_motion: specimen_contents.play()
+ if specimen.visible: specimen_contents.play()
  else: specimen_contents.pause()
  opening_scrim.visible = page != Page.OUTBREAK
 
@@ -244,8 +243,8 @@ func _update_ending(delta: float) -> void:
   finished.emit(occupation)
 
 func _opening_facade_rect() -> Rect2:
- var travel := 1.0 if reduced_motion else smoothstep(2.5, 9.3, elapsed)
- var zoom_progress := 1.0 if reduced_motion else clampf((elapsed - 9.3) / 9.0, 0.0, 1.0)
+ var travel := smoothstep(2.5, 9.3, elapsed)
+ var zoom_progress := clampf((elapsed - 9.3) / 9.0, 0.0, 1.0)
  var zoom := 1.0 + 0.28 * (1.0 - pow(1.0 - zoom_progress, 3.0))
  var top := lerpf(2100.0, -1983.0, travel)
  var anchor := Vector2(960, 485)
@@ -253,7 +252,6 @@ func _opening_facade_rect() -> Rect2:
  return Rect2(origin, FACADE_SIZE * (STAGE_SIZE.x / FACADE_SIZE.x) * zoom)
 
 func _opening_light() -> float:
- if reduced_motion: return 1.0
  if elapsed < 10.3: return 0.0
  if elapsed < 10.45: return 0.8
  if elapsed < 10.62: return 0.0
@@ -262,7 +260,7 @@ func _opening_light() -> float:
  return 1.0
 
 func _quarantine_rect(index: int) -> Rect2:
- var progress := 0.0 if reduced_motion else smoothstep(0.0, 8.0, elapsed)
+ var progress := smoothstep(0.0, 8.0, elapsed)
  var factor := 1.0 + progress * (0.12 if index == 0 else (0.5 if index == 1 else 2.5))
  if index == 1:
   var line := Rect2(-577, 184, 2574, 2574.0 / 3.0)
@@ -279,10 +277,10 @@ func _zoom_rect(base: Rect2, factor: float, anchor: Vector2 = ZOOM_ANCHOR) -> Re
  return Rect2(anchor + (base.position - anchor) * factor, base.size * factor)
 
 func _lab_retreat() -> float:
- return 1.0 if reduced_motion else 1.0 - pow(1.0 - clampf(elapsed / 14.0, 0.0, 1.0), 3.0)
+ return 1.0 - pow(1.0 - clampf(elapsed / 14.0, 0.0, 1.0), 3.0)
 
 func _corpse_rect() -> Rect2:
- var progress := 1.0 if reduced_motion else smoothstep(0.0, 14.0, elapsed)
+ var progress := smoothstep(0.0, 14.0, elapsed)
  # Skipping to Rise should frame the face immediately, ready for the next click.
  if narration_index >= line_times.size() - 1 and line_times.size() > 0: progress = 1.0
  return Rect2(Vector2(lerpf(420.0, -2360.0, progress), -510.0), Vector2(4148, 2332))
@@ -298,13 +296,13 @@ func _draw() -> void:
   Page.NECROTECH:
    draw_texture_rect(layers[0], _zoom_rect(BASE_FRAME, lerpf(1.4, 1.0, _lab_retreat())), false)
   Page.ORIGIN:
-   var approach := 0.0 if reduced_motion else smoothstep(0.0, 18.0, elapsed)
+   var approach := smoothstep(0.0, 18.0, elapsed)
    for i in range(layers.size()):
     var frame := _corpse_rect() if occupation == "Corpse" else _zoom_rect(BASE_FRAME, 1.0 + approach * (0.12 if i == 0 else 0.85))
     draw_texture_rect(layers[i], frame, false)
 
 func _draw_opening() -> void:
- var descent := 1.0 if reduced_motion else smoothstep(0.0, 9.3, elapsed)
+ var descent := smoothstep(0.0, 9.3, elapsed)
  draw_texture_rect(layers[0], Rect2(BASE_FRAME.position + Vector2(0, -descent * 20), BASE_FRAME.size), false)
  draw_texture_rect(layers[1], Rect2(BASE_FRAME.position + Vector2(0, 145 - descent * 240), BASE_FRAME.size), false)
  var scale_factor := facade_view.size.x / FACADE_SIZE.x

@@ -1,5 +1,7 @@
 extends RefCounted
 ## UI-independent rules. Player and AI use the same validation and transactions.
+signal player_damaged(amount: int, human: bool)
+signal sound_requested(effect: String)
 const C = preload("res://scripts/catalog.gd")
 const Dialogue = preload("res://scripts/dialogue.gd")
 const Extended = preload("res://scripts/extended_rules.gd")
@@ -25,7 +27,9 @@ var rng = RandomNumberGenerator.new()
 var search_tables: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/tables/search_tables.json"))
 var description_pools: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/tables/descriptions.json"))
 var blocks: Array = []
+var visited_neighbourhoods: Dictionary = {}
 var actors: Array = []
+var npc_sex_counts: Dictionary = {}
 var messages: Array = []
 var minute: int = 480
 var clock_step: int = 4800
@@ -77,7 +81,9 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  world_seed = seed_value
  rng.seed = seed_value
  blocks.clear()
+ visited_neighbourhoods.clear()
  actors.clear()
+ npc_sex_counts.clear()
  messages.clear()
  minute = 480
  clock_step = 4800
@@ -304,10 +310,22 @@ func suburb_name(a: Dictionary) -> String:
 func _actor(first: String, last: String, adjective: String, job: String, x: int, y: int, human: bool, inside: bool) -> Dictionary:
  var actor = {"id":actors.size(), "first":first, "last":last, "adjective":adjective, "job":job, "x":x, "y":y, "human":human, "inside":inside, "down":false, "hp":50, "ap":50, "xp":0, "human_skills":[], "zombie_skills":[], "inventory":[], "equipped":-1, "memory":-1, "memory_until":0, "ready_at":0, "busy_until":0.0, "next_think":480.0+rng.randf_range(1.0,8.0), "last_action":"","dormant":false,"home":y*width+x,"supply_goal":-1,"supply_kind":"","next_trip":500+actors.size()*3,"trust":{},"request_after":{},"speech":"","speech_until":0.0,"next_speech":500.0+actors.size()*7.0}
  actor.original_human = human
+ actor.sex = _next_npc_sex(job) if actor.id > 0 else C.occupation_sex(job)
  actor.prefers_undead = actor.id > 0 and not human and int(actor.id)%3 != 0
  initialize_actor(actor)
  actors.append(actor)
  return actor
+
+func _next_npc_sex(job: String) -> String:
+ # Balance each occupation independently; alternate the extra NPC for odd totals
+ # by world seed, without consuming the gameplay random stream.
+ var counts: Dictionary = npc_sex_counts.get(job,{"male":0,"female":0})
+ var sex = "male" if counts.male < counts.female else "female"
+ if counts.male == counts.female:
+  sex = "male" if (world_seed + int(job.hash()) + int(counts.male)) % 2 == 0 else "female"
+ counts[sex] += 1
+ npc_sex_counts[job] = counts
+ return sex
 
 func player() -> Dictionary:
  return actors[0]
@@ -340,10 +358,8 @@ func ensure_unique_npc_names() -> void:
  for i in range(1,actors.size()):
   var a: Dictionary = actors[i]
   var full_name = (a.first + " " + a.last).to_lower()
-  if a.first.is_empty() or a.last.is_empty() or used_names.has(full_name):
-   # Legacy aliases use the same portraits as their corresponding occupations.
-   var male_jobs = ["Private", "Guard", "NecroTech Lab Assistant", "NecroTech Assistant", "Scientist", "Police Officer", "Corpse", "Resident"]
-   var first_names: Array = data.male_first_name if a.job in male_jobs else data.female_first_name
+  var first_names: Array = data.male_first_name if a.sex == "male" else data.female_first_name
+  if a.first not in first_names or a.last.is_empty() or used_names.has(full_name):
    while true:
     a.first = first_names[naming_rng.randi_range(0,first_names.size()-1)]
     a.last = data.last_name[naming_rng.randi_range(0,data.last_name.size()-1)]
@@ -533,10 +549,17 @@ func nearby(a: Dictionary, b: Dictionary) -> bool:
 func discover() -> void:
  var p = player()
  if p.down: return
+ visited_neighbourhoods[neighbourhood_key(p.x,p.y)] = true
  ensure_descriptions(current_block(p))
  for dy in range(-1, 2):
   for dx in range(-1, 2):
    if p.x+dx in range(width) and p.y+dy in range(height): block_at(p.x+dx, p.y+dy).known = true
+
+func neighbourhood_key(x: int, y: int) -> String:
+ return "%d,%d" % [int(x/10),int(y/10)]
+
+func neighbourhood_visited(x: int, y: int) -> bool:
+ return visited_neighbourhoods.has(neighbourhood_key(x,y))
 
 func item_by_uid(a: Dictionary, uid: int) -> Dictionary:
  for item in a.inventory:
@@ -611,6 +634,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
    if b.barricade > (4 if a.human else 0): return "You try to find an entry point, but the building is too heavily barricaded to enter from the outside."
    if not a.human and doors_closed(b) and not has_skill(a, "memories"): return "Memories of Life is needed to open doors."
   "leave":
+   if not is_building(b): return "There is no building to leave."
    if not a.inside: return "Already outside."
    if b.barricade > 4: return MAIN_DOORS_BLOCKED
   "barricade", "repair", "generator", "fuel", "close", "ransack", "ruin", "scan", "manufacture", "jump", "repair_generator", "destroy_generator":
@@ -748,6 +772,8 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  var attack_hit = false
  var initial_target_hp = actors[target_id].hp if target_id >= 0 else -1
  var initial_barricade_strength = barricade_strength(b)
+ var attack_weapon = item_by_uid(a,a.equipped) if command == "attack" and not data.get("unarmed",false) else {}
+ var firearm_attack = not attack_weapon.is_empty() and C.ITEMS[attack_weapon.kind].has("capacity")
  var name = "You" if a.id == 0 else display_name(a)
  var text = ""
  match command:
@@ -764,7 +790,9 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    if ruined_free_run:
     text += " You find your route blocked by a collapsed wall, and are forced to street level." if a.id == 0 else " A collapsed wall forces them to street level."
     if roll_free_run_fall():
+     var previous_hp: int = a.hp
      a.hp = maxi(1,a.hp-5)
+     if a.id == 0 and a.hp < previous_hp: player_damaged.emit(previous_hp-a.hp,a.human)
      set_pose(a,"hurt")
      critical = true
      text += " You lose your footing on the ruined building, and fall to the street below, injuring yourself." if a.id == 0 else " They lose their footing and fall to the street, injuring themselves."
@@ -814,6 +842,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     var damage = attack_damage(t,stats)
     var actual = mini(t.hp,damage)
     t.hp -= actual
+    if t.id == 0 and actual > 0: player_damaged.emit(actual,t.human)
     a.xp += actual
     set_pose(t,"hurt")
     text = "%s %s for %d damage." % [action_phrase(a,"bite","bites") if command == "bite" else action_phrase(a,"hit","hits"),display_name(t),actual]
@@ -1033,6 +1062,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    text = "%s from a window." % action_phrase(a,"jump","jumps")
    if a.human:
     critical = true
+    if a.id == 0 and a.hp > 0: player_damaged.emit(a.hp,a.human)
     die(a)
     text += " You die and can stand as a zombie." if a.id == 0 else " They die on impact."
    else:
@@ -1045,7 +1075,9 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   elif command in ["attack","bite"]: start_scent_trail(a,target)
  if a.ap <= 0 and a.id == 0: text += " Exhausted, you can go no further."
  if a.human and not a.down and a.infected and ap_spent > 0:
+  var previous_hp: int = a.hp
   a.hp = maxi(0,a.hp-ap_spent)
+  if a.id == 0 and a.hp < previous_hp: player_damaged.emit(previous_hp-a.hp,a.human)
   if a.hp == 0: die(a)
   if a.id == 0: text += " Infection costs %d HP." % ap_spent
  if a.id > 0: a.busy_until = float(NpcGate.ready_after_action(clock_step))/C.CLOCK_STEPS_PER_MINUTE
@@ -1064,6 +1096,23 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  var remote = ((command == "broadcast" or station_destroyed) and radio_receives(p,b.frequency)) or (command == "phone" and target_id == 0)
  if station_destroyed and remote and not visible: text = "[Radio %.2f MHz] A transmitter falls silent." % b.frequency
  var audible = a.x == p.x and a.y == p.y and command in ["break","barricade","enter","leave"]
+ if not sleeping and (a.id == 0 or visible or audible):
+  var sound = ""
+  match command:
+   "move": sound = "footsteps"
+   "enter": sound = "door_open"
+   "leave", "stand": sound = "footsteps"
+   "close": sound = "door_close"
+   "search": sound = "search"
+   "reload": sound = "reload"
+   "barricade": sound = "barricade"
+   "break": sound = "decade"
+   "ransack", "ruin": sound = "ransack"
+   "groan", "bellow": sound = "zombie_sounds"
+   "attack", "bite":
+    if firearm_attack: sound = "gun_shot"
+    elif attack_hit: sound = "break"
+  if not sound.is_empty(): sound_requested.emit(sound)
  if a.id == 0 or visible or audible or remote or target_id == 0:
   var category = "PLAYER" if a.id == 0 else ("ALLY" if friendly else "ENEMY")
   if target_id == 0 or (critical and not friendly): category = "ALERT"
@@ -1080,6 +1129,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   stop_rest("Rest interrupted. Danger or a change in your condition brings you back to normal speed.")
 
 func die(a: Dictionary, penalty: int = 0) -> void:
+ if not sleeping and (a.id == 0 or nearby(a,player())): sound_requested.emit("human_death" if a.human else "zombie_death")
  if a.human and a.id > 0:
   a.wants_revive = a.original_human
   a.supply_goal = -1
@@ -1507,7 +1557,7 @@ func log_event(text: String, category: String = "WORLD", actor_id: int = -1, act
 func save_to(path: String) -> Error:
  var file = FileAccess.open(path, FileAccess.WRITE)
  if file == null: return FileAccess.get_open_error()
- file.store_string(JSON.stringify({"version":3, "width":width,"height":height,"world_mode":world_mode,"world_title":world_title,"world_config":world_config,"geography_source":geography_source, "seed":str(world_seed), "rng":str(rng.state), "minute":minute, "clock_step":clock_step, "clock_fraction":clock_fraction, "event_sequence":event_sequence, "blocks":blocks, "actors":actors, "messages":messages, "next_item_id":next_item_id, "scan_report":scan_report, "scan_minute":scan_minute, "scan_cells":scan_cells, "npc_cursor":npc_cursor, "next_dialogue":next_dialogue, "sense_report":sense_report, "metrics":metrics,"npc_locations":npc_planner.memory.save_records(),"radio_defense":radio_defense}))
+ file.store_string(JSON.stringify({"version":3, "width":width,"height":height,"world_mode":world_mode,"world_title":world_title,"world_config":world_config,"geography_source":geography_source, "seed":str(world_seed), "rng":str(rng.state), "minute":minute, "clock_step":clock_step, "clock_fraction":clock_fraction, "event_sequence":event_sequence, "blocks":blocks, "actors":actors, "messages":messages, "next_item_id":next_item_id, "scan_report":scan_report, "scan_minute":scan_minute, "scan_cells":scan_cells, "npc_cursor":npc_cursor, "next_dialogue":next_dialogue, "sense_report":sense_report, "metrics":metrics,"npc_locations":npc_planner.memory.save_records(),"radio_defense":radio_defense,"visited_neighbourhoods":visited_neighbourhoods}))
  return OK
 
 func load_from(path: String) -> String:
@@ -1554,6 +1604,14 @@ func load_from(path: String) -> String:
  geography_source = parsed.get("geography_source",{})
  blocks = parsed.blocks
  actors = parsed.actors
+ npc_sex_counts.clear()
+ var missing_sex: Array = []
+ for a in actors:
+  if a.id > 0 and a.get("sex","") not in ["male","female"]: missing_sex.append(int(a.id))
+ visited_neighbourhoods = parsed.get("visited_neighbourhoods",{}).duplicate() if parsed.get("visited_neighbourhoods",{}) is Dictionary else {}
+ # Older saves have no visit history; retain the current neighbourhood.
+ if not parsed.has("visited_neighbourhoods"):
+  visited_neighbourhoods[neighbourhood_key(int(actors[0].x),int(actors[0].y))] = true
  # JSON numbers are floats. Normalize integer identity/coordinate fields.
  for a in actors:
   for key in ["id", "x", "y", "hp", "ap", "xp", "equipped", "memory", "memory_until", "ready_at"]: a[key] = int(a[key])
@@ -1595,6 +1653,14 @@ func load_from(path: String) -> String:
  sleeping = false
  last_rest_notice = ""
  world_seed = int(parsed.seed)
+ # Upgrade older cities as well as new spawns. Already saved identities stay fixed.
+ for a in actors:
+  if a.id == 0 or a.id in missing_sex: continue
+  if not npc_sex_counts.has(a.job): npc_sex_counts[a.job] = {"male":0,"female":0}
+  npc_sex_counts[a.job][a.sex] += 1
+ for id in missing_sex:
+  actors[id].sex = _next_npc_sex(actors[id].job)
+ if not missing_sex.is_empty(): ensure_unique_npc_names()
  for b in blocks: ensure_descriptions(b)
  rng.seed = world_seed
  rng.state = int(parsed.rng)
@@ -1978,6 +2044,7 @@ func level(a: Dictionary) -> int:
  return maxi(1,a.human_skills.size()+a.zombie_skills.size())
 
 func initialize_actor(a: Dictionary) -> void:
+ if a.get("sex","") not in ["male","female"]: a.sex = C.occupation_sex(a.job)
  if not a.has("original_human"):
   a.original_human = a.job not in ["Corpse","Resident"]
   if a.id > 0 and a.original_human and not a.human: a.wants_revive = true

@@ -11,7 +11,7 @@ const GROUPS = [
  ["monument","carpark","wasteland"]
 ]
 const STYLES = ["Stone civic","Brick heritage","Deco and modern"]
-const OPEN_GROUND = ["park","cemetery","monument","carpark","wasteland","street"]
+const OPEN_GROUND = ["park","cemetery","monument","carpark","wasteland","street","exercise_yard","training_ground","zoo_ground"]
 var textures: Dictionary = {}
 var scenes: Dictionary = {}
 

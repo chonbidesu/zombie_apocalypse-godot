@@ -793,9 +793,19 @@ static func occupation_category(job: String) -> String:
  if job in ["Doctor", "Scientist", "NecroTech Lab Assistant", "NecroTech Assistant"]: return "science"
  return "civilian"
 
-static func occupation_sheet(job: String, human: bool) -> String:
- if not human: return "zombie"
- return {"Private":"private","Guard":"private","Medic":"medic","Scout":"scout","NecroTech Lab Assistant":"necro","NecroTech Assistant":"necro","Scientist":"necro","Doctor":"doctor","Police Officer":"police","Firefighter":"firefighter","Engineer":"firefighter","Consumer":"consumer","Volunteer":"consumer","Resident":"vagrant","Corpse":"vagrant"}.get(job,"consumer")
+static func occupation_sex(job: String) -> String:
+ # Sex depicted by the original artwork (also the fallback for older saves).
+ return "male" if job in ["Private","Guard","NecroTech Lab Assistant","NecroTech Assistant","Scientist","Police Officer","Corpse","Resident"] else "female"
+
+static func occupation_sheet(job: String, human: bool, sex: String = "") -> String:
+ var selected_sex = occupation_sex(job) if sex.is_empty() else sex
+ if not human: return "zombie_female" if selected_sex == "female" else "zombie"
+ var key: String = {"Private":"private","Guard":"private","Medic":"medic","Scout":"scout","NecroTech Lab Assistant":"necro","NecroTech Assistant":"necro","Scientist":"necro","Doctor":"doctor","Police Officer":"police","Firefighter":"firefighter","Engineer":"firefighter","Consumer":"consumer","Volunteer":"consumer","Resident":"vagrant","Corpse":"vagrant"}.get(job,"consumer")
+ return key if selected_sex == occupation_sex(job) else key+"_"+selected_sex
+
+static func occupation_portrait(job: String, sex: String = "") -> String:
+ var key: String = "necro" if job == "NecroTech Assistant" else PORTRAITS.get(job,"consumer")
+ return key if sex.is_empty() or sex == occupation_sex(job) else key+"_"+sex
 
 const PORTRAITS = {"Private":"private","Guard":"private","Medic":"medic","Scout":"scout","NecroTech Lab Assistant":"necro","Scientist":"necro","Doctor":"doctor","Police Officer":"police","Firefighter":"firefighter","Engineer":"firefighter","Consumer":"consumer","Volunteer":"consumer","Resident":"corpse","Corpse":"corpse"}
 const MALL_STORES = {"bookstore":["book","poetry_book","newspaper"],"drugstore":["first_aid_kit","book","candy"],"gun_store":["pistol","shotgun","pistol_clip","shotgun_shell"],"hardware":["fuel_can","crowbar","fire_axe","knife","portable_generator","spray_can","toolbox","flare_gun"],"liquor":["beer","wine"],"sports":["baseball_bat","cricket_bat","fencing_foil","golf_club","hockey_stick","pool_cue","ski_pole","tennis_racket","binoculars"],"tech":["gps_unit","mobile_phone","radio","radio_transmitter"]}

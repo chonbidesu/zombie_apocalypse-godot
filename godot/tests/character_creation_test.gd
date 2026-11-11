@@ -28,25 +28,12 @@ func run() -> void:
 		var actor := scene.actors[i]
 		var frames := actor.visual.sprite_frames
 		check(frames.get_frame_count("idle")==4 and frames.get_frame_count("choice")==8,"Frame counts for %d" % i)
-		if i==7:
-			var replacement := (frames.get_frame_texture("idle",0) as AtlasTexture).atlas
-			check(replacement.resource_path=="res://assets/character_creation/firefighter-size-matched.png","Firefighter uses idle proportions matched to confirmation")
-			# Compare the confirmation rows to the original axe-lift drawing's RGBA hash.
-			var source := Image.new()
-			source.load_png_from_buffer(FileAccess.get_file_as_bytes(replacement.resource_path))
-			var choice := source.get_region(Rect2i(0,362,1448,724))
-			choice.convert(Image.FORMAT_RGBA8)
-			var hash_context := HashingContext.new()
-			hash_context.start(HashingContext.HASH_SHA256)
-			hash_context.update(choice.get_data())
-			check(hash_context.finish().hex_encode()=="99a812afc6f11bae7423671c67ae485468581ea272f0600eaf03fec5656b6691","Firefighter confirmation drawings remain pixel-identical")
-		if i in [5,6]:
-			check(actor.visual.material==actor.ink,"Full redraw uses idle stabilization")
-			var sheet_path := "res://assets/character_creation/%s.png" % scene.JOBS[i][3]
-			for animation in ["idle","choice"]:
-				for frame in range(frames.get_frame_count(animation)):
-					var drawing := frames.get_frame_texture(animation,frame) as AtlasTexture
-					check(drawing.atlas.resource_path==sheet_path,"Every idle/choice frame comes from the full replacement sheet")
+		check(actor.visual.material == null,"Atlas draws directly without corrective shader or overlay")
+		var sheet_path: String = scene.ATLAS_PATH % scene.JOBS[i][3]
+		for animation in ["idle","choice"]:
+			for frame in range(frames.get_frame_count(animation)):
+				var drawing := frames.get_frame_texture(animation,frame) as AtlasTexture
+				check(drawing.atlas.resource_path == sheet_path,"Every frame uses the corrected atlas copy")
 		var reference_points = [Vector2(190,350),Vector2(428,312),Vector2(618,310),Vector2(830,235),Vector2(835,480),Vector2(1090,330),Vector2(1300,455),Vector2(1510,285),Vector2(1110,670)]
 		var uv = reference_points[i]/Vector2(1672,941)
 		check(scene.character_at(uv)==i,"Character hit target %d" % i)
@@ -59,13 +46,11 @@ func run() -> void:
 		root.push_input(click,true)
 		check(scene.selected==i and scene.confirm.visible,"Mouse selection %d" % i)
 		check(scene.details.text.contains(scene.JOBS[i][0].to_upper()),"Details match selection")
-		actor.tick(0.5,1.0,false)
+		actor.tick(0.5,1.0)
 		check(actor.visual.animation=="idle","Hover plays idle")
-		if i in [5,6,7]:
-			check(actor.ink.get_shader_parameter("idle"),"Stationary regions are stabilized while idling")
 		var shown = {}
 		for step in range(24):
-			actor.tick(1.0/6.0,1.0,false)
+			actor.tick(1.0/6.0,1.0)
 			shown[actor.visual.frame] = true
 		check(shown.size()==4,"Hover cycles four distinct atlas frames")
 		var expected_shadow := frames.get_frame_texture("idle",actor.visual.frame)
@@ -74,10 +59,8 @@ func run() -> void:
 			check(actor.shadow.contacts.points.size()==4,"Trolley and stretcher include the obscured caster contact")
 		scene.update_hover(Vector2(0,0))
 		check(scene.active_group==actor.group,"Selection holds spotlight when pointer leaves")
-		actor.tick(0.5,0.0,false)
+		actor.tick(0.5,0.0)
 		check(actor.visual.frame==0,"Dark character remains still without cast shadow")
-		actor.tick(1.0,1.0,true)
-		check(actor.visual.frame==0,"Reduce motion freezes idle")
 		scene.confirm_selection()
 		check(scene.cinema_time==0.0 and not scene.confirm.visible,"Confirm starts cinematic")
 		var prior := scene.selected
@@ -87,10 +70,8 @@ func run() -> void:
 		check(scene.selected==prior,"Selection locks during cinematic")
 		scene.advance_cinematic(0.5)
 		check(actor.action_time>=0.0,"Choice animation starts after short beat")
-		actor.tick(3.19,1.0,false)
+		actor.tick(3.19,1.0)
 		check(actor.visual.animation=="choice" and actor.visual.frame==7,"Choice reaches final unique pose")
-		if i in [5,6,7]:
-			check(not actor.ink.get_shader_parameter("idle"),"Confirmation uses the complete original drawing")
 		check(actor.visual.position.distance_to(actor.registered_offset)<60.0,"Frame registration stays fixed")
 		scene.advance_cinematic(3.5)
 		check(scene.world.scale.x>1.5 and scene.fade.modulate.a==0.0,"Slow zoom precedes fade")
@@ -140,7 +121,7 @@ func run() -> void:
 		var light = Vector4.ZERO
 		light[group] = 1.0
 		scene.material_room.set_shader_parameter("lights",light)
-		for actor in scene.actors: actor.tick(0.0,1.0 if actor.group==group else 0.0,true)
+		for actor in scene.actors: actor.tick(0.0,1.0 if actor.group==group else 0.0)
 		scene.lighting = light
 		await capture("user://character-creation-group-%d.png" % group)
 	# Inspect the last action pose after zoom, before fade, for every occupation.
@@ -152,7 +133,7 @@ func run() -> void:
 		var group: int = scene.JOBS[i][1]
 		light[group] = 1.0
 		scene.material_room.set_shader_parameter("lights",light)
-		for actor in scene.actors: actor.tick(3.2,1.0 if actor.group==group else 0.0,true)
+		for actor in scene.actors: actor.tick(3.2,1.0 if actor.group==group else 0.0)
 		scene.advance_cinematic(3.5)
 		scene.lighting = light
 		await capture("user://character-creation-choice-%d.png" % i)
@@ -182,7 +163,7 @@ func review_motion(scene: Creation) -> void:
 						for k in range(j-4): t += actor.ACTION_HOLDS[i][k]
 						t += 0.01
 			for other in scene.actors:
-						other.tick(t if j>=4 else [0.1,0.8,1.6,3.75][j],light[other.group],false)
+						other.tick(t if j>=4 else [0.1,0.8,1.6,3.75][j],light[other.group])
 			await process_frame
 			await RenderingServer.frame_post_draw
 			var img = root.get_texture().get_image()

@@ -19,6 +19,7 @@ var creation: CharacterCreation
 var intro: Intro
 var naming: Naming
 var chosen_occupation := ""
+var chosen_sex := ""
 var chosen_identity := {}
 var tutorial_prompt: TutorialPrompt
 var tutorials_enabled := false
@@ -103,6 +104,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func open_creation() -> void:
  if is_instance_valid(creation): return
+ chosen_sex = ""
  status.text = ""
  creation = (load("res://character_creation.tscn") as PackedScene).instantiate() as CharacterCreation
  creation.back_requested.connect(show_title)
@@ -128,10 +130,10 @@ func show_title() -> void:
 
 func show_naming(occupation: String) -> void:
  chosen_occupation = occupation
+ chosen_sex = creation.selected_sex()
  creation.hide()
  creation.process_mode = Node.PROCESS_MODE_DISABLED
  naming = Naming.new()
- naming.reduced_motion = creation.reduce_motion.button_pressed
  naming.confirmed.connect(show_intro)
  naming.back_requested.connect(back_to_creation)
  add_child(naming)
@@ -150,7 +152,6 @@ func show_intro(identity: Dictionary) -> void:
  music.volume_db = linear_to_db(0.1)
  intro = (load("res://intro.tscn") as PackedScene).instantiate() as Intro
  intro.occupation = chosen_occupation
- intro.reduced_motion = creation.reduce_motion.button_pressed
  intro.finished.connect(show_tutorial_prompt)
  creation.queue_free()
  creation = null
@@ -177,6 +178,7 @@ func start_new_game(occupation: String) -> void:
   status.text = error
   return
  simulation.player().merge(chosen_identity, true)
+ if chosen_sex in ["male","female"]: simulation.player().sex = chosen_sex
  simulation.ensure_unique_npc_names()
  enter_game(simulation,"A new life in Malton. You are a %s." % occupation)
 

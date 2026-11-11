@@ -1,0 +1,202 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "key": "police_female",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. New production NPC animation sprite atlas. Input is STYLE AND GRID REFERENCE ONLY, not the character identity. Create an EAST ASIAN WOMAN police officer, black hair in a tidy low bun, navy police uniform with gold badge, dark utility belt and boots. Match reference compact chibi pixel art proportions and crisp outlines. EXACTLY 24 frames in SIX columns and FOUR rows, equal square cells, 1536x1024 landscape. Every character faces RIGHT in three-quarter side view like reference. Row-major frames 0-7 idle/walk; 8-14 unarmed punching windup/strike/recovery; 15-20 progressive collapse ending frame20 fully prone horizontal dead body; 21-23 hurt/recoil standing. Full body entirely inside every cell, same scale ~75% standing cell height and foot baseline ~92%. Exactly one figure per cell. No text, gridlines, shadows, floor or backdrop. Genuine transparent background. Maintain same female identity, uniform and hair in all 24 poses.",
+      "dest": "godot/assets/sprite_sheets/police_female_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-7c4ea57c-5e51-4763-a244-48d7446150ef.png"
+    },
+    {
+      "key": "private_female",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Black woman soldier with deep brown skin, short natural coiled black hair, olive military fatigues and black boots. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/private_female_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-0140a27d-6a9f-4d18-a53b-0fb740846f6b.png"
+    },
+    {
+      "key": "private_female",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Black woman soldier with deep brown skin, short natural coiled black hair, olive military fatigues and black boots. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/private_female.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-6000b48b-d338-43dd-b9db-62da7e48b1dc.png",
+      "correction": {
+        "key": "private_female_portrait",
+        "source": "C:/Users/Jared/.codex/generated_images/01a1c83a-6765-7be0-8cca-cc167f391e7d/exec-ae781589-22f9-4852-85ec-12c9f0e79806.png",
+        "prompt": "Use case: precise-object-edit. Correct this 5x5 pixel-art portrait atlas of a Black woman army PRIVATE. Change ONLY the medical cross patches: REMOVE ALL red crosses and white medic patches from chest and both upper sleeves in EVERY cell; replace with plain olive military uniform fabric. She is an infantry soldier, not a medic. Preserve her face, short natural black hair, skin tones, every pose, all 25 cell positions, exact canvas dimensions, injuries, undead progression, pixel style, and alpha transparency. No new symbols. Genuine transparent background."
+      }
+    },
+    {
+      "key": "medic_male",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: white man army medic with fair freckled skin, short copper ginger hair and ginger stubble, olive medical fatigues with medical cross patches, black boots. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/medic_male_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-9bf8cf76-d2fe-4b7b-804b-52cab9616905.png"
+    },
+    {
+      "key": "medic_male",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: white man army medic with fair freckled skin, short copper ginger hair and ginger stubble, olive medical fatigues with medical cross patches, black boots. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/medic_male.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-e57d10ec-2e86-453f-b4f9-a7e0d0e711ab.png"
+    },
+    {
+      "key": "scout_male",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Southeast Asian (Vietnamese) man scout with warm medium tan skin, short black hair under green cap, light olive scouting fatigues, dark boots. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/scout_male_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-0613f7e4-f81a-4f9d-a84b-a23412daa29f.png"
+    },
+    {
+      "key": "scout_male",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Southeast Asian (Vietnamese) man scout with warm medium tan skin, short black hair under green cap, light olive scouting fatigues, dark boots. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/scout_male.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-3fa2be82-60f8-4a41-ba91-267ff4521a22.png",
+      "correction": {
+        "key": "scout_male_portrait",
+        "source": "C:/Users/Jared/.codex/generated_images/01a1c83a-6765-7be0-8cca-cc167f391e7d/exec-bd300043-ba64-4349-95ac-adf094b3ef0f.png",
+        "prompt": "Use case: precise-object-edit. Correct this portrait atlas: he is an ADULT Vietnamese ARMY reconnaissance scout in military fatigues. Change ONLY the uniform details in all 25 cells: remove all fleur-de-lis / boy-scout badges and the neckerchief, replacing with a plain olive military patrol cap, plain olive military shirt and dark webbing shoulder straps. Preserve the face, tan skin, hair, all poses, injuries, undead progression, exact 5x5 grid, scale and pixel style. Remove any white/checkered backdrop to genuine transparent alpha; preserve character cutouts."
+      }
+    },
+    {
+      "key": "necro_female",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Black woman laboratory technician with deep brown skin, tightly curled black hair in a short puff, protective goggles on forehead, white lab coat over blue shirt, charcoal trousers and dark shoes. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/necro_female_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-5fbe8c0f-a812-42dd-842d-7376626b0d54.png"
+    },
+    {
+      "key": "necro_female",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Black woman laboratory technician with deep brown skin, tightly curled black hair in a short puff, protective goggles on forehead, white lab coat over blue shirt, charcoal trousers and dark shoes. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/necro_female.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-e96d576a-7ad0-471d-8845-c92dbdd59074.png"
+    },
+    {
+      "key": "doctor_male",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: East Asian man doctor with light warm skin, neat short black hair, white medical coat over teal scrubs, stethoscope, dark shoes. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/doctor_male_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-660219ff-0d20-4769-ba9c-8f39fc464944.png"
+    },
+    {
+      "key": "doctor_male",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: East Asian man doctor with light warm skin, neat short black hair, white medical coat over teal scrubs, stethoscope, dark shoes. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/doctor_male.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-35cef231-14af-4628-8848-9c3db4d29109.png"
+    },
+    {
+      "key": "police_female",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: East Asian woman police officer with light warm skin, black hair in tidy low bun, navy police uniform with gold badge, dark utility belt and black boots. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/police_female.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-0f0bbcf7-278f-4d54-aa01-c0e6b93343a7.png"
+    },
+    {
+      "key": "firefighter_male",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Southeast Asian (Filipino) man firefighter with medium brown skin, short black hair, dark firefighter helmet with red front shield, yellow turnout coat with reflective bands, dark turnout trousers and boots. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/firefighter_male_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-6f31f370-46c3-43df-8ba2-ecc46b9b46f6.png"
+    },
+    {
+      "key": "firefighter_male",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Southeast Asian (Filipino) man firefighter with medium brown skin, short black hair, dark firefighter helmet with red front shield, yellow turnout coat with reflective bands, dark turnout trousers and boots. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/firefighter_male.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-bf988279-1aab-4396-a7fe-6b3ce632cf7f.png"
+    },
+    {
+      "key": "consumer_male",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Black middle-aged man civilian with deep brown skin, close cropped black hair and neat short beard, purple everyday zip jacket, blue jeans and dark shoes. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/consumer_male_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-814e66c1-6ebd-470b-8580-bb8901db1f81.png"
+    },
+    {
+      "key": "consumer_male",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: Black middle-aged man civilian with deep brown skin, close cropped black hair and neat short beard, purple everyday zip jacket, blue jeans and dark shoes. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/consumer_male.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-7fc5558a-91fd-4b99-9b64-06107bbd6841.png"
+    },
+    {
+      "key": "corpse_female",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: white older woman with fair freckled skin, disheveled shoulder-length copper ginger hair, weathered face, ragged brown-green coat, charcoal trousers and worn dark shoes. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight idle/walk poses; 8–14: seven unarmed punch windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face RIGHT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/police_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/vagrant_female_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-c1514d11-3eaf-47a6-87c5-2933d4ac1efa.png"
+    },
+    {
+      "key": "corpse_female",
+      "type": "portrait",
+      "prompt": "Use case: stylized-concept. Asset: player portrait animation atlas for later use in pixel-art survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: white older woman with fair freckled skin, disheveled shoulder-length copper ginger hair, weathered face, ragged brown-green coat, charcoal trousers and worn dark shoes. Frontal head-and-shoulders bust, crisp old-school pixel art, restrained colours, same identity/clothing/hair in all frames. EXACTLY FIVE columns and FIVE rows of equally sized square frames, square atlas, no gutters or margins. Row-major 0–4 five healthy subtle breathing poses; 5–9 five moderately injured breathing poses with bruises; 10–14 five critically injured exhausted poses with restrained small blood marks; 15 dead face with eyes closed; 16–24 nine undead lurch poses of same identity with pallid skin, cloudy eyes, torn clothing. Lock scale and camera, cut chest at each cell bottom. Genuine transparent background. No text, labels, drawn grid, floor or backdrop.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/portraits/medic.png"
+      ],
+      "dest": "godot/assets/portraits/corpse_female.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-369646cb-d77d-43b2-add3-e16596f9157b.png"
+    },
+    {
+      "key": "zombie_female",
+      "type": "sprite",
+      "prompt": "Use case: stylized-concept. Asset: production full-body animation atlas for pixel-art zombie survival game. Input is STYLE AND GRID REFERENCE ONLY. NEW CHARACTER: white older woman with fair freckled skin, disheveled shoulder-length copper ginger hair, weathered face, ragged brown-green coat, charcoal trousers and worn dark shoes now undead: pallid ashen skin, cloudy eyes and sunken cheeks. Match compact chibi proportions, large readable head, crisp pixel outlines, restrained muted shading. EXACTLY 24 poses, SIX columns by FOUR rows, equal square cells, landscape 3:2 (1536x1024). Frames row-major 0–7: eight slow asymmetrical shuffling/lurching poses; 8–14: seven clawing attack windup/strike/recovery; 15–20: six progressive collapse poses ending frame20 completely prone horizontally with slack limbs; 21–23: three standing hurt/recoil poses. Layout row1 six walk; row2 two walk and four attack; row3 three attack and three collapse; row4 three collapse and three hurt. All upright figures face LEFT three-quarter side profile. Same consistent identity/outfit/scale across all frames, standing ~75% cell height, baseline 92% cell height, fully inside own cell. No props, text, labels, gridlines, extra people, floor, glow or backdrop. Genuine transparent alpha background.",
+      "refs": [
+        "C:/Users/Jared/Documents/dev/godot_work/zombie_apocalypse/godot/assets/sprite_sheets/zombie_sprite_sheet.png"
+      ],
+      "dest": "godot/assets/sprite_sheets/zombie_female_sprite_sheet.png",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-becf4a3b-a88e-430e-91b3-9e43560ac3ec.png"
+    }
+  ]
+}

@@ -50,10 +50,14 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Naming screen tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/character_creation_test.gd --log-file character-creation-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Character creation tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/character_gender_test.gd --log-file character-gender-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Character gender tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/simulation_test.gd --log-file tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Simulation tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/npc_naming_test.gd --log-file npc-naming-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'NPC naming tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/npc_sex_test.gd --log-file npc-sex-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'NPC sex tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/barricade_test.gd --log-file barricade-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Barricade tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/survival_test.gd --log-file survival-tests.log
@@ -88,6 +92,10 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Widescreen and powered-ruin tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/interface_test.gd --log-file interface-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Interface tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/damage_feedback_test.gd --log-file damage-feedback-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Damage feedback tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/map_labels_test.gd --log-file map-labels-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Map label tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/connected_minimap_test.gd --log-file connected-minimap-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Connected minimap tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/environment_inventory_test.gd --log-file environment-inventory-tests.log

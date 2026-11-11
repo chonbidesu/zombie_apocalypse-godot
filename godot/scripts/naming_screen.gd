@@ -31,7 +31,6 @@ var effects: ColorRect
 var font: SystemFont
 var step := 0
 var reviewing := false
-var reduced_motion := false
 var accepted := false
 
 func _ready() -> void:
@@ -107,7 +106,6 @@ func _ready() -> void:
  effects.mouse_filter = Control.MOUSE_FILTER_IGNORE
  var material := ShaderMaterial.new()
  material.shader = GLASS
- material.set_shader_parameter("reduced_motion", reduced_motion)
  effects.material = material
  stage.add_child(effects)
  resized.connect(_layout)

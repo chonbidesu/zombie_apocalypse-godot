@@ -21,6 +21,8 @@ const C = preload("res://scripts/catalog.gd")
 const MapArtwork = preload("res://scripts/minimap_art.gd")
 const MapCanvas = preload("res://scripts/minimap_canvas.gd")
 const GameMusic = preload("res://scripts/game_music.gd")
+const DamageOverlay = preload("res://scripts/damage_overlay.gd")
+const GameSounds = preload("res://scripts/game_sounds.gd")
 var minimap_artwork := MapArtwork.new()
 var location_architecture := preload("res://scripts/location_architecture.gd").new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
@@ -59,10 +61,13 @@ var timing_label: Label
 var notice: String = "Welcome to Dulston. Explore, find supplies, and keep your neighbours alive."
 var textures: Dictionary = {}
 var actor_buttons: Array[Dictionary] = []
+var departing_actors: Array[Dictionary] = []
 var actor_visuals: Dictionary = {}
 var actor_tooltip: PanelContainer
 var actor_tooltip_label: Label
 var animation_time: float = 0.0
+var damage_overlay: Control
+var game_sounds: Node
 var context_open: bool = false
 var mall_store: String = "drugstore"
 var message_command: String = "say"
@@ -91,6 +96,16 @@ func _ready() -> void:
    sim.start()
    notice = why
   else: notice = "Welcome to %s. Find allies and secure a shelter." % sim.world_title
+ var effects_layer = CanvasLayer.new()
+ effects_layer.layer = 20
+ add_child(effects_layer)
+ damage_overlay = DamageOverlay.new()
+ damage_overlay.name = "DamageOverlay"
+ effects_layer.add_child(damage_overlay)
+ game_sounds = GameSounds.new()
+ add_child(game_sounds)
+ sim.player_damaged.connect(damage_overlay.add_damage)
+ sim.sound_requested.connect(game_sounds.play_effect)
  _reset_session_view()
  if start_tutorial: modal = "tutorial"
  refresh()
@@ -103,9 +118,25 @@ func _process(delta: float) -> void:
 func _animate_scene(delta: float) -> void:
  _update_actor_tooltip()
  animation_time += delta
+ if is_instance_valid(overlay) and modal == "map":
+  for marker in overlay.find_children("GPS*","Panel",true,false):
+   marker.visible = fmod(animation_time,1.0) < 0.5
  for entry in actor_buttons:
   if is_instance_valid(entry.node):
    position_actor_sprite(entry)
+ for entry in departing_actors.duplicate():
+  var target = entry.target
+  if not is_instance_valid(target):
+   departing_actors.erase(entry)
+   continue
+  var progress = (animation_time-float(entry.since))/0.4
+  if progress >= 1.0:
+   target.queue_free()
+   departing_actors.erase(entry)
+  elif entry.body:
+   target.visible = int(progress*6)%2 == 0
+  else:
+   target.position = entry.from.lerp(entry.to,clampf(progress,0.0,1.0))
  if is_instance_valid(player_portrait):
   player_portrait.texture.region = portrait_region(sim.player())
 
@@ -187,6 +218,32 @@ func label(parent: Node, text: String, bounds: Rect2, font_size: int = 20, color
  node.mouse_filter = Control.MOUSE_FILTER_IGNORE
  node.clip_text = true
  parent.add_child(node)
+ return node
+
+func map_name_label(parent: Node, text: String, bounds: Rect2, max_font_size: int) -> Label:
+ var node = label(parent,"",bounds,max_font_size)
+ node.name = "MapName"
+ node.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+ node.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+ var font = node.get_theme_font("font")
+ for font_size in range(max_font_size,0,-1):
+  var lines: Array[String] = []
+  var line = ""
+  var fits = true
+  for word in text.split(" ",false):
+   if font.get_string_size(word,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > bounds.size.x:
+    fits = false
+    break
+   var candidate = word if line.is_empty() else line + " " + word
+   if font.get_string_size(candidate,HORIZONTAL_ALIGNMENT_LEFT,-1,font_size).x > bounds.size.x:
+    lines.append(line)
+    line = word
+   else: line = candidate
+  if not line.is_empty(): lines.append(line)
+  if fits and lines.size()*font.get_height(font_size) <= bounds.size.y:
+   node.add_theme_font_size_override("font_size",font_size)
+   node.text = "\n".join(lines)
+   break
  return node
 
 func picture(parent: Node, texture: Texture2D, bounds: Rect2) -> TextureRect:
@@ -481,8 +538,9 @@ func _people() -> void:
  var p = sim.player()
  if p.down or sim.sleeping: return
  var people = ordered_people().filter(func(a): return a.id != 0)
- var humans = people.filter(func(a): return appears_human(a))
- var zombies = people.filter(func(a): return not appears_human(a))
+ var humans = people.filter(func(a): return not a.down and a.human)
+ var zombies = people.filter(func(a): return not a.down and not a.human)
+ var bodies = people.filter(func(a): return a.down)
  var lanes = maxi(1,ceili(float(people.size())/14.0))
  var columns = maxi(1,ceili(float(humans.size())/lanes)+ceili(float(zombies.size())/lanes))
  var spacing = minf(92.0,950.0/columns)
@@ -497,24 +555,48 @@ func _people() -> void:
    var x = 416+col*spacing+row*spacing*0.18 if appears_human(group[i]) else 1404-(col+1)*spacing-row*spacing*0.18
    var floor_y = ENVIRONMENT_RECT.end.y-2-row*43-offset
    entries.append({"actor":group[i],"x":x,"floor":floor_y,"size":size})
+ for i in range(bodies.size()):
+  var body_cols = mini(5,bodies.size())
+  var row = i/body_cols
+  var col = i%body_cols
+  var x = 910.0-(body_cols*spacing)/2.0+col*spacing
+  entries.append({"actor":bodies[i],"x":x,"floor":ENVIRONMENT_RECT.end.y-2-row*43,"size":size})
  entries.sort_custom(func(a,b): return a.floor < b.floor)
  var actors_layer = page.get_node_or_null("SceneActors")
+ var location_key = "%d/%d/%s" % [p.x,p.y,p.inside]
+ var same_location = actors_layer != null and actors_layer.get_meta("location","") == location_key
  if actors_layer == null:
   actors_layer = Control.new()
   actors_layer.name = "SceneActors"
   actors_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+  actors_layer.position = ENVIRONMENT_RECT.position
+  actors_layer.size = ENVIRONMENT_RECT.size
+  actors_layer.clip_contents = true
   page.add_child(actors_layer)
  else: page.move_child(actors_layer,-1)
+ actors_layer.set_meta("location",location_key)
  var visible_ids = {}
  for a in people: visible_ids["Actor_%d" % a.id] = true
  for child in actors_layer.get_children():
-  if visible_ids.has(str(child.name)): continue
+  if same_location and (visible_ids.has(str(child.name)) or child.has_meta("departing")): continue
+  if same_location and child.has_meta("was_down"):
+   var body: bool = child.get_meta("was_down")
+   var from: Vector2 = child.position
+   var right: bool = not bool(child.get_meta("was_human",false))
+   var destination = Vector2(ENVIRONMENT_RECT.size.x+child.size.y if right else -child.size.y*1.5,from.y)
+   child.name = "Departing_%s" % child.get_instance_id()
+   child.set_meta("departing",true)
+   child.mouse_filter = Control.MOUSE_FILTER_IGNORE
+   for sprite in child.get_children():
+    if sprite is TextureRect and not body: sprite.flip_h = not sprite.flip_h
+   departing_actors.append({"target":child,"from":from,"to":destination,"since":animation_time,"body":body})
+   continue
   actors_layer.remove_child(child)
   child.queue_free()
  var speaking: Array = []
  for entry in entries:
   var a = entry.actor
-  var bounds = Rect2(entry.x,entry.floor-entry.size,spacing-2,entry.size-2)
+  var bounds = Rect2(Vector2(entry.x,entry.floor-entry.size)-ENVIRONMENT_RECT.position,Vector2(spacing-2,entry.size-2))
   var target_name = "Actor_%d" % a.id
   var target = actors_layer.get_node_or_null(target_name)
   if target == null:
@@ -529,6 +611,19 @@ func _people() -> void:
    hover.bg_color = Color(1,1,1,0.06)
    hover.border_color = GOLD
    target.add_theme_stylebox_override("hover",hover)
+   if same_location:
+    var start_x = ENVIRONMENT_RECT.size.x+size if not a.human else -size*1.5
+    target.set_meta("arrival",{"since":animation_time,"from":Vector2(start_x,bounds.position.y),"body":a.down})
+  if target.has_meta("was_down") and not target.get_meta("was_down") and a.down:
+   target.set_meta("body_transition",{"since":animation_time,"from":target.position,"sheet":target.get_meta("living_sheet")})
+   target.remove_meta("arrival")
+   target.remove_meta("rise_transition")
+  elif target.has_meta("was_down") and target.get_meta("was_down") and not a.down:
+   target.set_meta("rise_transition",{"since":animation_time,"from":target.position,"human":a.human})
+   target.remove_meta("arrival")
+  target.set_meta("was_down",a.down)
+  target.set_meta("was_human",a.human)
+  if not a.down: target.remove_meta("body_transition")
   target.position = bounds.position
   target.size = bounds.size
   actors_layer.move_child(target,-1)
@@ -536,7 +631,7 @@ func _people() -> void:
   var human_appearance = appears_human(a)
   var tooltip: String
   if a.down:
-   tooltip = "Revivifying body" if human_appearance else "Dead body"
+   tooltip = "Dead body"
   else:
    tooltip = "%s · %s" % [sim.display_name(a),a.job if a.human else "Zombie"]
    if a.human: tooltip += " · " + sim.trust_description(a,p)
@@ -551,7 +646,8 @@ func _people() -> void:
   for child in target.get_children():
    target.remove_child(child)
    child.queue_free()
-  var sheet = C.occupation_sheet(a.job,human_appearance)
+  var sheet = C.occupation_sheet(a.job,human_appearance and not a.down,a.get("sex",""))
+  if not a.down: target.set_meta("living_sheet",sheet)
   var atlas = AtlasTexture.new()
   atlas.atlas = tex("sprite_sheets/"+sheet+"_sprite_sheet.png")
   atlas.region = actor_region(a,atlas.atlas)
@@ -566,7 +662,7 @@ func _people() -> void:
   var sprite = picture(target,atlas,Rect2((spacing-entry.size)/2,0,entry.size,entry.size))
   sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
   if a.down: sprite.modulate = Color(0.55,0.55,0.55)
-  var visual = {"node":sprite,"id":a.id,"offset":a.id%8,"sheet":sheet,"size":entry.size,"ground":entry.size-12}
+  var visual = {"node":sprite,"target":target,"destination":bounds.position,"id":a.id,"offset":a.id%8,"sheet":sheet,"size":entry.size,"ground":entry.size-12}
   position_actor_sprite(visual)
   actor_buttons.append(visual)
   if scent_health:
@@ -764,6 +860,9 @@ func _load() -> void:
  refresh()
 
 func _reset_session_view() -> void:
+ if is_instance_valid(damage_overlay):
+  damage_overlay.splashes.clear()
+  damage_overlay.queue_redraw()
  simulation_backlog = 0.0
  map_origin = Vector2i(-1,-1)
  city_overview = false
@@ -1043,6 +1142,7 @@ func _map_modal() -> void:
   label(overlay,"Everything is dark. Stand up to see your surroundings.",Rect2(160,420,1100,50),24,MUTED)
   return
  var has_gps = not sim.item_kind(p,"gps_unit").is_empty()
+ var has_map = not sim.item_kind(p,"map").is_empty()
  var player_neighbourhood = Vector2i(p.x/10*10,p.y/10*10)
  if map_origin.x < 0: city_overview = true
  if city_overview:
@@ -1060,7 +1160,7 @@ func _map_modal() -> void:
  var rows = ceili(sim.height/10.0) if city_overview else 10
  var field_map: Control
  if not city_overview:
-  field_map = map_region(overlay,Rect2i(map_origin,Vector2i(10,10)),Vector2(135,196),61,true)
+  field_map = map_region(overlay,Rect2i(map_origin,Vector2i(10,10)),Vector2(135,196),61,not has_map)
  for y in range(rows):
   for x in range(columns):
    var bx = x*10 if city_overview else map_origin.x+x
@@ -1074,19 +1174,18 @@ func _map_modal() -> void:
     var here = has_gps and at == player_neighbourhood
     var tile = button(overlay,"",bounds,func(): map_origin = at; city_overview = false; refresh(),here)
     tile.name = "Neighbourhood_%d_%d" % [bx,by]
-    var title = label(tile,b.get("suburb",sim.world_title),Rect2(3,5,cell_width-9,48),15)
-    title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-    title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-    title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-    tile.tooltip_text = "%s [%d–%d, %d–%d]" % [b.get("suburb",sim.world_title),bx,mini(sim.width-1,bx+9),by,mini(sim.height-1,by+9)]
+    var neighbourhood_name = b.get("suburb",sim.world_title) if has_map or sim.neighbourhood_visited(bx,by) else "Unknown"
+    map_name_label(tile,neighbourhood_name,Rect2(3,5,cell_width-9,48),15)
+    tile.tooltip_text = "%s [%d–%d, %d–%d]" % [neighbourhood_name,bx,mini(sim.width-1,bx+9),by,mini(sim.height-1,by+9)]
     if here:
-     var outline = rect(tile,Rect2(Vector2.ZERO,bounds.size),Color.TRANSPARENT,GOLD)
+     var outline = rect(tile,Rect2(Vector2.ZERO,bounds.size),Color.TRANSPARENT,Color.RED)
      outline.name = "GPSNeighbourhood"
      outline.get_theme_stylebox("panel").set_border_width_all(2)
+     outline.visible = fmod(animation_time,1.0) < 0.5
      tile.tooltip_text += "\nYour neighbourhood"
     continue
    var player_square = has_gps and p.x == bx and p.y == by
-   if b.known or player_square:
+   if b.known or has_map or player_square:
     var mark = Control.new()
     mark.position = bounds.position-Vector2(135,196)
     mark.size = Vector2.ONE*61
@@ -1094,10 +1193,13 @@ func _map_modal() -> void:
     mark.z_index = 1000
     mark.mouse_filter = Control.MOUSE_FILTER_PASS
     field_map.add_child(mark)
+    rect(mark,Rect2(2,35,57,24),Color(0.03,0.06,0.05,0.86))
+    map_name_label(mark,b.name,Rect2(3,35,55,24),10)
     if player_square:
-     var outline = rect(mark,Rect2(0,0,61,61),Color.TRANSPARENT,GOLD)
+     var outline = rect(mark,Rect2(0,0,61,61),Color.TRANSPARENT,Color.RED)
      outline.name = "GPSSquare"
      outline.get_theme_stylebox("panel").set_border_width_all(2)
+     outline.visible = fmod(animation_time,1.0) < 0.5
     necrotech_mark(mark,b,Vector2(22,9),14)
    else:
     var unknown = rect(field_map,Rect2(bounds.position-Vector2(135,196),bounds.size),INK)
@@ -1110,8 +1212,8 @@ func _map_modal() -> void:
  label(overlay,"Scan age: %d minutes" % (sim.minute-sim.scan_minute) if sim.scan_minute >= 0 else "Not connected",Rect2(780,422,250,35),20,MUTED)
  if not sim.scan_cells.is_empty():
   button(overlay,"View scan",Rect2(1050,422,150,32),func(): open_modal("necronet"))
- var suburb = sim.block_at(map_origin.x,map_origin.y).get("suburb",sim.world_title)
- var gps_hint = "\nGold outline: your location" if has_gps else ""
+ var suburb = sim.block_at(map_origin.x,map_origin.y).get("suburb",sim.world_title) if has_map or sim.neighbourhood_visited(map_origin.x,map_origin.y) else "Unknown neighbourhood"
+ var gps_hint = "\nBlinking red outline: your location" if has_gps else ""
  var info = label(overlay,"%s · %d × %d blocks\n%s\n\nExplore to reveal local blocks. Use City to choose a suburb, or W/E/N/S to browse.\n\nWarm windows: powered · Broken roofs: ruined%s\nNecroTech Employment reveals the NT logo.\n\nThe scan is a snapshot of tagged zombies, not live tracking." % [sim.world_title,sim.width,sim.height,suburb,gps_hint],Rect2(780,487,510,280),22,MUTED)
  info.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
@@ -1188,12 +1290,12 @@ func _item_menu(item: Dictionary) -> void:
  popup.popup()
 
 func portrait_texture(p: Dictionary) -> Texture2D:
- var key: String = C.PORTRAITS.get(p.get("job",""),"consumer")
+ var key: String = C.occupation_portrait(p.get("job",""),p.get("sex",""))
  var portrait = tex("portraits/"+key+".png")
  return portrait if portrait != null else tex("sprite_sheets/male1_sprite_sheet.png")
 
 func portrait_region(p: Dictionary) -> Rect2:
- if p.has("job") and tex("portraits/"+str(C.PORTRAITS.get(p.job,"consumer"))+".png") != null:
+ if p.has("job") and tex("portraits/"+C.occupation_portrait(p.job,p.get("sex",""))+".png") != null:
   var texture = portrait_texture(p)
   var cell = Vector2(texture.get_width()/5.0,texture.get_height()/5.0)
   var frame = 15
@@ -1210,7 +1312,7 @@ func portrait_region(p: Dictionary) -> Rect2:
  return Rect2((start+int(animation_time/0.35)%6)*66,0,66,66)
 
 func appears_human(a: Dictionary) -> bool:
- return a.human and (not a.down or sim.has_skill(sim.player(),"scent_death"))
+ return a.human and not a.down
 
 func ordered_people() -> Array:
  var people = sim.occupants(sim.current_block(sim.player()), sim.player().inside).duplicate()
@@ -1246,8 +1348,8 @@ func _speech_bubble(parent: Node, actor: Dictionary, actor_bounds: Rect2) -> voi
  var font_size = 16
  var text_size = theme.default_font.get_multiline_string_size(actor.speech,HORIZONTAL_ALIGNMENT_LEFT,width-20,font_size)
  var height = text_size.y+20.0
- var x = clampf(actor_bounds.get_center().x-width/2,408,1412-width)
- var y = maxf(166,actor_bounds.position.y-height-10)
+ var x = clampf(actor_bounds.get_center().x-width/2,6,ENVIRONMENT_RECT.size.x-6-width)
+ var y = maxf(5,actor_bounds.position.y-height-10)
  var bubble = rect(parent,Rect2(x,y,width,height),Color("ece4ca") if actor.human else Color("26352b"),GOLD if actor.human else GREEN)
  bubble.name = "Speech_%d" % actor.id
  var style: StyleBoxFlat = bubble.get_theme_stylebox("panel")
@@ -1270,7 +1372,7 @@ func actor_frame(a: Dictionary) -> int:
   actor_visuals[a.id] = record
  var elapsed = animation_time-float(record.since)
  if a.down:
-  return 15+mini(5,int(elapsed*10)) if record.pose == "die" else 20
+  return 20
  match record.pose:
   "hurt":
    if elapsed < 0.3: return 21+mini(2,int(elapsed*10))
@@ -1469,8 +1571,67 @@ func _new_game_modal() -> void:
 
 func position_actor_sprite(entry: Dictionary) -> void:
  var a = sim.actors[entry.id]
+ var target: Control = entry.target
+ var sheet: String = entry.sheet
+ var frame = actor_frame(a)
+ entry.node.flip_h = false
+ if target.has_meta("rise_transition"):
+  var transition: Dictionary = target.get_meta("rise_transition")
+  var elapsed: float = animation_time-float(transition.since)
+  target.visible = true
+  if elapsed < 0.6:
+   target.position = transition.from
+   frame = 20-mini(5,int(elapsed*10))
+  elif elapsed < 1.0:
+   target.position = transition.from.lerp(entry.destination,clampf((elapsed-0.6)/0.4,0.0,1.0))
+   entry.node.flip_h = transition.human
+  else:
+   target.position = entry.destination
+   target.remove_meta("rise_transition")
+ elif target.has_meta("body_transition"):
+  var transition: Dictionary = target.get_meta("body_transition")
+  var elapsed: float = animation_time-float(transition.since)
+  if elapsed < 0.6:
+   target.position = transition.from
+   target.visible = true
+   sheet = transition.sheet
+   frame = 15+mini(5,int(elapsed*10))
+  elif elapsed < 0.96:
+   target.position = transition.from
+   target.visible = int((elapsed-0.6)/0.06)%2 == 0
+   sheet = transition.sheet
+   frame = 20
+  elif elapsed < 1.32:
+   target.position = entry.destination
+   target.visible = int((elapsed-0.96)/0.06)%2 == 1
+  else:
+   target.position = entry.destination
+   target.visible = true
+   target.remove_meta("body_transition")
+ else:
+  target.position = entry.destination
+  target.visible = true
+  if target.has_meta("arrival"):
+   var arrival: Dictionary = target.get_meta("arrival")
+   var progress = (animation_time-float(arrival.since))/0.4
+   if progress >= 1.0:
+    target.remove_meta("arrival")
+   elif arrival.body:
+    target.visible = int(progress*6)%2 == 1
+   else:
+    target.position = arrival.from.lerp(entry.destination,clampf(progress,0.0,1.0))
  var atlas: AtlasTexture = entry.node.texture
- atlas.region = actor_region(a,atlas.atlas)
- var frames = foot_bounds.get(entry.sheet,[])
- var bottom = float(frames[actor_frame(a)].bottom) if frames.size() == 24 else 1.0
+ atlas.atlas = tex("sprite_sheets/"+sheet+"_sprite_sheet.png")
+ if atlas.atlas.get_width() > atlas.atlas.get_height()*8:
+  var cell = float(atlas.atlas.get_width())/24.0
+  atlas.region = Rect2(frame*cell,0,cell,atlas.atlas.get_height())
+ else:
+  var cell = Vector2(atlas.atlas.get_width()/6.0,atlas.atlas.get_height()/4.0)
+  atlas.region = Rect2(Vector2(frame%6,frame/6)*cell,cell)
+ entry.node.modulate = Color(0.55,0.55,0.55) if a.down and sheet == entry.sheet and (not target.has_meta("body_transition") or elapsed_for_body(target) >= 0.96) else Color.WHITE
+ var frames = foot_bounds.get(sheet,[])
+ var bottom = float(frames[frame].bottom) if frames.size() == 24 else 1.0
  entry.node.position.y = entry.ground-entry.size*bottom
+
+func elapsed_for_body(target: Control) -> float:
+ return animation_time-float(target.get_meta("body_transition").since)

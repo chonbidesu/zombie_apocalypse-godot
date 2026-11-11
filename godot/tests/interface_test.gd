@@ -252,8 +252,11 @@ func run() -> void:
  var zombie_pose = scene.portrait_region({"hp":25,"human":false,"down":false})
  scene.animation_time = 0.4
  check(scene.portrait_region({"hp":25,"human":false,"down":false}) == zombie_pose,"Zombie portrait holds rigid before lurching")
- scene.animation_time = 0.56
- check(scene.portrait_region({"hp":25,"human":false,"down":false}) != zombie_pose,"Zombie portrait jerks to a different pose")
+ var portrait_changes = false
+ for step in range(1,101):
+  scene.animation_time = 0.55+step*0.05
+  if scene.portrait_region({"hp":25,"human":false,"down":false}) != zombie_pose: portrait_changes = true
+ check(portrait_changes,"Zombie portrait eventually jerks to a different pose")
  scene.refresh()
  check(scene.page.get_node("LocationDescription").text == scene.sim.location_description(player),"Full generated location description is displayed")
  scene.sim.blocks[45].ruin = 3
@@ -276,10 +279,13 @@ func run() -> void:
  scene.refresh()
  var layer = scene.page.get_node("SceneActors")
  check(layer.get_child_count() == scene.sim.actors.size()-1,"Every NPC fits directly into the scene")
+ scene.animation_time += 0.5
+ for visual in scene.actor_buttons: scene.position_actor_sprite(visual)
  var fits = true
  var no_stats = true
  for target in layer.get_children():
   var bounds = target.get_rect()
+  bounds.position += layer.position
   if not scene.ENVIRONMENT_RECT.encloses(bounds): fits = false
   var tooltip = str(target.get_meta("actor_tooltip"))
   if "AP" in tooltip or "HP" in tooltip: no_stats = false
@@ -460,8 +466,13 @@ func run() -> void:
  check(decorated_text.get_visible_line_count() == decorated_text.get_line_count() and decorated_text.position.y+decorated_text.size.y <= 935,"Full decoration capacity and long graffiti stay inside description bounds")
  check(not scene.page.get_node("CityMinimap/MapTile_34").find_children("*","Label",true,false).any(func(node): return node.text == "RUIN"),"Ruins use the grey overlay without a RUIN label")
  scene.open_modal("skills")
- var skill_scroll = scene.overlay.get_node("FullSkillTrees")
- check(skill_scroll is ScrollContainer and skill_scroll.find_children("*","Button",true,false).size() == 46,"All forty-six skill controls fit in scrolling trees")
+ for human_form in [true,false]:
+  player.human = human_form
+  scene.refresh()
+  var skill_scroll = scene.overlay.get_node("FullSkillTrees")
+  var side = "human" if human_form else "zombie"
+  var skill_count = scene.C.SKILLS.keys().filter(func(key): return scene.C.SKILLS[key].side == side).size()
+  check(skill_scroll is ScrollContainer and skill_scroll.find_children("*","Button",true,false).size() == skill_count,"Every %s skill has a control in its scrolling tree" % side)
  scene.modal = ""
  for occupation in ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer","Corpse"]:
   player.job = occupation
@@ -494,7 +505,7 @@ func run() -> void:
  check(scene.actor_frame(player) == 21,"Damage starts on existing hurt frames")
  player.down = true
  scene.sim.set_pose(player,"die")
- check(scene.actor_frame(player) == 15,"Death starts on existing collapse frames")
+ check(scene.actor_frame(player) == 20,"Downed actors immediately use the anonymous body frame")
  scene.animation_time += 1
  check(scene.actor_frame(player) == 20,"Death settles on final unmoving frame")
  player.down = false
@@ -519,6 +530,8 @@ func run() -> void:
  necronet_controls(scene)
  binocular_controls(scene)
  corpse_anonymity(scene)
+ location_transitions(scene)
+ rise_transitions(scene)
  city_map_inventory(scene)
  print("UI CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
@@ -540,10 +553,20 @@ func city_map_inventory(scene) -> void:
  menu.id_pressed.emit(0)
  menu.hide()
  check(scene.modal == "map" and scene.city_overview and p.ap == 0 and p.busy_until == recovery,"Using the map opens the whole-city modal without spending AP or affecting recovery")
+ var long_name = "St. Bartholomew's Metropolitan Police Department"
+ var fitted = scene.map_name_label(scene.overlay,long_name,Rect2(0,0,55,24),10)
+ var fitted_font = fitted.get_theme_font("font")
+ var fitted_size = fitted.get_theme_font_size("font_size")
+ var lines_fit = true
+ for line in fitted.text.split("\n"):
+  if fitted_font.get_string_size(line,HORIZONTAL_ALIGNMENT_LEFT,-1,fitted_size).x > 55: lines_fit = false
+ check(fitted.text.replace("\n"," ") == long_name and lines_fit and fitted.text.split("\n").size()*fitted_font.get_height(fitted_size) <= 24,"Map names fit their square and wrap only between words")
+ fitted.queue_free()
  check(scene.overlay.find_children("GPSNeighbourhood","Panel",true,false).is_empty() and not scene.overlay.has_node("FindMe"),"The city view does not mark the player's neighbourhood without GPS")
  check(not sim.reason(p,"locate",-1,{},true).is_empty(),"A paper map cannot display GPS coordinates")
  scene.overlay.get_node("Neighbourhood_0_0").pressed.emit()
  check(not scene.city_overview and scene.overlay.find_children("GPSSquare","Panel",true,false).is_empty(),"Manual zoom works without a GPS square highlight")
+ check(not scene.overlay.find_children("MapName","Label",true,false).is_empty(),"Discovered blocks display their names on the local map")
  sim.give_item(p,"gps_unit")
  scene.open_city_map()
  check(scene.overlay.find_children("GPSNeighbourhood","Panel",true,false).size() == 1 and scene.overlay.has_node("FindMe"),"GPS highlights the neighbourhood and enables Find me")
@@ -567,6 +590,8 @@ func corpse_anonymity(scene) -> void:
   sim.set_pose(body,"idle")
  ordinary.human = false
  revivifying.human = true
+ ordinary.sex = "male"
+ revivifying.sex = "male"
  sim.reindex()
  scene.refresh()
  var layer = scene.page.get_node("SceneActors")
@@ -579,8 +604,121 @@ func corpse_anonymity(scene) -> void:
  scene.refresh()
  layer = scene.page.get_node("SceneActors")
  changing = scene.actor_buttons.filter(func(entry): return entry.id == revivifying.id)[0]
- check(changing.sheet != "zombie" and layer.get_node("Actor_2").get_meta("actor_tooltip") == "Revivifying body","Scent Death reveals the human appearance while leaving the tooltip anonymous")
+ check(changing.sheet == "zombie" and layer.get_node("Actor_2").get_meta("actor_tooltip") == "Dead body","Scent Death leaves the body sprite and tooltip anonymous")
  check(layer.get_node("Actor_1").get_meta("actor_tooltip") == "Dead body","Ordinary bodies remain anonymous with Scent Death")
+ check(sim.location_description(p).contains("smells strange"),"Scent Death reports revivifying bodies in the location description")
+ revivifying.down = false
+ scene.refresh()
+ var target = layer.get_node("Actor_2")
+ var old_position = target.position
+ revivifying.down = true
+ scene.refresh()
+ changing = scene.actor_buttons.filter(func(entry): return entry.id == revivifying.id)[0]
+ check(target.position == old_position and target.has_meta("body_transition") and changing.node.texture.atlas == scene.tex("sprite_sheets/"+scene.C.occupation_sheet(revivifying.job,true,revivifying.sex)+"_sprite_sheet.png"),"A newly downed actor starts collapsing in its original form and position")
+ scene.animation_time += 0.5
+ scene.position_actor_sprite(changing)
+ check(target.visible and target.position == old_position and changing.node.texture.region.position == Vector2(512,768),"The collapse reaches its final frame at the original position")
+ scene.animation_time += 0.17
+ scene.position_actor_sprite(changing)
+ check(not target.visible and target.position == old_position,"The collapsed actor blinks out at its original position")
+ scene.animation_time += 0.30
+ scene.position_actor_sprite(changing)
+ check(not target.visible and target.position == changing.destination and changing.node.texture.atlas == scene.tex("sprite_sheets/zombie_sprite_sheet.png"),"The invisible actor moves to the centre in undead form")
+ scene.animation_time += 0.4
+ scene.position_actor_sprite(changing)
+ check(target.visible and not target.has_meta("body_transition"),"The body finishes blinking visible at its destination")
+
+func location_transitions(scene) -> void:
+ scene.modal = ""
+ var sim = scene.sim
+ var p = sim.player()
+ p.down = false
+ var npc = sim.actors[1]
+ npc.x = p.x; npc.y = p.y; npc.inside = not p.inside
+ npc.down = false; npc.human = true
+ sim.reindex()
+ scene.refresh()
+ var layer = scene.page.get_node("SceneActors")
+ check(layer.clip_contents and layer.position == scene.ENVIRONMENT_RECT.position and layer.size == scene.ENVIRONMENT_RECT.size,"Actor animation is clipped to the setting image")
+ npc.inside = p.inside
+ sim.reindex()
+ scene.refresh()
+ var visual = scene.actor_buttons.filter(func(entry): return entry.id == npc.id)[0]
+ var target = visual.target
+ check(target.has_meta("arrival") and target.position.x < 0,"A human enters from the left")
+ scene.animation_time += 0.5
+ scene.position_actor_sprite(visual)
+ check(target.position == visual.destination,"The arriving human reaches their position")
+ npc.inside = not p.inside
+ sim.reindex()
+ scene.refresh()
+ var departure = scene.departing_actors.back()
+ var sprite = target.get_children().filter(func(node): return node is TextureRect)[0]
+ check(departure.target == target and not departure.body and departure.to.x < 0 and sprite.flip_h,"A departing human flips and slides left")
+ scene._animate_scene(0.5)
+ npc.human = false
+ npc.inside = p.inside
+ sim.reindex()
+ scene.refresh()
+ visual = scene.actor_buttons.filter(func(entry): return entry.id == npc.id)[0]
+ target = visual.target
+ check(target.has_meta("arrival") and target.position.x > layer.size.x,"A zombie enters from the right")
+ scene.animation_time += 0.5
+ scene.position_actor_sprite(visual)
+ npc.inside = not p.inside
+ sim.reindex()
+ scene.refresh()
+ departure = scene.departing_actors.back()
+ check(departure.target == target and departure.to.x > layer.size.x,"A departing zombie slides right")
+ scene._animate_scene(0.5)
+ npc.down = true
+ npc.inside = p.inside
+ sim.reindex()
+ scene.refresh()
+ visual = scene.actor_buttons.filter(func(entry): return entry.id == npc.id)[0]
+ target = visual.target
+ scene.animation_time += 0.5
+ scene.position_actor_sprite(visual)
+ var body_position = target.position
+ npc.inside = not p.inside
+ sim.reindex()
+ scene.refresh()
+ departure = scene.departing_actors.back()
+ scene._animate_scene(0.08)
+ check(departure.body and target.position == body_position and not target.visible,"A removed body blinks out in place")
+ scene._animate_scene(0.5)
+
+func rise_transitions(scene) -> void:
+ var sim = scene.sim
+ var p = sim.player()
+ var npc = sim.actors[1]
+ npc.x = p.x; npc.y = p.y; npc.inside = p.inside
+ for human_form in [false,true]:
+  npc.human = human_form; npc.down = true; npc.hp = 0; npc.ap = 50
+  sim.reindex()
+  scene.refresh()
+  var visual = scene.actor_buttons.filter(func(entry): return entry.id == npc.id)[0]
+  scene.animation_time += 1.5
+  scene.position_actor_sprite(visual)
+  var origin = visual.target.position
+  sim.execute(npc,"stand")
+  scene.refresh()
+  visual = scene.actor_buttons.filter(func(entry): return entry.id == npc.id)[0]
+  var sprite = visual.node
+  var expected_sheet = scene.C.occupation_sheet(npc.job,human_form,npc.sex)
+  check(visual.target.position == origin and sprite.texture.atlas == scene.tex("sprite_sheets/"+expected_sheet+"_sprite_sheet.png") and sprite.texture.region.position == Vector2(512,768),"Standing begins with the correct form's final collapse frame at the body position")
+  scene.animation_time += 0.35
+  scene.position_actor_sprite(visual)
+  check(visual.target.position == origin and sprite.texture.region.position == Vector2(1280,512),"Standing reverses the collapse animation in place")
+  scene.animation_time += 0.45
+  scene.position_actor_sprite(visual)
+  check(visual.target.position != origin and visual.target.position != visual.destination and sprite.flip_h == human_form,"Standing characters slide toward their side, flipping only revived humans")
+  scene.refresh()
+  visual = scene.actor_buttons.filter(func(entry): return entry.id == npc.id)[0]
+  check(visual.target.has_meta("rise_transition") and visual.node.flip_h == human_form,"The standing transition survives an interface refresh")
+  scene.animation_time += 0.3
+  scene.position_actor_sprite(visual)
+  check(visual.target.position == visual.destination and not visual.node.flip_h and not visual.target.has_meta("rise_transition"),"Standing finishes at the correct side facing normally")
 
 func binocular_controls(scene) -> void:
  scene.modal = ""

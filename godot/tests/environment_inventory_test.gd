@@ -32,7 +32,7 @@ func run() -> void:
    floor_ok = floor_ok and absf(feet-entry.ground) < 0.01
  check(floor_ok,"Visible feet remain on their ground line through animated frames")
  var first = scene.actor_buttons[0]
- var standing_feet = first.node.get_parent().position.y+first.ground
+ var standing_feet = first.node.get_parent().position.y+first.ground+scene.page.get_node("SceneActors").position.y
  check(standing_feet >= scene.ENVIRONMENT_RECT.end.y-30 and standing_feet < scene.ENVIRONMENT_RECT.end.y,"Sprites stand on the foreground near the bottom of the full image")
  check(scene.actions_bottom <= 1040 and scene.log_view.position.x >= 1440 and scene.log_view.position.y+scene.log_view.size.y <= 1034,"Actions fit below the description with a separate full-height activity feed")
  scene.paused = false
@@ -72,6 +72,21 @@ func run() -> void:
  p.inside = true
  scene.refresh()
  check(scene.action_controls.any(func(e): return e.command == "barricade") and not scene.action_controls.any(func(e): return e.command == "close"),"Zoo enclosure UI offers barricading and omits nonexistent doors")
+ b.type = "zoo_ground"
+ for ground_type in ["exercise_yard","training_ground","zoo_ground"]:
+  b.type = ground_type
+  var outside_art = scene.location_architecture.setting_for(scene.sim,b,false)
+  check(outside_art != null and scene.location_architecture.setting_for(scene.sim,b,true) == outside_art,"Open ground uses its outdoor artwork even if requested indoors: "+ground_type)
+ for ground_type in scene.C.OUTDOORS:
+  b.type = ground_type
+  for human_form in [true,false]:
+   p.human = human_form
+   for inside in [true,false]:
+    p.inside = inside
+    scene.refresh()
+    check(not scene.action_controls.any(func(e): return e.command in ["enter","leave"]),"Outdoor terrain has no enter or leave action: "+ground_type)
+    check(not scene.sim.reason(p,"enter").is_empty() and not scene.sim.reason(p,"leave").is_empty(),"Outdoor terrain rejects enter and leave: "+ground_type)
+ p.human = true
  b.type = "zoo_ground"
  p.inside = false
  scene.sim.initialize_block(b)

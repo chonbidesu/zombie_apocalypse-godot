@@ -1,0 +1,7 @@
+{
+  "checks": 3755,
+  "failures": [],
+  "atlases": 18,
+  "frames": 216,
+  "scope": "source hashes, complete fixed RGBA regions across frames/genders, idle body, cell boundaries, source drawing continuity, scouts, actions, doctor legs and light"
+}

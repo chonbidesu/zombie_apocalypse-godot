@@ -39,13 +39,11 @@ func capture(path: String) -> void:
 func run() -> void:
  root.size = Vector2i(1536, 1024)
  var naming := Naming.new()
- naming.reduced_motion = true
  naming.confirmed.connect(func(identity: Dictionary): identities.append(identity))
  naming.back_requested.connect(func(): backs += 1)
  root.add_child(naming)
  await process_frame
  check(naming.fields[0].has_focus() and not naming.rows[1].visible, "Only first prompt starts active")
- check(naming.effects.material.get_shader_parameter("reduced_motion"), "Reduced motion reaches the glass shader")
  await press(KEY_ENTER)
  check(naming.step == 0 and not naming.error_label.text.is_empty(), "Empty Enter stays at the current prompt")
  naming.fields[0].text = "  Jamie  "
@@ -98,5 +96,7 @@ func run() -> void:
  await capture("res://tests/terminal-long-names-preview.png")
  naming.queue_free()
  await process_frame
+ # The audio mixer releases stopped narration playbacks asynchronously.
+ await create_timer(0.1).timeout
  print("Naming screen: %d checks, %d failures" % [checks, failures])
  quit(1 if failures else 0)

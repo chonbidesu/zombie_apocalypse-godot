@@ -1,0 +1,101 @@
+{
+  "generator": "built-in image_gen",
+  "jobs": [
+    {
+      "key": "private_female",
+      "occupation": "private",
+      "sex": "female",
+      "original": "godot/assets/character_creation/private.png",
+      "dest": "godot/assets/character_creation/private_female.png",
+      "refs": [
+        "godot/assets/character_creation/private.png",
+        "godot/assets/portraits/private_female.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: Caucasian woman with fair lightly freckled skin, ash-blonde straight chin-length bob tucked behind ears, grey-blue eyes. Pose/action invariants: sitting on the same chair, holding and sipping the same metal mug then extending it. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "medic_male",
+      "occupation": "medic",
+      "sex": "male",
+      "original": "godot/assets/character_creation/medic-refined.png",
+      "dest": "godot/assets/character_creation/medic_male.png",
+      "refs": [
+        "godot/assets/character_creation/medic-refined.png",
+        "godot/assets/portraits/medic_male.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: Caucasian man with fair freckled skin, short copper ginger hair and ginger stubble. Pose/action invariants: sitting at the exact same card table with chair, mug, chips and medical bag; playing cards, placing them down and folding arms. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "scout_male",
+      "occupation": "scout",
+      "sex": "male",
+      "original": "godot/assets/character_creation/scout.png",
+      "dest": "godot/assets/character_creation/scout_male.png",
+      "refs": [
+        "godot/assets/character_creation/scout.png",
+        "godot/assets/portraits/scout_male.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: Southeast Asian Vietnamese man with warm medium tan skin and short straight black hair beneath the SAME olive patrol cap. Pose/action invariants: sitting on the same chair holding the exact same cards, then revealing the winning fan with the SAME smug small smile. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "doctor_male",
+      "occupation": "doctor",
+      "sex": "male",
+      "original": "godot/assets/character_creation/doctor-refined.png",
+      "dest": "godot/assets/character_creation/doctor_male.png",
+      "refs": [
+        "godot/assets/character_creation/doctor-refined.png",
+        "godot/assets/portraits/doctor_male.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: middle-aged Caucasian man with fair lightly weathered skin, short chestnut-brown hair with receding temples, neatly trimmed brown beard with a few grey hairs, hazel eyes. Pose/action invariants: leaning on the EXACT same jukebox, same arm rest, hand in pocket, reaching to press controls, same jukebox lighting sequence. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "necro_female",
+      "occupation": "necro",
+      "sex": "female",
+      "original": "godot/assets/character_creation/lab-face-refined.png",
+      "dest": "godot/assets/character_creation/necro_female.png",
+      "refs": [
+        "godot/assets/character_creation/lab-face-refined.png",
+        "godot/assets/portraits/necro_female.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: Black woman with deep brown skin, tightly curled black hair in short puff, same protective goggles on forehead. Pose/action invariants: behind the EXACT same instrument trolley with all identical bottles, cases, wheels, towel and red capped tubes; drawing syringe and raising it. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "consumer_male",
+      "occupation": "consumer",
+      "sex": "male",
+      "original": "godot/assets/character_creation/consumer-full-redraw.png",
+      "dest": "godot/assets/character_creation/consumer_male.png",
+      "refs": [
+        "godot/assets/character_creation/consumer-full-redraw.png",
+        "godot/assets/portraits/consumer_male.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: Black middle-aged man with deep brown skin, close cropped black hair and neatly trimmed short beard. Pose/action invariants: leaning over the EXACT same billiard table and aiming the SAME cue; striking cue ball, breaking rack with identical ball positions in EVERY corresponding frame. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "police_female",
+      "occupation": "police",
+      "sex": "female",
+      "original": "godot/assets/character_creation/police-full-redraw.png",
+      "dest": "godot/assets/character_creation/police_female.png",
+      "refs": [
+        "godot/assets/character_creation/police-full-redraw.png",
+        "godot/assets/portraits/police_female.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: East Asian woman with light warm skin and black hair in tidy low bun. Pose/action invariants: sitting on the EXACT same leather armchair, cleaning the SAME pistol with SAME cloth, putting cloth down, checking pistol then aiming forward. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    },
+    {
+      "key": "firefighter_male",
+      "occupation": "firefighter",
+      "sex": "male",
+      "original": "godot/assets/character_creation/firefighter-size-matched.png",
+      "dest": "godot/assets/character_creation/firefighter_male.png",
+      "refs": [
+        "godot/assets/character_creation/firefighter-size-matched.png",
+        "godot/assets/portraits/firefighter_male.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Input image 1 is the EXACT atlas to edit, not a loose reference. Input image 2 is IDENTITY REFERENCE ONLY; match its gender, face, skin tone and hair while rendering in image 1's semi-realistic illustrated room style. Change ONLY the person's gender, face, hair and exposed skin. Preserve the EXACT furniture, objects, costume, colours, lighting, perspective, framing, cell positions, expressions, poses and every confirmation action from image 1. Do not redraw, relocate or recolour any furniture or props. Maintain the same body silhouette inside existing clothes and exact hand placement. Output same 1448x1086 canvas: FOUR columns by THREE rows of 362x362 cells, no margins, 12 frames. Top row has the four original idle poses. Second and third rows have the eight original confirmation poses, unchanged sequence. Genuine transparent background, preserve alpha, no white/checkerboard, no labels or gridlines. Keep ALL objects and figures completely inside the original cells. New identity in ALL 12 frames: Southeast Asian Filipino man with medium brown skin and short black hair under the SAME firefighter helmet. Pose/action invariants: standing with EXACT same axe resting over shoulder, lifting it and bringing it down across body with identical hand locations. Same serious/fatigued expression as the corresponding original frame, except preserve any original frame's specific smile, blink or gaze. Keep the same outfit and its exact colours as image 1, not the portrait outfit colours."
+    }
+  ]
+}

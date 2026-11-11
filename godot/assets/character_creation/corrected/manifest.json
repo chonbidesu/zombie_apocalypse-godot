@@ -1,0 +1,96 @@
+{
+  "tool": "Pillow pixel edits",
+  "cell_size": 362,
+  "atlases": [
+    {
+      "source": "private.png",
+      "source_sha256": "8ca1a2f4325dfe838684ef3ab6ba4ad366a35258f99defb36bd68e8e1c0679cd",
+      "output_sha256": "9a3324e6a97b7dafa84c1a3971c5a01eff683ad54283cdec0d251c40d0482d82"
+    },
+    {
+      "source": "private_female.png",
+      "source_sha256": "9d07ac8630cb1d2ad124044424be94a21a58ce571e648df33e9ff8a78626a3e7",
+      "output_sha256": "3e2b0c35e3ced18dd8960bd1e3687752fe7b85d3c4ac49e891a3ac32c9c0b5ad"
+    },
+    {
+      "source": "medic-refined.png",
+      "source_sha256": "028eb90ab09d3135286f6997f9db91a60517e55b18db428aa899b89898d6f3e9",
+      "output_sha256": "c59bfb09607f70e23f1a41ec9e15e168c77998d4879f2a64e14b91075a034295"
+    },
+    {
+      "source": "medic_male.png",
+      "source_sha256": "6ef4383ebd2e66934d071e18a31f3f35d5f6d09159fcde0528f728266c81764c",
+      "output_sha256": "3a94c4067480f6e0ee4a0285954eafa159b4ee07f09c0fa2d8fceb1552adca4e"
+    },
+    {
+      "source": "scout.png",
+      "source_sha256": "9477217b9cb694f48e4a24b70fcc107b87b73dbcb9eeabb3aff326f95e891970",
+      "output_sha256": "2b41d1e11e8554c4d7cdd68483ee6d5cfab5d27a91cea009b9dae4a0fcd24876"
+    },
+    {
+      "source": "scout_male.png",
+      "source_sha256": "c2e4b548702825fdd9f662fae4384f08e9d618b0f559ff76c0850d978ed18b3f",
+      "output_sha256": "4ae76bb91c6d25e2eafdf526cc96229ed01683e3fe87d41e5b93c98fbfd485f3"
+    },
+    {
+      "source": "doctor-refined.png",
+      "source_sha256": "81deecbbe5c677e6ebefd09944975e2d4e0fb628ded7174975e3b85d6ab54c2e",
+      "output_sha256": "4c7235b73e31f737e86e546668144e492103eac83035ba5e428a724d6f9685de"
+    },
+    {
+      "source": "doctor_male.png",
+      "source_sha256": "ddaad042636004102feddbde4a437c21172c544eef72987729068fb48a25daef",
+      "output_sha256": "907403eb907b6c8c868beebb7ceb3e7942b48ba95c19a41421a658ce9804c39a"
+    },
+    {
+      "source": "doctor-portrait.png",
+      "source_sha256": "7be4b45c0b0c3a6cc57107490f53d38cdde633ad5def7e4565961e9be79a4c89",
+      "output_sha256": "4c7235b73e31f737e86e546668144e492103eac83035ba5e428a724d6f9685de"
+    },
+    {
+      "source": "lab-face-refined.png",
+      "source_sha256": "aa9528feb8f182b35dc217ad23402ab218ddb639ecc8d8fe0b092cadc5c801b1",
+      "output_sha256": "78fbd28a761c60733eb222a1d1a21032586eb2d0c9a2c6721ba55c09c7315e88"
+    },
+    {
+      "source": "necro_female.png",
+      "source_sha256": "e255cc93bc405cbbf229f3198c8c3c4c97c2814e1df8d14b657c1a937afc8baa",
+      "output_sha256": "b1d89c2feca39d3f41ef489fd5892dbc1a6d3617ff732993f6401a48743f87c4"
+    },
+    {
+      "source": "consumer-full-redraw.png",
+      "source_sha256": "c6faee76934bf819fa43db6c54e7ac33cfcb4b698abb37e5f9e2f125ff2acbcf",
+      "output_sha256": "47a7808b56206e3335a42d66cf69a04a7a78b7595ce40adc3407f71e8620c9e8"
+    },
+    {
+      "source": "consumer_male.png",
+      "source_sha256": "286e60efeb2ab6c558ff16dc294766891acb4f5e09e0da04dfe4d66abeb2def5",
+      "output_sha256": "63c5242093eed2b77ff97e2d6001c2416eb2736a762f3e3d29cbaa44cca8d956"
+    },
+    {
+      "source": "police-full-redraw.png",
+      "source_sha256": "41540a20e9b82a6db4cf09576eabcd7ea20dba240ca27b84d4247f486029466d",
+      "output_sha256": "769bf55c56f83c8ace3a0892c7d915ae76cc3e51a282ead3364ee9f76c09a118"
+    },
+    {
+      "source": "police_female.png",
+      "source_sha256": "233d514d5508d7752d7daf423fc3dfcf7a99bd411d67b1942e9d90fc7a62c71a",
+      "output_sha256": "9c860d0d0ffc1549969abb942275c72f00440091d5bb43b9190ddecb7bc306a3"
+    },
+    {
+      "source": "firefighter-size-matched.png",
+      "source_sha256": "96e6304d46a45fea742687bdab27f14e9ec78128e42c1fcbe5f11cca3eee45e3",
+      "output_sha256": "c7bdc7f0f35cdac168ca4baa1ccb10c7b43eb1ca1f55087d2e5467e7b2f67d0b"
+    },
+    {
+      "source": "firefighter_male.png",
+      "source_sha256": "28f396686c30e637a89aa9ae536ba733cb6fadefb3b891ec7e3b81a8d23c3f94",
+      "output_sha256": "9ea3935e594a714f9c4b34da10bdd1be03be70082e06cc19b8c84eb4deb35943"
+    },
+    {
+      "source": "corpse-refined.png",
+      "source_sha256": "3139fca989a3909887076299c88426d2440e1e40a8ba7136c620963be42606b4",
+      "output_sha256": "6490cd452cac28350cfbed2e3892555f54821a9ca5a06f34ba9b02f0b5f2be94"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "generator": "built-in image_gen",
+  "assets": [
+    {
+      "key": "private_portrait",
+      "dest": "godot/assets/portraits/private.png",
+      "type": "portrait",
+      "refs": [
+        "godot/assets/portraits/private.png",
+        "godot/assets/portraits/private_female.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Reference 1 is the male Private portrait atlas to replace. Reference 2 is STYLE ONLY for the serious expressions, finer pixel detail, muted shading and transparency of this game's other portraits. Regenerate reference 1 as the same adult Caucasian man infantry private with short brown military haircut and plain olive fatigues. Healthy face is calm, serious and wary, relaxed closed lips, no grin, no teeth, no smile in healthy or injured frames. Injured faces show fatigue and discomfort, not happiness. Dead and undead expressions remain lifeless and menacing. Remove the white background entirely. Keep exactly FIVE columns by FIVE rows of equally sized square cells, 25 frontal head-and-shoulders portraits, same scale and chest baseline. Frames 0-4 healthy subtle breathing, 5-9 moderately injured, 10-14 critically injured, 15 dead eyes closed, 16-24 undead lurching with cloudy eyes and pallid skin. Preserve the pose sequence and restrained pixel-art style. No labels, borders, grid lines or extra objects. Genuine transparent alpha everywhere outside each character, absolutely no white or checkerboard background.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-fa9c8b42-f217-4533-9de6-051eb901c63b.png"
+    },
+    {
+      "key": "private_female_portrait",
+      "dest": "godot/assets/portraits/private_female.png",
+      "type": "portrait",
+      "refs": [
+        "godot/assets/portraits/private_female.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Replace the character identity across this entire atlas with an adult CAUCASIAN WHITE WOMAN infantry private, fair skin with light freckles, ash-blonde straight hair in a short practical chin-length bob tucked behind her ears, grey-blue eyes, defined jaw, serious composed expression. She must be clearly different from the Black female medic. Keep plain olive military fatigues and webbing straps, no medical patches or red crosses. Maintain this same new female identity throughout healthy, injured, dead and undead states. Keep exactly FIVE columns by FIVE rows of equally sized square cells, 25 frontal head-and-shoulders portraits, same scale and chest baseline. Frames 0-4 healthy subtle breathing, 5-9 moderately injured, 10-14 critically injured, 15 dead eyes closed, 16-24 undead lurching with cloudy eyes and pallid skin. Preserve the pose sequence and restrained pixel-art style. No labels, borders, grid lines or extra objects. Genuine transparent alpha everywhere outside each character, absolutely no white or checkerboard background.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-9beba93f-f171-45e6-9dad-05a9001526ce.png"
+    },
+    {
+      "key": "doctor_male_portrait",
+      "dest": "godot/assets/portraits/doctor_male.png",
+      "type": "portrait",
+      "refs": [
+        "godot/assets/portraits/doctor_male.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Replace the character identity across this entire atlas with a middle-aged CAUCASIAN WHITE MAN doctor, fair lightly weathered skin, short chestnut-brown hair with slightly receding temples, a neatly trimmed brown beard with a few grey hairs, mature broad face and hazel eyes. Serious, calm, tired expression. Make him visually distinct from the young clean-shaven black-haired East Asian male lab assistant. Retain white doctor's coat, teal scrubs and stethoscope. Same new male identity in every frame, including undead frames. Keep exactly FIVE columns by FIVE rows of equally sized square cells, 25 frontal head-and-shoulders portraits, same scale and chest baseline. Frames 0-4 healthy subtle breathing, 5-9 moderately injured, 10-14 critically injured, 15 dead eyes closed, 16-24 undead lurching with cloudy eyes and pallid skin. Preserve the pose sequence and restrained pixel-art style. No labels, borders, grid lines or extra objects. Genuine transparent alpha everywhere outside each character, absolutely no white or checkerboard background.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-b988bec2-5fc4-49fa-824c-37a609c6e630.png"
+    },
+    {
+      "key": "private_female_sprite",
+      "dest": "godot/assets/sprite_sheets/private_female_sprite_sheet.png",
+      "type": "sprite",
+      "refs": [
+        "godot/assets/sprite_sheets/private_female_sprite_sheet.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Replace the character identity in EVERY cell with an adult CAUCASIAN WHITE WOMAN infantry private: fair lightly freckled skin, ash-blonde straight chin-length bob tucked behind ears, grey-blue eyes, defined jaw, serious expression. Match plain olive army fatigues, utility belt, dark boots. This is the sprite counterpart to the new blonde Caucasian female Private portrait. Keep the original 1536x1024 atlas: SIX columns and FOUR rows of 24 square cells. Preserve ALL body poses, frame order, clothing, scale, foot pivots and RIGHT-facing direction. Frames 0-7 walk/idle; 8-14 unarmed attacks; 15-20 collapse ending fully prone corpse; 21-23 hurt. Change head, hair and exposed skin consistently throughout all 24 frames. Crisp compact pixel-art chibi style. Genuine transparent background, no text, grid lines, backdrop or props.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-a0ea4b44-fbec-4f40-8aa4-6502c9910cf9.png"
+    },
+    {
+      "key": "doctor_male_sprite",
+      "dest": "godot/assets/sprite_sheets/doctor_male_sprite_sheet.png",
+      "type": "sprite",
+      "refs": [
+        "godot/assets/sprite_sheets/doctor_male_sprite_sheet.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Replace character identity in EVERY cell with a middle-aged CAUCASIAN WHITE MAN doctor: fair lightly weathered skin, short chestnut-brown hair with slightly receding temples, neatly trimmed brown beard with a few grey hairs, broad mature face, hazel eyes, serious expression. Retain white medical coat, teal scrubs, stethoscope and dark shoes. This is the sprite counterpart to the new mature bearded Caucasian male Doctor portrait. Keep the original 1536x1024 atlas: SIX columns and FOUR rows of 24 square cells. Preserve ALL body poses, frame order, clothing, scale, foot pivots and RIGHT-facing direction. Frames 0-7 walk/idle; 8-14 unarmed attacks; 15-20 collapse ending fully prone corpse; 21-23 hurt. Change head, hair and exposed skin consistently throughout all 24 frames. Crisp compact pixel-art chibi style. Genuine transparent background, no text, grid lines, backdrop or props.",
+      "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1c83a-6765-7be0-8cca-cc167f391e7d\\exec-a7be5b2b-b349-4676-b5ef-319bec3cc3d0.png"
+    }
+  ]
+}
