@@ -4,15 +4,15 @@ signal character_confirmed(occupation: String)
 signal back_requested
 
 const JOBS = [
- ["Private", 0, "Basic Firearms Training • Pistol + spare magazine", "private"],
- ["Medic", 0, "First Aid • Pistol + first aid kit", "medic-refined"],
- ["Scout", 0, "Free Running • Binoculars", "scout"],
- ["Doctor", 1, "Diagnosis • Two first aid kits", "doctor-refined"],
- ["NecroTech Lab Assistant", 1, "NecroTech Employment • DNA extractor", "lab-face-refined"],
- ["Consumer", 2, "Shopping • Baseball bat + mobile phone", "consumer-full-redraw"],
- ["Police Officer", 2, "Basic Firearms Training • Pistol, magazine, flak jacket + radio", "police-full-redraw"],
- ["Firefighter", 2, "Axe Proficiency • Fire axe + first aid kit", "firefighter-size-matched"],
- ["Corpse", 3, "Vigour Mortis • Begin as a zombie, without equipment", "corpse-refined"]
+ ["Private", 0, "Basic Firearms Training • Pistol + spare magazine", "private_male"],
+ ["Medic", 0, "First Aid • Pistol + first aid kit", "medic_female"],
+ ["Scout", 0, "Free Running • Binoculars", "scout_female"],
+ ["Doctor", 1, "Diagnosis • Two first aid kits", "doctor_female"],
+ ["NecroTech Lab Assistant", 1, "NecroTech Employment • DNA extractor", "necro_male"],
+ ["Consumer", 2, "Shopping • Baseball bat + mobile phone", "consumer_female"],
+ ["Police Officer", 2, "Basic Firearms Training • Pistol, magazine, flak jacket + radio", "police_male"],
+ ["Firefighter", 2, "Axe Proficiency • Fire axe + first aid kit", "firefighter_female"],
+ ["Corpse", 3, "Vigour Mortis • Begin as a zombie, without equipment", "corpse"]
 ]
 const GROUPS = ["MILITARY", "SCIENCE", "CIVILIAN", "UNDEAD"]
 const XP_RATES = [
@@ -23,7 +23,7 @@ const XP_RATES = [
 ]
 const ActorLayer = preload("res://scripts/character_creation/actor_layer.gd")
 const C = preload("res://scripts/catalog.gd")
-const ALTERNATE_SHEETS = ["private_female","medic_male","scout_male","doctor_male","necro_female","consumer_male","police_female","firefighter_male","corpse-refined"]
+const ALTERNATE_SHEETS = ["private_female","medic_male","scout_male","doctor_male","necro_female","consumer_male","police_female","firefighter_male","corpse"]
 const ATLAS_PATH = "res://assets/character_creation/corrected/%s.png"
 const ROOM_SIZE = Vector2(1672, 941)
 const CINEMATIC_DURATION = 5.3

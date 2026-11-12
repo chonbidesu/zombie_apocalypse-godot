@@ -3,7 +3,7 @@ extends Control
 signal finished
 
 const FONT = preload("res://assets/fonts/PixelifySans.ttf")
-const LOGO = preload("res://assets/author-bee.png")
+const LOGO = preload("res://assets/author_bee.png")
 const FADE := 1.2
 const HOLDS := [3.5, 9.0]
 

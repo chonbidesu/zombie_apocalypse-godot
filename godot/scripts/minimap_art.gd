@@ -68,21 +68,21 @@ func source(kind: String, variant: int = 0, status: int = 0) -> Dictionary:
  var architecture = Architecture.map_source(kind,variant,status)
  if not architecture.is_empty(): return architecture
  if status == 3:
-  if kind == "fort_property": return {"file":"fort-properties-lit-ruin","grid":Vector2i(2,1),"at":Vector2i(variant,0)}
-  if kind == "mall_l": return {"file":"mall-l-lit-ruin","grid":Vector2i.ONE,"at":Vector2i.ZERO}
-  if kind == "mall" and variant > 0: return {"file":"malls-lit-ruin","grid":Vector2i(3,1),"at":Vector2i(variant-1,0)}
+  if kind == "fort_property": return {"file":"fort_properties_lit_ruin","grid":Vector2i(2,1),"at":Vector2i(variant,0)}
+  if kind == "mall_l": return {"file":"mall_l_lit_ruin","grid":Vector2i.ONE,"at":Vector2i.ZERO}
+  if kind == "mall" and variant > 0: return {"file":"malls_lit_ruin","grid":Vector2i(3,1),"at":Vector2i(variant-1,0)}
   for i in range(GROUPS.size()):
    if kind in GROUPS[i]:
     var index = GROUPS[i].find(kind)
-    return {"file":"buildings-lit-ruin-%d" % (i+1),"grid":Vector2i(3,2),"at":Vector2i(index%3,index/3)}
- if kind == "fort_property": return {"file":"fort-properties-v4","grid":Vector2i(3,2),"at":Vector2i(0,variant)}
- if kind == "zoo_property": return {"file":"zoo-property-v2","grid":Vector2i(3,1),"at":Vector2i.ZERO}
- if kind == "mall_l": return {"file":"mall-l","grid":Vector2i(3,1),"at":Vector2i.ZERO}
+    return {"file":"buildings_lit_ruin_%d" % (i+1),"grid":Vector2i(3,2),"at":Vector2i(index%3,index/3)}
+ if kind == "fort_property": return {"file":"fort_properties","grid":Vector2i(3,2),"at":Vector2i(0,variant)}
+ if kind == "zoo_property": return {"file":"zoo_property","grid":Vector2i(3,1),"at":Vector2i.ZERO}
+ if kind == "mall_l": return {"file":"mall_l","grid":Vector2i(3,1),"at":Vector2i.ZERO}
  for i in range(GROUPS.size()):
   if kind in GROUPS[i]:
    if kind == "mall" and variant > 0: return {"file":"malls","grid":Vector2i(3,3),"at":Vector2i(0,variant-1)}
-   return {"file":"buildings-%d" % (i+1),"grid":Vector2i(3,6),"at":Vector2i(0,GROUPS[i].find(kind))}
- if kind == "street": return {"file":"streets-v2","grid":Vector2i(3,2),"at":Vector2i(variant%3,variant/3)}
+   return {"file":"buildings_%d" % (i+1),"grid":Vector2i(3,6),"at":Vector2i(0,GROUPS[i].find(kind))}
+ if kind == "street": return {"file":"streets","grid":Vector2i(3,2),"at":Vector2i(variant%3,variant/3)}
  return {"file":"outdoors","grid":Vector2i(3,3),"at":Vector2i(OUTDOORS.find(kind)%3,OUTDOORS.find(kind)/3)}
 
 func model(kind: String, status: int, variant: int) -> Texture2D:

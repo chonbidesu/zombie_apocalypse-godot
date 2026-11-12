@@ -20,12 +20,12 @@ OUT = ART / 'corrected'
 REVIEW = ROOT / 'tools/atlas_review'
 CELL = 362
 PAIRS = [
-    ('private', 'private_female'), ('medic-refined', 'medic_male'),
-    ('scout', 'scout_male'), ('doctor-refined', 'doctor_male'),
-    ('lab-face-refined', 'necro_female'),
-    ('consumer-full-redraw', 'consumer_male'),
-    ('police-full-redraw', 'police_female'),
-    ('firefighter-size-matched', 'firefighter_male'), ('corpse-refined',),
+    ('private_male', 'private_female'), ('medic_female', 'medic_male'),
+    ('scout_female', 'scout_male'), ('doctor_female', 'doctor_male'),
+    ('necro_male', 'necro_female'),
+    ('consumer_female', 'consumer_male'),
+    ('police_male', 'police_female'),
+    ('firefighter_female', 'firefighter_male'), ('corpse',),
 ]
 
 
@@ -292,7 +292,7 @@ def scout_chair():
     # Keep the outer post and seat registered to the planted chair. Clear the
     # translucent, shirt-coloured matte between the spindles all the way to
     # the underside of the curved top rail.
-    chair = frames('scout')[0].copy()
+    chair = frames('scout_female')[0].copy()
     exposed = frames('scout_male')[7]
     blend_pixels(chair, exposed, [(248,108),(265,116),(285,124),(288,136),
                  (277,193),(269,187),(250,177),(247,145)], 2)
@@ -357,7 +357,7 @@ def build_base(job, source, shared=None):
         seated_officer = base.copy()
         blend_pixels(seated_officer, source[11], POLICE_CONFIRM_SEATED, 4)
 
-    reference = frames('doctor-portrait' if job == 3 else PAIRS[job][0])[0]
+    reference = frames('doctor_portrait' if job == 3 else PAIRS[job][0])[0]
     result = []
     for i in range(12):
         frame = base.copy()
@@ -460,7 +460,7 @@ def build_base(job, source, shared=None):
 
 def save(name, cells):
     target = OUT / (name + '.png')
-    if name in ('scout', 'scout_male'):
+    if name in ('scout_female', 'scout_male'):
         with Image.open(ART / 'frames' / (name + '_card_turn.png')) as turn:
             if turn.mode != 'RGBA' or turn.size != (CELL, CELL):
                 raise ValueError(f'Invalid card-turn frame for {name}')
@@ -503,13 +503,13 @@ def main():
     for job, names in enumerate(PAIRS):
         # The complete existing portrait atlas already has the desired face.
         # Use its pixels directly; there is no runtime face replacement.
-        source = frames('doctor-portrait' if job == 3 else names[0])
+        source = frames('doctor_portrait' if job == 3 else names[0])
         common = build_base(job, source)
         manifest.append(save(names[0], common))
         if len(names) > 1:
             manifest.append(save(names[1], build_base(job, frames(names[1]), common[0])))
         if job == 3:
-            manifest.append(save('doctor-portrait', common))
+            manifest.append(save('doctor_portrait', common))
     (OUT/'manifest.json').write_text(json.dumps({'tool':'Pillow pixel edits', 'cell_size':CELL, 'atlases':manifest},indent=2)+'\n')
     print(f'Wrote {len(manifest)} edited atlas copies; original PNGs unchanged.')
 

@@ -31,7 +31,7 @@ is refreshed as well so all three families carry the identification colors.
 
 ## Assets
 
-`assets/architecture/map-STYLE-GROUP.png` is a four-column, three-row RGBA atlas.
+`assets/architecture/map_STYLE_GROUP.png` is a four-column, three-row RGBA atlas.
 Rows follow `LocationArchitecture.GROUPS`; the tower/park/cemetery sheets use
 40%/28%/32% row heights to accommodate the taller tower. Columns use the runtime order:
 
@@ -45,8 +45,8 @@ lighting does not restore the building. New single-square map models use 384px
 textures and keep consistent cell bounds across states. Existing complex models
 retain their 768px textures. Shader regions use the actual texture size.
 
-`assets/architecture/settings-STYLE-GROUP.png` has exterior/interior columns and
-three building rows. `settings-STYLE-extra.png` has a laboratory interior above a
+`assets/architecture/settings_STYLE_GROUP.png` has exterior/interior columns and
+three building rows. `settings_STYLE_extra.png` has a laboratory interior above a
 street exterior. AtlasTexture regions are cached and filter-clipped.
 
 There are 36 project-local PNG atlases generated with the built-in imagegen tool.

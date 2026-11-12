@@ -54,7 +54,7 @@ func run() -> void:
  await press(KEY_ENTER)
  naming.fields[2].text = "Ghastly"
  naming.fields[2].caret_column = naming.fields[2].text.length()
- await capture("res://tests/terminal-intake-preview.png")
+ await capture("res://tests/terminal_intake_preview.png")
  await press(KEY_ESCAPE)
  check(naming.step == 1 and naming.fields[2].text == "Ghastly", "Back preserves previously entered values")
  await press(KEY_ENTER)
@@ -62,7 +62,7 @@ func run() -> void:
  check(naming.reviewing and identities.is_empty(), "Third submission opens review without accepting identity")
  check(naming.heading.text == "SUBJECT RECORD RECOVERED" and naming.preview.text == "In life: Jamie Rivera\n\nAfter death: Ghastly Jamie", "Recovered record displays the requested living and undead identities")
  check(naming.narration.stream.resource_path.ends_with("naming 4.mp3"), "Record screen uses the fourth narration clip")
- await capture("res://tests/terminal-record-preview.png")
+ await capture("res://tests/terminal_record_preview.png")
  await press(KEY_ESCAPE)
  check(not naming.reviewing and naming.step == 0 and naming.fields[0].has_focus() and not naming.rows[1].visible, "Escape from confirmation restarts at the first prompt")
  check(naming.fields[0].text == "Jamie" and naming.fields[1].text == "Rivera" and naming.fields[2].text == "Ghastly", "Restarting the prompts preserves all entered values")
@@ -93,7 +93,7 @@ func run() -> void:
   var bounds := naming.stage.get_global_rect()
   check(naming.get_global_rect().encloses(bounds), "Terminal fits window %s without stretching or cropping" % window_size)
  check(naming.preview.get_line_count() <= 6, "Maximum length identities remain within the record text area")
- await capture("res://tests/terminal-long-names-preview.png")
+ await capture("res://tests/terminal_long_names_preview.png")
  naming.queue_free()
  await process_frame
  # The audio mixer releases stopped narration playbacks asynchronously.

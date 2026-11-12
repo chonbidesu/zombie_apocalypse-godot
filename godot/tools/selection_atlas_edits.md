@@ -40,7 +40,7 @@ Both doctors use the same corrected legs and jukebox. The jaw, collar, stethosco
 The extra calf is erased
 along the surviving trouser contour. Frames 9–11 relight the complete arched
 window in the PNG; the reaching hand is drawn in front of it. The existing
-`doctor-portrait.png` supplies the default doctor's complete drawing, replacing
+`doctor_portrait.png` supplies the default doctor's complete drawing, replacing
 the former runtime face substitution.
 
 Each consumer uses the original felt, balls, shadows and cue motion blur from

@@ -58,6 +58,7 @@ func build() -> void:
    art.name = "MapArt"
    art.texture = artwork.texture_for(sim,b)
    art.material = artwork.material_for(sim,b)
+   art.set_meta("map_state",artwork.state(sim,b))
    art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
    art.stretch_mode = TextureRect.STRETCH_SCALE
    art.position = bounds.position-at
@@ -92,3 +93,13 @@ func build() -> void:
      wall.z_index = 100+(y-view.position.y)*20+(19 if front else 1)
      wall.mouse_filter = Control.MOUSE_FILTER_IGNORE
      add_child(wall)
+
+func refresh_art() -> void:
+ for id in tiles:
+  var b: Dictionary = sim.blocks[id]
+  var state: int = artwork.state(sim,b)
+  var art := tiles[id].get_node("MapArt") as TextureRect
+  if art.get_meta("map_state") == state: continue
+  art.texture = artwork.texture_for(sim,b)
+  art.material = artwork.material_for(sim,b)
+  art.set_meta("map_state",state)

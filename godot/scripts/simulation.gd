@@ -2,6 +2,7 @@ extends RefCounted
 ## UI-independent rules. Player and AI use the same validation and transactions.
 signal player_damaged(amount: int, human: bool)
 signal sound_requested(effect: String)
+signal rest_finished
 const C = preload("res://scripts/catalog.gd")
 const Dialogue = preload("res://scripts/dialogue.gd")
 const Extended = preload("res://scripts/extended_rules.gd")
@@ -10,9 +11,11 @@ const AI = preload("res://scripts/npc_ai.gd")
 const NpcGate = preload("res://scripts/npc_utility/action_gate.gd")
 const NpcSchedule = preload("res://scripts/npc_utility/scheduler.gd")
 const NpcPlanner = preload("res://scripts/npc_utility/planner.gd")
+const PerformanceCounters = preload("res://scripts/performance_counters.gd")
 const SAVE_PATH = "user://prototype-save.json"
 const DEFAULT_SEED = 4815
 var navigation: AStar2D
+var performance_counters: PerformanceCounters
 var width: int = 10
 var height: int = 10
 var world_mode: String = "sandbox"
@@ -49,6 +52,7 @@ var scan_minute: int = -1
 var scan_cells: Array = []
 const MAIN_DOORS_BLOCKED = "The building has been so heavily barricaded that you cannot leave by the main doors."
 var spatial: Dictionary = {}
+const EMPTY_OCCUPANT_IDS: Array = []
 var npc_cursor: int = 0
 var npc_schedule = NpcSchedule.new()
 var npc_planner = NpcPlanner.new()
@@ -392,6 +396,10 @@ func block_at(x: int, y: int) -> Dictionary:
 func current_block(a: Dictionary) -> Dictionary:
  return block_at(a.x, a.y)
 
+func query_route(from_id: int, to_id: int) -> PackedInt64Array:
+ if performance_counters != null: performance_counters.path_queries += 1
+ return navigation.get_id_path(from_id,to_id)
+
 func is_building(b: Dictionary) -> bool:
  return b.type not in C.OUTDOORS
 
@@ -442,6 +450,8 @@ func _reset_npc_runtime(saved_memory: Variant = []) -> void:
  for a in actors:
   if a.id > 0 and not a.dormant:
    _schedule_npc(a,_npc_due(a))
+  else:
+   a.next_think = 0.0
 
 func _npc_due(a: Dictionary) -> int:
  return roundi(float(a.next_think)*C.CLOCK_STEPS_PER_MINUTE)
@@ -464,6 +474,12 @@ func set_graffiti(b: Dictionary, text: String, outside: bool) -> void:
  b.revive_point = b.fort.is_empty() and text.strip_edges().to_lower() == "revive point"
  if b.revive_point: revive_sites[b.id] = true
  else: revive_sites.erase(b.id)
+
+func revive_site_ids() -> Array:
+ # Equally close markers are visited in map order.
+ var ids := revive_sites.keys()
+ ids.sort()
+ return ids
 
 func radio_receives(a: Dictionary, frequency: float) -> bool:
  if not a.human or a.down: return false
@@ -1262,36 +1278,83 @@ func recovery(command: String) -> float:
  return C.ACTION_RECOVERY.get(command,0.6)
 
 func elapse(real_seconds: float) -> void:
- # Consume only the real time needed for each step. A wake-up changes the rate
- # for the rest of the frame, including any fraction before the next tick.
+ _elapse(real_seconds,0)
+
+func elapse_budgeted(real_seconds: float, budget_usec: int) -> float:
+ return _elapse(real_seconds,budget_usec)
+
+func _elapse(real_seconds: float, budget_usec: int) -> float:
+ var started: int = Time.get_ticks_usec() if performance_counters != null or budget_usec > 0 else 0
+ var start_step: int = clock_step
+ var budgeted_recovery: bool = budget_usec > 0 and resting
+ # Recompute the speed per tick. Budgeted recovery drops unspent time on wake,
+ # since it may include time deferred from earlier accelerated frames.
  var remaining = real_seconds
  while remaining > 0.000000001:
   var rate = C.GAME_MINUTES_PER_SECOND*C.CLOCK_STEPS_PER_MINUTE*time_speed()
   var until_step = (1.0-clock_fraction)/rate
   if remaining+0.000000001 < until_step:
    clock_fraction += remaining*rate
+   remaining = 0.0
    break
   remaining = maxf(0.0,remaining-until_step)
   clock_fraction = 0.0
   _clock_step()
+  if budgeted_recovery and not resting:
+   remaining = 0.0
+   break
+  if budget_usec > 0 and Time.get_ticks_usec()-started >= budget_usec: break
  discover()
+ _record_advance(started,start_step)
+ return remaining
 
 func advance(minutes: int) -> void:
  # Headless tests only. Interactive play always uses elapse(delta).
- for i in range(minutes*C.CLOCK_STEPS_PER_MINUTE): _clock_step()
+ advance_steps(minutes*C.CLOCK_STEPS_PER_MINUTE)
+
+func advance_steps(steps: int) -> void:
+ var started: int = Time.get_ticks_usec() if performance_counters != null else 0
+ var start_step: int = clock_step
+ for i in range(steps): _clock_step()
+ _record_advance(started,start_step)
+
+func advance_budgeted(target_step: int, budget_usec: int, max_steps: int) -> int:
+ var started: int = Time.get_ticks_usec()
+ var start_step: int = clock_step
+ var last_step: int = mini(target_step,start_step+max_steps)
+ while clock_step < last_step:
+  _clock_step()
+  if Time.get_ticks_usec()-started >= budget_usec: break
+ _record_advance(started,start_step)
+ return maxi(0,target_step-clock_step)
+
+func _record_advance(started: int, start_step: int) -> void:
+ if performance_counters == null: return
+ performance_counters.simulation_usec += Time.get_ticks_usec()-started
+ performance_counters.clock_steps += clock_step-start_step
 
 func _clock_step() -> void:
  clock_step += 1
  minute = clock_step/C.CLOCK_STEPS_PER_MINUTE
  if clock_step % (1440*C.CLOCK_STEPS_PER_MINUTE) == 0: reanimate_bodies()
  if clock_step % (C.RECOVERY_MINUTES*C.CLOCK_STEPS_PER_MINUTE) == 0:
-  for a in actors: a.ap = mini(C.AP_CAP,a.ap+1)
+  var started: int = Time.get_ticks_usec() if performance_counters != null else 0
+  var grants: int = 0
+  for a in actors:
+   if performance_counters != null: grants += int(a.ap < C.AP_CAP)
+   a.ap = mini(C.AP_CAP,a.ap+1)
+  if performance_counters != null:
+   performance_counters.ap_usec += Time.get_ticks_usec()-started
+   performance_counters.ap_updates += actors.size()
+   performance_counters.ap_grants += grants
  var due = npc_schedule.take(clock_step)
  var first = due.bsearch(npc_cursor)
+ var has_due_npc := false
  for offset in range(due.size()):
   var id: int = due[(first+offset)%due.size()]
   var a: Dictionary = actors[id]
   if a.dormant or _npc_due(a) != clock_step: continue
+  has_due_npc = true
   var recovery_step = ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001)
   if recovery_step > clock_step:
    _schedule_npc(a,recovery_step)
@@ -1314,7 +1377,8 @@ func _clock_step() -> void:
    _schedule_npc(a,afford+id%19)
   else:
    _schedule_npc(a,clock_step+70+(id+clock_step)%61)
- if not due.is_empty(): npc_cursor = 1+(npc_cursor%maxi(1,actors.size()-1))
+ # A wake-up can leave an obsolete bucket entry that is absent after loading.
+ if has_due_npc: npc_cursor = 1+(npc_cursor%maxi(1,actors.size()-1))
  if resting and ((player().ap >= rest_target and (not player().down or minute >= player().ready_at)) or clock_step >= rest_end_step):
   stop_rest(("You awaken rested. " if sleeping else "Rest complete. ")+"%d AP available." % player().ap)
 
@@ -1331,7 +1395,12 @@ func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary 
  return true
 
 func _npc_turn(a: Dictionary) -> int:
- return npc_planner.turn(self,a)
+ if performance_counters == null: return npc_planner.turn(self,a)
+ var started: int = Time.get_ticks_usec()
+ var rest_ap: int = npc_planner.turn(self,a)
+ performance_counters.decision_usec += Time.get_ticks_usec()-started
+ performance_counters.decisions += 1
+ return rest_ap
 
 func start_scent_trail(tracker: Dictionary, survivor: Dictionary) -> void:
  if tracker.human or tracker.down or not has_skill(tracker,"scent_trail") or not survivor.human or survivor.down: return
@@ -1444,13 +1513,25 @@ func sees_survivor_hp(observer: Dictionary, survivor: Dictionary) -> bool:
  return survivor.human and not survivor.down and (has_skill(observer,"diagnosis") or has_skill(observer,"scent_blood"))
 
 func _visible_human(a: Dictionary) -> Dictionary:
- for dy in range(-1, 2):
-  for dx in range(-1, 2):
-   if a.x+dx not in range(width) or a.y+dy not in range(height): continue
-   var b = block_at(a.x+dx, a.y+dy)
-   for other in occupants(b):
-    if other.human and not other.down:
-     if nearby(a, other) or (not other.inside and not a.inside) or (dx == 0 and dy == 0 and not doors_closed(b) and b.barricade == 0): return other
+ var origin_x: int = a.x
+ var origin_y: int = a.y
+ var inside: bool = a.inside
+ var origin: int = origin_y*width+origin_x
+ var start_x: int = maxi(0,origin_x-1)
+ var end_x: int = mini(width,origin_x+2)
+ # Walk the existing buckets in map order and retain their actor ID order.
+ for y in range(maxi(0,origin_y-1),mini(height,origin_y+2)):
+  var row: int = y*width
+  for site in range(row+start_x,row+end_x):
+   var ids: Array = spatial.get(site,EMPTY_OCCUPANT_IDS)
+   for id: int in ids:
+    var other: Dictionary = actors[id]
+    if not other.human or other.down: continue
+    if not inside and not other.inside: return other
+    if other.inside == inside and other.x == origin_x and other.y == origin_y: return other
+    if site == origin:
+     var b: Dictionary = blocks[site]
+     if b.barricade == 0 and not doors_closed(b): return other
  return {}
 
 func _wander(a: Dictionary, ground_move: bool = false) -> void:
@@ -1533,6 +1614,7 @@ func stop_rest(message: String = "Rest cancelled.") -> void:
  sleeping = false
  last_rest_notice = message
  log_event(message,"ALERT" if "interrupted" in message else "WORLD",-1,"rest",true)
+ rest_finished.emit()
 
 func population() -> Dictionary:
  var counts = {"humans":0, "zombies":0, "down":0, "powered":0, "ruined":0}
@@ -1558,7 +1640,18 @@ func log_event(text: String, category: String = "WORLD", actor_id: int = -1, act
 func save_to(path: String) -> Error:
  var file = FileAccess.open(path, FileAccess.WRITE)
  if file == null: return FileAccess.get_open_error()
- file.store_string(JSON.stringify({"version":3, "width":width,"height":height,"world_mode":world_mode,"world_title":world_title,"world_config":world_config,"geography_source":geography_source, "seed":str(world_seed), "rng":str(rng.state), "minute":minute, "clock_step":clock_step, "clock_fraction":clock_fraction, "event_sequence":event_sequence, "blocks":blocks, "actors":actors, "messages":messages, "next_item_id":next_item_id, "scan_report":scan_report, "scan_minute":scan_minute, "scan_cells":scan_cells, "npc_cursor":npc_cursor, "next_dialogue":next_dialogue, "sense_report":sense_report, "metrics":metrics,"npc_locations":npc_planner.memory.save_records(),"radio_defense":radio_defense,"visited_neighbourhoods":visited_neighbourhoods}))
+ var state = {
+  "version":3, "width":width, "height":height, "world_mode":world_mode, "world_title":world_title,
+  "world_config":world_config, "geography_source":geography_source, "seed":str(world_seed),
+  "rng":str(rng.state), "minute":minute, "clock_step":clock_step, "clock_fraction":clock_fraction,
+  "event_sequence":event_sequence, "blocks":blocks, "actors":actors, "messages":messages,
+  "next_item_id":next_item_id, "scan_report":scan_report, "scan_minute":scan_minute, "scan_cells":scan_cells,
+  "npc_cursor":npc_cursor, "next_dialogue":next_dialogue, "sense_report":sense_report, "metrics":metrics,
+  "npc_locations":npc_planner.memory.save_records(), "radio_defense":radio_defense,
+  "visited_neighbourhoods":visited_neighbourhoods
+ }
+ # Preserve fractional clock and actor deadlines across a JSON round trip.
+ file.store_string(JSON.stringify(state,"",true,true))
  return OK
 
 func load_from(path: String) -> String:
@@ -1668,6 +1761,9 @@ func load_from(path: String) -> String:
  messages = [] if legacy else parsed.messages
  if legacy:
   for old_message in parsed.messages: log_event(str(old_message))
+ else:
+  for event in messages:
+   for key in ["id","step","minute","actor"]: event[key] = int(event[key])
  next_item_id = int(parsed.next_item_id)
  scan_report = parsed.scan_report
  scan_minute = int(parsed.scan_minute)
@@ -1679,6 +1775,7 @@ func load_from(path: String) -> String:
  scent_heatmap.clear()
  for actor in actors: _check_scent_trail(actor)
  metrics = parsed.metrics
+ for key in metrics: metrics[key] = int(metrics[key])
  radio_defense.clear()
  var saved_calls = parsed.get("radio_defense",{})
  if saved_calls is Dictionary:
@@ -1935,15 +2032,25 @@ func wanted_supply(a: Dictionary) -> String:
  return ""
 
 func nearby_light(a: Dictionary) -> Dictionary:
+ var origin_x: int = a.x
+ var origin_y: int = a.y
+ var start_x: int = maxi(0,origin_x-3)
+ var end_x: int = mini(width,origin_x+4)
  var best: Dictionary = {}
- var distance = 4
- for y in range(maxi(0,a.y-3),mini(height,a.y+4)):
-  for x in range(maxi(0,a.x-3),mini(width,a.x+4)):
-   var b = block_at(x,y)
-   var d = maxi(absi(x-a.x),absi(y-a.y))
-   if powered(b) and d < distance:
+ var nearest: int = 4
+ for y in range(maxi(0,origin_y-3),mini(height,origin_y+4)):
+  var row: int = y*width
+  var dy: int = absi(y-origin_y)
+  if dy >= nearest: continue
+  for x in range(start_x,end_x):
+   var b: Dictionary = blocks[row+x]
+   if not b.generator: continue
+   var distance: int = maxi(absi(x-origin_x),dy)
+   # Keep the first map square at each distance. Query power live.
+   if distance < nearest and powered(b):
+    if distance == 0: return b
     best = b
-    distance = d
+    nearest = distance
  return best
 
 func _maybe_speak(a: Dictionary) -> void:
@@ -2060,7 +2167,7 @@ func initialize_actor(a: Dictionary) -> void:
  var defaults = {"wants_revive":false,"route":[],"route_goal":-1,"avoid_site":-1,"avoid_until":0,"next_groan":0,"heard_call":"","heard_call_site":-1,"heard_call_until":0,"grasp_target":-1,"grasped_by":-1,"infected":false,"pose":"idle","pose_at":0.0,"pose_sequence":0,"trail_from":-1,"trail_lost":false,"scout_site":-1,"scout_day":-1,"scout_used":0,"fed":0,"headshot":0,"tagged_until":0,"channel":27.0,"outfit":"","npc_purchases":0,"npc_observed":-1,"npc_observed_at":-1,"npc_signal":"","npc_special_at":0}
  for key in defaults:
   if not a.has(key): a[key] = defaults[key]
- for key in ["route_goal","avoid_site","avoid_until","next_groan","grasp_target","grasped_by","pose_sequence","trail_from","scout_site","scout_day","scout_used","fed","headshot","tagged_until","npc_purchases","npc_observed","npc_observed_at","npc_special_at"]: a[key] = int(a[key])
+ for key in ["route_goal","avoid_site","avoid_until","next_groan","heard_call_site","heard_call_until","grasp_target","grasped_by","pose_sequence","trail_from","scout_site","scout_day","scout_used","fed","headshot","tagged_until","npc_purchases","npc_observed","npc_observed_at","npc_special_at"]: a[key] = int(a[key])
  a.route = a.route.map(func(id): return int(id))
  a.pose_at = float(a.pose_at)
  a.channel = float(a.channel)

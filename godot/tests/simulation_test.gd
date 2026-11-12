@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Sim = preload("res://scripts/simulation.gd")
+const REPLAY_SAVE = "user://simulation-replay-test.json"
 var checks = 0
 var failures = 0
 
@@ -22,6 +23,36 @@ func isolated():
    a.ready_at = 999999
  s.reindex()
  return s
+
+func check_revival_replay() -> void:
+ var s := Sim.new()
+ s.start(991)
+ var patient: Dictionary = s.actors.filter(func(actor): return not actor.human).front()
+ for actor in s.actors:
+  if actor.id > 0 and actor.id != patient.id:
+   actor.dormant = true
+   actor.down = true
+ patient.x = 4
+ patient.y = 4
+ patient.inside = false
+ patient.wants_revive = true
+ # The order in which the markers were painted differs from block order.
+ s.set_graffiti(s.blocks[54],"Revive point",true)
+ s.set_graffiti(s.blocks[34],"Revive point",true)
+ s.reindex()
+ s.npc_schedule.clear()
+ s._schedule_npc(patient,s.clock_step+5)
+ s.wake_npc(patient)
+ check(s.save_to(REPLAY_SAVE) == OK,"Save with a rescheduled NPC succeeds")
+ var loaded := Sim.new()
+ var error := loaded.load_from(REPLAY_SAVE)
+ check(error.is_empty(),"Save with a rescheduled NPC loads")
+ if not error.is_empty(): return
+ for i in range(5):
+  s._clock_step()
+  loaded._clock_step()
+ check(patient.memory == 34 and loaded.actors[patient.id].memory == 34,"Equidistant revive points resolve in the same order")
+ check(s.npc_cursor == loaded.npc_cursor,"A superseded wake-up does not alter turn order")
 
 func _initialize() -> void:
  melee_combat_rules()
@@ -189,20 +220,25 @@ func _initialize() -> void:
  s = Sim.new()
  s.start(991)
  s.advance(180)
+ s.elapse(0.03712345678901234)
  s.player().xp = 76
  s.blocks[44].doors = false
  var expected_rng = s.rng.state
- var expected_actors = JSON.stringify(s.actors)
- check(s.save_to("res://test-save.json") == OK,"Save succeeds")
+ var expected_actors = JSON.stringify(s.actors,"",true,true)
+ check(s.save_to(REPLAY_SAVE) == OK,"Save succeeds")
  var loaded = Sim.new()
- check(loaded.load_from("res://test-save.json").is_empty(),"Save loads")
- check(loaded.minute == s.minute and loaded.rng.state == expected_rng,"Time and RNG restored")
- check(JSON.parse_string(JSON.stringify(loaded.actors)) == JSON.parse_string(expected_actors),"Inventory, skills and actors restored without starter duplication")
+ check(loaded.load_from(REPLAY_SAVE).is_empty(),"Save loads")
+ check(loaded.clock_step == s.clock_step and loaded.clock_fraction == s.clock_fraction and loaded.rng.state == expected_rng,"Clock and RNG restored exactly")
+ check(JSON.stringify(loaded.actors,"",true,true) == expected_actors,"Actor fields and deadlines restored exactly")
  check(loaded.blocks[44].doors == false,"Doors restored")
  s.advance(120)
  loaded.advance(120)
- check(JSON.stringify(s.actors) == JSON.stringify(loaded.actors),"Loaded simulation follows same random future")
+ check(JSON.stringify(s.actors,"",true,true) == JSON.stringify(loaded.actors,"",true,true),"Loaded simulation follows same random future")
  check(JSON.stringify(s.blocks) == JSON.stringify(loaded.blocks),"Building evolution follows same future")
+ check(loaded.rng.state == s.rng.state and loaded.npc_cursor == s.npc_cursor,"RNG and turn order match after replay")
+ check(loaded.messages == s.messages and loaded.metrics == s.metrics,"Replay generates the same events and metrics")
+ check_revival_replay()
+ DirAccess.remove_absolute(REPLAY_SAVE)
  check(not loaded.load_from("res://does-not-exist.json").is_empty(),"Missing save fails gracefully")
 
  # Real-time clock is invariant to frame partitioning, including NPC random decisions.

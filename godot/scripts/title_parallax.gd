@@ -3,11 +3,11 @@ extends Control
 const REFERENCE_HEIGHT = 800.0
 const SPEEDS: Array[float] = [6.0, 15.0, 30.0, 60.0, 90.0]
 const LAYERS: Array[Texture2D] = [
- preload("res://assets/parallax/WCP_1.png"),
- preload("res://assets/parallax/WCP_2.png"),
- preload("res://assets/parallax/WCP_3.png"),
- preload("res://assets/parallax/WCP_4.png"),
- preload("res://assets/parallax/WCP_5.png")
+ preload("res://assets/parallax/title_layer_1.png"),
+ preload("res://assets/parallax/title_layer_2.png"),
+ preload("res://assets/parallax/title_layer_3.png"),
+ preload("res://assets/parallax/title_layer_4.png"),
+ preload("res://assets/parallax/title_layer_5.png")
 ]
 var offsets: Array[float] = [0.0, 0.0, 0.0, 0.0, 0.0]
 var layer_widths: Array[float] = []

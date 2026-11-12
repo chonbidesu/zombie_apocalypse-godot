@@ -3,9 +3,9 @@ extends Control
 signal confirmed(identity: Dictionary)
 signal back_requested
 
-const TERMINAL = preload("res://assets/terminal/necrotech-terminal.png")
-const DUST = preload("res://assets/terminal/screen-dust.png")
-const ASCII_FRAME = preload("res://assets/terminal/record-ascii-frame.png")
+const TERMINAL = preload("res://assets/terminal/necrotech_terminal.png")
+const DUST = preload("res://assets/terminal/screen_dust.png")
+const ASCII_FRAME = preload("res://assets/terminal/record_ascii_frame.png")
 const GLASS = preload("res://shaders/terminal_glass.gdshader")
 const CHASSIS_SHADER = preload("res://shaders/terminal_chassis.gdshader")
 const BLUE = Color("72aaff")

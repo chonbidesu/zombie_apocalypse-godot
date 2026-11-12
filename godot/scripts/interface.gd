@@ -24,6 +24,10 @@ const GameMusic = preload("res://scripts/game_music.gd")
 const DamageOverlay = preload("res://scripts/damage_overlay.gd")
 const GameSounds = preload("res://scripts/game_sounds.gd")
 const SaveSlots = preload("res://scripts/save_slots.gd")
+const SettingsMenu = preload("res://scripts/settings_menu.gd")
+const PerformanceMonitor = preload("res://scripts/PerformanceMonitor.gd")
+const REST_BUDGET_USEC: int = 4_000
+const SLEEP_BUDGET_USEC: int = 8_000
 var slot_chooser: Control
 var minimap_artwork := MapArtwork.new()
 var location_architecture := preload("res://scripts/location_architecture.gd").new()
@@ -58,9 +62,34 @@ var log_view: RichTextLabel
 var log_filter: String = "All"
 var history_filter: String = "All"
 var refresh_timer: float = 0.0
-var last_revision: String = ""
 var action_controls: Array[Dictionary] = []
 var timing_label: Label
+var clock_label: Label
+var speed_label: Label
+var condition_label: Label
+var health_label: Label
+var energy_label: Label
+var energy_bar: Panel
+var notice_label: Label
+var pause_button: Button
+var rest_button: Button
+var sleep_button: Button
+var pause_banner: Panel
+var local_map: MapCanvas
+var minimap_caption: Label
+var location_subtitle: Label
+var location_description_label: Label
+var dashboard_layout: Array = []
+var dashboard_inventory: Array = []
+var dashboard_inventory_controls: Array = []
+var dashboard_actions: Array = []
+var dashboard_people: Array = []
+var inventory_nodes: Array[Node] = []
+var action_nodes: Array[Node] = []
+var perception_nodes: Array[Node] = []
+var sleep_panels: Array[Node] = []
+var hidden_during_sleep: Array[CanvasItem] = []
+var dashboard_sleeping: bool
 var notice: String = "Welcome to Dulston. Explore, find supplies, and keep your neighbours alive."
 var textures: Dictionary = {}
 var actor_buttons: Array[Dictionary] = []
@@ -111,14 +140,23 @@ func _ready() -> void:
  add_child(game_sounds)
  sim.player_damaged.connect(damage_overlay.add_damage)
  sim.sound_requested.connect(game_sounds.play_effect)
+ sim.rest_finished.connect(_clear_simulation_backlog)
  _reset_session_view()
  if start_tutorial: modal = "tutorial"
  refresh()
+ if OS.is_debug_build():
+  var performance_monitor: PerformanceMonitor = PerformanceMonitor.new()
+  performance_monitor.interactive_sim = sim
+  add_child(performance_monitor)
 
 func _process(delta: float) -> void:
+ var counters := sim.performance_counters
+ var started: int = Time.get_ticks_usec() if counters != null else 0
  _animate_scene(delta)
- if paused or context_open or not modal.is_empty() or is_instance_valid(slot_chooser): return
- _advance_session(delta)
+ if not (paused or context_open or not modal.is_empty() or is_instance_valid(slot_chooser)):
+  _advance_session(delta)
+ if counters != null:
+  counters.gameplay_usec += Time.get_ticks_usec()-started
 
 func _animate_scene(delta: float) -> void:
  _update_actor_tooltip()
@@ -127,9 +165,10 @@ func _animate_scene(delta: float) -> void:
  if is_instance_valid(overlay) and modal == "map":
   for marker in overlay.find_children("GPS*","Panel",true,false):
    marker.visible = fmod(animation_time,1.0) < 0.5
- for entry in actor_buttons:
-  if is_instance_valid(entry.node):
-   position_actor_sprite(entry)
+ if not sim.sleeping:
+  for entry in actor_buttons:
+   if is_instance_valid(entry.node):
+    position_actor_sprite(entry)
  for entry in departing_actors.duplicate():
   var target = entry.target
   if not is_instance_valid(target):
@@ -152,43 +191,70 @@ func _advance_session(delta: float) -> void:
  simulation_backlog += delta
  var elapsed := minf(simulation_backlog,0.25)
  simulation_backlog -= elapsed
- sim.elapse(elapsed)
- if was_down != sim.player().down: refresh()
- if was_resting and not resting: notice = sim.last_rest_notice
+ var budget_usec: int = _recovery_budget_usec() if was_resting else 0
+ if budget_usec > 0:
+  var deferred: float = sim.elapse_budgeted(elapsed,budget_usec)
+  if resting: simulation_backlog += deferred
+ else:
+  sim.elapse(elapsed)
+ var recovery_ended: bool = was_resting and not resting
+ if recovery_ended: notice = sim.last_rest_notice
  var feed_changed := feed.ingest(sim.messages)
  if feed.update(delta): feed_changed = true
  if feed_changed: _update_log()
+ refresh_timer += delta
+ if recovery_ended or was_down != sim.player().down:
+  refresh_timer = 0.0
+  _refresh_dashboard()
+ elif refresh_timer >= 0.25 and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+  refresh_timer = 0.0
+  var counters := sim.performance_counters
+  var started: int = Time.get_ticks_usec() if counters != null else 0
+  _refresh_dashboard()
+  if counters != null:
+   counters.periodic_refreshes += 1
+   counters.periodic_refresh_usec += Time.get_ticks_usec()-started
+ _update_action_controls()
+ if is_instance_valid(timing_label): timing_label.text = _timing_text()
+
+func _update_action_controls() -> void:
+ if sim.sleeping: return
+ var p: Dictionary = sim.player()
  for entry in action_controls:
   if is_instance_valid(entry.node):
-   var why := sim.action_feedback(sim.player(),entry.command,entry.target,entry.data)
-   entry.node.disabled = resting or not why.is_empty()
+   var why := sim.action_feedback(p,entry.command,entry.target,entry.data)
+   entry.node.disabled = paused or resting or not why.is_empty()
    entry.node.tooltip_text = why if not why.is_empty() else entry.tip
- if is_instance_valid(timing_label): timing_label.text = _timing_text()
- refresh_timer += delta
- var revision := "%d/%d/%d/%s" % [sim.minute,sim.event_sequence,sim.player().ap,resting]
- if refresh_timer >= 0.25 and revision != last_revision and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
-  refresh_timer = 0.0
-  last_revision = revision
-  refresh()
+
+func _recovery_budget_usec() -> int:
+ return SLEEP_BUDGET_USEC if sim.sleeping else REST_BUDGET_USEC
+
+func _clear_simulation_backlog() -> void:
+ simulation_backlog = 0.0
 
 func _unhandled_key_input(event: InputEvent) -> void:
  if not event is InputEventKey or not event.pressed or event.echo: return
  if event.keycode == KEY_F11:
-  toggle_fullscreen()
+  get_node("/root/PlayerSettings").toggle_fullscreen()
+  get_viewport().set_input_as_handled()
   return
+ if context_open or is_instance_valid(slot_chooser): return
  if event.keycode == KEY_ESCAPE:
   if not modal.is_empty(): modal = ""
   elif resting:
-   sim.stop_rest("You wake up." if sim.sleeping else "Rest cancelled.")
-   notice = sim.last_rest_notice
-  else: paused = not paused
+   _cancel_recovery()
+   get_viewport().set_input_as_handled()
+   return
+  else: modal = "settings"
+  get_viewport().set_input_as_handled()
   refresh()
   return
- if event.keycode == KEY_SPACE and not context_open and modal.is_empty():
+ if event.keycode == KEY_SPACE and modal.is_empty():
   paused = not paused
+  get_viewport().set_input_as_handled()
   refresh()
   return
- if paused or resting or context_open or not modal.is_empty(): return
+ if paused or resting or not modal.is_empty(): return
  var moves = {KEY_W:Vector2i(0,-1), KEY_UP:Vector2i(0,-1), KEY_S:Vector2i(0,1), KEY_DOWN:Vector2i(0,1), KEY_A:Vector2i(-1,0), KEY_LEFT:Vector2i(-1,0), KEY_D:Vector2i(1,0), KEY_RIGHT:Vector2i(1,0), KEY_Q:Vector2i(-1,-1), KEY_E:Vector2i(1,-1), KEY_Z:Vector2i(-1,1), KEY_C:Vector2i(1,1)}
  if moves.has(event.keycode):
   var direction = moves[event.keycode]
@@ -307,6 +373,12 @@ func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accen
  return node
 
 func refresh() -> void:
+ var p: Dictionary = sim.player()
+ var b: Dictionary = sim.current_block(p)
+ if sim.sleeping and not sleep_panels.is_empty() and _dashboard_layout(p,b) == dashboard_layout:
+  _refresh_dashboard()
+  _update_dashboard_overlays()
+  return
  if sim.player().down or sim.sleeping or not modal.is_empty(): _clear_scene_transition()
  if not is_instance_valid(page):
   page = Control.new()
@@ -319,63 +391,192 @@ func refresh() -> void:
  retained_hover_button = hovered if hovered is Button and on_dashboard and modal.is_empty() and not sim.player().down and not sim.sleeping else null
  for child in page.get_children():
   # Hover and tooltip timing belong to the actor controls across refreshes.
-  if child.name == "SceneActors" and not sim.player().down and not sim.sleeping: continue
+  if child.name == "SceneActors" and not p.down and not sim.sleeping:
+   if hidden_during_sleep.has(child): child.show()
+   continue
   if child == retained_hover_button: continue
   if is_instance_valid(retained_hover_button) and child == retained_hover_button.get_parent(): continue
   page.remove_child(child)
   child.queue_free()
+ sleep_panels.clear()
+ hidden_during_sleep.clear()
+ dashboard_sleeping = sim.sleeping
+ pause_banner = null
  actor_buttons.clear()
  action_controls.clear()
- var p = sim.player()
- var b = sim.current_block(p)
  if p.down: selected_actor = -1
  if selected_actor >= sim.actors.size() or (selected_actor >= 0 and not sim.nearby(p, sim.actors[selected_actor])): selected_actor = -1
  if sim.item_by_uid(p, selected_item).is_empty(): selected_item = -1
+ dashboard_layout = _dashboard_layout(p,b)
+ dashboard_inventory = p.inventory.duplicate(true) if not p.down and not sim.sleeping else []
+ dashboard_actions = _action_options()
+ dashboard_people.clear()
  _header()
- _local_map()
+ perception_nodes = _build_dashboard_section(_local_map)
  _status()
  _rest_controls()
- _inventory()
- _location(b)
- _people()
- _actions()
- _log()
+ inventory_nodes = _build_dashboard_section(_inventory)
+ dashboard_inventory_controls = _inventory_controls(p)
+ perception_nodes.append_array(_build_dashboard_section(_location.bind(b)))
+ _update_people(p,true)
+ action_nodes = _build_dashboard_section(_actions.bind(dashboard_actions))
+ perception_nodes.append_array(_build_dashboard_section(_log))
  if is_instance_valid(retained_hover_button):
   retained_hover_button.get_parent().remove_child(retained_hover_button)
   retained_hover_button.queue_free()
   retained_hover_button = null
  rect(page, Rect2(20, 1044, 1880, 28), INK)
- label(page, "You are asleep. Wake to return to the city." if sim.sleeping else (sim.location_description(p) if p.down else notice), Rect2(28, 1045, 1860, 26), 18, GOLD)
- if paused:
-  rect(page, Rect2(400, 85, 1020, 52), Color("2c3526"), GOLD)
-  label(page, "PAUSED  /  Press Escape or Resume to continue", Rect2(420, 90, 980, 40), 25, GOLD)
- if not modal.is_empty(): _modal()
+ notice_label = label(page,_notice_text(p),Rect2(28,1045,1860,26),18,GOLD)
+ _update_dashboard_overlays()
  if is_instance_valid(log_view): log_view.visible = modal.is_empty() and not p.down and not sim.sleeping
+ _update_actor_tooltip()
+
+func _dashboard_layout(p: Dictionary, b: Dictionary) -> Array:
+ return [p.x,p.y,p.inside,p.human,p.down,p.job,p.get("sex",""),sim.display_name(p),b.type,b.name,
+  sim.has_skill(p,"necro_employment"),sim.has_skill(p,"shopping")]
+
+func _update_dashboard_overlays() -> void:
+ if is_instance_valid(pause_banner):
+  pause_banner.visible = paused
+ elif paused:
+  pause_banner = rect(page,Rect2(400,85,1020,52),Color("2c3526"),GOLD)
+  label(pause_banner,"PAUSED  /  Press Space or Resume to continue",Rect2(20,5,980,40),25,GOLD)
+ if is_instance_valid(overlay) and overlay.get_parent() == page:
+  page.remove_child(overlay)
+  overlay.queue_free()
+ overlay = null
+ if not modal.is_empty(): _modal()
+
+func _set_sleep_visibility(sleeping: bool) -> void:
+ dashboard_sleeping = sleeping
+ if sleeping:
+  _clear_scene_transition()
+  for section in [perception_nodes,inventory_nodes,action_nodes]:
+   for node: CanvasItem in section:
+    if node.visible:
+     node.hide()
+     hidden_during_sleep.append(node)
+  var actors := page.get_node_or_null("SceneActors") as Control
+  if actors != null and actors.visible:
+   actors.hide()
+   hidden_during_sleep.append(actors)
+  sleep_panels = _build_dashboard_section(_sleep_blackout)
+ else:
+  for node in sleep_panels:
+   page.remove_child(node)
+   node.queue_free()
+  sleep_panels.clear()
+  for node in hidden_during_sleep:
+   node.show()
+  hidden_during_sleep.clear()
+ if is_instance_valid(log_view):
+  log_view.visible = not sleeping and modal.is_empty()
+  _update_log()
+
+func _sleep_blackout() -> void:
+ rect(page,Rect2(20,88,358,414),Color.BLACK).name = "DarkMinimap"
+ rect(page,Rect2(20,720,358,184),Color.BLACK)
+ _dark_location()
+ rect(page,Rect2(1440,88,460,946),Color.BLACK).name = "DarkDialogue"
+
+func _inventory_controls(p: Dictionary) -> Array:
+ if p.down or sim.sleeping: return []
+ var can_give: bool = selected_item >= 0 and selected_actor >= 0 and sim.action_feedback(p,"give",selected_actor,{"uid":selected_item},true).is_empty()
+ return [p.equipped,inventory_page,selected_item,selected_actor,can_give]
+
+func _build_dashboard_section(build: Callable) -> Array[Node]:
+ var first: int = page.get_child_count()
+ var hovered: Button = retained_hover_button
+ build.call()
+ # The button builder moves a reused hover target into the appended section.
+ if is_instance_valid(hovered) and hovered.get_parent() == page and retained_hover_button == null:
+  first -= 1
+ var nodes: Array[Node] = []
+ for index in range(first,page.get_child_count()):
+  nodes.append(page.get_child(index))
+ return nodes
+
+func _replace_dashboard_section(previous: Array[Node], build: Callable) -> Array[Node]:
+ var first: int = previous[0].get_index() if not previous.is_empty() else page.get_child_count()
+ var hovered := get_viewport().gui_get_hovered_control() as Button
+ if hovered != null and previous.has(hovered) and not sim.player().down:
+  retained_hover_button = hovered
+ for index in range(action_controls.size()-1,-1,-1):
+  if previous.has(action_controls[index].node): action_controls.remove_at(index)
+ for node in previous:
+  if node == retained_hover_button: continue
+  page.remove_child(node)
+  node.queue_free()
+ var nodes := _build_dashboard_section(build)
+ if is_instance_valid(retained_hover_button):
+  page.remove_child(retained_hover_button)
+  retained_hover_button.queue_free()
+  retained_hover_button = null
+ for index in range(nodes.size()):
+  page.move_child(nodes[index],first+index)
+ return nodes
+
+func _refresh_dashboard() -> void:
+ var p: Dictionary = sim.player()
+ var b: Dictionary = sim.current_block(p)
+ if _dashboard_layout(p,b) != dashboard_layout or (dashboard_sleeping and not sim.sleeping and sleep_panels.is_empty()):
+  refresh()
+  return
+ if dashboard_sleeping != sim.sleeping:
+  _set_sleep_visibility(sim.sleeping)
+ if not sim.sleeping:
+  if selected_actor >= 0 and (selected_actor >= sim.actors.size() or not sim.nearby(p,sim.actors[selected_actor])):
+   selected_actor = -1
+  if selected_item >= 0 and sim.item_by_uid(p,selected_item).is_empty(): selected_item = -1
+  if not p.down and (p.inventory != dashboard_inventory or _inventory_controls(p) != dashboard_inventory_controls):
+   inventory_nodes = _replace_dashboard_section(inventory_nodes,_inventory)
+   dashboard_inventory = p.inventory.duplicate(true)
+   dashboard_inventory_controls = _inventory_controls(p)
+  var options: Array = _action_options()
+  if options != dashboard_actions:
+   action_nodes = _replace_dashboard_section(action_nodes,_actions.bind(options))
+   dashboard_actions = options
+ clock_label.text = sim.time_text()
+ speed_label.text = "LIVE · %d×" % sim.time_speed()
+ condition_label.text = _condition_text(p)
+ health_label.text = "%d / %d HP · %d XP" % [p.hp,sim.max_hp(p),p.xp]
+ energy_label.text = "%02d / 50 AP" % p.ap
+ energy_bar.size.x = 334.0*clampf(float(p.ap)/C.AP_CAP,0.0,1.0)
+ notice_label.text = _notice_text(p)
+ pause_button.text = "Resume" if paused else "Pause"
+ rest_button.text = _rest_button_text()
+ rest_button.disabled = paused
+ sleep_button.disabled = resting or paused
+ timing_label.text = _timing_text()
+ if not p.down and not sim.sleeping:
+  _update_local_map(p)
+  location_subtitle.text = _location_subtitle(b,p)
+  var description: String = sim.location_description(p)
+  if description != location_description_label.text:
+   _set_location_description(description)
+  _update_people(p)
  _update_actor_tooltip()
 
 func _header() -> void:
  rect(page, Rect2(0, 0, 1920, 74), Color("111d18"))
  label(page, "MALTON", Rect2(22, 5, 210, 44), 39, CREAM)
  label(page, sim.world_title.to_upper()+"  /  SURVIVAL", Rect2(24, 47, 400, 22), 15, GOLD)
- label(page, sim.time_text(), Rect2(270, 15, 270, 30), 24, GOLD)
- label(page, "LIVE · %s" % ("%d×" % sim.time_speed()), Rect2(570, 15, 146, 40), 23, GOLD)
- button(page, "Resume" if paused else "Pause", Rect2(726, 15, 95, 40), func(): paused = not paused; refresh())
+ clock_label = label(page, sim.time_text(), Rect2(270, 15, 270, 30), 24, GOLD)
+ speed_label = label(page, "LIVE · %d×" % sim.time_speed(), Rect2(570, 15, 146, 40), 23, GOLD)
+ pause_button = button(page, "Resume" if paused else "Pause", Rect2(726, 15, 95, 40), func(): paused = not paused; refresh())
  button(page, "Map [M]", Rect2(831, 15, 105, 40), open_city_map)
  button(page, "Skills", Rect2(946, 15, 90, 40), func(): open_modal("skills"))
  button(page, "Save", Rect2(1046, 15, 80, 40), _save)
  button(page, "Load", Rect2(1136, 15, 80, 40), _load)
  button(page, "Help", Rect2(1226, 15, 80, 40), func(): open_modal("help"))
  button(page, "Restart", Rect2(1316, 15, 104, 40), func(): open_modal("restart"))
- var fullscreen_button = button(page,"Full screen [F11]",Rect2(1440,15,190,40),toggle_fullscreen)
- fullscreen_button.name = "FullscreenToggle"
-
-func toggle_fullscreen() -> void:
- var fullscreen = DisplayServer.window_get_mode() in [DisplayServer.WINDOW_MODE_FULLSCREEN,DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN]
- DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if fullscreen else DisplayServer.WINDOW_MODE_FULLSCREEN)
- refresh()
+ var settings_button = button(page,"Settings [Esc]",Rect2(1440,15,190,40),func(): open_modal("settings"))
+ settings_button.name = "SettingsButton"
 
 func _local_map() -> void:
  var p = sim.player()
+ local_map = null
+ minimap_caption = null
  if p.down or sim.sleeping:
   var darkness = rect(page, Rect2(20,88,358,414), Color.BLACK)
   darkness.name = "DarkMinimap"
@@ -394,6 +595,7 @@ func _local_map() -> void:
   page.move_child(city,page.get_child_count()-1)
  else: city = map_region(page,Rect2i(p.x-1,p.y-1,3,3),Vector2(40,108),106)
  city.name = "CityMinimap"
+ local_map = city as MapCanvas
  for dy in range(-1, 2):
   for dx in range(-1, 2):
    var bounds = Rect2((dx+1)*106, (dy+1)*106, 106, 106)
@@ -405,23 +607,40 @@ func _local_map() -> void:
    tile.name = "MapTile_%d" % b.id
    tile.flat = true
    tile.z_index = 1000
-   tile.disabled = paused or resting or (dx == 0 and dy == 0)
-   tile.tooltip_text = map_site_tooltip(b) + "\nMove: %d AP" % sim.cost(p,"move")
-   if b.type == "gatehouse" and not b.fort.is_empty(): tile.tooltip_text += "\nOnly fort entrance: enter the gatehouse to access the grounds."
    if dx == 0 and dy == 0:
     var outline = rect(tile,Rect2(0,0,106,106),Color.TRANSPARENT,GOLD)
     outline.get_theme_stylebox("panel").set_border_width_all(1)
    necrotech_mark(tile,b,Vector2(42,27),19)
-   _minimap_population(tile,b,p,p.inside if dx == 0 and dy == 0 else false)
+   _update_minimap_tile(tile,b,p,p.inside and dx == 0 and dy == 0)
+ minimap_caption = label(page,"",Rect2(24,451,350,28),24,GOLD)
+ minimap_caption.name = "MinimapCaption"
+ _update_minimap_caption(p)
+ label(page, "Click to move • Arrows / WASD • QEZC", Rect2(24,480,355,22), 15, MUTED)
+
+func _update_local_map(p: Dictionary) -> void:
+ local_map.refresh_art()
+ var view := local_map.footprint.intersection(Rect2i(0,0,sim.width,sim.height))
+ for y in range(view.position.y,view.end.y):
+  for x in range(view.position.x,view.end.x):
+   var b: Dictionary = sim.block_at(x,y)
+   var tile := local_map.get_node("MapTile_%d" % b.id) as Button
+   _update_minimap_tile(tile,b,p,p.inside and x == p.x and y == p.y)
+ _update_minimap_caption(p)
+
+func _update_minimap_caption(p: Dictionary) -> void:
  var caption = sim.suburb_name(p).to_upper()
  if not sim.item_kind(p,"gps_unit").is_empty():
   caption += "  ·  [%02d, %02d]" % [p.x,p.y]
+ if minimap_caption.text == caption: return
  var caption_font = 24
  while caption_font > 14 and theme.default_font.get_string_size(caption,HORIZONTAL_ALIGNMENT_LEFT,-1,caption_font).x > 350: caption_font -= 1
- label(page,caption,Rect2(24,451,350,28),caption_font,GOLD).name = "MinimapCaption"
- label(page, "Click to move • Arrows / WASD • QEZC", Rect2(24,480,355,22), 15, MUTED)
+ minimap_caption.add_theme_font_size_override("font_size",caption_font)
+ minimap_caption.text = caption
 
-func _minimap_population(tile: Button, b: Dictionary, p: Dictionary, inside: bool) -> void:
+func _update_minimap_tile(tile: Button, b: Dictionary, p: Dictionary, inside: bool) -> void:
+ tile.disabled = paused or resting or (b.x == p.x and b.y == p.y)
+ var tooltip: String = map_site_tooltip(b) + "\nMove: %d AP" % sim.cost(p,"move")
+ if b.type == "gatehouse" and not b.fort.is_empty(): tooltip += "\nOnly fort entrance: enter the gatehouse to access the grounds."
  var visible = sim.occupants(b,inside)
  var names: Array[String] = []
  var captions: Array[String] = []
@@ -446,22 +665,43 @@ func _minimap_population(tile: Button, b: Dictionary, p: Dictionary, inside: boo
  rows.assign(captions.slice(0,3))
  if names.size() > 3: rows.append("…")
  if zombies > 0: rows.append("%d zombie%s" % [zombies,"" if zombies == 1 else "s"])
+ var population := tile.get_node_or_null("Population") as Control
+ var view := [rows,colours,zombies > 0]
+ if population != null and population.get_meta("view") != view:
+  tile.remove_child(population)
+  population.queue_free()
+  population = null
+ if population == null and not rows.is_empty():
+  population = Control.new()
+  population.name = "Population"
+  population.mouse_filter = Control.MOUSE_FILTER_IGNORE
+  population.set_meta("view",view)
+  tile.add_child(population)
+  _draw_minimap_population(population,rows,colours,zombies > 0)
+ if not names.is_empty(): tooltip += "\n" + ", ".join(names)
+ if zombies > 0: tooltip += "\n" + rows.back()
+ var tracked = sim.scent_trail_target(p)
+ var marker := tile.get_node_or_null("ScentTrail") as Panel
+ if not tracked.is_empty() and tracked.x == b.x and tracked.y == b.y:
+  if marker == null:
+   marker = rect(tile,Rect2(74,4,29,17),INK)
+   marker.name = "ScentTrail"
+   label(marker,"Trail",Rect2(3,0,25,17),11,GOLD)
+  tooltip += "\n" + sim.scent_trail_text(p)
+ elif marker != null:
+  tile.remove_child(marker)
+  marker.queue_free()
+ tile.tooltip_text = tooltip
+
+func _draw_minimap_population(population: Control, rows: Array[String], colours: Array[Color], has_zombies: bool) -> void:
  var y = 103-rows.size()*14
  for i in range(rows.size()):
-  var undead_row = zombies > 0 and i == rows.size()-1
-  rect(tile,Rect2(3,y,100,13),Color(0.04,0.07,0.05,0.90))
+  var undead_row = has_zombies and i == rows.size()-1
+  rect(population,Rect2(3,y,100,13),Color(0.04,0.07,0.05,0.90))
   var colour = RED if undead_row else (colours[i] if i < mini(3,colours.size()) else GREEN)
-  var caption = label(tile,rows[i],Rect2(6,y-1,94,15),12,colour)
+  var caption = label(population,rows[i],Rect2(6,y-1,94,15),12,colour)
   caption.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
   y += 14
- if not names.is_empty(): tile.tooltip_text += "\n" + ", ".join(names)
- if zombies > 0: tile.tooltip_text += "\n" + rows.back()
- var tracked = sim.scent_trail_target(p)
- if not tracked.is_empty() and tracked.x == b.x and tracked.y == b.y:
-  var marker = rect(tile,Rect2(74,4,29,17),INK)
-  marker.name = "ScentTrail"
-  label(marker,"Trail",Rect2(3,0,25,17),11,GOLD)
-  tile.tooltip_text += "\n" + sim.scent_trail_text(p)
 
 func _status() -> void:
  var p = sim.player()
@@ -471,26 +711,38 @@ func _status() -> void:
  atlas.region = portrait_region(p)
  player_portrait = picture(page, atlas, Rect2(24,518,98,98))
  label(page, sim.display_name(p), Rect2(124,521,245,28), 24)
- label(page, ("SURVIVOR" if p.human else "UNDEAD") + (" / ASLEEP" if sim.sleeping else (" / DOWN" if p.down else " / STANDING")), Rect2(124,550,245,24), 16, GREEN if p.human else RED)
- var health = label(page,"%d / %d HP · %d XP" % [p.hp,sim.max_hp(p),p.xp],Rect2(124,578,245,28),18)
- health.name = "PlayerHealth"
+ condition_label = label(page,_condition_text(p),Rect2(124,550,245,24),16,GREEN if p.human else RED)
+ health_label = label(page,"%d / %d HP · %d XP" % [p.hp,sim.max_hp(p),p.xp],Rect2(124,578,245,28),18)
+ health_label.name = "PlayerHealth"
  rect(page, Rect2(31,638,334,6), INK)
- rect(page, Rect2(31,638,334*clampf(float(p.ap)/50.0,0.0,1.0),6), GOLD)
- var energy = label(page,"%02d / 50 AP" % p.ap,Rect2(124,608,111,26),16,GOLD)
- energy.name = "PlayerEnergy"
+ energy_bar = rect(page, Rect2(31,638,334*clampf(float(p.ap)/C.AP_CAP,0.0,1.0),6), GOLD)
+ energy_label = label(page,"%02d / 50 AP" % p.ap,Rect2(124,608,111,26),16,GOLD)
+ energy_label.name = "PlayerEnergy"
  label(page, "+1 AP / 30 min", Rect2(238,609,133,24), 14, MUTED)
 
+func _condition_text(p: Dictionary) -> String:
+ return ("SURVIVOR" if p.human else "UNDEAD") + (" / ASLEEP" if sim.sleeping else (" / DOWN" if p.down else " / STANDING"))
+
+func _notice_text(p: Dictionary) -> String:
+ if sim.sleeping: return "You are asleep. Wake to return to the city."
+ return sim.location_description(p) if p.down else notice
+
+func _rest_button_text() -> String:
+ if sim.sleeping: return "Wake"
+ return "Cancel rest" if resting else "Rest +10 AP [R]"
+
 func _rest_controls() -> void:
- var rest = button(page,("Wake" if sim.sleeping else "Cancel rest") if resting else "Rest +10 AP [R]",Rect2(24,658,171,30),func():
-  if resting: sim.stop_rest("You wake up." if sim.sleeping else "Rest cancelled."); notice = sim.last_rest_notice; refresh()
+ rest_button = button(page,_rest_button_text(),Rect2(24,658,171,30),func():
+  if resting: _cancel_recovery()
   else: begin_rest(10),true)
- rest.add_theme_font_size_override("font_size",16)
- rest.disabled = paused
- var full = button(page,"Sleep",Rect2(203,658,171,30),begin_sleep)
- full.name = "SleepButton"
- full.tooltip_text = "Sleep until 50 AP at 128× speed. Barricades collapsing or sustained damage can wake you."
- full.add_theme_font_size_override("font_size",16)
- full.disabled = resting or paused
+ rest_button.name = "RestButton"
+ rest_button.add_theme_font_size_override("font_size",16)
+ rest_button.disabled = paused
+ sleep_button = button(page,"Sleep",Rect2(203,658,171,30),begin_sleep)
+ sleep_button.name = "SleepButton"
+ sleep_button.tooltip_text = "Sleep until 50 AP at 128× speed. Barricades collapsing or sustained damage can wake you."
+ sleep_button.add_theme_font_size_override("font_size",16)
+ sleep_button.disabled = resting or paused
  timing_label = label(page,_timing_text(),Rect2(24,691,350,22),14,GOLD)
 
 func _inventory() -> void:
@@ -535,20 +787,10 @@ func _inventory() -> void:
 func _location(b: Dictionary) -> void:
  var p = sim.player()
  if p.down or sim.sleeping:
-  var darkness = rect(page,Rect2(400,84,1020,851),Color.BLACK)
-  darkness.name = "DarkEnvironment"
-  label(page,"ASLEEP" if sim.sleeping else "EVERYTHING IS DARK",Rect2(420,250,980,40),27,MUTED)
-  var down_text = label(page,"The city fades away. You will awaken at 50 AP, or if collapsing barricades or sustained injuries disturb you." if sim.sleeping else sim.location_description(p),Rect2(420,303,980,62),20,MUTED)
-  down_text.name = "LocationDescription"
-  down_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+  _dark_location()
   return
  label(page, b.name.to_upper(), Rect2(400,84,1010,38), 31, CREAM)
- var subtitle = "%s / %s" % ["INSIDE" if p.inside else "OUTSIDE", C.pretty(sim.visible_type(b,p))]
- if sim.is_building(b):
-  subtitle += " · %s · %s" % [sim.barricade_description(b).capitalize(), "Lights on" if sim.powered(b) else "Unpowered"]
-  if b.ruin >= 3 or p.inside or sim.entrance_is_open(b):
-   subtitle += " · " + ("Ruined" if b.ruin >= 3 else ("Ransacked" if b.ruin > 0 else "Intact"))
- label(page,subtitle,Rect2(402,124,690 if b.type == "mall" and sim.has_skill(p,"shopping") else 1005,26),19,MUTED)
+ location_subtitle = label(page,_location_subtitle(b,p),Rect2(402,124,690 if b.type == "mall" and sim.has_skill(p,"shopping") else 1005,26),19,MUTED)
  rect(page,Rect2(400,159,1020,576),INK,GOLD)
  var art = picture(page,location_architecture.setting_for(sim,b,p.inside),ENVIRONMENT_RECT)
  art.name = "EnvironmentArt"
@@ -561,15 +803,35 @@ func _location(b: Dictionary) -> void:
  artwork.scale = Vector2.ONE*(INTERIOR_ZOOM if p.inside and sim.is_building(b) else 1.0)
  art.texture = null
  if not p.inside: necrotech_mark(page,b,Vector2(895,365),28)
- var text = sim.location_description(p)
- var font_size = description_font_size(text)
- var height = description_height(text,font_size)
  rect(page,Rect2(400,745,1020,190),PANEL,Color("4e5847"))
- var description = label(page,text,Rect2(416,753,987,height),font_size,CREAM)
- description.name = "LocationDescription"
+ location_description_label = label(page,"",Rect2(416,753,987,0),20,CREAM)
+ location_description_label.name = "LocationDescription"
+ location_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ location_description_label.add_theme_constant_override("line_spacing",3)
+ _set_location_description(sim.location_description(p))
+
+func _dark_location() -> void:
+ rect(page,Rect2(400,84,1020,851),Color.BLACK).name = "DarkEnvironment"
+ label(page,"ASLEEP" if sim.sleeping else "EVERYTHING IS DARK",Rect2(420,250,980,40),27,MUTED)
+ var text: String = "The city fades away. You will awaken at 50 AP, or if collapsing barricades or sustained injuries disturb you." if sim.sleeping else sim.location_description(sim.player())
+ var description := label(page,text,Rect2(420,303,980,62),20,MUTED)
+ # Keep the retained awake description addressable while the blackout is shown.
+ description.name = "SleepDescription" if is_instance_valid(location_description_label) and location_description_label.get_parent() == page else "LocationDescription"
  description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
- description.add_theme_constant_override("line_spacing",3)
- description.clip_text = true
+
+func _location_subtitle(b: Dictionary, p: Dictionary) -> String:
+ var subtitle = "%s / %s" % ["INSIDE" if p.inside else "OUTSIDE", C.pretty(sim.visible_type(b,p))]
+ if sim.is_building(b):
+  subtitle += " · %s · %s" % [sim.barricade_description(b).capitalize(), "Lights on" if sim.powered(b) else "Unpowered"]
+  if b.ruin >= 3 or p.inside or sim.entrance_is_open(b):
+   subtitle += " · " + ("Ruined" if b.ruin >= 3 else ("Ransacked" if b.ruin > 0 else "Intact"))
+ return subtitle
+
+func _set_location_description(text: String) -> void:
+ var font_size: int = description_font_size(text)
+ location_description_label.add_theme_font_size_override("font_size",font_size)
+ location_description_label.text = text
+ location_description_label.size.y = description_height(text,font_size)
 
 func description_height(text: String, font_size: int) -> float:
  var measured = theme.default_font.get_multiline_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,987,font_size,-1,TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND)
@@ -581,10 +843,38 @@ func description_font_size(text: String) -> int:
  while font_size > 12 and description_height(text,font_size) > 174: font_size -= 1
  return font_size
 
-func _people() -> void:
- var p = sim.player()
+func _update_people(p: Dictionary, force: bool = false) -> void:
  if p.down or sim.sleeping: return
  var people = ordered_people().filter(func(a): return a.id != 0)
+ var view: Array = [selected_actor]
+ for actor: Dictionary in people:
+  var sees_hp: bool = sim.sees_survivor_hp(p,actor)
+  view.append([actor.id,actor.human,actor.down,actor.job,actor.get("sex",""),
+   _actor_tooltip_text(actor,p),_actor_infected(actor,p),sees_hp,
+   actor.hp if sees_hp else 0,sim.max_hp(actor) if sees_hp else 0,_active_speech(actor)])
+ if not force and view == dashboard_people: return
+ dashboard_people = view
+ actor_buttons.clear()
+ _people(p,people)
+
+func _actor_infected(a: Dictionary, p: Dictionary) -> bool:
+ return a.human and not a.down and a.infected and sim.has_skill(p,"scent_blood")
+
+func _actor_tooltip_text(a: Dictionary, p: Dictionary) -> String:
+ var tooltip: String = "Dead body"
+ if not a.down:
+  tooltip = "%s · %s" % [sim.display_name(a),a.job if a.human else "Zombie"]
+  if a.human: tooltip += " · " + sim.trust_description(a,p)
+ var condition: String = sim.survivor_condition(p,a)
+ if not condition.is_empty(): tooltip += " · "+condition.capitalize()
+ if sim.sees_survivor_hp(p,a): tooltip += " · %d/%d HP" % [a.hp,sim.max_hp(a)]
+ if _actor_infected(a,p): tooltip += " · Infected"
+ return tooltip
+
+func _active_speech(a: Dictionary) -> String:
+ return a.speech if not a.down and a.speech_until > sim.now() else ""
+
+func _people(p: Dictionary, people: Array) -> void:
  var humans = people.filter(func(a): return not a.down and a.human)
  var zombies = people.filter(func(a): return not a.down and not a.human)
  var bodies = people.filter(func(a): return a.down)
@@ -676,20 +966,9 @@ func _people() -> void:
   actors_layer.move_child(target,-1)
   target.get_theme_stylebox("normal").border_color = GOLD if selected_actor == a.id else Color.TRANSPARENT
   var human_appearance = appears_human(a)
-  var tooltip: String
-  if a.down:
-   tooltip = "Dead body"
-  else:
-   tooltip = "%s · %s" % [sim.display_name(a),a.job if a.human else "Zombie"]
-   if a.human: tooltip += " · " + sim.trust_description(a,p)
-  var condition = sim.survivor_condition(p,a)
   var scent_health = sim.sees_survivor_hp(p,a)
-  var infected = a.human and not a.down and a.infected and sim.has_skill(p,"scent_blood")
-  if not condition.is_empty(): tooltip += " · "+condition.capitalize()
-  if scent_health: tooltip += " · %d/%d HP" % [a.hp,sim.max_hp(a)]
-  if infected: tooltip += " · Infected"
-  target.set_meta("actor_infected",infected)
-  target.set_meta("actor_tooltip",tooltip)
+  target.set_meta("actor_infected",_actor_infected(a,p))
+  target.set_meta("actor_tooltip",_actor_tooltip_text(a,p))
   for child in target.get_children():
    target.remove_child(child)
    child.queue_free()
@@ -716,7 +995,7 @@ func _people() -> void:
    var bar_width = minf(34.0,spacing*0.48)
    rect(target,Rect2((spacing-bar_width)/2,entry.size-11,bar_width,8),Color("290d0d"))
    rect(target,Rect2((spacing-bar_width)/2,entry.size-11,bar_width*clampf(float(a.hp)/sim.max_hp(a),0,1),8),Color("c63f37"))
-  if not a.down and not a.speech.is_empty() and a.speech_until > sim.now(): speaking.append({"actor":a,"bounds":bounds})
+  if not _active_speech(a).is_empty(): speaking.append({"actor":a,"bounds":bounds})
  for entry in speaking: _speech_bubble(actors_layer,entry.actor,entry.bounds)
 
 func _update_actor_tooltip() -> void:
@@ -752,8 +1031,8 @@ func _update_actor_tooltip() -> void:
  actor_tooltip.position = at.clamp(Vector2.ZERO,limit.max(Vector2.ZERO))
  actor_tooltip.show()
 
-func _actions() -> void:
- var p = sim.player()
+func _actions(options: Array) -> void:
+ var p: Dictionary = sim.player()
  if sim.sleeping:
   actions_bottom = 940
   return
@@ -766,6 +1045,17 @@ func _actions() -> void:
    if store == mall_store: stores.select(stores.item_count-1)
   stores.item_selected.connect(func(index): mall_store = C.MALL_STORES.keys()[index])
   page.add_child(stores)
+ var slot = 0
+ for option in options:
+  var span = 2 if option[0] in ["jump","manufacture","scan"] else 1
+  if slot%10+span > 10: slot += 10-slot%10
+  _action_button(option[0],option[1],Rect2(400+(slot%10)*102,944+(slot/10)*31,span*102-4,28),option[2],option[3])
+  slot += span
+ actions_bottom = 944+ceili(float(slot)/10)*31
+
+func _action_options() -> Array:
+ if sim.sleeping: return []
+ var p: Dictionary = sim.player()
  var options: Array = []
  if p.down:
   options = [["stand","Stand up",-1]]
@@ -778,14 +1068,15 @@ func _actions() -> void:
  if not p.down:
   if p.inside and sim.current_block(p).type in C.TALL_BUILDINGS: options.append(["jump","Jump from a window",-1])
   options.append_array([["say","Speak",-1],["scout","Scout shelter",-1],["extract","DNA sample",selected_actor],["tag","Spray tag",-1],["install_radio","Set up radio",-1],["repair_radio","Fix radio",-1],["broadcast","Broadcast",-1],["phone","Phone",selected_actor],["tune","Tune receiver",-1],["tune_transmitter","Tune transmitter",-1],["lookout","Binoculars",-1],["view_map","Open map",-1],["locate","GPS",-1],["feed","Feed",selected_actor],["drag","Drag prey",selected_actor],["groan","Groan",-1],["bellow","Bellow",-1],["gesture","Gesture",selected_actor],["smell","Scent death",-1],["destroy_radio","Smash radio",-1],["smash_decorations","Smash decor",-1],["flare","Signal flare",-1]])
- options = options.filter(func(option): return sim.action_feedback(p,option[0],option[2],option[3] if option.size() > 3 else {},true).is_empty())
- var slot = 0
+ var available: Array = []
  for option in options:
-  var span = 2 if option[0] in ["jump","manufacture","scan"] else 1
-  if slot%10+span > 10: slot += 10-slot%10
-  _action_button(option[0],option[1],Rect2(400+(slot%10)*102,944+(slot/10)*31,span*102-4,28),option[2],option[3] if option.size() > 3 else {})
-  slot += span
- actions_bottom = 944+ceili(float(slot)/10)*31
+  var command: String = option[0]
+  var target: int = option[2]
+  var data: Dictionary = option[3] if option.size() > 3 else {}
+  if command == "broadcast": data = {"frequency":sim.suggested_transmit_frequency(p)}
+  if sim.action_feedback(p,command,target,data,true).is_empty():
+   available.append([command,option[1],target,data,sim.cost(p,command,target,data)])
+ return available
 
 func _timing_text() -> String:
  if sim.sleeping: return "SLEEP 128×  ·  %d / 50 AP" % sim.player().ap
@@ -950,16 +1241,27 @@ func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
 func begin_sleep() -> void:
  if paused or not modal.is_empty(): return
  var rejection = sim.begin_sleep()
+ if rejection.is_empty(): _clear_simulation_backlog()
  notice = rejection if not rejection.is_empty() else sim.last_rest_notice
- feed.ingest(sim.messages)
- refresh()
+ _show_recovery_state()
 
 func begin_rest(amount: int) -> void:
  if paused or not modal.is_empty(): return
  var rejection = sim.begin_rest(amount)
+ if rejection.is_empty(): _clear_simulation_backlog()
  notice = rejection if not rejection.is_empty() else sim.last_rest_notice
+ _show_recovery_state()
+
+func _cancel_recovery() -> void:
+ sim.stop_rest("You wake up." if sim.sleeping else "Rest cancelled.")
+ notice = sim.last_rest_notice
+ _show_recovery_state()
+
+func _show_recovery_state() -> void:
  feed.ingest(sim.messages)
- refresh()
+ _refresh_dashboard()
+ _update_action_controls()
+ _update_log()
 
 func _save() -> void:
  _show_slots(true)
@@ -1008,7 +1310,7 @@ func _reset_session_view() -> void:
  if game_music: game_music.restart_playlist()
 
 func open_modal(which: String) -> void:
- if resting: sim.stop_rest()
+ if resting and which != "settings": sim.stop_rest()
  if which == "help":
   tutorial_step = 0
   tutorial_opening = false
@@ -1048,7 +1350,7 @@ func _tutorial_modal() -> void:
   pages.append(["LOOK AND MOVE", "The 3×3 map at the upper left shows nearby blocks. Click a neighbouring block or use WASD / arrow keys; Q, E, Z and C move diagonally.\n\nUse Leave and Enter to move between the street and buildings. Barricades can prevent entry: use Break cades when available. Map [M] shows the wider city."])
   pages.append(["THE HUNGER", "Select a nearby living person, then use Claws or Bite when available. Attacks can miss, and dangerous survivors fight back. Ransack an accessible building to damage it.\n\nIf you are down, recover enough AP and use Stand up. Death and revival do not erase your identity, XP or skills."])
   pages.append(["ENERGY AND EXPERIENCE", "Actions cost AP, shown beside their buttons. AP recovers over time; R starts a rest, and danger can interrupt it. Space pauses the game.\n\nSuccessful attacks and breaking barricades can earn XP. Open Skills to spend XP on zombie abilities. Your human and zombie skills share the same XP pool."])
- pages.append(["YOUR FIRST STEPS", "Explore nearby blocks, watch your health and AP, and choose your encounters carefully. The activity feed records what happens around you.\n\nOpen Help at any time for a controls reference. You can pause with Space or Escape. The city resumes when you close this guide."])
+ pages.append(["YOUR FIRST STEPS", "Explore nearby blocks, watch your health and AP, and choose your encounters carefully. The activity feed records what happens around you.\n\nOpen Help at any time for a controls reference. Press Space to pause or resume, and Esc for Settings."])
  var current: Array = pages[tutorial_step]
  label(overlay, "%s  /  %d OF %d" % [current[0], tutorial_step + 1, pages.size()], Rect2(140,170,1100,45), 28, GOLD)
  var body = label(overlay, current[1], Rect2(140,235,1120,400), 25, CREAM)
@@ -1085,6 +1387,14 @@ func _skill_appendix() -> void:
  button(overlay, "Back to guide", Rect2(140,770,220,48), func(): tutorial_appendix = false; refresh())
 
 func _modal() -> void:
+ if modal == "settings":
+  var menu := SettingsMenu.new()
+  menu.name = "SettingsMenu"
+  menu.z_index = 2000
+  menu.closed.connect(func(): modal = ""; refresh())
+  overlay = menu
+  page.add_child(menu)
+  return
  overlay = Control.new()
  overlay.z_index = 2000
  overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -1449,7 +1759,7 @@ func appears_human(a: Dictionary) -> bool:
  return a.human and not a.down
 
 func ordered_people() -> Array:
- var people = sim.occupants(sim.current_block(sim.player()), sim.player().inside).duplicate()
+ var people = sim.occupants(sim.current_block(sim.player()), sim.player().inside)
  people.sort_custom(func(a,b):
   var left_human = appears_human(a)
   if left_human != appears_human(b): return left_human

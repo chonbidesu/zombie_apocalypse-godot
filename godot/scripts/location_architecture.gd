@@ -61,7 +61,7 @@ static func variant_for(sim, b: Dictionary) -> int:
 static func map_source(kind: String, variant: int, status: int) -> Dictionary:
  var group = group_for(kind)
  if group < 0 or (variant == 0 and group != 0): return {}
- return {"file":"../architecture/map-%d-%d" % [variant,group],"grid":Vector2i(4,3),"at":Vector2i(status,GROUPS[group].find(canonical_kind(kind))),"architecture":true}
+ return {"file":"../architecture/map_%d_%d" % [variant,group],"grid":Vector2i(4,3),"at":Vector2i(status,GROUPS[group].find(canonical_kind(kind))),"architecture":true}
 
 func setting_for(sim, b: Dictionary, inside: bool) -> Texture2D:
  if b.type in OPEN_GROUND: inside = false
@@ -69,7 +69,7 @@ func setting_for(sim, b: Dictionary, inside: bool) -> Texture2D:
  if variant > 0 and ((b.type == "necrotech_lab" and inside) or b.type == "street"):
   var special_key = "%s:%d" % [b.type,variant]
   if scenes.has(special_key): return scenes[special_key]
-  var special_path = "res://assets/architecture/settings-%d-extra.png" % variant
+  var special_path = "res://assets/architecture/settings_%d_extra.png" % variant
   if not textures.has(special_path): textures[special_path] = load(special_path)
   var special = AtlasTexture.new()
   special.atlas = textures[special_path]
@@ -88,7 +88,7 @@ func setting_for(sim, b: Dictionary, inside: bool) -> Texture2D:
   return textures[path]
  var key = "%s:%d:%s" % [kind,variant,str(inside)]
  if scenes.has(key): return scenes[key]
- var path = "res://assets/architecture/settings-%d-%d.png" % [variant,group]
+ var path = "res://assets/architecture/settings_%d_%d.png" % [variant,group]
  if not textures.has(path): textures[path] = load(path)
  var atlas = AtlasTexture.new()
  atlas.atlas = textures[path]

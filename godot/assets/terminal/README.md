@@ -4,9 +4,9 @@ Three 1536 × 1024 RGBA assets generated with the built-in image generator. Exac
 
 | File | Purpose |
 | --- | --- |
-| `necrotech-terminal.png` | Fixed dusty chassis and dark glass; composite over black. |
-| `record-ascii-frame.png` | Transparent blue PETSCII-style skull and record border, without baked-in text. |
-| `screen-dust.png` | Transparent dust/scratch overlay; center pixel alpha is zero. |
+| `necrotech_terminal.png` | Fixed dusty chassis and dark glass; composite over black. |
+| `record_ascii_frame.png` | Transparent blue PETSCII-style skull and record border, without baked-in text. |
+| `screen_dust.png` | Transparent dust/scratch overlay; center pixel alpha is zero. |
 
 The final frame revision has crisp strokes when composited using its alpha channel. Preserve RGBA transparency when exporting these files.
 
@@ -39,6 +39,6 @@ Audio uses the existing `naming 1.mp3` through `naming 4.mp3`, in prompt/record 
 
 `res://tests/start_screen_test.gd` covers integration into the intro and gameplay, living/undead display names, and save/load.
 
-Rendered previews: `res://tests/terminal-intake-preview.png` and `res://tests/terminal-record-preview.png`.
+Rendered previews: `res://tests/terminal_intake_preview.png` and `res://tests/terminal_record_preview.png`.
 
 Verified on Godot 4.7.2: 24 rendered naming checks pass, including restarting at the first prompt and immediately typing at the retained name's end. The earlier 61 start-screen integration checks also passed. The engine intermittently reports retained MP3 playback resources at process shutdown; the integration diagnostic identified gameplay music (`tunnel.mp3`). This shutdown warning remains unresolved.

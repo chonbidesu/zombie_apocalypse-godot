@@ -72,7 +72,7 @@ func run() -> void:
   label_at("POLICE / exterior and station interior",Vector2(x,825),19)
   for inside in [false,true]:
    picture(locations.setting_for(sim,b,inside),Rect2(x+(302 if inside else 0),857,296,174),true)
- await capture("res://tests/architecture-resource-gallery.png")
+ await capture("res://tests/architecture_resource_gallery.png")
  background()
  label_at("MALTON / SEED 1729 / NEIGHBOURHOOD ARCHITECTURE",Vector2(24,12),30)
  var map = MapCanvas.new()
@@ -95,5 +95,5 @@ func run() -> void:
    canvas.add_child(square)
  for i in range(3): label_at(Architecture.STYLES[i],Vector2(1275,640+i*35),22)
  label_at("Small districts with occasional infill buildings.\nResource colours stay consistent in every family.\nUnique properties keep their existing designs.",Vector2(1275,795),20)
- await capture("res://tests/architecture-neighbourhood-gallery.png")
+ await capture("res://tests/architecture_neighbourhood_gallery.png")
  quit()

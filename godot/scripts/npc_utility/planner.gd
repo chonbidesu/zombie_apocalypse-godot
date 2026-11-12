@@ -422,7 +422,7 @@ func _service_revive_point(s, a: Dictionary, here: Dictionary) -> bool:
 	if a.ap < 12 or not s.has_skill(a, "lab_experience") or s.item_kind(a, "syringe").is_empty(): return false
 	var best: Dictionary = {}
 	var distance: int = 7
-	for id in s.revive_sites:
+	for id in s.revive_site_ids():
 		var site: Dictionary = s.blocks[id]
 		var d: int = s.scent_distance(a, site)
 		if d >= distance or not s.occupants(site, false).any(func(t): return t.wants_revive and not t.down): continue
@@ -461,7 +461,7 @@ func _seek_revival(s, a: Dictionary, here: Dictionary) -> int:
 					if d >= distance or site.id == avoid or site.barricade > 4 or not _staffed(s, site): continue
 					best = site
 					distance = d
-			for id in s.revive_sites:
+			for id in s.revive_site_ids():
 				var site: Dictionary = s.blocks[id]
 				var d: int = s.scent_distance(a, site)
 				if id != avoid and d < distance:

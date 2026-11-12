@@ -13,27 +13,27 @@
   "files": [
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-b9575f58-e009-4c44-baf8-9ebf8c89c520.png",
-      "dest": "godot/assets/minimap/buildings-1.png"
+      "dest": "godot/assets/minimap/buildings_1.png"
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-e1d4b238-75ae-475f-b10a-0ce2d6dfe936.png",
-      "dest": "godot/assets/minimap/buildings-2.png"
+      "dest": "godot/assets/minimap/buildings_2.png"
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-980d1cd4-07eb-475f-895a-76155e41f595.png",
-      "dest": "godot/assets/minimap/buildings-3.png"
+      "dest": "godot/assets/minimap/buildings_3.png"
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-2c8b5fc5-58e6-441e-ad95-f253f80e6e82.png",
-      "dest": "godot/assets/minimap/buildings-4.png"
+      "dest": "godot/assets/minimap/buildings_4.png"
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-fe830368-5efa-444d-8ea4-a35da1f8bf6e.png",
-      "dest": "godot/assets/minimap/buildings-5.png"
+      "dest": "godot/assets/minimap/buildings_5.png"
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-c8775a7e-0c82-48fc-8d06-8ae14500fb45.png",
-      "dest": "godot/assets/minimap/buildings-6.png"
+      "dest": "godot/assets/minimap/buildings_6.png"
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-e9b3430c-194a-48db-ab85-f97713340b84.png",
@@ -53,7 +53,7 @@
     },
     {
       "source": "C:\\Users\\Jared\\.codex\\generated_images\\01a1a881-ca5c-7880-a6fd-deac6084340f\\exec-bc3f3023-68cd-4401-ad8b-3636279cc772.png",
-      "dest": "godot/assets/minimap/mall-l.png"
+      "dest": "godot/assets/minimap/mall_l.png"
     }
   ],
   "prompts": {

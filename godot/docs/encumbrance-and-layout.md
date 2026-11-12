@@ -47,4 +47,4 @@ World creation and save loading normalize these structural rules from each block
 
 `launch.ps1 -Test` passes 621 assertions. The new checks cover heavy versus small loads, inventories larger than ten, threshold crossing, immediate capacity recovery, loaded ammo, uniqueness rules, transfers/manufacture, overloaded save/load, every outdoor and doorless category, zoo enclosure eligibility, entry AP, full-height fitting, animated foot alignment, page selection/drop/clamping and downed darkness.
 
-Rendered examples: `tests/malton-start-preview.png`, `tests/occupation-crowd-preview.png`, `tests/encumbrance-inventory-preview.png` and `tests/full-height-downed-preview.png`.
+Rendered examples: `tests/malton_start_preview.png`, `tests/occupation_crowd_preview.png`, `tests/encumbrance_inventory_preview.png` and `tests/full_height_downed_preview.png`.

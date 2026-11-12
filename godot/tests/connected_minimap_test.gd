@@ -84,7 +84,7 @@ func run() -> void:
   var property: Dictionary = catalog.property_info(sim,gate)
   var offset = Vector2i(gate.x,gate.y)-property.footprint.position
   check(offset == (Vector2i(2,1) if fort_name == "Fort Creedy" else Vector2i(1,2)),"Gatehouse joins the correct perimeter side: "+fort_name)
- await screenshot("res://tests/connected-minimap-game.png")
+ await screenshot("res://tests/connected_minimap_game.png")
  scene.open_modal("help")
  check(scene.overlay.z_index > 1000,"Modal dialogs cover the map's depth and interaction layers")
  scene.modal = ""
@@ -118,7 +118,7 @@ func run() -> void:
  var cathedral: Dictionary = sim.blocks.filter(func(b): return b.type == "cathedral")[0]
  panel(canvas,"Cathedral · shared roof",Vector2(1086,466),sim.complex_bounds[cathedral.complex],150)
  scene.label(canvas,"Warm windows: powered    Broken roofs: ruined    All sections keep their own state",Rect2(24,898,1390,32),22,Color("a8b6a5"))
- await screenshot("res://tests/connected-minimap-gallery.png")
+ await screenshot("res://tests/connected_minimap_gallery.png")
  root.remove_child(canvas)
  canvas.queue_free()
  await depth_preview()
@@ -178,7 +178,7 @@ func depth_preview() -> void:
  await process_frame
  await process_frame
  await RenderingServer.frame_post_draw
- check(viewport.get_texture().get_image().save_png("res://tests/minimap-depth-preview.png") == OK,"Depth preview renders at full size without desktop clipping")
+ check(viewport.get_texture().get_image().save_png("res://tests/minimap_depth_preview.png") == OK,"Depth preview renders at full size without desktop clipping")
  root.remove_child(viewport)
  viewport.queue_free()
  await gate_preview()
@@ -201,6 +201,6 @@ func gate_preview() -> void:
  await process_frame
  await process_frame
  await RenderingServer.frame_post_draw
- check(viewport.get_texture().get_image().save_png("res://tests/fort-gatehouse-preview.png") == OK,"Gatehouse connection preview renders")
+ check(viewport.get_texture().get_image().save_png("res://tests/fort_gatehouse_preview.png") == OK,"Gatehouse connection preview renders")
  root.remove_child(viewport)
  viewport.queue_free()

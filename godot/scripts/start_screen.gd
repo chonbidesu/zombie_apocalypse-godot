@@ -9,8 +9,11 @@ const Naming = preload("res://scripts/naming_screen.gd")
 const TutorialPrompt = preload("res://scripts/tutorial_prompt.gd")
 const SaveSlots = preload("res://scripts/save_slots.gd")
 const Attribution = preload("res://scripts/attribution.gd")
+const SettingsMenu = preload("res://scripts/settings_menu.gd")
 var attribution: Attribution
 var slot_chooser: Control
+var settings_menu: SettingsMenu
+var previous_title_focus: Control
 const TITLE_FONT = preload("res://assets/fonts/PixelifySans.ttf")
 var save_path: String = Sim.SAVE_PATH
 var title_page: Control
@@ -61,6 +64,7 @@ func _ready() -> void:
  title_page.add_child(heading)
  make_button("New Game",open_attribution)
  make_button("Load Game",load_game)
+ make_button("Settings",_open_settings)
  make_button("Quit",func(): get_tree().quit())
  status = Label.new()
  status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -72,6 +76,7 @@ func _ready() -> void:
  status.mouse_filter = Control.MOUSE_FILTER_IGNORE
  title_page.add_child(status)
  music = AudioStreamPlayer.new()
+ music.bus = &"Music"
  music.stream = load("res://assets/music/summoning.mp3")
  music.volume_db = linear_to_db(0.3)
  music.finished.connect(music.play)
@@ -126,16 +131,35 @@ func layout() -> void:
   buttons[i].size = Vector2(300,52)*scale_factor
   buttons[i].position = Vector2((size.x-buttons[i].size.x)/2,size.y*0.50+i*65*scale_factor)
   buttons[i].add_theme_font_size_override("font_size",int(23*scale_factor))
- status.position = Vector2(size.x*0.1,size.y*0.50+205*scale_factor)
+ status.position = Vector2(size.x*0.1,size.y*0.50+(buttons.size()*65+10)*scale_factor)
  status.size = Vector2(size.x*0.8,60*scale_factor)
  status.add_theme_font_size_override("font_size",int(18*scale_factor))
 
 func _unhandled_key_input(event: InputEvent) -> void:
- if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F11:
-  var window := get_window()
-  var fullscreen := window.mode in [Window.MODE_FULLSCREEN,Window.MODE_EXCLUSIVE_FULLSCREEN]
-  window.mode = Window.MODE_WINDOWED if fullscreen else Window.MODE_FULLSCREEN
+ if not event is InputEventKey or not event.pressed or event.echo: return
+ if event.keycode == KEY_F11:
+  get_node("/root/PlayerSettings").toggle_fullscreen()
   get_viewport().set_input_as_handled()
+ elif event.keycode == KEY_ESCAPE and title_page.visible and not is_instance_valid(slot_chooser):
+  if is_instance_valid(settings_menu): _close_settings()
+  else: _open_settings()
+  get_viewport().set_input_as_handled()
+
+func _open_settings() -> void:
+ if is_instance_valid(settings_menu) or is_instance_valid(slot_chooser): return
+ previous_title_focus = get_viewport().gui_get_focus_owner()
+ title_page.process_mode = Node.PROCESS_MODE_DISABLED
+ settings_menu = SettingsMenu.new()
+ settings_menu.name = "SettingsMenu"
+ settings_menu.closed.connect(_close_settings)
+ add_child(settings_menu)
+
+func _close_settings() -> void:
+ remove_child(settings_menu)
+ settings_menu.queue_free()
+ settings_menu = null
+ title_page.process_mode = Node.PROCESS_MODE_INHERIT
+ if is_instance_valid(previous_title_focus): previous_title_focus.grab_focus()
 
 func open_attribution() -> void:
  if is_instance_valid(attribution) or is_instance_valid(creation): return

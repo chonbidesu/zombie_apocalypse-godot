@@ -55,11 +55,11 @@ The renderer supports both these grids and original 24-frame strips. Existing he
 
 Rendered review sheets and previews:
 
-- `tests/refreshed-locations-1.png` and `refreshed-locations-2.png`
-- `tests/occupation-animation-gallery.png`
-- `tests/occupation-crowd-preview.png`
-- `tests/malton-start-preview.png`, `malton-city-preview.png`, `world-setup-preview.png`
-- `tests/necrotech-recognition-preview.png`, `connected-mall-preview.png`
+- `tests/refreshed_locations_1.png` and `refreshed_locations_2.png`
+- `tests/occupation_animation_gallery.png`
+- `tests/occupation_crowd_preview.png`
+- `tests/malton_start_preview.png`, `malton_city_preview.png`, `world_setup_preview.png`
+- `tests/necrotech_recognition_preview.png`, `connected_mall_preview.png`
 
 Run `launch.ps1 -Gallery` to rebuild the artwork previews. Run `-Test` for the complete validation suite.
 

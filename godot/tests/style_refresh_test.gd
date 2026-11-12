@@ -54,7 +54,7 @@ func run() -> void:
  await process_frame
  scene.set_process(false)
  check(scene.sim.width == 100 and scene.sim.world_mode == "malton","Normal launch starts on the original city")
- await screenshot("res://tests/malton-start-preview.png")
+ await screenshot("res://tests/malton_start_preview.png")
  scene.open_modal("restart")
  check(scene.overlay.get_node("WorldMode").item_count == 3,"New Game offers original, random and legacy worlds")
  check(scene.overlay.get_node("Difficulty").item_count == 3,"Malton offers Easy, Medium and Hard")
@@ -69,7 +69,7 @@ func run() -> void:
  hospital_count.value = 13
  scene.refresh()
  check(scene.new_world_config.counts.hospital == 13 and scene.overlay.find_child("Count_hospital",true,false).value == 13,"Generation edits survive UI rebuilds")
- await screenshot("res://tests/world-setup-preview.png")
+ await screenshot("res://tests/world_setup_preview.png")
  scene.modal = ""
  var p = scene.sim.player()
  p.x = 97
@@ -93,12 +93,12 @@ func run() -> void:
  scene.refresh()
  check(scene.page.get_node("CityMinimap/MapTile_97").has_node("NecroTechLogo_97"),"Employment reveals the rooftop NT after death")
  check(scene.page.get_node("CityMinimap/MapTile_97/NecroTechLogo_97").get_child(0).text == "NT","The NecroTech logo uses NT rather than N")
- await screenshot("res://tests/necrotech-recognition-preview.png")
+ await screenshot("res://tests/necrotech_recognition_preview.png")
  scene.open_modal("map")
  scene.city_overview = true
  scene.refresh()
  check(scene.overlay.find_children("Neighbourhood_*","Button",true,false).size() == 100,"City overview provides all one hundred suburb selectors")
- await screenshot("res://tests/malton-city-preview.png")
+ await screenshot("res://tests/malton_city_preview.png")
  scene.modal = ""
  p.x = 92
  p.y = 7
@@ -112,7 +112,7 @@ func run() -> void:
  check(top_left.atlas == top_right.atlas and top_left.region.end.x == top_right.region.position.x and top_left.region.position.y == top_right.region.position.y,"Adjacent mall squares crop continuous regions of one building image")
  check(top_right.region.end.y == bottom_right.region.position.y and top_right.region.position.x == bottom_right.region.position.x,"Mall roof connects vertically as well as horizontally")
  check(scene.sim.complex_bounds["Lumber Mall"].size == Vector2i(1,2) and scene.sim.complex_bounds["Pole Mall"].size == Vector2i(2,2),"Shared art respects irregular original mall footprints")
- await screenshot("res://tests/connected-mall-preview.png")
+ await screenshot("res://tests/connected_mall_preview.png")
  scene.sim.start()
  scene.feed.reset(scene.sim.messages)
  var jobs = ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer","Corpse"]
@@ -134,7 +134,7 @@ func run() -> void:
   check(texture != null and texture.get_width()*2 == texture.get_height()*3,"Occupation has a dedicated 6×4 animation atlas: "+job)
   sheets[key] = true
  check(sheets.size() == 9,"All nine human/revived occupation appearances are distinct")
- await screenshot("res://tests/occupation-crowd-preview.png")
+ await screenshot("res://tests/occupation_crowd_preview.png")
  root.remove_child(scene)
  scene.queue_free()
  root.size = Vector2i(1440,960)
@@ -148,7 +148,7 @@ func run() -> void:
    picture("res://assets/blocks/"+("streets" if kind == "street" else kind)+".png",Rect2(origin+Vector2(0,30),Vector2(104,104)))
    picture("res://assets/settings/"+kind+"_outside.png",Rect2(origin+Vector2(108,28),Vector2(236,98)))
    if kind in C.BUILDINGS: picture("res://assets/settings/"+kind+"_inside.png",Rect2(origin+Vector2(108,130),Vector2(236,98)))
-  await screenshot("res://tests/refreshed-locations-%d.png" % (page+1))
+  await screenshot("res://tests/refreshed_locations_%d.png" % (page+1))
  new_canvas()
  var frames = [0,4,8,12,15,18,20,21,23]
  for i in range(jobs.size()):
@@ -156,7 +156,7 @@ func run() -> void:
   text_at(jobs[i],Vector2(12,20+i*104),Vector2(240,70))
   for j in range(frames.size()):
    picture("res://assets/sprite_sheets/"+key+"_sprite_sheet.png",Rect2(Vector2(260+j*128,12+i*104),Vector2(100,100)),frames[j])
- await screenshot("res://tests/occupation-animation-gallery.png")
+ await screenshot("res://tests/occupation_animation_gallery.png")
  new_canvas()
  var zombie: Texture2D = load("res://assets/sprite_sheets/zombie_sprite_sheet.png")
  check(zombie.get_width() == 1536 and zombie.get_height() == 1024,"The replacement zombie has a complete 6 by 4 atlas")
@@ -167,6 +167,6 @@ func run() -> void:
   text_at(titles[row],Vector2(20,30+row*180),Vector2(220,30))
   for col in range(4):
    picture("res://assets/sprite_sheets/zombie_sprite_sheet.png",Rect2(260+col*240,row*180,180,180),sample_frames[row][col])
- await screenshot("res://tests/zombie-animation-preview.png")
+ await screenshot("res://tests/zombie_animation_preview.png")
  print("STYLE/UI CHECKS: ",checks," FAILURES: ",failures,"; 80 refreshed assets rendered")
  quit(0 if failures == 0 else 1)

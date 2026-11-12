@@ -1,0 +1,49 @@
+[gd_resource type="SpriteFrames" load_steps=8 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/intro/03_necrotech/specimen_body_frames_transparent.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Frame_0"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 362, 724)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_1"]
+atlas = ExtResource("1")
+region = Rect2(362, 0, 362, 724)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_2"]
+atlas = ExtResource("1")
+region = Rect2(724, 0, 362, 724)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_3"]
+atlas = ExtResource("1")
+region = Rect2(0, 724, 362, 724)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_4"]
+atlas = ExtResource("1")
+region = Rect2(362, 724, 362, 724)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_5"]
+atlas = ExtResource("1")
+region = Rect2(724, 724, 362, 724)
+filter_clip = true
+
+[resource]
+animations = [{
+"frames": [
+{"duration": 1.0, "texture": SubResource("Frame_0")},
+{"duration": 1.0, "texture": SubResource("Frame_1")},
+{"duration": 1.0, "texture": SubResource("Frame_2")},
+{"duration": 1.0, "texture": SubResource("Frame_3")},
+{"duration": 1.0, "texture": SubResource("Frame_4")},
+{"duration": 1.0, "texture": SubResource("Frame_5")}
+],
+"loop": true,
+"name": &"float",
+"speed": 2.0
+}]
+

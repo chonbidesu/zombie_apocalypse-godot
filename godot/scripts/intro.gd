@@ -61,7 +61,7 @@ func _ready() -> void:
 func _build_controls() -> void:
  facade_view = _texture_layer()
  facade_view.material = load(ROOT + "01_before/window_glass.tres")
- specimen = (load(ROOT + "03_necrotech/specimen_tube-v3.tscn") as PackedScene).instantiate() as Node2D
+ specimen = (load(ROOT + "03_necrotech/specimen_tube.tscn") as PackedScene).instantiate() as Node2D
  add_child(specimen)
  specimen_contents = specimen.get_node("Contents") as AnimatedSprite2D
  eyes = _texture_layer()
@@ -138,17 +138,17 @@ func _load_page_art() -> void:
  match page:
   Page.OPENING:
    for path in ["01_before/skyline_far.png", "01_before/skyline_mid.png", "01_before/lab_window_interior.png"]: layers.append(_load_layer(path))
-   facade_view.texture = _load_layer("01_before/office_facade-v4.png")
+   facade_view.texture = _load_layer("01_before/office_facade.png")
   Page.QUARANTINE:
-   for path in ["02_quarantine/background.png", "02_quarantine/soldiers-v2.png", "02_quarantine/civilians.png"]: layers.append(_load_layer(path))
+   for path in ["02_quarantine/background.png", "02_quarantine/soldiers.png", "02_quarantine/civilians.png"]: layers.append(_load_layer(path))
   Page.NECROTECH:
    layers.append(_load_layer("03_necrotech/background.png"))
   Page.ORIGIN:
    var origin: Array = ORIGINS.get(occupation, ORIGINS.Consumer)
    var folder := "05_corpse/" if occupation == "Corpse" else "04_origins/%s/" % origin[0]
    layers.append(_load_layer(folder + "background.png"))
-   layers.append(_load_layer(folder + ("body_closed-v3.png" if occupation == "Corpse" else "foreground.png")))
-   if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open-v3.png")
+   layers.append(_load_layer(folder + ("body_closed.png" if occupation == "Corpse" else "foreground.png")))
+   if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open.png")
  facade_view.visible = page == Page.OPENING
  specimen.visible = page == Page.NECROTECH
  if specimen.visible: specimen_contents.play()

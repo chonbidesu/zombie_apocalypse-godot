@@ -190,18 +190,31 @@ func _initialize() -> void:
  b.barricade = 4
  b.doors = true
  s.reindex()
- s._npc_turn(engineer)
- check(engineer.supply_kind == "portable_generator" and engineer.supply_goal >= 0 and not engineer.inside,"Engineer plans a generator supply trip and leaves shelter")
+ s._reset_npc_runtime()
+ # Use the real scheduler so equipment preparation, trip retries and action
+ # recovery elapse before checking travel. AP is recovered by the simulation.
+ var trip_started: bool = false
+ for _step in range(90*C.CLOCK_STEPS_PER_MINUTE):
+  s.advance_steps(1)
+  if engineer.supply_kind == "portable_generator" and engineer.supply_goal >= 0 and not engineer.inside:
+   trip_started = true
+   break
+ check(trip_started,"Engineer plans a generator supply trip and leaves shelter")
+ var supply_site: int = engineer.supply_goal
  var origin = Vector2i(engineer.x,engineer.y)
- ready(s,engineer)
- s._npc_turn(engineer)
- check(Vector2i(engineer.x,engineer.y) != origin,"Survivor travels toward a resource site")
+ var travelled: bool = false
+ for _step in range(15*C.CLOCK_STEPS_PER_MINUTE):
+  s.advance_steps(1)
+  if Vector2i(engineer.x,engineer.y) != origin:
+   travelled = true
+   break
+ check(travelled,"Survivor travels toward a resource site")
  # Isolate travel and installation policy from rare-item sampling, tested separately.
- s.search_tables[s.blocks[engineer.supply_goal].type] = {"portable_generator":1.0}
+ if trip_started:
+  s.search_tables[s.blocks[supply_site].type] = {"portable_generator":1.0}
  var completed = false
- for i in range(150):
-  ready(s,engineer)
-  s._npc_turn(engineer)
+ for _step in range(180*C.CLOCK_STEPS_PER_MINUTE):
+  s.advance_steps(1)
   if s.blocks[44].generator:
    completed = true
    break

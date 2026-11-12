@@ -49,6 +49,6 @@ func run() -> void:
     frame_at(sheet,6,4,[0,10,20][pose],Vector2(x+120+pose*140,y-4),Vector2(112,112))
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/npc-sex-gallery.png")
+ root.get_texture().get_image().save_png("res://tests/npc_sex_gallery.png")
  print("Saved NPC sex art gallery")
  quit()

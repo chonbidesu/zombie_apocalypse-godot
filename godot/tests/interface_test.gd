@@ -218,15 +218,15 @@ func run() -> void:
  await process_frame
  await RenderingServer.frame_post_draw
  var image = root.get_texture().get_image()
- image.save_png("res://tests/prototype-preview.png")
+ image.save_png("res://tests/prototype_preview.png")
  scene.open_modal("skills")
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/skills-preview.png")
+ root.get_texture().get_image().save_png("res://tests/skills_preview.png")
  scene.open_modal("help")
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/help-preview.png")
+ root.get_texture().get_image().save_png("res://tests/help_preview.png")
  scene.modal = ""
  scene.sim.start()
  var player = scene.sim.player()
@@ -292,7 +292,7 @@ func run() -> void:
  scene.refresh()
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/location-preview.png")
+ root.get_texture().get_image().save_png("res://tests/location_preview.png")
  # Put every NPC together to verify fitting, hit targets and two opposing groups.
  scene.sim.start()
  player = scene.sim.player()
@@ -347,7 +347,7 @@ func run() -> void:
  check(durations.size() > 10 and scene.sim.rng.state == world_rng,"Lurch timing varies without consuming simulation randomness")
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/crowded-scene-preview.png")
+ root.get_texture().get_image().save_png("res://tests/crowded_scene_preview.png")
  scene.sim.die(player)
  scene.refresh()
  check(scene.page.has_node("DarkMinimap") and scene.page.has_node("DarkEnvironment") and not scene.page.has_node("SceneActors"),"Downed view blacks out minimap, environment and NPCs")
@@ -362,7 +362,7 @@ func run() -> void:
  scene.refresh()
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/downed-preview.png")
+ root.get_texture().get_image().save_png("res://tests/downed_preview.png")
  player.ready_at = scene.sim.minute
  player.ap = 50
  player.busy_until = scene.sim.now()
@@ -394,7 +394,7 @@ func run() -> void:
  scene.refresh()
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/context-description-preview.png")
+ root.get_texture().get_image().save_png("res://tests/context_description_preview.png")
  scene.sim.start()
  scene.feed.reset(scene.sim.messages)
  scene.notice = "Nearby voices carry through the shelter."
@@ -412,7 +412,7 @@ func run() -> void:
  check(speech.position.y+speech.size.y <= speaker_target.position.y,"Human speech bubble sits above the speaker")
  check(scene.log_view.text.contains(speaker.speech),"Bubble utterance is also displayed in chat")
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/dialogue-preview.png")
+ root.get_texture().get_image().save_png("res://tests/dialogue_preview.png")
  scene.sim.speak(speaker,"I wish we had a working light.")
  scene.refresh()
  scene.page.get_node("SceneActors/Actor_1").pressed.emit()
@@ -432,7 +432,7 @@ func run() -> void:
  check(scene.page.has_node("SceneActors/Speech_15") and scene.log_view.text.contains("rattling moan"),"Zombie groans appear above its sprite and in chat")
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/zombie-dialogue-preview.png")
+ root.get_texture().get_image().save_png("res://tests/zombie_dialogue_preview.png")
  scene.sim.die(player)
  scene.refresh()
  check(not scene.page.has_node("SceneActors") and not scene.log_view.visible,"Downed view hides all speech bubbles and dialogue")
@@ -479,7 +479,7 @@ func run() -> void:
  check(scene.page.get_node("CityMinimap/Plot_34/MapArt").material != null,"Ruined minimap artwork gets the desaturated grey overlay")
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/minimap-outline-preview.png")
+ root.get_texture().get_image().save_png("res://tests/minimap_outline_preview.png")
  scene.sim.current_block(player).type = "junkyard"
  scene.sim.current_block(player).doors = false
  scene.refresh()

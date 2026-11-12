@@ -8,6 +8,7 @@ var _tracks: Array[String] = []
 var _next_index: int = 0
 
 func _ready() -> void:
+ bus = &"Music"
  volume_db = linear_to_db(0.3)
  finished.connect(_play_next)
 

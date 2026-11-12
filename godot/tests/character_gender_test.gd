@@ -138,14 +138,14 @@ func run() -> void:
  for actor in scene.actors: actor.tick(0.0,1.0)
  scene.select_character(0)
  scene.select_sex("female")
- await screenshot("user://character-gender-room.png")
+ await screenshot("user://character_gender_room.png")
  scene.select_character(6)
  scene.select_sex("female")
  scene.confirm_selection()
  scene.advance_cinematic(0.5)
  scene.actors[6].tick(3.2,1.0)
  scene.advance_cinematic(3.5)
- await screenshot("user://police-female-aim-preview.png")
+ await screenshot("user://police_female_aim_preview.png")
  scene.queue_free()
  await process_frame
  # Use the actual title -> naming -> intro handoff and new-game construction.

@@ -5,6 +5,7 @@ const Menu = preload("res://scripts/start_screen.gd")
 const Game = preload("res://scripts/interface.gd")
 const GameMusic = preload("res://scripts/game_music.gd")
 const Intro = preload("res://scripts/intro.gd")
+const SaveSlots = preload("res://scripts/save_slots.gd")
 var failures: int = 0
 var checks: int = 0
 
@@ -28,7 +29,20 @@ func capture(path: String) -> void:
  await RenderingServer.frame_post_draw
  root.get_texture().get_image().save_png(path)
 
+func slot_buttons(chooser: SaveSlots) -> Array[Button]:
+ var buttons: Array[Button] = []
+ if not is_instance_valid(chooser): return buttons
+ for child in chooser.content.get_children():
+  if child is Button and child.text.begins_with("SLOT "): buttons.append(child)
+ return buttons
+
+func clear_test_slots() -> void:
+ for i in range(3):
+  var path := SaveSlots.slot_path(TEST_SAVE,i)
+  if FileAccess.file_exists(path): DirAccess.remove_absolute(path)
+
 func run() -> void:
+ clear_test_slots()
  root.size = Vector2i(1536,864)
  var menu := await open_title()
  await process_frame
@@ -50,7 +64,7 @@ func run() -> void:
  corpse_intro._show_page(Intro.Page.NECROTECH)
  check(corpse_intro.specimen.visible and corpse_intro.layers.size() == 1 and (corpse_intro.specimen.get_node("Contents") as AnimatedSprite2D).is_playing(), "NecroTech uses the animated single specimen")
  var contents := corpse_intro.specimen.get_node("Contents") as AnimatedSprite2D
- check(contents.material == null and contents.sprite_frames.resource_path.ends_with("specimen_body_frames-transparent-v3.tres"), "Specimen uses the transparent frames without a masking shader")
+ check(contents.material == null and contents.sprite_frames.resource_path.ends_with("specimen_body_frames_transparent.tres"), "Specimen uses the transparent frames without a masking shader")
  corpse_intro._show_page(Intro.Page.OPENING)
  corpse_intro.elapsed = 0.0
  var roof: Rect2 = corpse_intro._opening_facade_rect()
@@ -114,15 +128,25 @@ func run() -> void:
   check(menu.parallax.offsets[i] >= 0 and menu.parallax.offsets[i] < layer.get_width()*800.0/layer.get_height(),"Parallax wraps after long frames")
  menu.parallax.offsets.fill(0.0)
  await capture("user://start-screen.png")
- menu.save_path = "user://start-screen-intentionally-missing.json"
- menu.buttons[1].pressed.emit()
- check(menu.title_page.visible and current_scene == menu and menu.status.text.contains("No saved game"),"Missing save stays on title with useful feedback")
  menu.save_path = TEST_SAVE
+ menu.buttons[1].pressed.emit()
+ var slots := slot_buttons(menu.slot_chooser)
+ check(slots.size() == 3,"Load Game opens a picker with three slots")
+ if slots.size() != 3:
+  quit(1)
+  return
+ for i in range(3):
+  check(slots[i].disabled and slots[i].text == "SLOT %s   Empty" % char(65+i),"Empty slot %s is disabled" % char(65+i))
+ menu.slot_chooser.content.get_child(-1).pressed.emit()
+ check(menu.title_page.visible and current_scene == menu and menu.slot_chooser == null,"Closing the empty picker returns to the title")
  var file := FileAccess.open(TEST_SAVE,FileAccess.WRITE)
  file.store_string("{}")
  file.close()
  menu.buttons[1].pressed.emit()
- check(menu.title_page.visible and current_scene == menu and menu.status.text.contains("Could not load"),"Incompatible save does not start a new game")
+ slots = slot_buttons(menu.slot_chooser)
+ check(not slots[0].disabled and slots[0].text.contains("Unreadable save"),"The picker identifies an unreadable save")
+ slots[0].pressed.emit()
+ check(menu.title_page.visible and current_scene == menu and menu.slot_chooser == null and menu.status.text.contains("Could not load"),"Selecting an incompatible save stays on the title")
  var original_mode := root.mode
  menu.buttons[0].pressed.emit()
  await process_frame
@@ -196,13 +220,36 @@ func run() -> void:
  check(not is_instance_valid(menu),"Gameplay replaces the menu")
  game.sim.player().xp = 123
  game._save()
- check(game.notice.begins_with("Saved to ") and game.save_path == TEST_SAVE,"Gameplay saves to the same slot used by the title")
+ slots = slot_buttons(game.slot_chooser)
+ check(slots.size() == 3 and slots.all(func(slot): return not slot.disabled),"The gameplay Save picker offers all three slots")
+ slots[1].pressed.emit()
+ var slot_b := SaveSlots.slot_path(TEST_SAVE,1)
+ var slot_c := SaveSlots.slot_path(TEST_SAVE,2)
+ check(game.notice == "Game saved." and FileAccess.file_exists(slot_b),"Selecting slot B saves the game")
+ check(FileAccess.get_file_as_string(TEST_SAVE) == "{}" and not FileAccess.file_exists(slot_c),"Saving to B leaves slots A and C alone")
  var saved_actor := game.sim.player().duplicate(true)
  var saved_minute := game.sim.minute
+ game.sim.player().xp = 246
+ game._save()
+ slots = slot_buttons(game.slot_chooser)
+ slots[1].pressed.emit()
+ check(game.slot_chooser.pending_path == slot_b,"Saving to an occupied slot asks before overwriting")
+ game.slot_chooser.content.get_child(-1).pressed.emit()
+ slots = slot_buttons(game.slot_chooser)
+ slots[2].pressed.emit()
+ check(game.notice == "Game saved." and FileAccess.file_exists(slot_c),"Backing out of overwrite lets the player save to slot C")
  menu = await open_title()
  menu.save_path = TEST_SAVE
  menu.buttons[1].pressed.emit()
- await scene_changed
+ slots = slot_buttons(menu.slot_chooser)
+ check(slots[1].text.contains("Jamie Rivera") and slots[2].text.contains("Jamie Rivera"),"The title picker displays both gameplay saves")
+ slots[1].pressed.emit()
+ if current_scene == null: await scene_changed
+ check(current_scene is Game,"Selecting slot B from the title opens gameplay")
+ if not current_scene is Game:
+  clear_test_slots()
+  quit(1)
+  return
  game = current_scene as Game
  game.set_process(false)
  playlist = game.game_music
@@ -211,12 +258,12 @@ func run() -> void:
  check(game.notice == "Loaded your neighbourhood.","Loaded game shows confirmation")
  playlist.finished.emit()
  var before_load := playlist.stream
- game.save_path = "user://start-screen-intentionally-missing.json"
  game._load()
+ slot_buttons(game.slot_chooser)[0].pressed.emit()
  check(playlist._next_index == 2 and playlist.stream == before_load,"A failed in-game load keeps the current track and queue")
- game.save_path = TEST_SAVE
  game._load()
- check(playlist.playing and playlist._next_index == 1 and playlist.stream != before_load,"An in-game load shuffles and starts playback from the beginning")
+ slot_buttons(game.slot_chooser)[2].pressed.emit()
+ check(game.sim.player().xp == 246 and playlist.playing and playlist._next_index == 1 and playlist.stream != before_load,"Loading slot C restores its player and starts a fresh playlist")
  playlist.finished.emit()
  var before_restart := playlist.stream
  game.new_world_mode = "sandbox"
@@ -227,7 +274,7 @@ func run() -> void:
    break
  check(game.sim.world_mode == "sandbox" and playlist.playing and playlist._next_index == 1 and playlist.stream != before_restart,"Restarting from world setup shuffles the playlist")
  await process_frame
- DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SAVE))
+ clear_test_slots()
  current_scene.queue_free()
  await process_frame
  # AudioServer retires stopped MP3 playbacks on its mixer thread. Allow

@@ -39,7 +39,7 @@ func run() -> void:
   image_at("res://assets/settings/"+key+"_inside.png",Rect2(origin+Vector2(108,130),Vector2(236,98)))
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/building-art-gallery.png")
+ root.get_texture().get_image().save_png("res://tests/building_art_gallery.png")
  new_canvas()
  var outdoors = ["wasteland","exercise_yard","training_ground","zoo_ground"]
  for index in range(outdoors.size()):
@@ -50,7 +50,7 @@ func run() -> void:
   image_at("res://assets/settings/"+key+"_outside.png",Rect2(origin+Vector2(280,0),Vector2(1050,215)))
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/outdoor-art-gallery.png")
+ root.get_texture().get_image().save_png("res://tests/outdoor_art_gallery.png")
  new_canvas()
  var portraits = ["private","medic","scout","necro","doctor","police","firefighter","consumer","corpse"]
  for i in range(portraits.size()):
@@ -74,7 +74,7 @@ func run() -> void:
    canvas.add_child(view)
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/portrait-art-gallery.png")
+ root.get_texture().get_image().save_png("res://tests/portrait_art_gallery.png")
  new_canvas()
  var manifest = JSON.parse_string(FileAccess.get_file_as_string("res://assets/generated/content-expansion-manifest.json"))
  var i = 0
@@ -86,6 +86,6 @@ func run() -> void:
   i += 1
  await process_frame
  await RenderingServer.frame_post_draw
- root.get_texture().get_image().save_png("res://tests/item-art-gallery.png")
+ root.get_texture().get_image().save_png("res://tests/item_art_gallery.png")
  print("ASSET GALLERY: 90 generated assets rendered")
  quit()

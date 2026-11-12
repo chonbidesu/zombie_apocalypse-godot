@@ -22,6 +22,7 @@ func play_effect(effect: String) -> void:
  if not streams.has(path): streams[path] = load("res://assets/sfx/"+path)
  if streams[path] == null: return
  var player = AudioStreamPlayer.new()
+ player.bus = &"SFX"
  player.stream = streams[path]
  player.volume_db = -7.0
  add_child(player)

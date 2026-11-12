@@ -8,11 +8,11 @@ ROOT = Path(__file__).resolve().parents[1]
 ART = ROOT / 'assets/character_creation'
 OUT = ART / 'corrected'
 PAIRS = [
-    ('private','private_female'), ('medic-refined','medic_male'),
-    ('scout','scout_male'), ('doctor-refined','doctor_male'),
-    ('lab-face-refined','necro_female'), ('consumer-full-redraw','consumer_male'),
-    ('police-full-redraw','police_female'),
-    ('firefighter-size-matched','firefighter_male'), ('corpse-refined',),
+    ('private_male','private_female'), ('medic_female','medic_male'),
+    ('scout_female','scout_male'), ('doctor_female','doctor_male'),
+    ('necro_male','necro_female'), ('consumer_female','consumer_male'),
+    ('police_male','police_female'),
+    ('firefighter_female','firefighter_male'), ('corpse',),
 ]
 # Independently inspected visible rigid geometry. Check whole areas, including
 # transparent gaps and antialiased silhouettes, not just a few anchor pixels.
@@ -63,8 +63,8 @@ def source_frames(name):
 
 
 def verify_repairs(job, name, sequence):
-    original = source_frames('doctor-portrait' if name == 'doctor-refined' else name)
-    doctor_boot = source_frames('doctor-portrait')[0] if job == 3 else None
+    original = source_frames('doctor_portrait' if name == 'doctor_female' else name)
+    doctor_boot = source_frames('doctor_portrait')[0] if job == 3 else None
     for i, frame in enumerate(sequence):
         def native(box, detail, donor=i):
             check(same(frame,original[donor],box), f'{name} frame {i}: original {detail}')
@@ -177,7 +177,7 @@ def main():
                         check(after[0]>before[0]+8 and after[1]>before[1]+4,
                               f'{name} frame {i}: full illuminated window {box}')
                     check(same(sequence[9],sequence[i],(202,104,269,139)),f'{name} frame {i}: light stays registered')
-    with Image.open(OUT/'doctor-portrait.png') as portrait, Image.open(OUT/'doctor-refined.png') as doctor:
+    with Image.open(OUT/'doctor_portrait.png') as portrait, Image.open(OUT/'doctor_female.png') as doctor:
         check(portrait.tobytes()==doctor.tobytes(), 'Both default doctor atlases use the repaired drawing')
     report={'checks':checks,'failures':failures,'atlases':18,'frames':216,
             'scope':'source hashes, complete fixed RGBA regions across frames/genders, idle body, cell boundaries, source drawing continuity, scouts, actions, doctor legs and light'}

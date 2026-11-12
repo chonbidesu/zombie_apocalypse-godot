@@ -67,4 +67,4 @@ These are useful follow-up candidates rather than reasons to overwrite requested
 
 The built-in image generator produced `assets/sprite_sheets/zombie_sprite_sheet.png`, a transparent 1536×1024 atlas with 24 cells: stagger 0–7, claw attack 8–14, collapse 15–20 and recoil 21–23. Frame 20 is a horizontal corpse. The existing human occupation sheets supplied the style references; foot-anchor metadata was regenerated from the new frame silhouettes. The exact prompt and provenance are in `assets/generated/zombie-refresh-manifest.json`. The former zombie sheet is retained in `.art-backup/zombie_sprite_sheet.png`.
 
-See `tests/zombie-animation-preview.png` for the rendered sequence and `tests/occupation-crowd-preview.png` for the in-game crowd/corpse view.
+See `tests/zombie_animation_preview.png` for the rendered sequence and `tests/occupation_crowd_preview.png` for the in-game crowd/corpse view.

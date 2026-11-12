@@ -61,7 +61,7 @@ func run() -> void:
  for i in range(13): scene.sim.give_item(p,"first_aid_kit")
  scene.inventory_page = 1
  scene.refresh()
- await capture("res://tests/encumbrance-inventory-preview.png")
+ await capture("res://tests/encumbrance_inventory_preview.png")
  var b = scene.sim.current_block(p)
  b.type = "aquarium"
  b.barricade = 0
@@ -96,6 +96,6 @@ func run() -> void:
  p.hp = 0
  scene.refresh()
  check(scene.page.has_node("DarkEnvironment") and not scene.page.has_node("EnvironmentArt") and scene.action_controls.any(func(e): return e.command == "stand"),"Expanded darkness still hides the world while leaving standing available")
- await capture("res://tests/full-height-downed-preview.png")
+ await capture("res://tests/full_height_downed_preview.png")
  print("ENVIRONMENT/INVENTORY UI CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)

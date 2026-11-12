@@ -112,4 +112,4 @@ Reproduce the selected tests with `./launch.ps1 -Balance shelter` and `./launch.
 
 ## Verification and artwork
 
-652 checks passed across simulation, survival, NPC/rule regressions, loot/trust, content, encumbrance, world and rendered UI suites. The new NPC suite specifically checks local safe entry, AP reserves, fuel conservation, legal fort paths, revival health, pipe barricades and XP accounting. Art checks verify all 24 zombie frames, rendered crowd/corpse placement and the exact original street tile. See the [rules audit](urban-dead-rules-audit.md) and `tests/zombie-animation-preview.png`.
+652 checks passed across simulation, survival, NPC/rule regressions, loot/trust, content, encumbrance, world and rendered UI suites. The new NPC suite specifically checks local safe entry, AP reserves, fuel conservation, legal fort paths, revival health, pipe barricades and XP accounting. Art checks verify all 24 zombie frames, rendered crowd/corpse placement and the exact original street tile. See the [rules audit](urban-dead-rules-audit.md) and `tests/zombie_animation_preview.png`.

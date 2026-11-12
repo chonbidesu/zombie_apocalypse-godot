@@ -1,0 +1,43 @@
+{
+  "project": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot",
+  "archive": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot",
+  "status": "applied",
+  "changes": [
+    {
+      "path": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot\\assets\\title\\menu_exit.png",
+      "destination": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot\\unused_art_20261111_205408_0fb2b976\\assets\\title\\menu_exit.png",
+      "before": null,
+      "after": null
+    },
+    {
+      "path": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot\\assets\\title\\menu_exit.png.import",
+      "destination": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot\\unused_art_20261111_205408_0fb2b976\\assets\\title\\menu_exit.png.import",
+      "before": null,
+      "after": null
+    },
+    {
+      "path": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot\\assets\\title\\menu_load.png",
+      "destination": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot\\unused_art_20261111_205408_0fb2b976\\assets\\title\\menu_load.png",
+      "before": null,
+      "after": null
+    },
+    {
+      "path": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot\\assets\\title\\menu_load.png.import",
+      "destination": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot\\unused_art_20261111_205408_0fb2b976\\assets\\title\\menu_load.png.import",
+      "before": null,
+      "after": null
+    },
+    {
+      "path": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot\\assets\\title\\menu_newgame.png",
+      "destination": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot\\unused_art_20261111_205408_0fb2b976\\assets\\title\\menu_newgame.png",
+      "before": null,
+      "after": null
+    },
+    {
+      "path": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\godot\\assets\\title\\menu_newgame.png.import",
+      "destination": "C:\\Users\\Jared\\Documents\\dev\\godot_work\\zombie_apocalypse\\archive\\godot\\unused_art_20261111_205408_0fb2b976\\assets\\title\\menu_newgame.png.import",
+      "before": null,
+      "after": null
+    }
+  ]
+}

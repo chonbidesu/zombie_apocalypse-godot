@@ -27,7 +27,7 @@ static func go(s,a: Dictionary,goal: Dictionary) -> bool:
  var b = s.current_block(a)
  if b.id == goal.id: return false
  if a.route_goal != goal.id or a.route.is_empty():
-  a.route = Array(s.navigation.get_id_path(b.id,goal.id))
+  a.route = Array(s.query_route(b.id,goal.id))
   a.route_goal = goal.id
   if not a.route.is_empty(): a.route.pop_front()
  if a.route.is_empty(): return false
@@ -41,7 +41,7 @@ static func go(s,a: Dictionary,goal: Dictionary) -> bool:
     if s.occupants(site,false).any(func(t): return not t.human and not t.down):
      s.navigation.set_point_disabled(site.id,true)
      avoided.append(site.id)
-  var safer = Array(s.navigation.get_id_path(b.id,goal.id))
+  var safer = Array(s.query_route(b.id,goal.id))
   for id in avoided: s.navigation.set_point_disabled(id,false)
   if safer.size() > 1:
    safer.pop_front()
@@ -86,7 +86,7 @@ static func return_to_undeath(s,a: Dictionary) -> bool:
  var best_path: Array = []
  for candidate in candidates:
   if not best_path.is_empty() and candidate.distance >= best_path.size()-1: break
-  var path = Array(s.navigation.get_id_path(here.id,candidate.site.id))
+  var path = Array(s.query_route(here.id,candidate.site.id))
   if not path.is_empty() and (best_path.is_empty() or path.size() < best_path.size()):
    best = candidate.site
    best_path = path

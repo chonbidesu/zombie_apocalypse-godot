@@ -108,8 +108,8 @@ func choose_site(s, a: Dictionary, here: Dictionary, kind: String, threat: float
 		if chance <= 0.0:
 			continue
 		var home: Dictionary = s.blocks[a.home]
-		var route: PackedInt64Array = s.navigation.get_id_path(here.id, id)
-		var return_route: PackedInt64Array = s.navigation.get_id_path(id, home.id)
+		var route: PackedInt64Array = s.query_route(here.id, id)
+		var return_route: PackedInt64Array = s.query_route(id, home.id)
 		if route.is_empty() or return_route.is_empty():
 			continue
 		var trip: int = route.size() + return_route.size() + TRIP_RESERVE + 1
@@ -122,8 +122,8 @@ func choose_site(s, a: Dictionary, here: Dictionary, kind: String, threat: float
 	if best_id < 0 and max_distance >= 2:
 		var known: Dictionary = _public_source(s, a, origin, kind, mini(max_distance, 6), avoid)
 		if not known.is_empty():
-			var outward: PackedInt64Array = s.navigation.get_id_path(here.id, known.id)
-			var back: PackedInt64Array = s.navigation.get_id_path(known.id, a.home)
+			var outward: PackedInt64Array = s.query_route(here.id, known.id)
+			var back: PackedInt64Array = s.query_route(known.id, a.home)
 			var trip: int = outward.size() + back.size() + TRIP_RESERVE + 1
 			if not outward.is_empty() and not back.is_empty() and a.ap >= trip:
 				return Vector2(known.id, Desire.scavenge(a.ap, trip, 0.80, 0.40, threat))
@@ -153,7 +153,7 @@ func run_trip(s, a: Dictionary, here: Dictionary) -> bool:
 	var site: Dictionary = s.blocks[a.supply_goal]
 	if not a.supply_kind.is_empty():
 		var found: bool = not s.item_kind(a, a.supply_kind).is_empty()
-		var return_path: PackedInt64Array = s.navigation.get_id_path(here.id, home.id)
+		var return_path: PackedInt64Array = s.query_route(here.id, home.id)
 		var reserve: int = return_path.size() + TRIP_RESERVE + 2
 		if found or return_path.is_empty() or a.ap <= reserve:
 			a.supply_kind = ""
