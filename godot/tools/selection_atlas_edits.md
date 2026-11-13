@@ -45,6 +45,19 @@ the former runtime face substitution.
 
 Each consumer uses the original felt, balls, shadows and cue motion blur from
 the corresponding frame. The surrounding table rails and legs stay registered.
+The Arab male consumer source is a complete redraw based on the female pose,
+with concentrated aiming and subtle breathing in the first four frames. His
+head, torso, bridge hand, cue and felt are copied together, without the older
+head/hand/felt joins. Only stationary furniture regions use the shared table.
+Both consumers' break frames contain one white cue ball; the former duplicate is red.
+The two side pockets are authored once in `frames/consumer_table_pockets.png`.
+The Pillow builder copies only its two small furniture regions into every male
+and female output frame after pose assembly. These are baked PNG pixels, not
+runtime nodes, overlays, materials or shaders. The source animation sheets do
+not need regenerating. The verifier checks exact donor equality in all 24 frames,
+the unchanged playing surface elsewhere and the furniture source hash.
+The verifier checks continuity against the source across the entire upper body
+and bridge hand, plus the corrected ball colours in the break frame.
 Near-transparent export noise is
 cleared, and existing hair wisps/syringe mist fade within the top cell margin.
 

@@ -19,6 +19,9 @@ func _run() -> void:
 	root.add_child(game)
 	game.set_process(false)
 	var player: Dictionary = game.sim.player()
+	var actor: Dictionary = game.sim.actors[1]
+	actor.x = player.x; actor.y = player.y; actor.inside = player.inside; actor.down = false
+	game.sim.reindex()
 	var nearby: Dictionary = game.sim.block_at(player.x + 1, player.y)
 	nearby.generator = false
 	game.refresh()
@@ -27,7 +30,7 @@ func _run() -> void:
 	var bar: Panel = game.energy_bar
 	var minimap: Control = game.local_map
 	var environment: TextureRect = game.page.get_node("EnvironmentArt")
-	var description: Label = game.page.get_node("LocationDescription")
+	var description: RichTextLabel = game.page.get_node("LocationDescription")
 	var actor_button: Button = game.page.get_node("SceneActors/Actor_1")
 	var sprite: TextureRect = game.actor_buttons[0].node
 	var inventory_item: Button = game.page.get_node("InventoryItem_%d" % player.inventory[0].uid)
@@ -57,7 +60,6 @@ func _run() -> void:
 	game._refresh_dashboard()
 	_check(map_art.texture == intact and map_art.material == null, "Fuel expiration updates the map without rebuilding it.")
 
-	var actor: Dictionary = game.sim.actors[1]
 	actor.speech = "We should stay together."
 	actor.speech_until = game.sim.now() + 1.0
 	game._refresh_dashboard()
@@ -70,7 +72,7 @@ func _run() -> void:
 	actor.x += 1
 	game.sim.reindex()
 	game._refresh_dashboard()
-	_check(game.page.get_node("LocationDescription") == description and description.text == game.sim.location_description(player),
+	_check(game.page.get_node("LocationDescription") == description and description.get_parsed_text() == game.sim.location_description(player),
 		"Changing occupants updates the existing location description.")
 	_check(not game.page.has_node("SceneActors/Actor_1"), "An NPC departure updates the scene.")
 
@@ -113,7 +115,7 @@ func _run() -> void:
 	game.rest_button.pressed.emit()
 	_check(game.local_map == minimap and map_art.material != null and map_art.is_visible_in_tree()
 		and game.page.has_node("SceneActors/Actor_1") and game.page.get_node("LocationDescription") == description
-		and description.text == game.sim.location_description(player),
+		and description.get_parsed_text() == game.sim.location_description(player),
 		"Wake restores the same map and description with current power and occupants.")
 	game.queue_free()
 	await process_frame

@@ -45,19 +45,19 @@ func _initialize() -> void:
  for i in range(100):
   s.execute(z,"attack",0,{"unarmed":true})
   if p.hp < 50: break
- check(s.sleeping and s.sleep_damage_hits == 1,"One injury does not wake the sleeper")
+ check(s.sleeping and p.hp < 50,"One injury does not wake the sleeper")
  var hp = p.hp
  for i in range(100):
   s.execute(z,"attack",0,{"unarmed":true})
   if p.hp < hp: break
- check(not s.sleeping and s.last_rest_notice.contains("Sustained"),"Two injuries in a sustained attack wake the sleeper")
+ check(s.sleeping and p.hp < hp,"Repeated injuries do not wake the sleeper")
  p.busy_until = s.now(); p.ap = 10; p.hp = 50
  s.begin_sleep()
  s.sleep_damage_hits = 1; s.sleep_last_damage_at = s.now()-11
  for i in range(100):
   s.execute(z,"attack",0,{"unarmed":true})
   if p.hp < 50: break
- check(s.sleeping and s.sleep_damage_hits == 1,"An isolated old injury does not count as sustained damage")
+ check(s.sleeping and p.hp < 50,"An isolated injury does not wake the sleeper")
  s.stop_rest(); p.ap = 10
  z.inside = false; p.inside = true
  s.set_barricade_strength(b,2)
@@ -69,7 +69,7 @@ func _initialize() -> void:
  for i in range(200):
   s.execute(z,"break",-1,{"unarmed":true})
   if s.barricade_strength(b) == 0: break
- check(not s.sleeping and s.last_rest_notice.contains("crash"),"The final collapsing barricade wakes the sleeper")
+ check(s.sleeping and s.barricade_strength(b) == 0,"A collapsing barricade does not wake the sleeper")
  s = isolated(); p = s.player()
  p.ap = 49; s.clock_step = 5099; s.minute = 509
  s.begin_sleep()

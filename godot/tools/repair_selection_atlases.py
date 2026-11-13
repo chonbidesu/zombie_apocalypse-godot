@@ -277,6 +277,20 @@ FELT = [(39,146),(278,146),(284,150),(335,205),(334,210),
         (303,211),(238,214),(169,215),(91,216),(84,211)]
 CUE_AND_HAND = [(116,119),(186,119),(204,139),(199,165),
                 (187,180),(170,180),(151,164),(133,145)]
+POOL_POCKET_BOXES = [(39,159,69,201),(294,158,327,193)]
+
+
+@lru_cache(maxsize=1)
+def pool_table_pockets():
+    """Authored stationary furniture, copied into PNGs only at build time."""
+    with Image.open(ART / 'frames/consumer_table_pockets.png') as donor:
+        assert donor.size == (CELL, CELL) and donor.mode == 'RGBA'
+        return donor.copy()
+
+
+def furniture_manifest():
+    path = 'frames/consumer_table_pockets.png'
+    return [{'source': path, 'sha256': hashlib.sha256((ART/path).read_bytes()).hexdigest()}]
 
 
 def smooth_polygon(points):
@@ -433,6 +447,19 @@ def build_base(job, source, shared=None):
             replace_pixels(frame, reference, rectangle(216,178,282,213))
         if job == 5:
             replace_pixels(frame, reference, [(65,132),(129,132),(133,138),(65,143)])
+            if shared is not None:
+                # The male redraw is one continuous pose, including the bridge
+                # fingers, cue and playing surface. Never splice these through
+                # the older HEADS/MOTION/FELT boundaries: that produced a seam
+                # at the hand and could retain a second cue ball.
+                frame = source[i].copy()
+                for box in [(0,220,362,362),(0,151,37,216),
+                            (48,132,104,141),(285,0,362,145),
+                            (349,151,362,216),(117,218,280,227)]:
+                    frame.paste(reference.crop(box),box[:2])
+            # Apply last so pose/felt assembly never covers the fixed pockets.
+            for box in POOL_POCKET_BOXES:
+                frame.paste(pool_table_pockets().crop(box),box[:2])
         if job == 3:
             fix_doctor_legs(frame)
         # Transparent RGB is normalized too, so equality means all four channels.
@@ -510,7 +537,8 @@ def main():
             manifest.append(save(names[1], build_base(job, frames(names[1]), common[0])))
         if job == 3:
             manifest.append(save('doctor_portrait', common))
-    (OUT/'manifest.json').write_text(json.dumps({'tool':'Pillow pixel edits', 'cell_size':CELL, 'atlases':manifest},indent=2)+'\n')
+    (OUT/'manifest.json').write_text(json.dumps({'tool':'Pillow pixel edits', 'cell_size':CELL,
+        'atlases':manifest, 'furniture_sources':furniture_manifest()},indent=2)+'\n')
     print(f'Wrote {len(manifest)} edited atlas copies; original PNGs unchanged.')
 
 

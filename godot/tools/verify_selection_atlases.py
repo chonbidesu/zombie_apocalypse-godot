@@ -65,6 +65,9 @@ def source_frames(name):
 def verify_repairs(job, name, sequence):
     original = source_frames('doctor_portrait' if name == 'doctor_female' else name)
     doctor_boot = source_frames('doctor_portrait')[0] if job == 3 else None
+    if job == 5:
+        with Image.open(ART/'frames/consumer_table_pockets.png') as donor:
+            pockets = donor.convert('RGBA')
     for i, frame in enumerate(sequence):
         def native(box, detail, donor=i):
             check(same(frame,original[donor],box), f'{name} frame {i}: original {detail}')
@@ -120,10 +123,25 @@ def verify_repairs(job, name, sequence):
         if job == 5:
             # Compare the playing surface row by row, including motion blur,
             # shadows, the whole rack and the scattered balls near both rails.
-            match = all(same(frame, original[i],
+            expected = original[i].copy()
+            for box in [(39,159,69,201),(294,158,327,193)]:
+                check(same(frame,pockets,box),
+                      f'{name} frame {i}: registered authored side pocket {box}')
+                expected.paste(pockets.crop(box),box[:2])
+            match = all(same(frame, expected,
                         (46+(y-149)*3//4,y,278+(y-149)*7//8,y+1))
                         for y in range(149,211))
-            check(match, f'{name} frame {i}: original felt and balls')
+            check(match, f'{name} frame {i}: original felt and balls outside authored pockets')
+            if name == 'consumer_male':
+                native((65,4,245,132), 'continuous head, shoulders and arms')
+                native((130,118,219,177), 'unspliced bridge hand and cue')
+            if i == 9:
+                duplicate = frame.getpixel((184,184))
+                cue_ball = frame.getpixel((192,194))
+                check(duplicate[0] > duplicate[1]*1.4,
+                      name+' break: former duplicate ball is red')
+                check(min(cue_ball[:3]) > 145 and max(cue_ball[:3])-min(cue_ball[:3]) < 65,
+                      name+' break: one retained white cue ball')
         if job == 6 and i < 4:
             native((145,77,210,113), 'moving collar')
         if name == 'police_female':
@@ -142,6 +160,11 @@ def verify_repairs(job, name, sequence):
 
 def main():
     manifest = json.loads((OUT/'manifest.json').read_text())
+    furniture = manifest['furniture_sources']
+    check(len(furniture) == 1, 'Shared consumer pocket furniture is recorded')
+    for entry in furniture:
+        check(hashlib.sha256((ART/entry['source']).read_bytes()).hexdigest() == entry['sha256'],
+              entry['source']+' furniture matches manifest')
     check(len(manifest['atlases']) == 18, 'All eighteen original atlas files have edited copies')
     for entry in manifest['atlases']:
         check(hashlib.sha256((ART/entry['source']).read_bytes()).hexdigest() == entry['source_sha256'],

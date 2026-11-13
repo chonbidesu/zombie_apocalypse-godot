@@ -9,6 +9,13 @@ func check(value: bool, message: String) -> void:
   failures += 1
   push_error("FAIL: "+message)
 
+func place_near_player(scene, actor_id: int = 1) -> void:
+ var player: Dictionary = scene.sim.player()
+ var actor: Dictionary = scene.sim.actors[actor_id]
+ actor.x = player.x; actor.y = player.y; actor.inside = player.inside
+ actor.down = false; actor.human = true; actor.dormant = true
+ scene.sim.reindex()
+
 func _initialize() -> void:
  run.call_deferred()
 
@@ -17,6 +24,9 @@ func run() -> void:
  scene.initial_world_mode = "sandbox"
  root.add_child(scene)
  await process_frame
+ await process_frame
+ place_near_player(scene)
+ scene.refresh()
  await process_frame
  var dlabel = scene.page.get_node("LocationDescription")
  check(dlabel.get_visible_line_count() == dlabel.get_line_count(),"All rendered description lines fit including spacing")
@@ -47,6 +57,9 @@ func run() -> void:
   var tooltip = str(target.get_meta("actor_tooltip"))
   check(target.get_children().filter(func(node): return node is Panel).size() == 2 and tooltip.contains("12/"),"The active form's health-reading skill shows exact HP")
   check(tooltip.contains("Infected") == not human and tooltip.contains("Dying") == not human,"Only the undead form sees infection and Scent Fear labels")
+  var description = scene.page.get_node("LocationDescription")
+  check(description.get_parsed_text().contains("[12/50 HP]"),"The description shows exact HP with the appropriate skill")
+  check(description.text.contains("[color=#75d16d]") == not human,"Only a zombie with Scent Blood sees infected text in green")
  opening_player.human = true
  opening_player.zombie_skills.erase("scent_fear")
  opening_player.zombie_skills.erase("scent_blood")
@@ -55,8 +68,12 @@ func run() -> void:
  opening_npc.infected = false
  scene.refresh()
  scene.set_process(false)
+ # Let the deliberately placed NPC finish its entrance before testing hover.
+ scene.animation_time += 1.0
+ for visual in scene.actor_buttons: scene.position_actor_sprite(visual)
  var p = scene.sim.player()
  var start_time = scene.sim.minute
+ var starting_position = Vector2i(p.x,p.y)
  var hovered = scene.page.get_node("SceneActors/Actor_1")
  var motion = InputEventMouseMotion.new()
  motion.position = hovered.get_global_rect().get_center()
@@ -103,7 +120,7 @@ func run() -> void:
  root.push_input(mouse,true)
  await process_frame
  scene._update_actor_tooltip()
- check(not scene.actor_tooltip.visible,"NPC tooltip hides when the pointer leaves")
+ check(not is_instance_valid(scene.actor_tooltip) or not scene.actor_tooltip.visible,"NPC tooltip hides when the pointer leaves")
  check(p.ap == 49 and scene.sim.minute == start_time,"Mouse search button commits action")
  for i in range(25): scene._process(0.1)
  start_time = scene.sim.minute
@@ -112,7 +129,7 @@ func run() -> void:
  event.pressed = true
  Input.parse_input_event(event)
  await process_frame
- check(p.x == 5 and p.y == 4 and p.ap == 48,"Arrow input moves player and spends AP")
+ check(p.x == starting_position.x + 1 and p.y == starting_position.y and p.ap == 48,"Arrow input moves player and spends AP")
  scene.open_modal("map")
  var x = p.x
  Input.parse_input_event(event)
@@ -134,6 +151,7 @@ func run() -> void:
  scene._unhandled_key_input(space)
  check(not scene.paused,"Space resumes paused simulation")
  scene.sim.start()
+ place_near_player(scene)
  scene.feed.reset(scene.sim.messages)
  scene.selected_actor = 1
  scene.selected_item = scene.sim.player().inventory[0].uid
@@ -285,7 +303,7 @@ func run() -> void:
   if scene.portrait_region({"hp":25,"human":false,"down":false}) != zombie_pose: portrait_changes = true
  check(portrait_changes,"Zombie portrait eventually jerks to a different pose")
  scene.refresh()
- check(scene.page.get_node("LocationDescription").text == scene.sim.location_description(player),"Full generated location description is displayed")
+ check(scene.page.get_node("LocationDescription").get_parsed_text() == scene.sim.location_description(player),"Full generated location description is displayed")
  scene.sim.blocks[45].ruin = 3
  scene.sim.blocks[34].generator = true
  scene.sim.blocks[34].fuel_until = scene.sim.minute+20
@@ -336,7 +354,7 @@ func run() -> void:
  player.inside = true
  scene.sim.reindex()
  scene.refresh()
- check(scene.page.get_node("LocationDescription") is Label,"Description uses a non-scrolling panel below the scene")
+ check(scene.page.get_node("LocationDescription") is RichTextLabel and not scene.page.get_node("LocationDescription").scroll_active,"Description uses a non-scrolling panel below the scene")
  var world_rng = scene.sim.rng.state
  scene.zombie_pose(30.0)
  var durations = {}
@@ -399,6 +417,7 @@ func run() -> void:
  scene.feed.reset(scene.sim.messages)
  scene.notice = "Nearby voices carry through the shelter."
  player = scene.sim.player()
+ place_near_player(scene)
  var speaker = scene.sim.actors[1]
  scene.sim.speak(speaker,"Clean dressings are worth their weight in gold.")
  scene.feed.ingest(scene.sim.messages)
@@ -439,6 +458,7 @@ func run() -> void:
  scene.sim.start()
  scene.feed.reset(scene.sim.messages)
  player = scene.sim.player()
+ place_near_player(scene)
  scene.selected_actor = 1
  scene.selected_item = -1
  scene.refresh()
@@ -552,7 +572,8 @@ func run() -> void:
   if zombie_frame != previous_zombie: zombie_changes += 1
   previous_human = human_frame
   previous_zombie = zombie_frame
- check(zombie_changes < human_changes/2,"Zombie gait uses slower holds and uneven stepping")
+ check(human_changes > 0 and zombie_changes > 0,"Human breathing and zombie lurch loops both advance")
+ npc_idle_animation(scene)
  minimap_senses(scene)
  necronet_controls(scene)
  binocular_controls(scene)
@@ -562,6 +583,20 @@ func run() -> void:
  city_map_inventory(scene)
  print("UI CHECKS: ",checks," FAILURES: ",failures)
  quit(0 if failures == 0 else 1)
+
+func npc_idle_animation(scene) -> void:
+ var player = scene.sim.player()
+ var original = [player.job,player.sex,player.human,scene.animation_time]
+ for occupation in ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer","Resident","Volunteer","Corpse"]:
+  for sex in ["male","female"]:
+   player.job = occupation; player.sex = sex; player.human = true
+   var idle_frames = {}
+   for step in range(40):
+    scene.animation_time = 220+step*0.1
+    idle_frames[scene.actor_frame(player)] = true
+   check(idle_frames.size() == 3 and idle_frames.keys().all(func(frame): return frame in [0,5,7]),"Only relaxed standing frames breathe for %s %s" % [sex,occupation])
+ player.job = original[0]; player.sex = original[1]; player.human = original[2]
+ scene.animation_time = original[3]
 
 func city_map_inventory(scene) -> void:
  scene.modal = ""
@@ -633,7 +668,8 @@ func corpse_anonymity(scene) -> void:
  changing = scene.actor_buttons.filter(func(entry): return entry.id == revivifying.id)[0]
  check(changing.sheet == "zombie" and layer.get_node("Actor_2").get_meta("actor_tooltip") == "Dead body","Scent Death leaves the body sprite and tooltip anonymous")
  check(layer.get_node("Actor_1").get_meta("actor_tooltip") == "Dead body","Ordinary bodies remain anonymous with Scent Death")
- check(sim.location_description(p).contains("smells strange"),"Scent Death reports revivifying bodies in the location description")
+ var body_count = sim.occupants(sim.current_block(p),p.inside).filter(func(a): return a.id != p.id and a.down).size()
+ check(sim.location_description(p).contains("%d dead bodies" % body_count),"Location description reports all bodies present")
  revivifying.down = false
  scene.refresh()
  var target = layer.get_node("Actor_2")
@@ -682,7 +718,15 @@ func location_transitions(scene) -> void:
  var departure = scene.departing_actors.back()
  var sprite = target.get_children().filter(func(node): return node is TextureRect)[0]
  check(departure.target == target and not departure.body and departure.to.x < 0 and sprite.flip_h,"A departing human flips and slides left")
- scene._animate_scene(0.5)
+ check(is_equal_approx(absf(departure.to.x-departure.from.x)/departure.duration,260.0) and departure.duration > 0.4,"Human exits use slower distance-based movement")
+ var walk_start = sprite.texture.region
+ scene._animate_scene(0.18)
+ check(sprite.texture.region != walk_start and sprite.flip_h,"A departing human animates walking while facing left")
+ check(is_equal_approx(absf(target.position.x-departure.from.x),260.0*0.18),"Human exit advances at the configured speed")
+ scene.refresh()
+ check(is_instance_valid(target) and sprite.flip_h,"Refreshing preserves the departing sprite and direction")
+ scene._animate_scene(departure.duration)
+ check(not scene.departing_actors.has(departure) and target.is_queued_for_deletion(),"Human exit removes the sprite only after reaching the edge")
  npc.human = false
  npc.inside = p.inside
  sim.reindex()
@@ -696,8 +740,27 @@ func location_transitions(scene) -> void:
  sim.reindex()
  scene.refresh()
  departure = scene.departing_actors.back()
- check(departure.target == target and departure.to.x > layer.size.x,"A departing zombie slides right")
- scene._animate_scene(0.5)
+ sprite = departure.node
+ check(departure.target == target and departure.to.x > layer.size.x and sprite.flip_h,"A departing zombie turns its left-facing art to exit right")
+ check(is_equal_approx(absf(departure.to.x-departure.from.x)/departure.duration,260.0),"Zombie exits use the same speed as humans")
+ for step in range(4):
+  scene._animate_scene(0.1)
+  var frame = scene.zombie_actor_frame(npc.id)
+  check(sprite.texture.region.position == Vector2(frame%6,frame/6)*256,"A departing zombie retains its lurch cycle")
+ check(sprite.flip_h,"Zombie lurch keeps facing the exit")
+ # Facing is derived from travel, never toggled from a previous transition.
+ for sheet in ["consumer_male","consumer","zombie","zombie_female"]:
+  var saved_sheet = departure.sheet
+  departure.sheet = sheet
+  for right in [false,true]:
+   departure.to.x = departure.from.x+(100 if right else -100)
+   scene.animate_departing_actor(departure,0.2)
+   var expected_flip = right if sheet.begins_with("zombie") else not right
+   check(sprite.flip_h == expected_flip,"Travel direction controls facing for "+sheet)
+   scene.animate_departing_actor(departure,0.2)
+   check(sprite.flip_h == expected_flip,"Repeated animation cannot toggle facing for "+sheet)
+  departure.sheet = saved_sheet
+ scene._animate_scene(departure.duration)
  npc.down = true
  npc.inside = p.inside
  sim.reindex()

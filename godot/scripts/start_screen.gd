@@ -6,7 +6,6 @@ const Parallax = preload("res://scripts/title_parallax.gd")
 const CharacterCreation = preload("res://scripts/character_creation/character_creation.gd")
 const Intro = preload("res://scripts/intro.gd")
 const Naming = preload("res://scripts/naming_screen.gd")
-const TutorialPrompt = preload("res://scripts/tutorial_prompt.gd")
 const SaveSlots = preload("res://scripts/save_slots.gd")
 const Attribution = preload("res://scripts/attribution.gd")
 const SettingsMenu = preload("res://scripts/settings_menu.gd")
@@ -29,8 +28,6 @@ var naming: Naming
 var chosen_occupation := ""
 var chosen_sex := ""
 var chosen_identity := {}
-var tutorial_prompt: TutorialPrompt
-var tutorials_enabled := false
 
 func _ready() -> void:
  DisplayServer.window_set_title("Malton Reborn")
@@ -189,8 +186,6 @@ func show_title() -> void:
  attribution = null
  if is_instance_valid(naming): naming.queue_free()
  naming = null
- if is_instance_valid(tutorial_prompt): tutorial_prompt.queue_free()
- tutorial_prompt = null
  if is_instance_valid(intro):
   intro.queue_free()
  intro = null
@@ -208,12 +203,6 @@ func show_naming(occupation: String) -> void:
  chosen_sex = creation.selected_sex()
  creation.hide()
  creation.process_mode = Node.PROCESS_MODE_DISABLED
- tutorials_enabled = false
- show_tutorial_prompt()
-
-func _show_identity_prompt() -> void:
- tutorial_prompt.queue_free()
- tutorial_prompt = null
  naming = Naming.new()
  naming.confirmed.connect(show_intro)
  naming.back_requested.connect(back_to_creation)
@@ -238,16 +227,6 @@ func show_intro(identity: Dictionary) -> void:
  creation = null
  add_child(intro)
 
-func show_tutorial_prompt() -> void:
- tutorial_prompt = TutorialPrompt.new()
- tutorial_prompt.answered.connect(_tutorial_answered)
- tutorial_prompt.boot_finished.connect(_show_identity_prompt)
- add_child(tutorial_prompt)
-
-func _tutorial_answered(enabled: bool) -> void:
- tutorials_enabled = enabled
- tutorial_prompt.begin_boot()
-
 func start_new_game(occupation: String) -> void:
  var simulation := Sim.new()
  var error := simulation.start(Sim.DEFAULT_SEED,occupation,{"mode":"malton"})
@@ -258,7 +237,7 @@ func start_new_game(occupation: String) -> void:
  simulation.player().merge(chosen_identity, true)
  if chosen_sex in ["male","female"]: simulation.player().sex = chosen_sex
  simulation.ensure_unique_npc_names()
- enter_game(simulation,"A new life in Malton. You are a %s." % occupation)
+ enter_game(simulation,"A new life in Malton. You are a %s." % occupation,true)
 
 func load_game() -> void:
  if is_instance_valid(slot_chooser): return
@@ -282,13 +261,12 @@ func _load_slot(path: String) -> void:
  _close_slots()
  enter_game(simulation,"Loaded your neighbourhood.")
 
-func enter_game(simulation: Sim, message: String) -> void:
+func enter_game(simulation: Sim, message: String, new_game: bool = false) -> void:
  var game := (load("res://main.tscn") as PackedScene).instantiate() as Game
  game.sim = simulation
  game.save_path = save_path
  game.notice = message
- game.start_tutorial = tutorials_enabled
- tutorials_enabled = false
+ game.start_tutorial = new_game
  if get_tree().change_scene_to_node(game) != OK:
   game.free()
   show_title()

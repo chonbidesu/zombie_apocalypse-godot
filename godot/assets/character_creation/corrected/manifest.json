@@ -59,13 +59,13 @@
     },
     {
       "source": "consumer_female.png",
-      "source_sha256": "c6faee76934bf819fa43db6c54e7ac33cfcb4b698abb37e5f9e2f125ff2acbcf",
-      "output_sha256": "47a7808b56206e3335a42d66cf69a04a7a78b7595ce40adc3407f71e8620c9e8"
+      "source_sha256": "d53020ca74de1177a4ab34a4ae25c8539f2efd5f33061eba3680fb60de377914",
+      "output_sha256": "7e1ff286d739e1adbaf3b3a0b7c795c6200e9eb73b66c583d77bf0dcba41d517"
     },
     {
       "source": "consumer_male.png",
-      "source_sha256": "286e60efeb2ab6c558ff16dc294766891acb4f5e09e0da04dfe4d66abeb2def5",
-      "output_sha256": "63c5242093eed2b77ff97e2d6001c2416eb2736a762f3e3d29cbaa44cca8d956"
+      "source_sha256": "9c202be2cb967d5069975f2ccc03d4e68b61f040ab5590cbdd9506081c344001",
+      "output_sha256": "383e96bead8e985fac2158e2591959813fd3cb92c121fc10eac6a210f4b247b1"
     },
     {
       "source": "police_male.png",
@@ -91,6 +91,12 @@
       "source": "corpse.png",
       "source_sha256": "3139fca989a3909887076299c88426d2440e1e40a8ba7136c620963be42606b4",
       "output_sha256": "6490cd452cac28350cfbed2e3892555f54821a9ca5a06f34ba9b02f0b5f2be94"
+    }
+  ],
+  "furniture_sources": [
+    {
+      "source": "frames/consumer_table_pockets.png",
+      "sha256": "334e28988e91e7f2f3c4c0a4fc457e2761648d779316a66364f5ac68de444bc5"
     }
   ]
 }

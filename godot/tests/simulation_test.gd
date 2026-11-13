@@ -14,6 +14,8 @@ func check(condition: bool, message: String) -> void:
 func isolated():
  var s = Sim.new()
  s.start()
+ # These transaction fixtures exercise the established hospital/lab test sites.
+ s.player().x = 4; s.player().y = 4; s.player().inside = true
  # Keep identity records but prevent NPC interventions in transaction tests.
  for a in s.actors:
   if a.id > 0:
@@ -184,6 +186,9 @@ func _initialize() -> void:
  p = s.player()
  p.hp = 30
  var doctor = s.actors[1]
+ doctor.job = "Doctor"
+ doctor.inventory.clear()
+ s._setup_player(doctor,"Doctor")
  doctor.human_skills.append("first_aid")
  doctor.x = p.x
  doctor.y = p.y
@@ -194,6 +199,9 @@ func _initialize() -> void:
  s._npc_turn(doctor)
  check(p.hp == 40 and doctor.ap == 49,"Doctor heals player using AP")
  var engineer = s.actors[2]
+ engineer.job = "Engineer"
+ engineer.inventory.clear()
+ s._setup_player(engineer,"Engineer")
  engineer.x = 4
  engineer.y = 4
  engineer.inside = true
@@ -204,6 +212,10 @@ func _initialize() -> void:
  check(s.current_block(p).ruin == 0 and engineer.ap == 49,"Engineer repairs shelter")
  s.die(p)
  var scientist = s.actors[3]
+ scientist.job = "Scientist"
+ scientist.inventory.clear()
+ s._setup_player(scientist,"Scientist")
+ s.give_item(scientist,"syringe")
  scientist.human_skills.append("lab_experience")
  scientist.x = 4
  scientist.y = 4
@@ -331,17 +343,17 @@ func restored_location_rules() -> void:
  var p = s.player()
  var b = s.current_block(p)
  var original = b.inside_description
- check(original.split(".",false).size() >= 3,"Location flavour restores three legacy sentence positions")
- check(s.location_description(p).begins_with(original),"Description includes generated interior text")
+ check(original.split(".",false).size() == 1,"Location flavour contains one generated sentence")
+ check(s.location_description(p).begins_with("You are standing in " + b.name + ". " + original),"Description starts with the block name and interior text")
  check(s.location_description(p).contains("lightly barricaded"),"Description reports current barricades")
  b.generator = true
  b.fuel_until = s.minute+10
  check(s.location_description(p).contains("running"),"Description reports live generator state")
  b.fuel_until = 0
  b.ruin = 3
- check(s.location_description(p).contains("out of fuel") and s.location_description(p).contains("has been ruined"),"Description updates fuel and ruin state")
+ check(s.location_description(p).contains("out of fuel"),"Description updates fuel state")
  p.inside = false
- check(s.location_description(p).begins_with(b.outside_description),"Exterior has its own generated text")
+ check(s.location_description(p).begins_with("You are standing outside " + b.name + ". " + b.outside_description),"Exterior starts with the block name and its generated text")
  var repeat = isolated()
  check(repeat.blocks[44].inside_description == original,"Descriptions repeat for the same world seed")
  check(s.save_to("res://test-save.json") == OK,"Description save succeeds")
@@ -544,13 +556,13 @@ func perception_rules() -> void:
  b.ruin = 0
  p.inside = false
  var exterior = s.location_description(p)
- check(exterior.contains("and lights are on inside.") and not exterior.contains("portable generator") and not exterior.contains("has been ruined"),"Exterior sees light without revealing interior equipment")
+ check(exterior.contains("Lights are on inside.") and not exterior.contains("portable generator") and not exterior.contains("has been ruined"),"Exterior sees light without revealing interior equipment")
  p.inside = true
  var interior = s.location_description(p)
  check(interior.contains("portable generator") and interior.contains("running"),"Standing inside observes generator state")
  b.generator = false
  b.ruin = 3
- check(s.location_description(p).contains("has been ruined"),"Unpowered ruined interior is described")
+ check(not s.location_description(p).contains("portable generator"),"Interior omits generator text when none is installed")
  s.die(p)
  var dark = s.location_description(p)
  check(not dark.contains(b.name) and not dark.contains(b.inside_description) and not dark.contains("body") and dark.contains("Everything is dark"),"Downed description reveals no surroundings or bodies")

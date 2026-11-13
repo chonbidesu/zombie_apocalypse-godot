@@ -92,6 +92,8 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'search_coverage tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/widescreen_test.gd --log-file widescreen-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Widescreen and powered-ruin tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/minimap_movement_test.gd --log-file minimap-movement-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Minimap movement tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/interface_test.gd --log-file interface-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Interface tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/damage_feedback_test.gd --log-file damage-feedback-tests.log

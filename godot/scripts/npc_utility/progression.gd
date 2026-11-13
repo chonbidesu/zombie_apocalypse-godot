@@ -16,8 +16,8 @@ const HUNTER: Array[String] = ["headshot"]
 const ROT: Array[String] = ["brain_rot", "flesh_rot"]
 const RETURN_TO_LIFE: Array[String] = ["lurching_gait", "ankle_grab"]
 const ZOMBIE_CORE: Array[String] = [
-	"vigour_mortis", "lurching_gait", "ankle_grab", "death_grip", "memories",
-	"feeding_groan", "ransack", "tangling_grasp", "neck_lurch", "rend_flesh",
+	"memories", "ransack", "vigour_mortis", "lurching_gait", "ankle_grab", "death_grip",
+	"feeding_groan", "tangling_grasp", "neck_lurch", "rend_flesh",
 	"digestion", "infectious_bite", "scent_fear", "scent_trail", "scent_blood",
 	"feeding_drag", "scent_death", "bellow", "death_rattle", "flailing_gesture",
 ]
@@ -33,7 +33,9 @@ static func target_skill(actor: Dictionary, level: int, weapon_track: String, cl
 		if upgrade.is_empty() and actor.get("prefers_undead", false):
 			return _next_in(ROT, owned, level)
 		return upgrade
-	var skill: String = _next_in(HUMAN_CORE, owned, level)
+	var skill: String = _next_in(PISTOL, owned, level) if actor.get("job", "") in ["Private", "Police Officer"] else ""
+	if not skill.is_empty(): return skill
+	skill = _next_in(HUMAN_CORE, owned, level)
 	if not skill.is_empty():
 		return skill
 	var combat: Array[String] = MELEE

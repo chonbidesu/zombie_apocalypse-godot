@@ -8,7 +8,7 @@ var checks := 0
 
 class CaptureMenu extends "res://scripts/start_screen.gd":
  var captured: Sim
- func enter_game(simulation: Sim, _message: String) -> void:
+ func enter_game(simulation: Sim, _message: String, _new_game: bool = false) -> void:
   captured = simulation
 
 func check(ok: bool, message: String) -> void:
@@ -161,8 +161,6 @@ func run() -> void:
   menu.creation.select_sex(sex)
   menu.creation.confirm_selection()
   menu.creation.advance_cinematic(5.4)
-  menu.tutorial_prompt._submit_answer("no")
-  menu.tutorial_prompt._process(2.5)
   check(menu.chosen_sex == sex and is_instance_valid(menu.naming),"Selection reaches naming: "+job)
   menu.show_intro({"first":"Jamie","last":"Rivera","adjective":"Ashen"})
   menu.start_new_game(job)

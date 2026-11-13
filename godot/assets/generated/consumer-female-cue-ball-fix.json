@@ -1,0 +1,10 @@
+{
+  "tool": "Built-in image_gen",
+  "prompt": "Precise image edit of this pool animation frame. In the red ball cluster there are TWO overlapping white cue balls. Recolor the UPPER LEFT white ball centered approximately (184,188) to RED to match the other red balls. Keep the LOWER RIGHT white cue ball centered (192,197) white. Result: exactly ONE WHITE BALL in the entire frame. Preserve absolutely everything else: female character identity, expression, pose, hair, shirt, hands, cue, table, red ball positions, lighting, paint texture and original transparency. Only change that duplicate upper-left white ball into red. Exact 362x362 original composition, no repositioning, no cropping.",
+  "integration": "Applied only the corrected ball cluster to frame 9 (bottom row, second column) of the female source atlas, then rebuilt the corrected runtime atlas and manifest. Pixel comparison confirmed all changes remain within the ball-cluster rectangle (502,898)-(608,935); the remaining eleven frames and character artwork are unchanged.",
+  "outputs": [
+    "godot/assets/character_creation/consumer_female.png",
+    "godot/assets/character_creation/corrected/consumer_female.png"
+  ],
+  "validation": "3783 atlas checks passed, including duplicate-ball checks for both consumers."
+}

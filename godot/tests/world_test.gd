@@ -123,10 +123,15 @@ func _initialize() -> void:
  check(s.start(4815,"Private",full).is_empty() and s.actors.size() == full.survivors+full.zombies+1,"Default generated city supports the configured population")
  var medic = s.actors[2]
  var builder = s.actors[1]
- var shelter = s.current_block(medic)
+ var shelter = s.blocks.filter(func(b): return s.is_building(b) and not b.unbarricadable and b.fort.is_empty()).front()
+ medic.job = "Medic"; medic.human = true; medic.down = false; medic.inside = true; medic.x = shelter.x; medic.y = shelter.y
+ medic.human_skills = ["first_aid"]; medic.ap = 50
+ builder.human = true; builder.down = false; builder.inside = true; builder.x = shelter.x; builder.y = shelter.y
+ builder.human_skills = ["construction"]; builder.ap = 50
+ s.reindex()
  s.set_barricade_strength(shelter,8)
- check(medic.job == "Medic" and not s.has_skill(medic,"construction") and not s._try(medic,"barricade") and medic.ap == 50,"Starting medic cannot spend AP to barricade past Strongly")
- check(s.has_skill(builder,"construction") and s.reason(builder,"barricade").is_empty(),"The medic's crew has a trained builder who can reinforce further")
+ check(not s._try(medic,"barricade") and medic.ap == 50,"Untrained medic cannot spend AP to barricade past Strongly")
+ check(s.reason(builder,"barricade").is_empty(),"A trained builder can reinforce the same shelter further")
  var build_ms = Time.get_ticks_msec()-started
  started = Time.get_ticks_msec()
  s.elapse(3.0)

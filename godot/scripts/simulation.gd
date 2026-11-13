@@ -142,57 +142,33 @@ func start(seed_value: int = DEFAULT_SEED, occupation: String = "Volunteer", con
  blocks[45].doors = true
  blocks[45].generator = true
  blocks[45].fuel_until = minute + 1440
- var p = _actor("Alex", "Morgan", "Ashen", occupation, 4, 4, true, true)
+ var workplaces = {"Private":["armoury","police_department"], "Medic":["hospital"], "Scout":["police_department"], "Doctor":["hospital"], "NecroTech Lab Assistant":["necrotech_lab"], "Consumer":["mall"], "Police Officer":["police_department"], "Firefighter":["fire_station"], "Corpse":["hospital"]}
+ var opening = blocks.filter(func(site): return site.type in workplaces.get(occupation,["hospital"]) and is_building(site))
+ if opening.is_empty(): opening = blocks.filter(func(site): return is_building(site))
+ var start_site: Dictionary = opening[rng.randi_range(0,opening.size()-1)]
+ var p = _actor("Alex", "Morgan", "Ashen", occupation, start_site.x, start_site.y, true, true)
  _setup_player(p,occupation)
- var doctor = _actor("Maya", "Reed", "Mouldering", "Doctor", 4, 4, true, true)
- _setup_starting_skills(doctor,"Doctor")
- for _i in range(3): give_item(doctor, "first_aid_kit")
- var engineer = _actor("Sarah", "Dilkens", "Slimy", "Engineer", 4, 4, true, true)
- _setup_starting_skills(engineer,"Engineer")
- give_item(engineer, "toolbox")
- var scientist = _actor("Julian", "Ellis", "Jaundiced", "Scientist", 5, 4, true, true)
- _setup_starting_skills(scientist,"Scientist")
- give_item(scientist, "syringe")
- give_item(scientist, "syringe")
- give_item(scientist, "fuel_can")
- var guard = _actor("Ravi", "Price", "Ravenous", "Guard", 3, 4, true, true)
- _setup_starting_skills(guard,"Guard")
- give_item(guard, "pistol")
- give_item(guard, "pistol_clip")
- give_item(guard, "knife")
- guard.equipped = guard.inventory[0].uid
- for i in range(10):
-  var h = _actor("", "", "", ["Doctor", "Engineer", "Guard"][i%3], [4,4,4,5,5,5,3,3,5,5][i], [3,3,3,5,5,5,4,4,4,4][i], true, true)
-  if not is_building(block_at(h.x, h.y)): h.inside = false
-  _setup_starting_skills(h,h.job)
-  give_item(h, ["first_aid_kit", "toolbox", "baseball_bat"][i%3])
-  if i%3 == 2: h.equipped = h.inventory[0].uid
+ var jobs = ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer"]
+ for i in range(14):
+  var site: Dictionary = blocks[rng.randi_range(0,blocks.size()-1)]
+  var job: String = jobs[rng.randi_range(0,jobs.size()-1)]
+  var h = _actor("", "", "", job, site.x, site.y, true, is_building(site) and rng.randf() < 0.65)
+  _setup_player(h,job)
  for i in range(18):
-  var z = _actor("", "", "", "Resident", rng.randi_range(0, 9), rng.randi_range(0, 9), false, false)
-  _setup_starting_skills(z,"Resident")
+  var site: Dictionary = blocks[rng.randi_range(0,blocks.size()-1)]
+  var z = _actor("", "", "", "Corpse", site.x, site.y, false, is_building(site) and rng.randf() < 0.5)
+  _setup_starting_skills(z,"Corpse")
   if i >= 3:
    z.down = true
    z.hp = 0
    z.dormant = true
-   if i%2 == 0:
-    var site = blocks[[34,43,55,45,44][i%5]]
-    z.x = site.x
-    z.y = site.y
-    z.inside = true
- actors[15].x = 4
- actors[15].y = 5
- actors[16].x = 5
- actors[16].y = 5
- actors[17].x = 5
- actors[17].y = 4
- actors[17].hp = 20
  ensure_unique_npc_names()
  for a in actors: a.home = a.y*width+a.x
  rebuild_geography_index()
  reindex()
  _reset_npc_runtime()
  discover()
- log_event("You reach Mercy General. %s heals; %s maintains shelter. %s works at the lab east of here." % [doctor.first, engineer.first, scientist.first])
+ log_event("You awaken at %s." % start_site.name)
  log_event("50 AP. Time flows independently. Actions spend energy; brief recovery prevents repeated clicks. Rest speeds time up.")
  return ""
 
@@ -246,7 +222,7 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
  var start_site: Dictionary = blocks[0] if opening.is_empty() else opening[rng.randi_range(0,opening.size()-1)]
  if world_mode == "malton":
   var dulston = opening.filter(func(b): return b.get("suburb","") == "Dulston")
-  if not dulston.is_empty(): start_site = dulston[0]
+  if not dulston.is_empty(): start_site = dulston[rng.randi_range(0,dulston.size()-1)]
  var p = _actor("Alex","Morgan","Ashen",occupation,start_site.x,start_site.y,true,is_building(start_site))
  _setup_player(p,occupation)
  var shelters = blocks.filter(func(b): return is_building(b) and b.fort.is_empty() and not b.unbarricadable)
@@ -255,36 +231,14 @@ func _start_geography(geography: Dictionary, occupation: String, config: Diction
  var human_count = clampi(int(config.get("survivors",population.x)),0,2000)
  var zombie_count = clampi(int(config.get("zombies",population.y)),0,4000)
  var jobs = ["Private","Medic","Scout","NecroTech Lab Assistant","Doctor","Police Officer","Firefighter","Consumer"]
- var group_site = start_site
- var clinics = blocks.filter(func(b): return b.type == "necrotech_lab")
  for i in range(human_count):
-  if i > 1 and i%3 == 0:
-   var clinic_group = false
-   for offset in range(3):
-    if jobs[(i+offset)%jobs.size()] == "NecroTech Lab Assistant": clinic_group = true
-   var workplaces = clinics if clinic_group and not clinics.is_empty() else shelters
-   group_site = workplaces[rng.randi_range(0,workplaces.size()-1)]
-  var job = jobs[i%jobs.size()]
-  var a = _actor("","","",job,group_site.x,group_site.y,true,is_building(group_site))
+  var site: Dictionary = blocks[rng.randi_range(0,blocks.size()-1)]
+  var job: String = jobs[rng.randi_range(0,jobs.size()-1)]
+  var a = _actor("","","",job,site.x,site.y,true,is_building(site) and rng.randf() < 0.65)
   _setup_player(a,job)
-  if job == "Doctor":
-   if (i/jobs.size())%2 == 0:
-    give_item(a,"syringe")
-  if i%3 == 1:
-   var builder = actors[a.id-1] if job == "Medic" else a
-   give_item(builder,"toolbox")
-  if job == "NecroTech Lab Assistant":
-   give_item(a,"syringe")
-  if is_building(group_site) and not group_site.unbarricadable:
-   group_site.barricade = 4
-   group_site.doors = has_doors(group_site)
  for i in range(zombie_count):
   var site = blocks[rng.randi_range(0,blocks.size()-1)]
-  if i == 0 or i >= zombie_count-5:
-   var x = clampi(p.x+rng.randi_range(-3,3),0,width-1)
-   var y = clampi(p.y+rng.randi_range(-3,3),0,height-1)
-   site = block_at(x,y)
-  var a = _actor("","","","Corpse",site.x,site.y,false,is_building(site) and i%3 == 0)
+  var a = _actor("","","","Corpse",site.x,site.y,false,is_building(site) and rng.randf() < 0.5)
   _setup_starting_skills(a,"Corpse")
   if i >= maxi(1,int(zombie_count*0.16)):
    a.down = true
@@ -464,6 +418,8 @@ func _schedule_npc(a: Dictionary, step: int) -> void:
 
 func wake_npc(a: Dictionary) -> void:
  var step = maxi(clock_step+1,ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001))
+ if a.get("recovery_mode", "") == "sleep": return
+ a.recovery_mode = ""
  if _npc_due(a) > step: _schedule_npc(a,step)
 
 func set_graffiti(b: Dictionary, text: String, outside: bool) -> void:
@@ -1100,7 +1056,8 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  if command in ["move","enter","leave","break","attack","bite","drag","revive"]:
   for id in spatial.get(current_block(a).id,[]):
    var other: Dictionary = actors[id]
-   if id > 0 and id != a.id and other.human != a.human and not other.down: wake_npc(other)
+   if id > 0 and id != a.id and other.human != a.human and not other.down:
+    if other.get("recovery_mode", "") != "rest" or other.inside == a.inside: wake_npc(other)
  var p = player()
  var event_action = command
  if command == "break" and not a.human and not a.inside and p.inside and a.x == p.x and a.y == p.y:
@@ -1133,15 +1090,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   var category = "PLAYER" if a.id == 0 else ("ALLY" if friendly else "ENEMY")
   if target_id == 0 or (critical and not friendly): category = "ALERT"
   if not text.is_empty(): log_event(text, category, a.id, event_action, critical or target_id == 0, attack_hit)
- if sleeping:
-  var loud_break = audible and command == "break" and initial_barricade_strength > 0 and barricade_strength(b) == 0
-  var injured = target_id == 0 and initial_target_hp > p.hp
-  if injured:
-   sleep_damage_hits = sleep_damage_hits+1 if now()-sleep_last_damage_at <= 10.0 else 1
-   sleep_last_damage_at = now()
-  if p.down or loud_break or sleep_damage_hits >= 2:
-   stop_rest("Sleep interrupted. " + ("The barricades crash down, waking you." if loud_break else "Sustained injuries wake you."))
- elif resting and ((target_id == 0 and (initial_target_hp > p.hp or command == "revive")) or (critical and audible) or threats()):
+ if resting and not sleeping and ((target_id == 0 and (initial_target_hp > p.hp or command == "revive")) or (critical and audible) or threats()):
   stop_rest("Rest interrupted. Danger or a change in your condition brings you back to normal speed.")
 
 func die(a: Dictionary, penalty: int = 0) -> void:
@@ -1342,7 +1291,7 @@ func _clock_step() -> void:
   var grants: int = 0
   for a in actors:
    if performance_counters != null: grants += int(a.ap < C.AP_CAP)
-   a.ap = mini(C.AP_CAP,a.ap+1)
+   a.ap = mini(C.AP_CAP,a.ap+(2 if a.id > 0 and a.get("recovery_mode", "") == "sleep" else 1))
   if performance_counters != null:
    performance_counters.ap_usec += Time.get_ticks_usec()-started
    performance_counters.ap_updates += actors.size()
@@ -1368,7 +1317,17 @@ func _clock_step() -> void:
     var afford = (clock_step/NpcGate.AP_INTERVAL_STEPS+maxi(0,stand_cost-a.ap))*NpcGate.AP_INTERVAL_STEPS
     _schedule_npc(a,maxi(afford,int(a.ready_at)*C.CLOCK_STEPS_PER_MINUTE))
     continue
+  if not str(a.get("recovery_mode", "")).is_empty():
+   a.recovery_mode = ""
   var rest_ap = _npc_turn(a)
+  if a.ap <= 0 and not a.down:
+   var nearby_danger = occupants(current_block(a),a.inside).any(func(other): return other.id != a.id and other.human != a.human and not other.down)
+   a.recovery_mode = "sleep" if a.human and a.inside and not nearby_danger else "rest"
+   var target_ap = C.AP_CAP if a.recovery_mode == "sleep" else 20
+   var intervals = ceili(float(target_ap-int(a.ap))/(2.0 if a.recovery_mode == "sleep" else 1.0))
+   var recovery_due = (clock_step/NpcGate.AP_INTERVAL_STEPS+intervals)*NpcGate.AP_INTERVAL_STEPS
+   _schedule_npc(a,recovery_due)
+   continue
   if a.down and _npc_due(a) > clock_step: continue
   if a.busy_until > now():
    _schedule_npc(a,NpcGate.ready_after_action(clock_step)+10+(id+clock_step)%17)
@@ -1604,7 +1563,7 @@ func begin_sleep() -> String:
  sleep_last_damage_at = -1000.0
  rest_target = C.AP_CAP
  rest_end_step = clock_step+(maxi(0,rest_target-player().ap)*30+30)*C.CLOCK_STEPS_PER_MINUTE
- last_rest_notice = "You fall asleep at 128× speed. A collapsing barricade or sustained damage can wake you."
+ last_rest_notice = "You fall asleep at 128× speed. You will sleep until fully rested."
  log_event(last_rest_notice)
  return ""
 
@@ -1857,43 +1816,28 @@ func skill_cost(a: Dictionary, skill: String) -> int:
  return 100
 
 func has_current_descriptions(b: Dictionary) -> bool:
- return int(b.get("description_version",0)) == 6 and b.get("description_type","") == b.type and b.has("inside_description_parts") and b.has("outside_description_parts") and b.has("inside_description") and b.has("outside_description")
+ return int(b.get("description_version",0)) == 7 and b.get("description_type","") == b.type and b.has("inside_description") and b.has("outside_description")
 
 func ensure_descriptions(b: Dictionary) -> void:
- # Separate RNG keeps flavour text from changing combat/AI randomness.
  if has_current_descriptions(b): return
  var local_rng = RandomNumberGenerator.new()
  for side in ["inside", "outside"]:
   local_rng.seed = world_seed*1000+int(b.id)+(10000019 if side == "outside" else 0)
   var kind = "office" if b.type == "necrotech_lab" and side == "outside" else b.type
-  var pool: Dictionary = description_pools.get(kind,{})
-  var key = side+"_description"
-  var phrases: Array[String] = []
-  for position in ["first", "second", "third"]:
-   var choices: Array = pool.get(side, {}).get(position, [])
-   if not choices.is_empty(): phrases.append(choices[local_rng.randi_range(0,choices.size()-1)])
-  b[key] = " ".join(phrases) if not phrases.is_empty() else "This place shows signs of decay and neglect."
-  b[side+"_description_parts"] = phrases
- if b.type == "necrotech_lab":
-  var choices: Array = description_pools.necrotech_lab.outside.recognized_third
-  b.necrotech_recognition = choices[local_rng.randi_range(0,choices.size()-1)]
- b.description_version = 6
+  var pool: Dictionary = description_pools.get(kind,{}).get(side,{})
+  var choices: Array = []
+  for column in ["first", "second", "third"]: choices.append_array(pool.get(column,[]))
+  b[side+"_description"] = choices[local_rng.randi_range(0,choices.size()-1)].strip_edges() if not choices.is_empty() else "This place shows signs of decay and neglect."
+ b.description_version = 7
  b.description_type = b.type
 
 func environmental_description(b: Dictionary, observer: Dictionary) -> String:
  var descriptions := b
  if not has_current_descriptions(b):
-  # Render an undiscovered location without changing the saved world.
   descriptions = {"id":b.id, "type":b.type}
   ensure_descriptions(descriptions)
- if b.type == "necrotech_lab" and observer.inside and powered(b):
-  var parts: Array = descriptions.inside_description_parts.duplicate()
-  parts[2] = description_pools.necrotech_lab.inside.powered_third[0]
-  return " ".join(parts)
- if b.type == "necrotech_lab" and not observer.inside and has_skill(observer,"necro_employment"):
-  var parts: Array = descriptions.outside_description_parts.duplicate()
-  parts[2] = descriptions.necrotech_recognition
-  return " ".join(parts)
+ if b.type == "necrotech_lab" and observer.inside:
+  return description_pools.necrotech_lab.inside.powered_third[0] if powered(b) else description_pools.necrotech_lab.inside.third[0]
  return descriptions["inside_description" if observer.inside else "outside_description"]
 
 func entrance_is_open(b: Dictionary) -> bool:
@@ -1921,63 +1865,39 @@ func exterior_building_clues(b: Dictionary) -> String:
 func location_description(a: Dictionary) -> String:
  if a.down: return "You are down. Everything is dark. Rest and stand up to see your surroundings again."
  var b = current_block(a)
- var observation = "You are %s %s. " % ["inside" if a.inside else "outside",b.name]
- if is_building(b):
-  if a.inside:
-   observation += entrance_description(b) + " "
-   if b.ruin >= 3:
-    observation += "The building has been ruined. Its structural damage prevents you from barricading. "
-   elif b.ruin > 0:
-    observation += "The building has been ransacked. "
-   var has_power = powered(b)
-   if not has_power and is_dark_building(b): observation += "The building is pitch black inside. "
-   if b.generator:
-    observation += "A portable generator has been set up here. "
-    if has_power:
-     observation += "It is running. "
-    else:
-     if b.generator_hp < C.GENERATOR_HP: observation += "It is %s. " % generator_condition(b)
-     if b.generator_hp > 0: observation += "It is out of fuel. "
-  else:
-   observation += exterior_building_clues(b) + " "
- var humans = 0
+ var first = "You are standing %s %s. %s" % ["outside" if is_building(b) and not a.inside else "in", b.name, environmental_description(b,a)]
+ if is_building(b): first += " " + entrance_description(b)
+ var names: Array[String] = []
  var zombies = 0
  var bodies = 0
- var revivifying = 0
- var survivor_details: Array[String] = []
  for other in occupants(b,a.inside):
   if other.id == a.id: continue
-  if other.down:
-   bodies += 1
-   if other.human: revivifying += 1
+  if other.down: bodies += 1
   elif other.human:
-   humans += 1
-   var details: Array[String] = []
-   var condition = survivor_condition(a,other)
-   if not condition.is_empty(): details.append(condition)
-   if sees_survivor_hp(a,other): details.append("%d HP" % other.hp)
-   if has_skill(a,"scent_blood") and other.infected: details.append("infected")
-   if not details.is_empty(): survivor_details.append("%s (%s)" % [display_name(other),", ".join(details)])
-  else:
-   zombies += 1
-   if a.human and has_skill(a,"necro_employment") and other.tagged_until > minute:
-    survivor_details.append("%s DNA: %s" % [display_name(other),dna_profile(other)])
- if humans > 0: observation += "There is another survivor here. " if humans == 1 else "There are %d other survivors here. " % humans
- if not survivor_details.is_empty(): observation += "; ".join(survivor_details) + ". "
- if zombies > 0: observation += "There is a lone zombie here. " if zombies == 1 else "There are %d zombies here. " % zombies
- if bodies > 0:
-  observation += "There is one dead body here. " if bodies == 1 else "There are %d dead bodies here. " % bodies
-  if has_skill(a,"scent_death") and revivifying > 0:
-   observation += "One of them smells strange. " if revivifying == 1 else "%d of them smell strange. " % revivifying
+   var name = display_name(other)
+   if sees_survivor_hp(a,other): name += " [%d/%d HP]" % [other.hp,max_hp(other)]
+   names.append(name)
+  else: zombies += 1
+ if not names.is_empty():
+  var listing = names[0] if names.size() == 1 else (" and ".join(names) if names.size() == 2 else ", ".join(names.slice(0,-1)) + ", and " + names[-1])
+  first += " Also here %s %s." % ["is" if names.size() == 1 else "are",listing]
+ var paragraphs: Array[String] = [first]
+ if a.inside and b.generator:
+  var power = "A portable generator is set up here. "
+  if powered(b):
+   power += "It is running, powering a radio transmitter that's currently set to %.2f MHz." % float(b.frequency) if b.radio and b.radio_hp > 0 else "It is running."
+  elif b.generator_hp <= 0: power += "It is damaged."
+  else: power += "It is out of fuel."
+  paragraphs.append(power)
+ elif not a.inside and is_building(b) and powered(b): paragraphs.append("Lights are on inside.")
  var graffiti: String = b.graffiti_inside if a.inside else b.graffiti
- if not graffiti.is_empty(): observation += "A painted message reads: %s. " % (graffiti.left(80)+("…" if graffiti.length() > 80 else ""))
- if a.inside and not b.decorations.is_empty():
-  var names: Array[String] = []
-  for kind in b.decorations.slice(0,3): names.append(C.ITEMS[kind].name)
-  observation += "Decorations: "+", ".join(names)+(" and %d more" % (b.decorations.size()-3) if b.decorations.size() > 3 else "")+". "
- var trail = scent_trail_text(a)
- if not trail.is_empty(): observation += trail + " "
- return environmental_description(b,a)+"\n\n"+observation.strip_edges()
+ if not graffiti.is_empty(): paragraphs.append("Somebody has spraypainted %s onto a %s." % [graffiti, "tree" if not a.inside and b.type in ["park","cemetery","zoo"] else "wall"])
+ if zombies > 0:
+  if a.human:
+   paragraphs.append("There is a lone zombie here." if zombies == 1 else ("There are two zombies here." if zombies == 2 else "There is a group of %d zombies here." % zombies))
+  else: paragraphs.append("There is another zombie here." if zombies == 1 else "There are another %d zombies here." % zombies)
+ if bodies > 0: paragraphs.append("There is 1 dead body here." if bodies == 1 else "There are %d dead bodies here." % bodies)
+ return "\n\n".join(paragraphs)
 
 func time_speed() -> float:
  var p = player()

@@ -33,6 +33,8 @@ var minimap_artwork := MapArtwork.new()
 var location_architecture := preload("res://scripts/location_architecture.gd").new()
 const ENVIRONMENT_RECT = Rect2(402,161,1016,572)
 const INTERIOR_ZOOM = 1.1
+const HUMAN_IDLE_FRAMES = [0,5,7,5]
+const NPC_EXIT_SPEED = 260.0
 const INVENTORY_PAGE_SIZE = 10
 var inventory_page: int = 0
 var foot_bounds: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://assets/tables/actor_frame_bounds.json"))
@@ -78,7 +80,8 @@ var pause_banner: Panel
 var local_map: MapCanvas
 var minimap_caption: Label
 var location_subtitle: Label
-var location_description_label: Label
+var location_description_label: RichTextLabel
+var location_description_plain: String = ""
 var dashboard_layout: Array = []
 var dashboard_inventory: Array = []
 var dashboard_inventory_controls: Array = []
@@ -174,14 +177,17 @@ func _animate_scene(delta: float) -> void:
   if not is_instance_valid(target):
    departing_actors.erase(entry)
    continue
-  var progress = (animation_time-float(entry.since))/0.4
+  var elapsed = animation_time-float(entry.since)
+  var progress = elapsed/float(entry.duration)
   if progress >= 1.0:
    target.queue_free()
    departing_actors.erase(entry)
   elif entry.body:
    target.visible = int(progress*6)%2 == 0
   else:
+   target.visible = true
    target.position = entry.from.lerp(entry.to,clampf(progress,0.0,1.0))
+   animate_departing_actor(entry,elapsed)
  if is_instance_valid(player_portrait):
   player_portrait.texture.region = portrait_region(sim.player())
 
@@ -552,7 +558,7 @@ func _refresh_dashboard() -> void:
   _update_local_map(p)
   location_subtitle.text = _location_subtitle(b,p)
   var description: String = sim.location_description(p)
-  if description != location_description_label.text:
+  if description != location_description_plain:
    _set_location_description(description)
   _update_people(p)
  _update_actor_tooltip()
@@ -569,7 +575,7 @@ func _header() -> void:
  button(page, "Save", Rect2(1046, 15, 80, 40), _save)
  button(page, "Load", Rect2(1136, 15, 80, 40), _load)
  button(page, "Help", Rect2(1226, 15, 80, 40), func(): open_modal("help"))
- button(page, "Restart", Rect2(1316, 15, 104, 40), func(): open_modal("restart"))
+ button(page, "Quit", Rect2(1316, 15, 104, 40), func(): open_modal("quit"))
  var settings_button = button(page,"Settings [Esc]",Rect2(1440,15,190,40),func(): open_modal("settings"))
  settings_button.name = "SettingsButton"
 
@@ -585,6 +591,9 @@ func _local_map() -> void:
  var city: Control
  if is_instance_valid(retained_hover_button) and retained_hover_button.get_parent().name == "CityMinimap":
   city = retained_hover_button.get_parent()
+  # Recentring changes tile positions and hover keys. Remove the old target
+  # before building its replacement so their MapTile names cannot collide.
+  if city.footprint != Rect2i(p.x-1,p.y-1,3,3): retained_hover_button = null
   for child in city.get_children():
    if child == retained_hover_button: continue
    city.remove_child(child)
@@ -804,16 +813,22 @@ func _location(b: Dictionary) -> void:
  art.texture = null
  if not p.inside: necrotech_mark(page,b,Vector2(895,365),28)
  rect(page,Rect2(400,745,1020,190),PANEL,Color("4e5847"))
- location_description_label = label(page,"",Rect2(416,753,987,0),20,CREAM)
+ location_description_label = RichTextLabel.new()
+ location_description_label.position = Vector2(416,753)
+ location_description_label.size = Vector2(987,174)
+ location_description_label.bbcode_enabled = true
+ location_description_label.scroll_active = false
+ location_description_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
  location_description_label.name = "LocationDescription"
- location_description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
- location_description_label.add_theme_constant_override("line_spacing",3)
+ location_description_label.add_theme_color_override("default_color",CREAM)
+ location_description_label.add_theme_constant_override("line_separation",3)
+ page.add_child(location_description_label)
  _set_location_description(sim.location_description(p))
 
 func _dark_location() -> void:
  rect(page,Rect2(400,84,1020,851),Color.BLACK).name = "DarkEnvironment"
  label(page,"ASLEEP" if sim.sleeping else "EVERYTHING IS DARK",Rect2(420,250,980,40),27,MUTED)
- var text: String = "The city fades away. You will awaken at 50 AP, or if collapsing barricades or sustained injuries disturb you." if sim.sleeping else sim.location_description(sim.player())
+ var text: String = "The city fades away. You will awaken at 50 AP." if sim.sleeping else sim.location_description(sim.player())
  var description := label(page,text,Rect2(420,303,980,62),20,MUTED)
  # Keep the retained awake description addressable while the blackout is shown.
  description.name = "SleepDescription" if is_instance_valid(location_description_label) and location_description_label.get_parent() == page else "LocationDescription"
@@ -829,9 +844,16 @@ func _location_subtitle(b: Dictionary, p: Dictionary) -> String:
 
 func _set_location_description(text: String) -> void:
  var font_size: int = description_font_size(text)
- location_description_label.add_theme_font_size_override("font_size",font_size)
- location_description_label.text = text
- location_description_label.size.y = description_height(text,font_size)
+ location_description_plain = text
+ location_description_label.add_theme_font_size_override("normal_font_size",font_size)
+ var formatted = text.replace("[", "[lb]")
+ var p = sim.player()
+ if not p.human and sim.has_skill(p,"scent_blood"):
+  for other in sim.occupants(sim.current_block(p),p.inside):
+   if other.human and not other.down and other.infected:
+    var health = "%s [lb]%d/%d HP]" % [sim.display_name(other),other.hp,sim.max_hp(other)]
+    formatted = formatted.replace(health,"[color=#75d16d]" + health + "[/color]")
+ location_description_label.text = formatted
 
 func description_height(text: String, font_size: int) -> float:
  var measured = theme.default_font.get_multiline_string_size(text,HORIZONTAL_ALIGNMENT_LEFT,987,font_size,-1,TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND)
@@ -840,7 +862,7 @@ func description_height(text: String, font_size: int) -> float:
 
 func description_font_size(text: String) -> int:
  var font_size = 20
- while font_size > 12 and description_height(text,font_size) > 174: font_size -= 1
+ while font_size > 1 and description_height(text,font_size) > 174: font_size -= 1
  return font_size
 
 func _update_people(p: Dictionary, force: bool = false) -> void:
@@ -924,9 +946,14 @@ func _people(p: Dictionary, people: Array) -> void:
    child.name = "Departing_%s" % child.get_instance_id()
    child.set_meta("departing",true)
    child.mouse_filter = Control.MOUSE_FILTER_IGNORE
-   for sprite in child.get_children():
-    if sprite is TextureRect and not body: sprite.flip_h = not sprite.flip_h
-   departing_actors.append({"target":child,"from":from,"to":destination,"since":animation_time,"body":body})
+   var departure: Dictionary = child.get_meta("actor_visual").duplicate()
+   departure.merge({"from":from,"to":destination,"since":animation_time,"body":body,
+    "human":bool(child.get_meta("was_human",false)),
+    "duration":0.4 if body else maxf(0.01,absf(destination.x-from.x)/NPC_EXIT_SPEED)})
+   if not body:
+    child.visible = true
+    animate_departing_actor(departure,0.0)
+   departing_actors.append(departure)
    continue
   actors_layer.remove_child(child)
   child.queue_free()
@@ -989,6 +1016,7 @@ func _people(p: Dictionary, people: Array) -> void:
   sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
   if a.down: sprite.modulate = Color(0.55,0.55,0.55)
   var visual = {"node":sprite,"target":target,"destination":bounds.position,"id":a.id,"offset":a.id%8,"sheet":sheet,"size":entry.size,"ground":entry.size-12}
+  target.set_meta("actor_visual",visual)
   position_actor_sprite(visual)
   actor_buttons.append(visual)
   if scent_health:
@@ -1403,7 +1431,7 @@ func _modal() -> void:
  overlay.position = Vector2(240,60)
  rect(overlay, Rect2(-240,-60,1920,1080), Color(0.01,0.03,0.02,0.92))
  rect(overlay, Rect2(100,80,1240,800), PANEL, GOLD)
- label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
+ label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "quit":"Embrace cowardice?", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
  button(overlay, "Close [Esc]", Rect2(1170,103,140,38), func(): modal = ""; refresh())
  if modal == "tutorial": _tutorial_modal()
  elif modal == "message": _message_modal()
@@ -1434,6 +1462,13 @@ func _modal() -> void:
   history.scroll_following = true
   history.text = feed.format_rows(sim.messages,history_filter)
   overlay.add_child(history)
+ elif modal == "quit":
+  button(overlay,"Quit to Menu",Rect2(380,350,300,60),func():
+   if get_tree().change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene")) != OK:
+    modal = ""
+    notice = "Could not return to the main menu."
+    refresh())
+  button(overlay,"Quit to Desktop",Rect2(750,350,300,60),func(): get_tree().quit())
  elif modal == "restart": _new_game_modal()
  elif modal == "jump":
   label(overlay,"Jumping from the window kills your survivor. You can spend AP to stand as a zombie.",Rect2(140,230,1140,60),24)
@@ -1823,9 +1858,18 @@ func actor_frame(a: Dictionary) -> int:
   "attack":
    if elapsed < 0.7: return 8+mini(6,int(elapsed*10))
  if not a.human:
-  var stagger = [0,0,1,1,1,2,3,3,4,4,4,5,6,7,7,7]
-  return stagger[(int(animation_time*3)+a.id*3)%stagger.size()]
- return (int(animation_time*5)+a.id)%8
+  return zombie_actor_frame(a.id)
+ return HUMAN_IDLE_FRAMES[(int(animation_time*2.4)+a.id)%HUMAN_IDLE_FRAMES.size()]
+
+func zombie_actor_frame(id: int) -> int:
+ var stagger = [0,0,1,1,1,2,3,3,4,4,4,5,6,7,7,7]
+ return stagger[(int(animation_time*3)+id*3)%stagger.size()]
+
+func animate_departing_actor(entry: Dictionary, elapsed: float) -> void:
+ # Human sheets face right; both zombie sheets face left in their native art.
+ entry.node.flip_h = (entry.to.x < entry.from.x) != entry.sheet.begins_with("zombie")
+ var frame = int(elapsed*7.0)%8 if entry.human else zombie_actor_frame(entry.id)
+ set_actor_sprite_frame(entry,entry.sheet,frame)
 
 func actor_region(a: Dictionary, texture: Texture2D) -> Rect2:
  var frame = actor_frame(a)
@@ -2008,7 +2052,10 @@ func _new_game_modal() -> void:
   if not why.is_empty(): new_game_error = why; refresh(); return
   _reset_session_view()
   new_game_error = ""
-  modal = ""
+  tutorial_step = 0
+  tutorial_opening = true
+  tutorial_appendix = false
+  modal = "tutorial"
   paused = false
   notice = "New game started."
   refresh(),true)
@@ -2064,6 +2111,10 @@ func position_actor_sprite(entry: Dictionary) -> void:
     target.visible = int(progress*6)%2 == 1
    else:
     target.position = arrival.from.lerp(entry.destination,clampf(progress,0.0,1.0))
+ set_actor_sprite_frame(entry,sheet,frame)
+ entry.node.modulate = Color(0.55,0.55,0.55) if a.down and sheet == entry.sheet and (not target.has_meta("body_transition") or elapsed_for_body(target) >= 0.96) else Color.WHITE
+
+func set_actor_sprite_frame(entry: Dictionary, sheet: String, frame: int) -> void:
  var atlas: AtlasTexture = entry.node.texture
  atlas.atlas = tex("sprite_sheets/"+sheet+"_sprite_sheet.png")
  if atlas.atlas.get_width() > atlas.atlas.get_height()*8:
@@ -2072,7 +2123,6 @@ func position_actor_sprite(entry: Dictionary) -> void:
  else:
   var cell = Vector2(atlas.atlas.get_width()/6.0,atlas.atlas.get_height()/4.0)
   atlas.region = Rect2(Vector2(frame%6,frame/6)*cell,cell)
- entry.node.modulate = Color(0.55,0.55,0.55) if a.down and sheet == entry.sheet and (not target.has_meta("body_transition") or elapsed_for_body(target) >= 0.96) else Color.WHITE
  var frames = foot_bounds.get(sheet,[])
  var bottom = float(frames[frame].bottom) if frames.size() == 24 else 1.0
  entry.node.position.y = entry.ground-entry.size*bottom

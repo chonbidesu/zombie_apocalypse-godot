@@ -202,6 +202,14 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 	supplies.observe(s, a, here, enemies)
 	var rest: float = Desire.rest(a.ap, (0.56 + wall / 50.0) if a.inside and enemies == 0 and here.ruin == 0 else 0.0, danger)
 	if danger < 0.55 and _score < 0.66:
+		# Well-rested armed survivors seek isolated nearby zombies for experience.
+		if a.ap >= 30 and a.hp >= 35 and a.supply_goal < 0 and not s.item_by_uid(a, a.equipped).is_empty():
+			if a.inside and outside == 1 and wall <= 4 and s._try(a, "leave"): return 0
+			if not a.inside and enemies == 0:
+				for y in range(maxi(0, a.y - 1), mini(s.height, a.y + 2)):
+					for x in range(maxi(0, a.x - 1), mini(s.width, a.x + 2)):
+						var hunting_site: Dictionary = s.block_at(x, y)
+						if _outside_hostiles(s, hunting_site) == 1 and AI.go(s, a, hunting_site): return 0
 		if _respond_to_radio(s, a, here, enemies, outside): return 0
 		if _respond_to_call(s, a, here, enemies, outside): return 0
 		if a.inside and a.ap >= 20 and a.supply_goal < 0 and here.id == a.home and here.npc_entry >= 0 and s.has_skill(a, "construction"):
@@ -608,8 +616,8 @@ func _zombie(s, a: Dictionary, here: Dictionary, present: Array, skill: String) 
 			var stats: Dictionary = s.barricade_attack_stats(a, {"unarmed": true})
 			var work: float = wall / maxf(0.01, stats.hit * stats.structural / 100.0)
 			_offer(s, a, Desire.breach(cue, work, pack), "break", -1, {"unarmed": true})
-		elif wall == 0 and (goal.get("id", -1) == here.id or (here.ruin < 3 and s.can_be_ransacked(here) and s.has_skill(a, "ransack"))):
-			var local_cue: float = cue if goal.get("id", -1) == here.id else 0.0
+		elif wall == 0 and (goal.get("id", -1) == here.id or (s.has_skill(a, "memories") and s.doors_closed(here) and s.rng.randf() < 0.95) or (here.ruin < 3 and s.can_be_ransacked(here) and s.has_skill(a, "ransack"))):
+			var local_cue: float = cue if goal.get("id", -1) == here.id else (0.9 if s.doors_closed(here) and s.has_skill(a, "memories") else 0.0)
 			_offer(s, a, maxf(0.16, Desire.breach(local_cue, 0.0, pack)), "enter")
 	var wander: float = Desire.wander(cue, 0.65)
 	if goal.is_empty() and a.ap >= 16 and s.minute >= a.npc_special_at:

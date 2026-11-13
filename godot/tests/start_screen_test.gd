@@ -175,17 +175,7 @@ func run() -> void:
  creation.confirm.pressed.emit()
  creation.advance_cinematic(5.4)
  await process_frame
- check(is_instance_valid(menu.tutorial_prompt) and menu.naming == null and menu.intro == null, "Confirmation opens the tutorial choice before naming")
- check(not menu.tutorial_prompt.narration.playing and menu.tutorial_prompt.narration.stream == null, "Tutorial choice starts without naming narration")
- menu.tutorial_prompt._submit_answer("maybe")
- check(menu.tutorial_prompt.error_label.text != "" and menu.tutorial_prompt.boot_elapsed < 0.0, "Invalid answers stay on the choice")
- menu.tutorial_prompt._submit_answer(" nO ")
- check(not menu.tutorials_enabled and menu.tutorial_prompt.boot_elapsed == 0.0 and menu.naming == null, "Negative choice starts a silent boot")
- check(menu.tutorial_prompt.boot_text.text.contains("INITIALIZE") and not menu.tutorial_prompt.boot_text.text.contains("READY"), "Startup begins with the initialization line")
- menu.tutorial_prompt._process(1.2)
- check(menu.tutorial_prompt.boot_text.text.contains("CHECKING") and menu.naming == null, "Startup reveals system checks before naming")
- menu.tutorial_prompt._process(1.3)
- check(is_instance_valid(menu.naming) and menu.intro == null and menu.naming.narration.playing, "Boot finishes before naming narration starts")
+ check(is_instance_valid(menu.naming) and menu.intro == null and menu.naming.narration.playing, "Confirmation opens naming directly with narration")
  menu.naming.fields[0].text = "   "
  menu.naming._confirm()
  check(is_instance_valid(menu.naming) and menu.naming.error_label.text != "", "Empty names cannot advance to the intro")
@@ -209,7 +199,9 @@ func run() -> void:
  check(is_equal_approx(db_to_linear(playlist.volume_db),0.3),"Gameplay music uses the original 30% volume")
  check_playlist_cycle(playlist)
  check(game.scene_file_path == "res://main.tscn" and game.sim.player().job == "Firefighter","Confirmation launches the selected occupation")
- check(game.modal != "tutorial", "Negative choice remains effective after naming and intro")
+ check(game.modal == "tutorial" and game.tutorial_step == 0, "New game opens the field guide automatically")
+ game.modal = ""
+ game.refresh()
  check(game.sim.display_name(game.sim.player()) == "Jamie Rivera", "The living player uses the entered name")
  game.sim.player().human = false
  check(game.sim.display_name(game.sim.player()) == "Ghastly Jamie", "The undead player uses the adjective and first name")
@@ -256,6 +248,7 @@ func run() -> void:
  check(playlist.playing and playlist._next_index == 1,"Loading from the title starts the shuffled gameplay playlist")
  check(game.sim.player() == saved_actor and game.sim.minute == saved_minute,"Load Game preserves saved character and time without starting a new world")
  check(game.notice == "Loaded your neighbourhood.","Loaded game shows confirmation")
+ check(game.modal != "tutorial", "Loading a save does not restart the field guide")
  playlist.finished.emit()
  var before_load := playlist.stream
  game._load()
@@ -273,6 +266,21 @@ func run() -> void:
    button.pressed.emit()
    break
  check(game.sim.world_mode == "sandbox" and playlist.playing and playlist._next_index == 1 and playlist.stream != before_restart,"Restarting from world setup shuffles the playlist")
+ check(game.modal == "tutorial" and game.tutorial_step == 0 and game.tutorial_opening, "Restarting opens the field guide at its beginning")
+ game.modal = ""
+ game.refresh()
+ var quit_buttons = game.page.find_children("*", "Button", true, false).filter(func(node): return node.text == "Quit")
+ check(quit_buttons.size() == 1 and game.page.find_children("*", "Button", true, false).all(func(node): return node.text != "Restart"), "Quit replaces Restart on the dashboard")
+ quit_buttons[0].pressed.emit()
+ check(game.modal == "quit", "Quit opens the confirmation")
+ var quit_labels = game.overlay.find_children("*", "Label", true, false).map(func(node): return node.text)
+ var quit_options = game.overlay.find_children("*", "Button", true, false)
+ check("Embrace cowardice?" in quit_labels and quit_options.any(func(node): return node.text == "Quit to Desktop"), "Confirmation shows the question and desktop option")
+ var return_buttons = quit_options.filter(func(node): return node.text == "Quit to Menu")
+ check(return_buttons.size() == 1, "Confirmation offers Quit to Menu")
+ return_buttons[0].pressed.emit()
+ await scene_changed
+ check(current_scene is Menu and (current_scene as Menu).title_page.visible, "Quit to Menu returns to the title")
  await process_frame
  clear_test_slots()
  current_scene.queue_free()

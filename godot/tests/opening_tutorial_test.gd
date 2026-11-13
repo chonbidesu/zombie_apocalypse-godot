@@ -1,7 +1,6 @@
 extends SceneTree
 
 const Sim = preload("res://scripts/simulation.gd")
-const Prompt = preload("res://scripts/tutorial_prompt.gd")
 const Game = preload("res://scripts/interface.gd")
 const C = preload("res://scripts/catalog.gd")
 var failures := 0
@@ -17,16 +16,6 @@ func _initialize() -> void:
  run.call_deferred()
 
 func run() -> void:
- var prompt := Prompt.new()
- root.add_child(prompt)
- var answers: Array = []
- prompt.answered.connect(func(value): answers.append(value))
- for word in ["Y", " YES ", "yEp", "okay", "1"]: prompt.fields[0].text_submitted.emit(word)
- for word in ["N", " NO ", "nOpe", "negative", "0"]: prompt._submit_answer(word)
- prompt._submit_answer("perhaps")
- check(answers == [true,true,true,true,true,false,false,false,false,false], "Choice accepts affirmative and negative variants, but rejects ambiguity")
- check(not prompt.error_label.text.is_empty(), "Invalid choice provides feedback")
- prompt.queue_free()
  var types := {"Private":["armoury"], "Medic":["hospital"], "Scout":["armoury"], "Doctor":["hospital"], "NecroTech Lab Assistant":["necrotech_lab"], "Consumer":["mall"], "Police Officer":["police_department"], "Firefighter":["fire_station"], "Corpse":["hospital"]}
  var last_sim: Sim
  for job in types:
