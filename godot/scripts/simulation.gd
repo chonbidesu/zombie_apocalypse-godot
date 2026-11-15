@@ -84,6 +84,7 @@ const SKYLINE_RADIUS = 10
 var scent_trackers: Dictionary = {}
 const BRAIN_ROT_REVIVAL_BLOCKED = "Brain Rot requires a powered NecroTech lab and NecroNet access."
 const BRAIN_ROT_EXTRACTION_BLOCKED = "Brain Rot prevents DNA extraction."
+const DNA_SCAN_DAILY_BLOCKED = "Scan failed: this zombie has already been scanned. Try again after midnight or after it dies and stands up again."
 const CORPSE_REVIVAL_BLOCKED = "You cannot revive that body."
 var metrics: Dictionary = {"attacks":0, "deaths":0, "revivals":0, "npc_actions":0}
 
@@ -574,8 +575,28 @@ func paint_remaining(a: Dictionary, can: Dictionary) -> int:
 func dna_profile(a: Dictionary) -> String:
  var names: Array[String] = []
  for skill in a.tagged_skills:
-  if C.SKILLS.has(skill) and C.SKILLS[skill].side == "zombie": names.append(C.SKILLS[skill].name)
+  if C.SKILLS.has(skill): names.append(C.SKILLS[skill].name)
  return ", ".join(names) if not names.is_empty() else "none detected"
+
+func dna_human_training(a: Dictionary) -> bool:
+ if a.tagged_until <= minute: return false
+ for skill: String in a.tagged_skills:
+  if C.SKILLS.has(skill) and C.SKILLS[skill].side == "human": return true
+ return false
+
+func dna_target(a: Dictionary, preferred: int = -1) -> int:
+ var fallback: int = -1
+ var fresh: int = -1
+ var unscanned: int = -1
+ for other: Dictionary in occupants(current_block(a), a.inside):
+  if other.human or other.down: continue
+  if fallback < 0 or other.id == preferred: fallback = other.id
+  if other.tagged_until > minute: continue
+  if unscanned < 0 or other.id == preferred: unscanned = other.id
+  if has_skill(other, "brain_rot"): continue
+  if other.id == preferred: return preferred
+  if fresh < 0: fresh = other.id
+ return fresh if fresh >= 0 else (unscanned if unscanned >= 0 else fallback)
 
 func _relocate(a: Dictionary, from: int, to: int) -> void:
  if from == to: return
@@ -802,6 +823,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
 func act(command: String, target_id: int = -1, data: Dictionary = {}) -> Dictionary:
  if resting: return {"ok":false, "message":"Cancel rest before acting."}
  var p = player()
+ if command == "extract": target_id = dna_target(p, target_id)
  var rejection = reason(p, command, target_id, data)
  if not rejection.is_empty():
   if rejection == BRAIN_ROT_REVIVAL_BLOCKED: start_scent_trail(actors[target_id],p)
@@ -985,8 +1007,6 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    t.ready_at = minute + 5
    t.equipped = -1
    t.memory = -1
-   t.tagged_until = 0
-   t.tagged_skills.clear()
    t.supply_goal = -1
    t.supply_kind = ""
    if t.id > 0:
@@ -1000,6 +1020,9 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    metrics.revivals += 1
    if narrate: text = "%s %s. They can stand as a human." % [action_phrase(a,"revive","revives"),display_name(t)]
   "stand":
+   if not a.human:
+    a.tagged_until = 0
+    a.tagged_skills.clear()
    a.down = false
    a.headshot = 0
    set_pose(a,"idle")
@@ -1214,7 +1237,11 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  if a.id == 0 or visible or audible or remote or target_id == 0:
   var category = "PLAYER" if a.id == 0 else ("ALLY" if friendly else "ENEMY")
   if target_id == 0 or (critical and not friendly): category = "ALERT"
-  if not text.is_empty(): log_event(text, category, a.id, event_action, critical or target_id == 0, attack_hit)
+  if not text.is_empty():
+   log_event(text, category, a.id, event_action, critical or target_id == 0, attack_hit)
+   if a.id == 0 and command == "extract":
+    messages.back().dna_report = {"name": display_name(actors[target_id]), "target": target_id,
+     "skills": actors[target_id].tagged_skills.duplicate()}
  if resting and not sleeping and ((target_id == 0 and (initial_target_hp > p.hp or command == "revive")) or (critical and audible) or threats()):
   stop_rest("Rest interrupted. Danger or a change in your condition brings you back to normal speed.")
  if npc_full_recovery and a.id > 0 and a.ap <= 0: _begin_npc_recovery(a)
@@ -1240,8 +1267,6 @@ func die(a: Dictionary, penalty: int = 0) -> void:
  a.headshot = penalty
  a.fed = 0
  a.fuel_soaked = false
- a.tagged_until = 0
- a.tagged_skills.clear()
  a.scout_site = -1
  set_pose(a,"die")
  a.speech = ""
@@ -1712,9 +1737,6 @@ func learn(skill: String, actor_id: int = 0) -> String:
  a.xp -= skill_cost(a,skill)
  if def.side == "human": a.human_skills.append(skill)
  else: a.zombie_skills.append(skill)
- if skill == "brain_rot":
-  a.tagged_until = 0
-  a.tagged_skills.clear()
  if actor_id == 0: log_event("Learned %s." % def.name)
  return ""
 
@@ -1985,7 +2007,9 @@ func melee_break_chance(item: Dictionary) -> float:
  return float(C.ITEMS[item.kind].get("break_on_hit",0.0))
 
 func action_feedback(a: Dictionary, command: String, target: int = -1, data: Dictionary = {}, context_only: bool = false) -> String:
+ if command == "extract" and a.id == 0: target = dna_target(a, target)
  var why = reason(a, command, target, data, context_only)
+ if command == "extract" and why in [DNA_SCAN_DAILY_BLOCKED, BRAIN_ROT_EXTRACTION_BLOCKED]: return ""
  # Entry remains an attempt the player can make, with feedback on rejection.
  if command == "barricade" and why == "The barricade cannot be built any higher.": return ""
  if command == "enter" and why.begins_with("You try to find an entry point"): return ""
@@ -2097,6 +2121,9 @@ func time_speed() -> float:
 func reanimate_bodies() -> void:
  managed_queries.reset()
  for a in actors:
+  # Shared daily DNA reset also upgrades rolling tags in legacy saves.
+  a.tagged_until = 0
+  a.tagged_skills.clear()
   if a.id > 0 and a.get("dormant",false) and rng.randf() < C.DAILY_REANIMATION_CHANCE:
    a.dormant = false
    a.ready_at = minute
@@ -2268,6 +2295,8 @@ func level(a: Dictionary) -> int:
  return maxi(1,a.human_skills.size()+a.zombie_skills.size())
 
 func initialize_actor(a: Dictionary) -> void:
+ if not a.has("npc_necro_start"):
+  a.npc_necro_start = a.id > 0 and a.job in ["NecroTech Lab Assistant", "Scientist", "Volunteer", "Engineer"]
  if a.get("sex","") not in ["male","female"]: a.sex = C.occupation_sex(a.job)
  if not a.has("original_human"):
   a.original_human = a.job not in ["Corpse","Resident"]
@@ -2431,6 +2460,7 @@ func _starting_setup(occupation: String) -> Array:
 
 func _setup_starting_skills(a: Dictionary, occupation: String) -> void:
  a.human_skills = _starting_setup(occupation)[0].duplicate()
+ a.npc_necro_start = a.id > 0 and "necro_employment" in a.human_skills
  a.zombie_skills = ["vigour_mortis"] if occupation in ["Corpse","Resident"] else []
 
 func _setup_player(a: Dictionary, occupation: String) -> void:

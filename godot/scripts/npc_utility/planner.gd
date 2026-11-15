@@ -169,23 +169,28 @@ func _human_choices(s, a: Dictionary, here: Dictionary, present: Array, context:
 		if enemies == 0 and a.ap >= 10 and _score < 0.55:
 			_ready_weapon(s, a)
 		if s.has_skill(a, "lab_experience") and (here.type == "necrotech_lab" or here.id == a.home) and enemies == 0:
-			if here.type == "necrotech_lab" and outside == 0 and a.ap >= 32:
+			if here.type == "necrotech_lab" and a.ap > 8:
 				var needles: int = 0
 				for item in a.inventory:
 					if item.kind == "syringe": needles += 1
-				if needles < 2: _offer(s, a, 0.57, "search")
+				if needles < 2: _offer(s, a, 0.84 if needles == 0 else 0.67, "search")
 			for other in s.occupants(here, false):
-				if not other.wants_revive or other.down or s.has_skill(other, "brain_rot"): continue
+				if other.human: continue
+				var patient: bool = s.dna_human_training(other)
+				var needs_sample: bool = not other.down and other.tagged_until <= s.minute and not s.item_kind(a, "dna_extractor").is_empty()
+				if not patient and not needs_sample: continue
+				if needs_sample and a.ap >= 15 and a.hp >= 30 and outside <= 1:
+					_offer(s, a, 0.89, "leave")
 				if s.item_kind(a, "syringe").is_empty():
 					if outside == 0 and a.ap >= 25 and s.item_search_chance(here, "syringe", a) <= 0.075:
 						_offer(s, a, 0.78, "manufacture")
 					if a.ap >= 5 and here.type == "necrotech_lab": _offer(s, a, 0.76, "search")
-				elif outside <= 1 and a.ap >= 4:
+				elif patient and outside <= 1 and a.ap > 8:
 					_offer(s, a, 0.89, "leave")
 				break
 	else:
 		if enemies == 0 and here.type == "necrotech_lab" and s.has_skill(a, "lab_experience") and s.item_kind(a, "syringe").is_empty():
-			_offer(s, a, 0.68, "enter")
+			_offer(s, a, 0.84, "enter")
 		if here.type in MARKERS and here.graffiti.is_empty() and not s.item_kind(a, "spray_can").is_empty() and s.has_skill(a, "lab_experience"):
 			_offer(s, a, 0.56, "tag", -1, {"text": "Revive point"})
 		elif here.graffiti.is_empty() and danger < 0.2 and Catalog.TAG_XP.has(here.type) and s.has_skill(a, "tagging"):
@@ -197,17 +202,27 @@ func _human_choices(s, a: Dictionary, here: Dictionary, present: Array, context:
 func _primary_choices(s, a: Dictionary, here: Dictionary, present: Array, context: Dictionary) -> void:
 	if s.managed_queries.planning_active:
 		_managed_primary(s, a, here)
-		return
-	var opponent: Dictionary = context.opponent
-	var attack_efficiency: float = context.attack_efficiency
+	else:
+		var opponent: Dictionary = context.opponent
+		if not opponent.is_empty():
+			var defense: float = 0.49 + 0.5 * Desire.defend(context.attack_efficiency, 1.0, context.danger)
+			_offer(s, a, defense, "attack", opponent.id)
+			_offer(s, a, defense - 0.03, "reload")
+	_medical_choices(s, a, here, present, context)
+
+
+func _medical_choices(s, a: Dictionary, here: Dictionary, present: Array, context: Dictionary) -> void:
+	# Shared by both scoring backends: medical knowledge comes from DNA samples.
 	var enemies: int = context.enemies
-	var danger: float = context.danger
-	if not opponent.is_empty():
-		var defense: float = 0.49 + 0.5 * Desire.defend(attack_efficiency, 1.0, danger)
-		_offer(s, a, defense, "attack", opponent.id)
-		_offer(s, a, defense - 0.03, "reload")
-		if a.ap >= 15 and a.hp > 30 and opponent.tagged_until <= s.minute:
-			_offer(s, a, 0.54 if _clinician(s, a) else 0.43, "extract", opponent.id)
+	var specialist: bool = a.get("npc_necro_start", false)
+	var extractor: bool = s.has_skill(a, "necro_employment") and not s.item_kind(a, "dna_extractor").is_empty()
+	var revive_ready: bool = s.has_skill(a, "lab_experience") and not s.item_kind(a, "syringe").is_empty()
+	for other: Dictionary in present:
+		if other.human: continue
+		if extractor and not other.down and other.tagged_until <= s.minute:
+			_offer(s, a, 0.94 if specialist or s.has_skill(a, "lab_experience") else 0.54, "extract", other.id)
+		if revive_ready and (other.id == 0 or s.dna_human_training(other)):
+			_offer(s, a, 0.97, "revive", other.id)
 	if not s.item_kind(a, "first_aid_kit").is_empty():
 		var diagnosis: bool = s.has_skill(a, "diagnosis")
 		for other in present:
@@ -215,29 +230,16 @@ func _primary_choices(s, a: Dictionary, here: Dictionary, present: Array, contex
 			if other.id != a.id and not diagnosis and other.hp > 40 and not other.infected: continue
 			var role_bonus: float = 0.25 if a.job in ["Doctor", "Medic"] and other.id != a.id else 0.0
 			var heal: float = Desire.heal(float(other.hp) / s.max_hp(other), 0.95 if other.infected else 0.0)
-			_offer(s, a, 0.20 + 0.57 * heal + role_bonus, "heal", other.id)
-	if s.has_skill(a, "lab_experience") and not s.item_kind(a, "syringe").is_empty():
-		var extractor: bool = not s.item_kind(a, "dna_extractor").is_empty()
-		for other in present:
-			var triage_site: bool = here.revive_point or (here.type == "necrotech_lab" and a.inside)
-			var profile: int = _tagged_threat(s, other)
-			var low_risk: bool = not other.prefers_undead and enemies <= 1 and (other.down or (triage_site and (profile == 0 or (profile < 0 and extractor))))
-			if not other.human and (other.wants_revive or other.id == 0 or low_risk):
-				if extractor and not other.down and other.tagged_until <= s.minute:
-					var screening: String = s.reason(a, "extract", other.id)
-					if screening.is_empty():
-						_offer(s, a, 0.94, "extract", other.id)
-						continue
-					if screening == s.BRAIN_ROT_EXTRACTION_BLOCKED and not (a.inside and here.type == "necrotech_lab" and s.powered(here) and s.has_skill(a, "necronet")):
-						continue
-				_offer(s, a, 0.92, "revive", other.id)
+			var score: float = 0.20 + 0.57 * heal + role_bonus
+			if other.id != a.id and a.job not in ["Private", "Police Officer", "Firefighter"] and enemies == 0:
+				score = maxf(score, 0.81) # Useful first aid is also a 5-XP support task.
+			_offer(s, a, score, "heal", other.id)
 
 
 func _managed_primary(s, a: Dictionary, here: Dictionary) -> void:
 	var record: Array = s.managed_queries.primary_candidates(s, a)
 	var values: PackedFloat64Array = record[0]
 	var offset: int = record[1]
-	var extractor: bool = not s.item_kind(a, "dna_extractor").is_empty()
 	for index in range(int(values[offset + 15])):
 		var row: int = offset + 16 + index * 3
 		var command: int = int(values[row])
@@ -246,18 +248,6 @@ func _managed_primary(s, a: Dictionary, here: Dictionary) -> void:
 		match command:
 			1: _offer(s, a, score, "attack", target)
 			2: _offer(s, a, score, "reload")
-			3: _offer(s, a, score, "extract", target)
-			4: _offer(s, a, score, "heal", target)
-			5:
-				var other: Dictionary = s.actors[target]
-				if extractor and not other.down and other.tagged_until <= s.minute:
-					var screening: String = s.reason(a, "extract", target)
-					if screening.is_empty():
-						_offer(s, a, 0.94, "extract", target)
-						continue
-					if screening == s.BRAIN_ROT_EXTRACTION_BLOCKED and not (a.inside and here.type == "necrotech_lab" and s.powered(here) and s.has_skill(a, "necronet")):
-						continue
-				_offer(s, a, score, "revive", target)
 
 
 func _purchase(s, a: Dictionary, skill: String) -> bool:
@@ -299,6 +289,15 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 	var danger: float = context.danger
 	var flee: float = context.flee
 	var emergency: bool = context.emergency
+	# A healthy technician can take one sample before retreating from a lone
+	# zombie. This never overrides an overwhelming attack or low-AP recovery.
+	if a.hp >= 30 and enemies <= 1 and breach < 0.85:
+		if skill == "lab_experience" and _purchase(s, a, skill): return 0
+		if a.get("npc_necro_start", false) or s.has_skill(a, "lab_experience"):
+			_clear_choice()
+			_medical_choices(s, a, here, present, context)
+			if _score >= 0.81 and s._try(a, _command, _target, _data): return 0
+			_clear_choice()
 	if emergency and a.ap > 0:
 		if a.infected and a.hp <= 5 and s._try(a, "heal", a.id): return 0
 		if AI.retreat(s, a, true, breach >= 0.85):
@@ -325,6 +324,8 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 		a.next_trip = s.minute + 60
 		return 0
 	if _score < 0.72 and _purchase(s, a, skill):
+		return 0
+	if _score < 0.81 and enemies == 0 and danger < 0.55 and _seek_medical_target(s, a, here):
 		return 0
 	if _score >= 0.66 and s._try(a, _command, _target, _data):
 		return 0
@@ -377,6 +378,27 @@ static func _tagged_threat(s, other: Dictionary) -> int:
 	for skill in ["infectious_bite", "tangling_grasp", "death_grip", "rend_flesh", "bellow", "feeding_groan"]:
 		if skill in other.tagged_skills: score += 1
 	return score
+
+
+func _seek_medical_target(s, a: Dictionary, here: Dictionary) -> bool:
+	if a.ap < 16 or a.hp < 35: return false
+	var trained: bool = s.has_skill(a, "lab_experience")
+	if not a.get("npc_necro_start", false) and not trained: return false
+	if trained and s.item_kind(a, "syringe").is_empty(): return false
+	var extractor: bool = not s.item_kind(a, "dna_extractor").is_empty()
+	var best: Dictionary = {}
+	var best_value: int = -1
+	for site: Dictionary in s.npc_local_sites(a):
+		if site.id == here.id: continue
+		var hostile: int = _outside_hostiles(s, site)
+		if hostile > 1: continue
+		for other: Dictionary in s.npc_seen_occupants(a, site):
+			if other.human: continue
+			var value: int = 2 if trained and s.dna_human_training(other) else (1 if extractor and not other.down and other.tagged_until <= s.minute else 0)
+			if value > best_value and value > 0:
+				best = site
+				best_value = value
+	return not best.is_empty() and AI.go(s, a, best)
 
 
 func _respond_to_call(s, a: Dictionary, here: Dictionary, enemies: int, outside: int) -> bool:
@@ -601,7 +623,7 @@ func _service_revive_point(s, a: Dictionary, here: Dictionary) -> bool:
 		if not site.revive_point: continue
 		var d: int = s.scent_distance(a, site)
 		if s.npc_local_awareness and d > 1: continue
-		if d >= distance or not (s.npc_seen_occupants(a, site) if s.npc_local_awareness else s.occupants(site, false)).any(func(t): return t.wants_revive and not t.down): continue
+		if d >= distance or not (s.npc_seen_occupants(a, site) if s.npc_local_awareness else s.occupants(site, false)).any(func(t): return not t.human and s.dna_human_training(t)): continue
 		best = site
 		distance = d
 	if best.is_empty(): return false

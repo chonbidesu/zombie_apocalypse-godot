@@ -44,9 +44,9 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
    if t.down and not t.human: return CORPSE_DRAG_BLOCKED
   if command == "extract":
    if t.human or t.down: return "Choose a standing zombie."
-   if s.has_skill(t,"brain_rot"): return s.BRAIN_ROT_EXTRACTION_BLOCKED
-   if t.tagged_until > s.minute: return "This zombie already has a current DNA tag."
    if s.item_kind(a,"dna_extractor").is_empty(): return "You need a DNA extractor."
+   if t.tagged_until > s.minute: return s.DNA_SCAN_DAILY_BLOCKED
+   if s.has_skill(t,"brain_rot"): return s.BRAIN_ROT_EXTRACTION_BLOCKED
  if command in ["install_radio","repair_radio","destroy_radio","decorate","smash_decorations","scout"] and (not a.inside or not s.is_building(b)): return "You must be inside."
  if command == "scout" and b.ruin >= 3: return "Repair this shelter before scouting it."
  if command in ["groan","bellow"] and s.occupants(b,a.inside).filter(func(t): return t.human and not t.down).is_empty(): return "You need living prey nearby to call a feeding horde."
@@ -164,10 +164,12 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    return "%s this shelter's routes. Five actions each day will cost one less AP." % s.action_phrase(a,"memorise","memorises") if narrate else ""
   "extract":
    var t = s.actors[target]
-   t.tagged_until = s.minute+1440
-   t.tagged_skills = t.zombie_skills.duplicate()
+   t.tagged_until = (s.minute / 1440 + 1) * 1440
+   t.tagged_skills = t.human_skills.duplicate()
+   t.tagged_skills.append_array(t.zombie_skills)
    a.xp += 4
-   return "%s %s with a DNA sample. Zombie skills: %s. The tag lasts one day." % [s.action_phrase(a,"identify","identifies"),s.display_name(t),s.dna_profile(t)] if narrate else ""
+   if a.id == 0: return "You identify %s with a DNA sample (+4 XP). It can be scanned again after midnight or after dying and standing up again." % s.display_name(t)
+   return "%s %s with a DNA sample (+4 XP). Skills: %s. It can be scanned again after midnight or after dying and standing up again." % [s.action_phrase(a,"identify","identifies"),s.display_name(t),s.dna_profile(t)] if narrate else ""
   "tag":
    var previous = b.graffiti if not a.inside else b.graffiti_inside
    s.set_graffiti(b,text,not a.inside)

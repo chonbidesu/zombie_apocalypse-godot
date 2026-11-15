@@ -38,9 +38,9 @@ func _initialize() -> void:
 			a.busy_until = sim.now()
 			a.next_think = sim.now()
 			a.tagged_until = sim.minute + rng.randi_range(-1, 1)
-			a.tagged_skills = ["death_grip", "infectious_bite"] if a.id % 2 == 0 else []
+			a.tagged_skills = ["first_aid", "death_grip", "infectious_bite"] if a.id % 2 == 0 else []
 			a.human_skills = ["firearms", "pistol_training", "advanced_pistol", "shotgun_training", "advanced_shotgun",
-				"hand_to_hand", "knife_combat", "axe_proficiency", "lab_experience", "necronet", "construction", "diagnosis"]
+				"hand_to_hand", "knife_combat", "axe_proficiency", "necro_employment", "lab_experience", "necronet", "construction", "diagnosis"]
 			a.zombie_skills = ["scent_blood", "flesh_rot"]
 			a.inventory.clear()
 			a.equipped = -1

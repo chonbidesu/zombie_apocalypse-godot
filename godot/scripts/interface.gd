@@ -68,6 +68,7 @@ var selected_actor: int = -1
 var selected_item: int = -1
 var paused: bool = false
 var modal: String = ""
+var dna_report: Dictionary = {}
 var resting: bool:
  get: return _sleep_sim.is_started() or sim.resting
 var rest_target: int:
@@ -1349,6 +1350,7 @@ func _log() -> void:
   log_view.add_theme_color_override("default_color",CREAM)
   log_view.bbcode_enabled = true
   log_view.scroll_following = true
+  log_view.meta_clicked.connect(_on_feed_meta)
   add_child(log_view)
  log_view.position = Vector2(1454,172)
  log_view.size = Vector2(432,848)
@@ -1370,6 +1372,20 @@ func _update_log() -> void:
  log_view.scroll_following = was_at_end
  log_view.text = content
  if not was_at_end: bar.set_deferred("value",old_scroll)
+
+func _on_feed_meta(meta: Variant) -> void:
+ var value: String = str(meta)
+ if not value.begins_with("dna:") or not value.trim_prefix("dna:").is_valid_int(): return
+ _join_sleep_thread()
+ if sim.player().down or sim.sleeping: return
+ var event_id: int = int(value.trim_prefix("dna:"))
+ for event: Dictionary in sim.messages:
+  if int(event.id) != event_id or event.actor != 0 or event.action != "extract": continue
+  if not event.get("dna_report") is Dictionary: return
+  dna_report = event.dna_report.duplicate(true)
+  dna_report.minute = int(event.minute)
+  open_modal("dna")
+  return
 
 func _scene_snapshot() -> Control:
  var snapshot = Control.new()
@@ -1642,7 +1658,7 @@ func _modal() -> void:
  rect(overlay, Rect2(-240,-60,1920,1080), Color(0.01,0.03,0.02,0.92))
  rect(overlay, Rect2(100,80,1240,800), PANEL, GOLD)
  if modal != "quit":
-  label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
+  label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY","dna":"DNA SAMPLE / SKILL REPORT"}[modal], Rect2(130,99,1050,48), 32, GOLD)
  button(overlay, "Close [Esc]", Rect2(1170,103,140,38), func(): modal = ""; refresh())
  if modal == "tutorial": _tutorial_modal()
  elif modal == "message": _message_modal()
@@ -1658,6 +1674,7 @@ func _modal() -> void:
  elif modal == "binocular_survey": _binocular_survey_modal()
  elif modal == "map": _map_modal()
  elif modal == "skills": _skills_modal()
+ elif modal == "dna": _dna_report_modal()
  elif modal == "history" and sim.player().down:
   rect(overlay,Rect2(130,160,1180,690),Color.BLACK)
   label(overlay,"You cannot observe any activity while down.",Rect2(160,420,1100,50),24,MUTED)
@@ -1670,6 +1687,7 @@ func _modal() -> void:
   history.position = Vector2(140,255)
   history.size = Vector2(1160,590)
   history.bbcode_enabled = true
+  history.meta_clicked.connect(_on_feed_meta)
   history.scroll_following = true
   history.text = feed.format_rows(sim.messages,history_filter)
   overlay.add_child(history)
@@ -1957,6 +1975,37 @@ func _skills_modal() -> void:
   buy.tooltip_text = sim.skill_reason(p,key)
  content.custom_minimum_size = Vector2(1160,maxi(height.human,height.zombie))
 
+func _dna_report_modal() -> void:
+ var sampled_minute: int = int(dna_report.get("minute", 0))
+ label(overlay, str(dna_report.get("name", "Unknown sample")), Rect2(140,160,1140,36),25,CREAM)
+ label(overlay,"Sampled D%d %02d:%02d · Recorded skills at extraction" % [sampled_minute/1440+1,(sampled_minute%1440)/60,sampled_minute%60],Rect2(140,205,1140,32),20,MUTED)
+ var scroll := ScrollContainer.new()
+ scroll.name = "DnaSkillReport"
+ scroll.position = Vector2(140,255)
+ scroll.size = Vector2(1160,590)
+ overlay.add_child(scroll)
+ var content := Control.new()
+ scroll.add_child(content)
+ var y: int = 0
+ var sampled: Array = dna_report.get("skills", []) if dna_report.get("skills", []) is Array else []
+ for side: String in ["human", "zombie"]:
+  label(content,side.to_upper()+" SKILLS",Rect2(0,y,1100,34),24,GOLD)
+  y += 42
+  var count: int = 0
+  for key in sampled:
+   if not C.SKILLS.has(key) or C.SKILLS[key].side != side: continue
+   var def: Dictionary = C.SKILLS[key]
+   label(content,def.name,Rect2(10,y,1090,30),21,CREAM)
+   var description := label(content,def.description,Rect2(10,y+32,1090,58),18,MUTED)
+   description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+   y += 96
+   count += 1
+  if count == 0:
+   label(content,"None detected.",Rect2(10,y,1090,32),20,MUTED)
+   y += 45
+  y += 16
+ content.custom_minimum_size = Vector2(1130,y)
+
 func _item_menu(item: Dictionary) -> void:
  if paused or resting or not modal.is_empty(): return
  context_open = true
@@ -1974,7 +2023,7 @@ func _item_menu(item: Dictionary) -> void:
   var option = commands[i]
   var why = sim.reason(sim.player(),option[0],option[2],{"uid":item.uid})
   if option[0] == "lookout": why = sim.action_feedback(sim.player(),"lookout")
-  if option[0] == "revive": why = sim.action_feedback(sim.player(),option[0],option[2],{"uid":item.uid})
+  if option[0] in ["revive", "extract"]: why = sim.action_feedback(sim.player(),option[0],option[2],{"uid":item.uid})
   popup.add_item(option[1],i)
   popup.set_item_disabled(i,not why.is_empty())
   popup.set_item_tooltip(i,why)

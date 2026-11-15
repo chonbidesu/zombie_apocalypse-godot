@@ -1,5 +1,13 @@
 # AI balance results — 4 November 2026
 
+## DNA and medical priorities — 15 November 2026
+
+Two paired ten-day seed-23 pilots with 2,000 NPCs per starting faction test the new daily DNA scans and specialist training. Normal/all-awake openings now produce 14/30 revivals and 51/100 NPCs with Lab Experience, compared with zero in both archived controls. Final human counts are mixed: normal 1,490 → 1,522, all-awake 1,299 → 1,252. These pilots establish working medical progression, not a solved faction equilibrium. [Implementation, validation and detailed comparisons](dna-medical-2026-11-15.md).
+
+## Full-city recovery policy — 14 November 2026
+
+Six ten-day Malton trials used 2,000 humans and 2,000 zombies: three natural openings and three all-awake controls, paired on seeds 23, 307 and 997. The current full-AP recovery and local-awareness policy shows a zombie attrition advantage: mean human counts end at 1,485 in natural openings and 1,292 in all-awake openings, down 25.8% and 35.4%. No revivals occurred in 60 city-days, and no NPC acquired Lab Experience. Cohort progression, XP accounting, repeated deaths, role differences, daily trends, raw NPC exports and reproducible commands are in the [full report](balance-2026-11-14.md). These measurements supersede the older small-map figures below for the current 4,000-NPC configuration.
+
 ## Live utility AI — 8 November 2026
 
 Each trial ran the live scheduler and action resolver for ten game days with an inactive player. Both NPC factions started fully awake at 50 AP. The 30×30 trials started with 45 per side. The 20×20 stress trials started with 60 per side and two occupied medical buildings powered for the first day unless a zombie destroyed the generator first. Seeds 307 and 997 were held out from the main three-seed tuning set. Standing zombies in this table include survivors waiting for revival.

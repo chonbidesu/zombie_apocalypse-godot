@@ -1,0 +1,7 @@
+opening,seed,days,human_form,standing_humans,standing_zombies,hostile_zombies,awaiting_revival,dormant,deaths,revivals,powered,ruined,human_mean_purchases,zombie_mean_purchases,human_mean_earned_xp,zombie_mean_earned_xp,max_owned_skills,max_earned_xp,max_peak_unspent_xp,max_deaths
+awake,23,10,1299,1299,2672,1981,701,0,1249,0,40,0,0.129,0.0195,36.7685,40.525,5,340,142,5
+awake,307,10,1265,1265,2708,1982,735,0,1218,0,42,0,0.108,0.021,33.412,40.4705,5,409,126,5
+awake,997,10,1313,1313,2651,1977,687,0,1252,0,45,1,0.129,0.0215,36.2095,39.8115,4,325,137,3
+natural,23,10,1490,1490,2250,1774,510,187,1963,0,61,6,0.152,0.0315,42.0175,35.2585,6,510,139,7
+natural,307,10,1506,1506,2242,1767,494,178,1945,0,56,7,0.14,0.04,41.632,35.3565,4,353,154,7
+natural,997,10,1459,1459,2265,1751,541,194,2047,0,59,16,0.154,0.0505,42.363,37.181,4,340,136,6

@@ -33,6 +33,9 @@ static func target_skill(actor: Dictionary, level: int, weapon_track: String, cl
 		if upgrade.is_empty() and actor.get("prefers_undead", false):
 			return _next_in(ROT, owned, level)
 		return upgrade
+	# Starting technicians need their working revival skill before general training.
+	if actor.get("npc_necro_start", actor.get("job", "") in ["NecroTech Lab Assistant", "Scientist"]) and "necro_employment" in owned and "lab_experience" not in owned:
+		return "lab_experience"
 	var skill: String = _next_in(PISTOL, owned, level) if actor.get("job", "") in ["Private", "Police Officer"] else ""
 	if not skill.is_empty(): return skill
 	skill = _next_in(HUMAN_CORE, owned, level)

@@ -86,6 +86,8 @@ func format_rows(source: Array, filter_name: String = "All") -> String:
     colour = "d77e74"
   var stamp = "D%d %02d:%02d" % [int(event.minute)/1440+1,(int(event.minute)%1440)/60,int(event.minute)%60]
   var message = str(event.text).replace("[","[lb]")
+  if int(event.get("actor", -1)) == 0 and event.get("action", "") == "extract" and event.get("dna_report") is Dictionary:
+   message += " [url=dna:%d]View sampled skills[/url]" % int(event.id)
   if event.action in SPEECH_ACTIONS:
    var split = message.find(": ")
    if split >= 0:

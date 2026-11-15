@@ -1,0 +1,14 @@
+{
+  "seconds": 18.207,
+  "rendered_frames": 1092,
+  "clock_steps": 3600,
+  "npc_actions": 122034,
+  "p99_ms": 16.807,
+  "worst_ms": 41.158,
+  "population": 4000,
+  "seed": 4815,
+  "simulated_minutes": 360,
+  "target_speed": 32,
+  "frame_budget_passed": false,
+  "achieved_speed": 19.77261492832427
+}

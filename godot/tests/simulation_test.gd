@@ -209,7 +209,10 @@ func _initialize() -> void:
  s.current_block(p).ruin = 1
  s.reindex()
  s._npc_turn(engineer)
- check(s.current_block(p).ruin == 0 and engineer.ap == 49,"Engineer repairs shelter")
+ check(p.hp == 45 and engineer.xp == 5,"Support NPC heals an injured ally for XP before routine repairs")
+ engineer.busy_until = s.now()
+ s._npc_turn(engineer)
+ check(s.current_block(p).ruin == 0 and engineer.ap == 48,"Engineer repairs shelter after first aid")
  s.die(p)
  var scientist = s.actors[3]
  scientist.job = "Scientist"

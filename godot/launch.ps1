@@ -54,6 +54,12 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Character gender tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/simulation_test.gd --log-file tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Simulation tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/balance_cohort_metrics_test.gd --log-file balance-cohort-metrics.log
+        if ($LASTEXITCODE -ne 0) { throw 'Balance measurement tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/dna_medical_test.gd --log-file dna-medical-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'DNA scanning and medical planner tests failed.' }
+        & $GodotPath --path $projectDirectory --script res://tests/dna_interface_test.gd --log-file dna-interface-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'DNA report interface tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/npc_naming_test.gd --log-file npc-naming-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'NPC naming tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/npc_sex_test.gd --log-file npc-sex-tests.log

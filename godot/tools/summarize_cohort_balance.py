@@ -99,9 +99,22 @@ def main() -> None:
         group["human_net_change_pct"] = 100 * (group["human_form"]["mean"] / group["initial_human_mean"] - 1)
         for cohort in ["human", "zombie"]:
             group["cohorts"][cohort] = npc_summary([r for r in all_rows if r["opening"] == opening and r["cohort"] == cohort])
+        opening_rows = [r for r in all_rows if r["opening"] == opening]
+        group["lab_experience_owned"] = sum("lab_experience" in r["human_skills"].split(";") for r in opening_rows)
+        group["roles"] = {}
+        for role in sorted({r["job"] for r in opening_rows}):
+            role_rows = [r for r in opening_rows if r["job"] == role]
+            group["roles"][role] = {
+                "count": len(role_rows), "mean_earned_xp": statistics.mean(r["earned_xp"] for r in role_rows),
+                "max_earned_xp": max(r["earned_xp"] for r in role_rows),
+                "mean_purchases": statistics.mean(r["purchases"] for r in role_rows),
+                "ending_human_percent": 100 * sum(r["current_form"] == "human" for r in role_rows) / len(role_rows),
+                "lab_experience_owned": sum("lab_experience" in r["human_skills"].split(";") for r in role_rows),
+            }
         groups[opening] = group
     summary = {"complete_runs": len(runs), "city_days": sum(len(r["days"]) for r in runs),
                "npc_observations": len(all_rows), "by_opening": groups,
+               "pooled_cohorts": {cohort: npc_summary([r for r in all_rows if r["cohort"] == cohort]) for cohort in ["human", "zombie"]},
                "source_files": runs[0]["source_files"], "validation": "All daily and final ledgers reconcile."}
     (args.reports / "summary.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
     with (args.reports / "summary.csv").open("w", newline="", encoding="utf-8") as handle:
@@ -121,8 +134,12 @@ def main() -> None:
     lines = ["# Full-city NPC balance — 14 November 2026", "",
              f"{len(runs)} trials × {days} days = {summary['city_days']} simulated city-days. Each trial uses the original 100×100 Malton map with 2,000 humans and 2,000 zombies. Seeds 23, 307 and 997 are paired between natural and all-awake openings. The player is inactive, untargetable and excluded. No player help, prebuilt shelter, extra light, equipment or clinic staff is added.", "",
              "The live fixed-step scheduler runs every tick with full 50 AP recovery, local awareness and turn-time decisions. The recovery spatial query kernel is available; rendering and wall-time speed limits are absent. These are balance measurements, not rendered throughput benchmarks. Daily samples occur every 24 simulated hours after the initial 08:00.", "",
+             "## Findings", "",
+             f"The natural-opening trials end with {groups['natural']['human_form']['mean']:,.0f} humans on average ({-groups['natural']['human_net_change_pct']:.1f}% lost). The all-awake trials end with {groups['awake']['human_form']['mean']:,.1f} ({-groups['awake']['human_net_change_pct']:.1f}% lost). Human numbers decline in every trial. This is a consistent zombie attrition advantage over the ten-day window, rather than evidence of an immediate human wipeout.", "",
+             f"There are {sum(r['days'][-1]['revivals'] for r in runs):,} revivals across all {summary['city_days']} city-days. Ending Lab Experience ownership is {sum(g['lab_experience_owned'] for g in groups.values())} across all NPC observations. Human deaths therefore remain unreversed in these trials; standing undead also include hundreds of non-hostile former humans waiting for help.", "",
+             "The next balance experiment should target revival progression before adjusting combat damage or XP globally. Starting Lab Assistants have NecroTech Employment but no Lab Experience. Their [progression priority](../scripts/npc_utility/progression.gd) reserves XP for Free Running, Construction and a combat bonus before revival training. In this version [skill pricing](../scripts/simulation.gd) makes a scientist's Free Running cost 150 XP and Lab Experience 75 XP. No Lab Assistant in these trials reaches the 150 XP first target. Prioritizing their specialist skill is a testable intervention, not an assumed complete fix; patient discovery and syringe supply would still need validation.", "",
              "## Faction outcomes", "", "Human counts include revived original zombies. Standing zombies include former humans seeking revival; hostile zombies excludes that queue. Undead combat deaths are reversible, so kill totals alone cannot establish the stronger side.", "",
-             "| Opening | Seed | Humans, day 10 | Standing zombies | Hostile zombies | Awaiting revival | Dormant | Deaths | Revivals | Powered / ruined |",
+             f"| Opening | Seed | Humans, day {days} | Standing zombies | Hostile zombies | Awaiting revival | Dormant | Deaths | Revivals | Powered / ruined |",
              "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for run in runs:
         e = run["days"][-1]
@@ -163,6 +180,13 @@ def main() -> None:
             zombie_xp.update(r["xp_sources"]["zombie_form"])
         render = lambda c: ", ".join(f"{k}: {v:,}" for k, v in c.most_common(8)) or "none"
         lines.append(f"| {opening} | {render(skills)} | {render(human_xp)} | {render(zombie_xp)} |")
+    lines += ["", "## Starting-role outcomes", "",
+              "Role averages include NPCs that died or changed form. Lab Experience ownership includes both living and dead NPCs at the end; skill ownership persists through death. Rates below therefore expose a progression bottleneck even if every trained technician were killed.", "",
+              "| Opening | Starting role | NPC observations | Mean / max XP earned | Mean skills bought | Still human | Own Lab Experience |",
+              "| --- | --- | ---: | ---: | ---: | ---: | ---: |"]
+    for opening, group in groups.items():
+        for role, values in group["roles"].items():
+            lines.append(f"| {opening} | {role} | {values['count']:,} | {values['mean_earned_xp']:.2f} / {values['max_earned_xp']} | {values['mean_purchases']:.3f} | {values['ending_human_percent']:.1f}% | {values['lab_experience_owned']} |")
     lines += ["", "## Verification, limits and reproduction", "",
               "The focused metric regression verifies XP income/spending/peak balances, purchases, kill/death attribution, cohort persistence after revival, and voluntary deaths. Each simulated day audits every NPC: starting XP + earned − spent equals remaining XP, starting skills + purchases equals owned skills, and per-NPC totals match simulation actions, deaths and revivals. The summarizer independently rechecks those ledgers against the exported actor CSVs and requires identical source hashes across runs. Gameplay code was not tuned during these trials.", "",
               "Three paired seeds and ten days can establish the direction of attrition in these fixtures, not long-term equilibrium or a universal win probability. Natural openings contain initially dormant zombies; all-awake openings isolate that initial activity advantage. The cohorts follow starting faction even after conversion. No active player intervention is represented.", "", "```powershell",

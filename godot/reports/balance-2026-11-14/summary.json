@@ -1,0 +1,3943 @@
+{
+  "complete_runs": 6,
+  "city_days": 60,
+  "npc_observations": 24000,
+  "by_opening": {
+    "natural": {
+      "runs": 3,
+      "seeds": [
+        23,
+        307,
+        997
+      ],
+      "cohorts": {
+        "human": {
+          "count": 6000,
+          "ever_active": 6000,
+          "earned_xp": {
+            "total": 252025,
+            "mean": 42.00416666666667,
+            "median": 26.0,
+            "p95": 156,
+            "max": 510,
+            "zero_count": 570
+          },
+          "unspent_xp": {
+            "total": 167600,
+            "mean": 27.933333333333334,
+            "median": 22.0,
+            "p95": 75,
+            "max": 139,
+            "zero_count": 589
+          },
+          "peak_unspent_xp": {
+            "total": 211609,
+            "mean": 35.268166666666666,
+            "median": 26.0,
+            "p95": 102,
+            "max": 154,
+            "zero_count": 570
+          },
+          "spent_xp": {
+            "total": 84425,
+            "mean": 14.070833333333333,
+            "median": 0.0,
+            "p95": 100,
+            "max": 500,
+            "zero_count": 5305
+          },
+          "purchases": {
+            "total": 892,
+            "mean": 0.14866666666666667,
+            "median": 0.0,
+            "p95": 1,
+            "max": 5,
+            "zero_count": 5305
+          },
+          "owned_skills": {
+            "total": 6892,
+            "mean": 1.1486666666666667,
+            "median": 1.0,
+            "p95": 2,
+            "max": 6,
+            "zero_count": 0
+          },
+          "initial_skills": {
+            "total": 6000,
+            "mean": 1,
+            "median": 1.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 0
+          },
+          "human_skill_purchases": {
+            "total": 891,
+            "mean": 0.1485,
+            "median": 0.0,
+            "p95": 1,
+            "max": 5,
+            "zero_count": 5306
+          },
+          "zombie_skill_purchases": {
+            "total": 1,
+            "mean": 0.00016666666666666666,
+            "median": 0.0,
+            "p95": 0,
+            "max": 1,
+            "zero_count": 5999
+          },
+          "deaths": {
+            "total": 1545,
+            "mean": 0.2575,
+            "median": 0.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 4455
+          },
+          "combat_deaths": {
+            "total": 1545,
+            "mean": 0.2575,
+            "median": 0.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 4455
+          },
+          "suicides": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "infection_deaths": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_received": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_performed": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "kills": {
+            "total": 4410,
+            "mean": 0.735,
+            "median": 0.0,
+            "p95": 3,
+            "max": 11,
+            "zero_count": 3500
+          },
+          "actions": {
+            "total": 2440450,
+            "mean": 406.7416666666667,
+            "median": 428.0,
+            "p95": 662,
+            "max": 1011,
+            "zero_count": 6
+          },
+          "never_died": 4455,
+          "ever_revived": 0,
+          "purchasers": 695,
+          "ending_human_form": 4455,
+          "maxima": {
+            "earned_xp": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 1377,
+                "name": "Jane Salazar",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "earned_xp": 510
+              }
+            ],
+            "peak_unspent_xp": [
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 48,
+                "name": "Diana Jacobson",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "human",
+                "peak_unspent_xp": 154
+              }
+            ],
+            "owned_skills": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 1377,
+                "name": "Jane Salazar",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "owned_skills": 6
+              }
+            ],
+            "purchases": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 1377,
+                "name": "Jane Salazar",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "purchases": 5
+              }
+            ],
+            "deaths": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 12,
+                "name": "Wretchedly Cracked Brody",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 16,
+                "name": "Gruesomely Boneless Finn",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 23,
+                "name": "Hideously Emasculated Ruby",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 31,
+                "name": "Sickeningly Pockmarked Simon",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 36,
+                "name": "Horribly Hideous Asher",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 37,
+                "name": "Terribly Remorseless Abigail",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              }
+            ],
+            "combat_deaths": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 12,
+                "name": "Wretchedly Cracked Brody",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 16,
+                "name": "Gruesomely Boneless Finn",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 23,
+                "name": "Hideously Emasculated Ruby",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 31,
+                "name": "Sickeningly Pockmarked Simon",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 36,
+                "name": "Horribly Hideous Asher",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 37,
+                "name": "Terribly Remorseless Abigail",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              }
+            ],
+            "revives_received": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 1,
+                "name": "Paige Madden",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 3,
+                "name": "Cedric O'Neil",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 4,
+                "name": "Cooper Wood",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 7,
+                "name": "Ivy Espinoza",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 9,
+                "name": "Gabriella Robinson",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 10,
+                "name": "Beatrice Hodges",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              }
+            ],
+            "revives_performed": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 1,
+                "name": "Paige Madden",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 3,
+                "name": "Cedric O'Neil",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 4,
+                "name": "Cooper Wood",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 7,
+                "name": "Ivy Espinoza",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 9,
+                "name": "Gabriella Robinson",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 10,
+                "name": "Beatrice Hodges",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              }
+            ]
+          }
+        },
+        "zombie": {
+          "count": 6000,
+          "ever_active": 5441,
+          "earned_xp": {
+            "total": 215592,
+            "mean": 35.932,
+            "median": 29.0,
+            "p95": 94,
+            "max": 241,
+            "zero_count": 755
+          },
+          "unspent_xp": {
+            "total": 191192,
+            "mean": 31.865333333333332,
+            "median": 28.0,
+            "p95": 82,
+            "max": 123,
+            "zero_count": 758
+          },
+          "peak_unspent_xp": {
+            "total": 207359,
+            "mean": 34.55983333333333,
+            "median": 29.0,
+            "p95": 94,
+            "max": 139,
+            "zero_count": 755
+          },
+          "spent_xp": {
+            "total": 24400,
+            "mean": 4.066666666666666,
+            "median": 0.0,
+            "p95": 0,
+            "max": 200,
+            "zero_count": 5767
+          },
+          "purchases": {
+            "total": 244,
+            "mean": 0.04066666666666666,
+            "median": 0.0,
+            "p95": 0,
+            "max": 2,
+            "zero_count": 5767
+          },
+          "owned_skills": {
+            "total": 6244,
+            "mean": 1.0406666666666666,
+            "median": 1.0,
+            "p95": 1,
+            "max": 3,
+            "zero_count": 0
+          },
+          "initial_skills": {
+            "total": 6000,
+            "mean": 1,
+            "median": 1.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 0
+          },
+          "human_skill_purchases": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "zombie_skill_purchases": {
+            "total": 244,
+            "mean": 0.04066666666666666,
+            "median": 0.0,
+            "p95": 0,
+            "max": 2,
+            "zero_count": 5767
+          },
+          "deaths": {
+            "total": 4410,
+            "mean": 0.735,
+            "median": 0.0,
+            "p95": 3,
+            "max": 7,
+            "zero_count": 3246
+          },
+          "combat_deaths": {
+            "total": 4410,
+            "mean": 0.735,
+            "median": 0.0,
+            "p95": 3,
+            "max": 7,
+            "zero_count": 3246
+          },
+          "suicides": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "infection_deaths": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_received": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_performed": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "kills": {
+            "total": 1545,
+            "mean": 0.2575,
+            "median": 0.0,
+            "p95": 1,
+            "max": 4,
+            "zero_count": 4710
+          },
+          "actions": {
+            "total": 1132971,
+            "mean": 188.8285,
+            "median": 211.0,
+            "p95": 307,
+            "max": 433,
+            "zero_count": 559
+          },
+          "never_died": 3246,
+          "ever_revived": 0,
+          "purchasers": 233,
+          "ending_human_form": 0,
+          "maxima": {
+            "earned_xp": [
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2104,
+                "name": "Ghastly Erratic Justin",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "earned_xp": 241
+              }
+            ],
+            "peak_unspent_xp": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2030,
+                "name": "Drooping Mia",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "peak_unspent_xp": 139
+              }
+            ],
+            "owned_skills": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2299,
+                "name": "Deeply Grimy Elizabeth",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2104,
+                "name": "Ghastly Erratic Justin",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2139,
+                "name": "Wretchedly Biting Florence",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2207,
+                "name": "Gruesomely Gloomy Hazel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2269,
+                "name": "Ghastly Carious Richard",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 3459,
+                "name": "Wretchedly Acidic Iris",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2075,
+                "name": "Utterly Famine-struck Ruby",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2119,
+                "name": "Grimly Cadaverous Elena",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2189,
+                "name": "Vilely Frostbitten Theodore",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2222,
+                "name": "Sickeningly Emaciated Paige",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              }
+            ],
+            "purchases": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2299,
+                "name": "Deeply Grimy Elizabeth",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2104,
+                "name": "Ghastly Erratic Justin",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2139,
+                "name": "Wretchedly Biting Florence",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2207,
+                "name": "Gruesomely Gloomy Hazel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2269,
+                "name": "Ghastly Carious Richard",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 3459,
+                "name": "Wretchedly Acidic Iris",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2075,
+                "name": "Utterly Famine-struck Ruby",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2119,
+                "name": "Grimly Cadaverous Elena",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2189,
+                "name": "Vilely Frostbitten Theodore",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              },
+              {
+                "seed": 997,
+                "opening": "natural",
+                "id": 2222,
+                "name": "Sickeningly Emaciated Paige",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              }
+            ],
+            "deaths": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2436,
+                "name": "Deeply Frayed Oliver",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "deaths": 7
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2253,
+                "name": "Foully Spectral Beckett",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "deaths": 7
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 3134,
+                "name": "Horribly Suppurating Julia",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "deaths": 7
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 3556,
+                "name": "Grimly Heartless Rafael",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "deaths": 7
+              }
+            ],
+            "combat_deaths": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2436,
+                "name": "Deeply Frayed Oliver",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "combat_deaths": 7
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 2253,
+                "name": "Foully Spectral Beckett",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "combat_deaths": 7
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 3134,
+                "name": "Horribly Suppurating Julia",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "combat_deaths": 7
+              },
+              {
+                "seed": 307,
+                "opening": "natural",
+                "id": 3556,
+                "name": "Grimly Heartless Rafael",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "combat_deaths": 7
+              }
+            ],
+            "revives_received": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2001,
+                "name": "Dreadfully Ambling Jack",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2002,
+                "name": "Gravelike Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2003,
+                "name": "Ghastly Reeking Anika",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2004,
+                "name": "Terribly Bone-rattling Aiden",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2005,
+                "name": "Terribly Icy Victor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2006,
+                "name": "Gruesomely Suppurating Zoe",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2007,
+                "name": "Utterly Foul Jasmine",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2008,
+                "name": "Utterly Dappled Connor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2009,
+                "name": "Terribly Barren Philip",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2010,
+                "name": "Vilely Gouged Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              }
+            ],
+            "revives_performed": [
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2001,
+                "name": "Dreadfully Ambling Jack",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2002,
+                "name": "Gravelike Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2003,
+                "name": "Ghastly Reeking Anika",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2004,
+                "name": "Terribly Bone-rattling Aiden",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2005,
+                "name": "Terribly Icy Victor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2006,
+                "name": "Gruesomely Suppurating Zoe",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2007,
+                "name": "Utterly Foul Jasmine",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2008,
+                "name": "Utterly Dappled Connor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2009,
+                "name": "Terribly Barren Philip",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "natural",
+                "id": 2010,
+                "name": "Vilely Gouged Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              }
+            ]
+          }
+        }
+      },
+      "human_form": {
+        "mean": 1485,
+        "min": 1459,
+        "max": 1506
+      },
+      "standing_humans": {
+        "mean": 1485,
+        "min": 1459,
+        "max": 1506
+      },
+      "standing_zombies": {
+        "mean": 2252.3333333333335,
+        "min": 2242,
+        "max": 2265
+      },
+      "hostile_zombies": {
+        "mean": 1764,
+        "min": 1751,
+        "max": 1774
+      },
+      "awaiting_revival": {
+        "mean": 515,
+        "min": 494,
+        "max": 541
+      },
+      "dormant": {
+        "mean": 186.33333333333334,
+        "min": 178,
+        "max": 194
+      },
+      "down": {
+        "mean": 262.6666666666667,
+        "min": 252,
+        "max": 276
+      },
+      "recovering": {
+        "mean": 2508.3333333333335,
+        "min": 2478,
+        "max": 2530
+      },
+      "deaths": {
+        "mean": 1985,
+        "min": 1945,
+        "max": 2047
+      },
+      "revivals": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "powered": {
+        "mean": 58.666666666666664,
+        "min": 56,
+        "max": 61
+      },
+      "ruined": {
+        "mean": 9.666666666666666,
+        "min": 6,
+        "max": 16
+      },
+      "npc_actions": {
+        "mean": 1191519,
+        "min": 1189785,
+        "max": 1194029
+      },
+      "initial_human_mean": 2000,
+      "human_net_change_pct": -25.749999999999996,
+      "lab_experience_owned": 0,
+      "roles": {
+        "Consumer": {
+          "count": 735,
+          "mean_earned_xp": 19.077551020408162,
+          "max_earned_xp": 126,
+          "mean_purchases": 0.005442176870748299,
+          "ending_human_percent": 71.15646258503402,
+          "lab_experience_owned": 0
+        },
+        "Corpse": {
+          "count": 6000,
+          "mean_earned_xp": 35.932,
+          "max_earned_xp": 241,
+          "mean_purchases": 0.04066666666666666,
+          "ending_human_percent": 0.0,
+          "lab_experience_owned": 0
+        },
+        "Doctor": {
+          "count": 733,
+          "mean_earned_xp": 25.759890859481583,
+          "max_earned_xp": 215,
+          "mean_purchases": 0.002728512960436562,
+          "ending_human_percent": 69.03137789904503,
+          "lab_experience_owned": 0
+        },
+        "Firefighter": {
+          "count": 756,
+          "mean_earned_xp": 129.79497354497354,
+          "max_earned_xp": 510,
+          "mean_purchases": 0.8227513227513228,
+          "ending_human_percent": 85.05291005291005,
+          "lab_experience_owned": 0
+        },
+        "Medic": {
+          "count": 716,
+          "mean_earned_xp": 27.773743016759777,
+          "max_earned_xp": 133,
+          "mean_purchases": 0.034916201117318434,
+          "ending_human_percent": 69.97206703910615,
+          "lab_experience_owned": 0
+        },
+        "NecroTech Lab Assistant": {
+          "count": 780,
+          "mean_earned_xp": 14.157692307692308,
+          "max_earned_xp": 130,
+          "mean_purchases": 0,
+          "ending_human_percent": 67.94871794871794,
+          "lab_experience_owned": 0
+        },
+        "Police Officer": {
+          "count": 777,
+          "mean_earned_xp": 48.808236808236806,
+          "max_earned_xp": 251,
+          "mean_purchases": 0.0888030888030888,
+          "ending_human_percent": 70.27027027027027,
+          "lab_experience_owned": 0
+        },
+        "Private": {
+          "count": 744,
+          "mean_earned_xp": 52.19086021505376,
+          "max_earned_xp": 292,
+          "mean_purchases": 0.22580645161290322,
+          "ending_human_percent": 71.23655913978494,
+          "lab_experience_owned": 0
+        },
+        "Scout": {
+          "count": 759,
+          "mean_earned_xp": 17.54018445322793,
+          "max_earned_xp": 118,
+          "mean_purchases": 0.002635046113306983,
+          "ending_human_percent": 89.06455862977602,
+          "lab_experience_owned": 0
+        }
+      }
+    },
+    "awake": {
+      "runs": 3,
+      "seeds": [
+        23,
+        307,
+        997
+      ],
+      "cohorts": {
+        "human": {
+          "count": 6000,
+          "ever_active": 6000,
+          "earned_xp": {
+            "total": 212780,
+            "mean": 35.46333333333333,
+            "median": 20.0,
+            "p95": 146,
+            "max": 409,
+            "zero_count": 639
+          },
+          "unspent_xp": {
+            "total": 141805,
+            "mean": 23.634166666666665,
+            "median": 18.0,
+            "p95": 69,
+            "max": 137,
+            "zero_count": 646
+          },
+          "peak_unspent_xp": {
+            "total": 176762,
+            "mean": 29.460333333333335,
+            "median": 20.0,
+            "p95": 102,
+            "max": 137,
+            "zero_count": 639
+          },
+          "spent_xp": {
+            "total": 70975,
+            "mean": 11.829166666666667,
+            "median": 0.0,
+            "p95": 100,
+            "max": 400,
+            "zero_count": 5457
+          },
+          "purchases": {
+            "total": 732,
+            "mean": 0.122,
+            "median": 0.0,
+            "p95": 1,
+            "max": 4,
+            "zero_count": 5457
+          },
+          "owned_skills": {
+            "total": 6732,
+            "mean": 1.122,
+            "median": 1.0,
+            "p95": 2,
+            "max": 5,
+            "zero_count": 0
+          },
+          "initial_skills": {
+            "total": 6000,
+            "mean": 1,
+            "median": 1.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 0
+          },
+          "human_skill_purchases": {
+            "total": 730,
+            "mean": 0.12166666666666667,
+            "median": 0.0,
+            "p95": 1,
+            "max": 4,
+            "zero_count": 5459
+          },
+          "zombie_skill_purchases": {
+            "total": 2,
+            "mean": 0.0003333333333333333,
+            "median": 0.0,
+            "p95": 0,
+            "max": 1,
+            "zero_count": 5998
+          },
+          "deaths": {
+            "total": 2123,
+            "mean": 0.35383333333333333,
+            "median": 0.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 3877
+          },
+          "combat_deaths": {
+            "total": 2123,
+            "mean": 0.35383333333333333,
+            "median": 0.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 3877
+          },
+          "suicides": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "infection_deaths": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_received": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_performed": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "kills": {
+            "total": 1596,
+            "mean": 0.266,
+            "median": 0.0,
+            "p95": 1,
+            "max": 9,
+            "zero_count": 4840
+          },
+          "actions": {
+            "total": 2616547,
+            "mean": 436.09116666666665,
+            "median": 463.0,
+            "p95": 684,
+            "max": 1020,
+            "zero_count": 3
+          },
+          "never_died": 3877,
+          "ever_revived": 0,
+          "purchasers": 543,
+          "ending_human_form": 3877,
+          "maxima": {
+            "earned_xp": [
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 1426,
+                "name": "Elena Shelton",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "earned_xp": 409
+              }
+            ],
+            "peak_unspent_xp": [
+              {
+                "seed": 997,
+                "opening": "awake",
+                "id": 1091,
+                "name": "Timothy Ortiz",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "human",
+                "peak_unspent_xp": 137
+              }
+            ],
+            "owned_skills": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 1252,
+                "name": "Maya Stanton",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "human",
+                "owned_skills": 5
+              },
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 1204,
+                "name": "Raymond Villarreal",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "owned_skills": 5
+              },
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 1426,
+                "name": "Elena Shelton",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "owned_skills": 5
+              }
+            ],
+            "purchases": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 1252,
+                "name": "Maya Stanton",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "human",
+                "purchases": 4
+              },
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 1204,
+                "name": "Raymond Villarreal",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "purchases": 4
+              },
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 1426,
+                "name": "Elena Shelton",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "purchases": 4
+              }
+            ],
+            "deaths": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 12,
+                "name": "Wretchedly Cracked Brody",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 13,
+                "name": "Horribly Devastated Penelope",
+                "job": "NecroTech Lab Assistant",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 16,
+                "name": "Gruesomely Boneless Finn",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 19,
+                "name": "Cataclysmic Fiona",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 20,
+                "name": "Sickeningly Fragmented Erica",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 22,
+                "name": "Spectral Patrick",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "deaths": 1
+              }
+            ],
+            "combat_deaths": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 12,
+                "name": "Wretchedly Cracked Brody",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 13,
+                "name": "Horribly Devastated Penelope",
+                "job": "NecroTech Lab Assistant",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 16,
+                "name": "Gruesomely Boneless Finn",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 19,
+                "name": "Cataclysmic Fiona",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 20,
+                "name": "Sickeningly Fragmented Erica",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 22,
+                "name": "Spectral Patrick",
+                "job": "Consumer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "combat_deaths": 1
+              }
+            ],
+            "revives_received": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 1,
+                "name": "Paige Madden",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 3,
+                "name": "Cedric O'Neil",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 4,
+                "name": "Cooper Wood",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 7,
+                "name": "Ivy Espinoza",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 9,
+                "name": "Gabriella Robinson",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 10,
+                "name": "Beatrice Hodges",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_received": 0
+              }
+            ],
+            "revives_performed": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 1,
+                "name": "Paige Madden",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2,
+                "name": "Slimy Stephen",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 3,
+                "name": "Cedric O'Neil",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 4,
+                "name": "Cooper Wood",
+                "job": "Firefighter",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 5,
+                "name": "Wretchedly Effluvial Henry",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 6,
+                "name": "Dreadfully Wheezing Astrid",
+                "job": "Private",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 7,
+                "name": "Ivy Espinoza",
+                "job": "Doctor",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 8,
+                "name": "Gruesomely Furious Daphne",
+                "job": "Medic",
+                "cohort": "human",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 9,
+                "name": "Gabriella Robinson",
+                "job": "Police Officer",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 10,
+                "name": "Beatrice Hodges",
+                "job": "Scout",
+                "cohort": "human",
+                "current_form": "human",
+                "revives_performed": 0
+              }
+            ]
+          }
+        },
+        "zombie": {
+          "count": 6000,
+          "ever_active": 6000,
+          "earned_xp": {
+            "total": 241614,
+            "mean": 40.269,
+            "median": 36.0,
+            "p95": 86,
+            "max": 217,
+            "zero_count": 24
+          },
+          "unspent_xp": {
+            "total": 229214,
+            "mean": 38.202333333333335,
+            "median": 36.0,
+            "p95": 80,
+            "max": 120,
+            "zero_count": 28
+          },
+          "peak_unspent_xp": {
+            "total": 238262,
+            "mean": 39.71033333333333,
+            "median": 36.0,
+            "p95": 86,
+            "max": 142,
+            "zero_count": 24
+          },
+          "spent_xp": {
+            "total": 12400,
+            "mean": 2.066666666666667,
+            "median": 0.0,
+            "p95": 0,
+            "max": 200,
+            "zero_count": 5877
+          },
+          "purchases": {
+            "total": 124,
+            "mean": 0.020666666666666667,
+            "median": 0.0,
+            "p95": 0,
+            "max": 2,
+            "zero_count": 5877
+          },
+          "owned_skills": {
+            "total": 6124,
+            "mean": 1.0206666666666666,
+            "median": 1.0,
+            "p95": 1,
+            "max": 3,
+            "zero_count": 0
+          },
+          "initial_skills": {
+            "total": 6000,
+            "mean": 1,
+            "median": 1.0,
+            "p95": 1,
+            "max": 1,
+            "zero_count": 0
+          },
+          "human_skill_purchases": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "zombie_skill_purchases": {
+            "total": 124,
+            "mean": 0.020666666666666667,
+            "median": 0.0,
+            "p95": 0,
+            "max": 2,
+            "zero_count": 5877
+          },
+          "deaths": {
+            "total": 1596,
+            "mean": 0.266,
+            "median": 0.0,
+            "p95": 1,
+            "max": 5,
+            "zero_count": 4701
+          },
+          "combat_deaths": {
+            "total": 1596,
+            "mean": 0.266,
+            "median": 0.0,
+            "p95": 1,
+            "max": 5,
+            "zero_count": 4701
+          },
+          "suicides": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "infection_deaths": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_received": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "revives_performed": {
+            "total": 0,
+            "mean": 0,
+            "median": 0.0,
+            "p95": 0,
+            "max": 0,
+            "zero_count": 6000
+          },
+          "kills": {
+            "total": 2123,
+            "mean": 0.35383333333333333,
+            "median": 0.0,
+            "p95": 2,
+            "max": 4,
+            "zero_count": 4258
+          },
+          "actions": {
+            "total": 1648678,
+            "mean": 274.7796666666667,
+            "median": 272.0,
+            "p95": 306,
+            "max": 406,
+            "zero_count": 0
+          },
+          "never_died": 4701,
+          "ever_revived": 0,
+          "purchasers": 123,
+          "ending_human_form": 0,
+          "maxima": {
+            "earned_xp": [
+              {
+                "seed": 997,
+                "opening": "awake",
+                "id": 3381,
+                "name": "Sickeningly Moldy Vincent",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "earned_xp": 217
+              }
+            ],
+            "peak_unspent_xp": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 3703,
+                "name": "Sickeningly Scarred Fiona",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "peak_unspent_xp": 142
+              }
+            ],
+            "owned_skills": [
+              {
+                "seed": 997,
+                "opening": "awake",
+                "id": 3185,
+                "name": "Sickeningly Drained Elijah",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "owned_skills": 3
+              }
+            ],
+            "purchases": [
+              {
+                "seed": 997,
+                "opening": "awake",
+                "id": 3185,
+                "name": "Sickeningly Drained Elijah",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "purchases": 2
+              }
+            ],
+            "deaths": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2972,
+                "name": "Horribly Drowned Kevin",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "deaths": 5
+              },
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 3226,
+                "name": "Hideously Shriveling Hannah",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "deaths": 5
+              }
+            ],
+            "combat_deaths": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2972,
+                "name": "Horribly Drowned Kevin",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "combat_deaths": 5
+              },
+              {
+                "seed": 307,
+                "opening": "awake",
+                "id": 3226,
+                "name": "Hideously Shriveling Hannah",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "combat_deaths": 5
+              }
+            ],
+            "revives_received": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2001,
+                "name": "Dreadfully Ambling Jack",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2002,
+                "name": "Gravelike Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2003,
+                "name": "Ghastly Reeking Anika",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2004,
+                "name": "Terribly Bone-rattling Aiden",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2005,
+                "name": "Terribly Icy Victor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2006,
+                "name": "Gruesomely Suppurating Zoe",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2007,
+                "name": "Utterly Foul Jasmine",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2008,
+                "name": "Utterly Dappled Connor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2009,
+                "name": "Terribly Barren Philip",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2010,
+                "name": "Vilely Gouged Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_received": 0
+              }
+            ],
+            "revives_performed": [
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2001,
+                "name": "Dreadfully Ambling Jack",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2002,
+                "name": "Gravelike Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2003,
+                "name": "Ghastly Reeking Anika",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2004,
+                "name": "Terribly Bone-rattling Aiden",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2005,
+                "name": "Terribly Icy Victor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2006,
+                "name": "Gruesomely Suppurating Zoe",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2007,
+                "name": "Utterly Foul Jasmine",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2008,
+                "name": "Utterly Dappled Connor",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2009,
+                "name": "Terribly Barren Philip",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              },
+              {
+                "seed": 23,
+                "opening": "awake",
+                "id": 2010,
+                "name": "Vilely Gouged Rachel",
+                "job": "Corpse",
+                "cohort": "zombie",
+                "current_form": "zombie",
+                "revives_performed": 0
+              }
+            ]
+          }
+        }
+      },
+      "human_form": {
+        "mean": 1292.3333333333333,
+        "min": 1265,
+        "max": 1313
+      },
+      "standing_humans": {
+        "mean": 1292.3333333333333,
+        "min": 1265,
+        "max": 1313
+      },
+      "standing_zombies": {
+        "mean": 2677,
+        "min": 2651,
+        "max": 2708
+      },
+      "hostile_zombies": {
+        "mean": 1980,
+        "min": 1977,
+        "max": 1982
+      },
+      "awaiting_revival": {
+        "mean": 707.6666666666666,
+        "min": 687,
+        "max": 735
+      },
+      "dormant": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "down": {
+        "mean": 30.666666666666668,
+        "min": 27,
+        "max": 36
+      },
+      "recovering": {
+        "mean": 2798.3333333333335,
+        "min": 2780,
+        "max": 2826
+      },
+      "deaths": {
+        "mean": 1239.6666666666667,
+        "min": 1218,
+        "max": 1252
+      },
+      "revivals": {
+        "mean": 0,
+        "min": 0,
+        "max": 0
+      },
+      "powered": {
+        "mean": 42.333333333333336,
+        "min": 40,
+        "max": 45
+      },
+      "ruined": {
+        "mean": 0.3333333333333333,
+        "min": 0,
+        "max": 1
+      },
+      "npc_actions": {
+        "mean": 1422027,
+        "min": 1409796,
+        "max": 1429634
+      },
+      "initial_human_mean": 2000,
+      "human_net_change_pct": -35.38333333333333,
+      "lab_experience_owned": 0,
+      "roles": {
+        "Consumer": {
+          "count": 735,
+          "mean_earned_xp": 14.465306122448979,
+          "max_earned_xp": 128,
+          "mean_purchases": 0.0027210884353741495,
+          "ending_human_percent": 53.74149659863946,
+          "lab_experience_owned": 0
+        },
+        "Corpse": {
+          "count": 6000,
+          "mean_earned_xp": 40.269,
+          "max_earned_xp": 217,
+          "mean_purchases": 0.020666666666666667,
+          "ending_human_percent": 0.0,
+          "lab_experience_owned": 0
+        },
+        "Doctor": {
+          "count": 733,
+          "mean_earned_xp": 21.52387448840382,
+          "max_earned_xp": 137,
+          "mean_purchases": 0,
+          "ending_human_percent": 65.75716234652114,
+          "lab_experience_owned": 0
+        },
+        "Firefighter": {
+          "count": 756,
+          "mean_earned_xp": 127.48544973544973,
+          "max_earned_xp": 409,
+          "mean_purchases": 0.8148148148148148,
+          "ending_human_percent": 71.03174603174604,
+          "lab_experience_owned": 0
+        },
+        "Medic": {
+          "count": 716,
+          "mean_earned_xp": 21.695530726256983,
+          "max_earned_xp": 98,
+          "mean_purchases": 0.013966480446927373,
+          "ending_human_percent": 57.82122905027933,
+          "lab_experience_owned": 0
+        },
+        "NecroTech Lab Assistant": {
+          "count": 780,
+          "mean_earned_xp": 10.45897435897436,
+          "max_earned_xp": 97,
+          "mean_purchases": 0,
+          "ending_human_percent": 71.41025641025641,
+          "lab_experience_owned": 0
+        },
+        "Police Officer": {
+          "count": 777,
+          "mean_earned_xp": 35.06692406692407,
+          "max_earned_xp": 206,
+          "mean_purchases": 0.029601029601029602,
+          "ending_human_percent": 56.628056628056626,
+          "lab_experience_owned": 0
+        },
+        "Private": {
+          "count": 744,
+          "mean_earned_xp": 36.740591397849464,
+          "max_earned_xp": 331,
+          "mean_purchases": 0.10752688172043011,
+          "ending_human_percent": 59.005376344086024,
+          "lab_experience_owned": 0
+        },
+        "Scout": {
+          "count": 759,
+          "mean_earned_xp": 15.438735177865613,
+          "max_earned_xp": 102,
+          "mean_purchases": 0.0013175230566534915,
+          "ending_human_percent": 80.76416337285903,
+          "lab_experience_owned": 0
+        }
+      }
+    }
+  },
+  "pooled_cohorts": {
+    "human": {
+      "count": 12000,
+      "ever_active": 12000,
+      "earned_xp": {
+        "total": 464805,
+        "mean": 38.73375,
+        "median": 22.0,
+        "p95": 151,
+        "max": 510,
+        "zero_count": 1209
+      },
+      "unspent_xp": {
+        "total": 309405,
+        "mean": 25.78375,
+        "median": 20.0,
+        "p95": 72,
+        "max": 139,
+        "zero_count": 1235
+      },
+      "peak_unspent_xp": {
+        "total": 388371,
+        "mean": 32.36425,
+        "median": 22.0,
+        "p95": 102,
+        "max": 154,
+        "zero_count": 1209
+      },
+      "spent_xp": {
+        "total": 155400,
+        "mean": 12.95,
+        "median": 0.0,
+        "p95": 100,
+        "max": 500,
+        "zero_count": 10762
+      },
+      "purchases": {
+        "total": 1624,
+        "mean": 0.13533333333333333,
+        "median": 0.0,
+        "p95": 1,
+        "max": 5,
+        "zero_count": 10762
+      },
+      "owned_skills": {
+        "total": 13624,
+        "mean": 1.1353333333333333,
+        "median": 1.0,
+        "p95": 2,
+        "max": 6,
+        "zero_count": 0
+      },
+      "initial_skills": {
+        "total": 12000,
+        "mean": 1,
+        "median": 1.0,
+        "p95": 1,
+        "max": 1,
+        "zero_count": 0
+      },
+      "human_skill_purchases": {
+        "total": 1621,
+        "mean": 0.13508333333333333,
+        "median": 0.0,
+        "p95": 1,
+        "max": 5,
+        "zero_count": 10765
+      },
+      "zombie_skill_purchases": {
+        "total": 3,
+        "mean": 0.00025,
+        "median": 0.0,
+        "p95": 0,
+        "max": 1,
+        "zero_count": 11997
+      },
+      "deaths": {
+        "total": 3668,
+        "mean": 0.30566666666666664,
+        "median": 0.0,
+        "p95": 1,
+        "max": 1,
+        "zero_count": 8332
+      },
+      "combat_deaths": {
+        "total": 3668,
+        "mean": 0.30566666666666664,
+        "median": 0.0,
+        "p95": 1,
+        "max": 1,
+        "zero_count": 8332
+      },
+      "suicides": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "infection_deaths": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "revives_received": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "revives_performed": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "kills": {
+        "total": 6006,
+        "mean": 0.5005,
+        "median": 0.0,
+        "p95": 2,
+        "max": 11,
+        "zero_count": 8340
+      },
+      "actions": {
+        "total": 5056997,
+        "mean": 421.4164166666667,
+        "median": 443.0,
+        "p95": 673,
+        "max": 1020,
+        "zero_count": 9
+      },
+      "never_died": 8332,
+      "ever_revived": 0,
+      "purchasers": 1238,
+      "ending_human_form": 8332,
+      "maxima": {
+        "earned_xp": [
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 1377,
+            "name": "Jane Salazar",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "earned_xp": 510
+          }
+        ],
+        "peak_unspent_xp": [
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 48,
+            "name": "Diana Jacobson",
+            "job": "Doctor",
+            "cohort": "human",
+            "current_form": "human",
+            "peak_unspent_xp": 154
+          }
+        ],
+        "owned_skills": [
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 1377,
+            "name": "Jane Salazar",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "owned_skills": 6
+          }
+        ],
+        "purchases": [
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 1377,
+            "name": "Jane Salazar",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "purchases": 5
+          }
+        ],
+        "deaths": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2,
+            "name": "Slimy Stephen",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 5,
+            "name": "Wretchedly Effluvial Henry",
+            "job": "Police Officer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 6,
+            "name": "Dreadfully Wheezing Astrid",
+            "job": "Private",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 8,
+            "name": "Gruesomely Furious Daphne",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 12,
+            "name": "Wretchedly Cracked Brody",
+            "job": "Doctor",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 13,
+            "name": "Horribly Devastated Penelope",
+            "job": "NecroTech Lab Assistant",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 16,
+            "name": "Gruesomely Boneless Finn",
+            "job": "Consumer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 19,
+            "name": "Cataclysmic Fiona",
+            "job": "Consumer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 20,
+            "name": "Sickeningly Fragmented Erica",
+            "job": "Scout",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 22,
+            "name": "Spectral Patrick",
+            "job": "Consumer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "deaths": 1
+          }
+        ],
+        "combat_deaths": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2,
+            "name": "Slimy Stephen",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 5,
+            "name": "Wretchedly Effluvial Henry",
+            "job": "Police Officer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 6,
+            "name": "Dreadfully Wheezing Astrid",
+            "job": "Private",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 8,
+            "name": "Gruesomely Furious Daphne",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 12,
+            "name": "Wretchedly Cracked Brody",
+            "job": "Doctor",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 13,
+            "name": "Horribly Devastated Penelope",
+            "job": "NecroTech Lab Assistant",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 16,
+            "name": "Gruesomely Boneless Finn",
+            "job": "Consumer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 19,
+            "name": "Cataclysmic Fiona",
+            "job": "Consumer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 20,
+            "name": "Sickeningly Fragmented Erica",
+            "job": "Scout",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 22,
+            "name": "Spectral Patrick",
+            "job": "Consumer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "combat_deaths": 1
+          }
+        ],
+        "revives_received": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 1,
+            "name": "Paige Madden",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2,
+            "name": "Slimy Stephen",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 3,
+            "name": "Cedric O'Neil",
+            "job": "Scout",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 4,
+            "name": "Cooper Wood",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 5,
+            "name": "Wretchedly Effluvial Henry",
+            "job": "Police Officer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 6,
+            "name": "Dreadfully Wheezing Astrid",
+            "job": "Private",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 7,
+            "name": "Ivy Espinoza",
+            "job": "Doctor",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 8,
+            "name": "Gruesomely Furious Daphne",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 9,
+            "name": "Gabriella Robinson",
+            "job": "Police Officer",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 10,
+            "name": "Beatrice Hodges",
+            "job": "Scout",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_received": 0
+          }
+        ],
+        "revives_performed": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 1,
+            "name": "Paige Madden",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2,
+            "name": "Slimy Stephen",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 3,
+            "name": "Cedric O'Neil",
+            "job": "Scout",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 4,
+            "name": "Cooper Wood",
+            "job": "Firefighter",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 5,
+            "name": "Wretchedly Effluvial Henry",
+            "job": "Police Officer",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 6,
+            "name": "Dreadfully Wheezing Astrid",
+            "job": "Private",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 7,
+            "name": "Ivy Espinoza",
+            "job": "Doctor",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 8,
+            "name": "Gruesomely Furious Daphne",
+            "job": "Medic",
+            "cohort": "human",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 9,
+            "name": "Gabriella Robinson",
+            "job": "Police Officer",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 10,
+            "name": "Beatrice Hodges",
+            "job": "Scout",
+            "cohort": "human",
+            "current_form": "human",
+            "revives_performed": 0
+          }
+        ]
+      }
+    },
+    "zombie": {
+      "count": 12000,
+      "ever_active": 11441,
+      "earned_xp": {
+        "total": 457206,
+        "mean": 38.1005,
+        "median": 33.0,
+        "p95": 90,
+        "max": 241,
+        "zero_count": 779
+      },
+      "unspent_xp": {
+        "total": 420406,
+        "mean": 35.033833333333334,
+        "median": 32.0,
+        "p95": 81,
+        "max": 123,
+        "zero_count": 786
+      },
+      "peak_unspent_xp": {
+        "total": 445621,
+        "mean": 37.135083333333334,
+        "median": 33.0,
+        "p95": 90,
+        "max": 142,
+        "zero_count": 779
+      },
+      "spent_xp": {
+        "total": 36800,
+        "mean": 3.066666666666667,
+        "median": 0.0,
+        "p95": 0,
+        "max": 200,
+        "zero_count": 11644
+      },
+      "purchases": {
+        "total": 368,
+        "mean": 0.030666666666666665,
+        "median": 0.0,
+        "p95": 0,
+        "max": 2,
+        "zero_count": 11644
+      },
+      "owned_skills": {
+        "total": 12368,
+        "mean": 1.0306666666666666,
+        "median": 1.0,
+        "p95": 1,
+        "max": 3,
+        "zero_count": 0
+      },
+      "initial_skills": {
+        "total": 12000,
+        "mean": 1,
+        "median": 1.0,
+        "p95": 1,
+        "max": 1,
+        "zero_count": 0
+      },
+      "human_skill_purchases": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "zombie_skill_purchases": {
+        "total": 368,
+        "mean": 0.030666666666666665,
+        "median": 0.0,
+        "p95": 0,
+        "max": 2,
+        "zero_count": 11644
+      },
+      "deaths": {
+        "total": 6006,
+        "mean": 0.5005,
+        "median": 0.0,
+        "p95": 2,
+        "max": 7,
+        "zero_count": 7947
+      },
+      "combat_deaths": {
+        "total": 6006,
+        "mean": 0.5005,
+        "median": 0.0,
+        "p95": 2,
+        "max": 7,
+        "zero_count": 7947
+      },
+      "suicides": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "infection_deaths": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "revives_received": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "revives_performed": {
+        "total": 0,
+        "mean": 0,
+        "median": 0.0,
+        "p95": 0,
+        "max": 0,
+        "zero_count": 12000
+      },
+      "kills": {
+        "total": 3668,
+        "mean": 0.30566666666666664,
+        "median": 0.0,
+        "p95": 1,
+        "max": 4,
+        "zero_count": 8968
+      },
+      "actions": {
+        "total": 2781649,
+        "mean": 231.80408333333332,
+        "median": 261.0,
+        "p95": 307,
+        "max": 433,
+        "zero_count": 559
+      },
+      "never_died": 7947,
+      "ever_revived": 0,
+      "purchasers": 356,
+      "ending_human_form": 0,
+      "maxima": {
+        "earned_xp": [
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2104,
+            "name": "Ghastly Erratic Justin",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "earned_xp": 241
+          }
+        ],
+        "peak_unspent_xp": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 3703,
+            "name": "Sickeningly Scarred Fiona",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "peak_unspent_xp": 142
+          }
+        ],
+        "owned_skills": [
+          {
+            "seed": 997,
+            "opening": "awake",
+            "id": 3185,
+            "name": "Sickeningly Drained Elijah",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 2299,
+            "name": "Deeply Grimy Elizabeth",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2104,
+            "name": "Ghastly Erratic Justin",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2139,
+            "name": "Wretchedly Biting Florence",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2207,
+            "name": "Gruesomely Gloomy Hazel",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2269,
+            "name": "Ghastly Carious Richard",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 3459,
+            "name": "Wretchedly Acidic Iris",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 997,
+            "opening": "natural",
+            "id": 2075,
+            "name": "Utterly Famine-struck Ruby",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 997,
+            "opening": "natural",
+            "id": 2119,
+            "name": "Grimly Cadaverous Elena",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          },
+          {
+            "seed": 997,
+            "opening": "natural",
+            "id": 2189,
+            "name": "Vilely Frostbitten Theodore",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "owned_skills": 3
+          }
+        ],
+        "purchases": [
+          {
+            "seed": 997,
+            "opening": "awake",
+            "id": 3185,
+            "name": "Sickeningly Drained Elijah",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 2299,
+            "name": "Deeply Grimy Elizabeth",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2104,
+            "name": "Ghastly Erratic Justin",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2139,
+            "name": "Wretchedly Biting Florence",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2207,
+            "name": "Gruesomely Gloomy Hazel",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2269,
+            "name": "Ghastly Carious Richard",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 3459,
+            "name": "Wretchedly Acidic Iris",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 997,
+            "opening": "natural",
+            "id": 2075,
+            "name": "Utterly Famine-struck Ruby",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 997,
+            "opening": "natural",
+            "id": 2119,
+            "name": "Grimly Cadaverous Elena",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          },
+          {
+            "seed": 997,
+            "opening": "natural",
+            "id": 2189,
+            "name": "Vilely Frostbitten Theodore",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "purchases": 2
+          }
+        ],
+        "deaths": [
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 2436,
+            "name": "Deeply Frayed Oliver",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "deaths": 7
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2253,
+            "name": "Foully Spectral Beckett",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "deaths": 7
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 3134,
+            "name": "Horribly Suppurating Julia",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "deaths": 7
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 3556,
+            "name": "Grimly Heartless Rafael",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "deaths": 7
+          }
+        ],
+        "combat_deaths": [
+          {
+            "seed": 23,
+            "opening": "natural",
+            "id": 2436,
+            "name": "Deeply Frayed Oliver",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "combat_deaths": 7
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 2253,
+            "name": "Foully Spectral Beckett",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "combat_deaths": 7
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 3134,
+            "name": "Horribly Suppurating Julia",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "combat_deaths": 7
+          },
+          {
+            "seed": 307,
+            "opening": "natural",
+            "id": 3556,
+            "name": "Grimly Heartless Rafael",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "combat_deaths": 7
+          }
+        ],
+        "revives_received": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2001,
+            "name": "Dreadfully Ambling Jack",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2002,
+            "name": "Gravelike Rachel",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2003,
+            "name": "Ghastly Reeking Anika",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2004,
+            "name": "Terribly Bone-rattling Aiden",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2005,
+            "name": "Terribly Icy Victor",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2006,
+            "name": "Gruesomely Suppurating Zoe",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2007,
+            "name": "Utterly Foul Jasmine",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2008,
+            "name": "Utterly Dappled Connor",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2009,
+            "name": "Terribly Barren Philip",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2010,
+            "name": "Vilely Gouged Rachel",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_received": 0
+          }
+        ],
+        "revives_performed": [
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2001,
+            "name": "Dreadfully Ambling Jack",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2002,
+            "name": "Gravelike Rachel",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2003,
+            "name": "Ghastly Reeking Anika",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2004,
+            "name": "Terribly Bone-rattling Aiden",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2005,
+            "name": "Terribly Icy Victor",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2006,
+            "name": "Gruesomely Suppurating Zoe",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2007,
+            "name": "Utterly Foul Jasmine",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2008,
+            "name": "Utterly Dappled Connor",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2009,
+            "name": "Terribly Barren Philip",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          },
+          {
+            "seed": 23,
+            "opening": "awake",
+            "id": 2010,
+            "name": "Vilely Gouged Rachel",
+            "job": "Corpse",
+            "cohort": "zombie",
+            "current_form": "zombie",
+            "revives_performed": 0
+          }
+        ]
+      }
+    }
+  },
+  "source_files": {
+    "NpcPlannerScoring.cs": "1c168ec2e5d37da2ec77bad967cff540b38d07af2bdbbfb5f31c3b799c42780c",
+    "NpcQueryKernel.cs": "a11c45b6e3d848c311c1c4ff43f709d2adf0cef1dcd250a448a98aacef538f71",
+    "balance_cohort_runs.gd": "01b139a887227da9a09f125cf2d08b6413972b15f940f560d936bd37c04dbab2",
+    "catalog.gd": "12e4d1337a5300f8e255598d436af911e77aa599a06b68f5665b0e22b940bc76",
+    "extended_rules.gd": "f43fb75d39b044e5ccd8fd07fbb42d476b9887e9d370f5b28efa2fd2f4e3d1da",
+    "npc_ai.gd": "1a2ebf24ee2ce124bc31990b2958413e1ae25977448a4a9bc079e75ab5da19d1",
+    "npc_utility/location_memory.gd": "d56fd00623aa846328baefb4282438876ab07db8b77a04ae047f8049de62d108",
+    "npc_utility/managed_queries.gd": "59c46e84676185f46bffda632ac9a480e134d68836e6ae460606f60233fddd62",
+    "npc_utility/planner.gd": "0324da72c573b977dc09cbcbd8d9610c1e94d58786c85d547a42a59d565e46fb",
+    "npc_utility/planning_batch.gd": "1a13d0faa04bd12f57cfdb942816dd489173ae8af816043e07d64e06b55dd641",
+    "npc_utility/progression.gd": "7f31ab63d591f40b78c3bcd4427c42c61c568d7bebca4a8e1b7bffd1f4a09393",
+    "npc_utility/route_cache.gd": "88a1c4caf263c681ec275e99fd740662ce6f209e53599a2b1f93a503cf8f0b31",
+    "npc_utility/supplies.gd": "c46f0689481e2cb130d68b453ddf0c2d9d864dc09f8af66f7b9728308b5c355b",
+    "simulation.gd": "f54df795928bd74c57f0d4fde5c523b478ae0aaa12fa187a0a999ec5bb647bd5",
+    "world_builder.gd": "38fd3a4fa3d208f927148a7e84318d0b5bb577e6e12519c3947341ef4bc1b5e5"
+  },
+  "validation": "All daily and final ledgers reconcile."
+}

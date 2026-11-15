@@ -387,7 +387,7 @@ func live_planner_rules() -> void:
  check(not s.revive_sites.has(b.id),"Replacing the graffiti clears the point")
 
  var medic = s.actors[3]
- medic.human_skills.append("lab_experience")
+ medic.human_skills = ["necro_employment", "lab_experience"]
  medic.human = true; medic.down = false; medic.x = p.x; medic.y = p.y; medic.inside = false
  medic.inventory.clear()
  s.give_item(medic,"dna_extractor")
@@ -395,6 +395,7 @@ func live_planner_rules() -> void:
  var patient = s.actors[1]
  patient.x = p.x; patient.y = p.y; patient.down = false; patient.hp = 50
  patient.wants_revive = true
+ patient.human_skills = ["first_aid"]
  s.reindex()
  ready(s,medic)
  patient.zombie_skills = ["brain_rot"]
@@ -406,7 +407,7 @@ func live_planner_rules() -> void:
  ready(s,medic)
  s._npc_turn(medic)
  check(medic.last_action == "extract" and patient.tagged_until > s.minute and not s.item_kind(medic,"syringe").is_empty(),"Medic screens a standing patient before injecting")
- check(s.dna_profile(patient).contains("Ankle Grab") and s.location_description(medic).contains("DNA:"),"DNA tag reveals the sampled zombie skills")
+ check(s.dna_profile(patient).contains("Ankle Grab") and s.dna_human_training(patient),"DNA sample reveals zombie skills and identifies human training")
  patient.zombie_skills.append("death_grip")
  check(not s.dna_profile(patient).contains("Death Grip"),"DNA profile reports the sampled skills without live updates")
  ready(s,medic)
@@ -521,7 +522,10 @@ func live_planner_rules() -> void:
  s.player().down = true
  b = s.blocks[45]
  medic = s.actors[3]
- medic.human_skills.append("lab_experience")
+ medic.human_skills = ["necro_employment", "lab_experience"]
+ medic.inventory.clear()
+ s.give_item(medic,"dna_extractor")
+ s.give_item(medic,"syringe")
  medic.human = true; medic.down = false; medic.x = b.x; medic.y = b.y; medic.inside = true
  patient = s.actors[1]
  patient.down = false; patient.x = b.x; patient.y = b.y; patient.inside = true
@@ -531,10 +535,11 @@ func live_planner_rules() -> void:
  ready(s,medic)
  s._npc_turn(medic)
  check(not patient.human and not s.item_kind(medic,"syringe").is_empty(),"A hostile DNA profile rules out opportunistic revival")
- patient.tagged_skills = ["ankle_grab"]
+ patient.tagged_skills = ["first_aid","ankle_grab"]
+ medic.x = b.x; medic.y = b.y; medic.inside = true
  ready(s,medic)
  s._npc_turn(medic)
- check(patient.human and patient.down,"A low-risk DNA profile permits revival at the lab")
+ check(patient.human and patient.down,"Sampled human training permits revival at the lab")
 
  walker = s.actors[15]
  walker.zombie_skills.append_array(["memories","ransack"])

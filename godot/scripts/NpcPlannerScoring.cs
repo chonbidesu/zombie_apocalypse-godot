@@ -202,27 +202,7 @@ internal sealed class NpcPlannerScoring
             double defense = 0.49 + 0.5 * (plan.Efficiency / (plan.Efficiency + 2) * (1 - 0.65 * Unit(plan.Danger)));
             plan.Candidates.Add(new(1, plan.Opponent, defense));
             plan.Candidates.Add(new(2, -1, defense - 0.03));
-            if (actor.Ap >= 15 && actor.Hp > 30 && _actors[plan.Opponent].TaggedUntil <= minute)
-                plan.Candidates.Add(new(3, plan.Opponent, actor.Has(Clinician) ? 0.54 : 0.43));
         }
-        if (actor.Has(FirstAid))
-            foreach (int otherId in present)
-            {
-                Actor other = _actors[otherId];
-                if (!other.Has(Human) || other.Has(Down) || other.Has(Inside) != actor.Has(Inside) || (other.Hp > other.MaxHp - 8 && !other.Has(Infected))) continue;
-                if (otherId != id && !actor.Has(Diagnosis) && other.Hp > 40 && !other.Has(Infected)) continue;
-                double heal = Math.Max(Smooth((1 - Unit((double)other.Hp / other.MaxHp)) / 0.70), other.Has(Infected) ? 0.95 : 0);
-                plan.Candidates.Add(new(4, otherId, 0.20 + 0.57 * heal + (actor.Has(Doctor) && otherId != id ? 0.25 : 0)));
-            }
-        if (actor.Has(LabExperience) && actor.Has(Syringe))
-            foreach (int otherId in present)
-            {
-                Actor other = _actors[otherId];
-                if (other.Has(Inside) != actor.Has(Inside)) continue;
-                bool triage = (_world.PlannerCell(actor.Site).Flags & 16) != 0 || ((_world.PlannerCell(actor.Site).Flags & 2) != 0 && actor.Has(Inside));
-                int profile = Threat(other, minute);
-                bool lowRisk = !other.Has(PrefersUndead) && plan.Enemies <= 1 && (other.Has(Down) || (triage && (profile == 0 || (profile < 0 && actor.Has(Extractor)))));
-                if (!other.Has(Human) && (other.Has(WantsRevive) || otherId == 0 || lowRisk)) plan.Candidates.Add(new(5, otherId, 0.92));
-            }
+        // Medical choices use the shared GDScript policy and sampled skill data.
     }
 }
