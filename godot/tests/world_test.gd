@@ -119,8 +119,10 @@ func _initialize() -> void:
  check(one.blocks.filter(func(b): return b.get("unbarricadable",false)).size() == 14,"Random zoo reserves fourteen open squares around six barricadable enclosures")
  check(s.start(765,"Doctor",config).is_empty() and s.width == 30 and s.height == 20 and s.actors.size() == 28,"Random city starts with requested dimensions and population")
  var full = W.defaults()
+ check(full.survivors == 1500 and full.zombies == 1500, "Default city starts with equal survivor and zombie populations")
  var started = Time.get_ticks_msec()
  check(s.start(4815,"Private",full).is_empty() and s.actors.size() == full.survivors+full.zombies+1,"Default generated city supports the configured population")
+ check(s.actors.filter(func(a): return a.dormant and not a.human).size() == 1260, "Default city keeps 1,260 zombies dormant")
  var medic = s.actors[2]
  var builder = s.actors[1]
  var shelter = s.blocks.filter(func(b): return s.is_building(b) and not b.unbarricadable and b.fort.is_empty()).front()

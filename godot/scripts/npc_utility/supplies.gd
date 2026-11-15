@@ -9,13 +9,14 @@ const OBSERVED_ITEMS = [[], ["first_aid_kit"], ["pistol_clip", "shotgun_shell", 
 const TRIP_RESERVE = 9
 
 var memory: Memory
-var _values := PackedByteArray([0, 0, 0, 0, 0])
 var _ids := PackedInt32Array([-1, -1, -1])
 var _scores := PackedFloat64Array([0.0, 0.0, 0.0])
+var _stock_observations: Dictionary[String, PackedByteArray] = {}
 
 
 func reset(width: int, height: int, actors: int) -> void:
 	memory = Memory.new(width, height, actors)
+	_stock_observations.clear()
 
 
 static func weapon_track(s, a: Dictionary) -> String:
@@ -45,31 +46,66 @@ static func store_for(s, a: Dictionary, site: Dictionary, kind: String) -> Strin
 	return ""
 
 
-func observe(s, a: Dictionary, here: Dictionary, hostile: int) -> void:
+func observe(s, a: Dictionary, here: Dictionary, hostile: int, prepared: Variant = null) -> void:
 	var stamp: int = here.id * 2 + int(a.inside)
 	if a.npc_observed == stamp and s.minute < a.npc_observed_at + 60:
 		return
+	var records: Array = observations(s, a, here, hostile) if prepared == null else prepared
 	a.npc_observed = stamp
 	a.npc_observed_at = s.minute
+	for record: Dictionary in records:
+		var site: Dictionary = s.block_at(record.cell.x, record.cell.y)
+		var inside: bool = site.id == here.id and a.inside
+		if not inside and memory.knows(a.id, site.id): continue
+		var values: PackedByteArray = _observation_values(s, a, here, site, hostile) if record.values == null else record.values
+		memory.remember(a.id, record.cell, s.minute, values, a.home, int(s.blocks[a.home].npc_entry))
+
+
+func observations(s, a: Dictionary, here: Dictionary, hostile: int) -> Array:
+	var records: Array = []
+	var stamp: int = here.id * 2 + int(a.inside)
+	if a.npc_observed == stamp and s.minute < a.npc_observed_at + 60:
+		return records
 	for y in range(maxi(0, a.y - 1), mini(s.height, a.y + 2)):
 		for x in range(maxi(0, a.x - 1), mini(s.width, a.x + 2)):
 			var site: Dictionary = s.block_at(x, y)
 			if not s.is_building(site):
 				continue
 			var inside: bool = site.id == here.id and a.inside
-			if not inside and memory.knows(a.id, site.id):
-				continue
-			_values[Memory.Kind.SHELTER] = (120 + 6 * s.barricade_strength(site)) if inside and hostile == 0 and site.ruin == 0 else 0
-			var profile: Dictionary = a if inside else {}
-			var known_type: String = site.type if inside else s.visible_type(site, a)
-			var observed_site: Dictionary = site if known_type == site.type else {"type": known_type, "generator": false, "ruin": 0, "fuel_until": 0}
-			for channel in range(1, Memory.Kind.COUNT):
-				var wealth: float = 0.0
-				for item in OBSERVED_ITEMS[channel]:
-					var store: String = store_for(s, a, site, item) if inside else ""
-					wealth = maxf(wealth, s.item_search_chance(observed_site, item, profile, store))
-				_values[channel] = roundi(255.0 * Desire.unit(wealth / 0.20))
-			memory.remember(a.id, Vector2i(x, y), s.minute, _values, a.home, int(s.blocks[a.home].npc_entry))
+			var values: Variant = null if not inside and memory.knows(a.id, site.id) else _observation_values(s, a, here, site, hostile)
+			records.append({"cell": Vector2i(x, y), "values": values})
+
+	return records
+
+
+func _observation_values(s, a: Dictionary, here: Dictionary, site: Dictionary, hostile: int) -> PackedByteArray:
+	var inside: bool = site.id == here.id and a.inside
+	var values := PackedByteArray([0, 0, 0, 0, 0])
+	values[Memory.Kind.SHELTER] = (120 + 6 * s.barricade_strength(site)) if inside and hostile == 0 and site.ruin == 0 else 0
+	var profile: Dictionary = a if inside else {}
+	var known_type: String = site.type if inside else s.visible_type(site, a)
+	var observed_site: Dictionary = site if known_type == site.type else {"type": known_type, "generator": false, "ruin": 0, "fuel_until": 0}
+	# Stock odds depend on building state and the two mall search skills. Keep
+	# shelter safety separate, since occupants can change between decisions.
+	var skills: int = 0
+	if inside and s.has_skill(a, "shopping"): skills |= 1
+	if inside and s.has_skill(a, "bargain_hunting"): skills |= 2
+	var key: String = "%s/%d/%d/%d/%d" % [known_type, observed_site.ruin, int(s.powered(observed_site)), skills,
+		s.search_tables.get(known_type, {}).hash()]
+	if _stock_observations.has(key):
+		var cached: PackedByteArray = _stock_observations[key].duplicate()
+		cached[Memory.Kind.SHELTER] = values[Memory.Kind.SHELTER]
+		return cached
+	var profiles: Dictionary = {}
+	for channel in range(1, Memory.Kind.COUNT):
+		var wealth: float = 0.0
+		for item in OBSERVED_ITEMS[channel]:
+			var store: String = store_for(s, a, site, item) if inside else ""
+			if not profiles.has(store): profiles[store] = s.search_profile(observed_site, profile, store)
+			wealth = maxf(wealth, s.item_search_chance(observed_site, item, profile, store, profiles[store]))
+		values[channel] = roundi(255.0 * Desire.unit(wealth / 0.20))
+	_stock_observations[key] = values.duplicate()
+	return values
 
 
 func choose_site(s, a: Dictionary, here: Dictionary, kind: String, threat: float) -> Vector2:
@@ -133,6 +169,7 @@ func choose_site(s, a: Dictionary, here: Dictionary, kind: String, threat: float
 static func _public_source(s, a: Dictionary, origin: Vector2i, kind: String, radius: int, avoid: int) -> Dictionary:
 	var best: Dictionary = {}
 	var distance: int = radius + 1
+	if s.npc_local_awareness: radius = mini(radius, 1)
 	# Public landmarks supply a lead about stock type. The NPC learns access and
 	# current search conditions when it reaches the building.
 	for y in range(maxi(0, origin.y - radius), mini(s.height, origin.y + radius + 1)):
@@ -159,7 +196,7 @@ func run_trip(s, a: Dictionary, here: Dictionary) -> bool:
 			a.supply_kind = ""
 			a.supply_goal = a.home
 			site = home
-	if a.supply_kind.is_empty() and site.id == home.id and home.barricade > 4 and (not a.inside or here.id != home.id):
+	if a.supply_kind.is_empty() and site.id == home.id and (not s.npc_local_awareness or s.npc_site_visible(a, home)) and home.barricade > 4 and (not a.inside or here.id != home.id):
 		var entry_id: int = int(home.npc_entry)
 		var roof_access: bool = a.inside and s.scent_distance(a, home) == 1 and s.can_free_run_between(a, here, home)
 		if not roof_access:

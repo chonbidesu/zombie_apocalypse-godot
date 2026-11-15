@@ -44,7 +44,8 @@ func _initialize() -> void:
  for kind in C.OUTDOORS:
   b.type = kind
   check(is_equal_approx(s.search_chance(b,p),0.05) and not s.search_distribution(b,p).is_empty(),"Every outdoor square has five percent find odds and loot: "+kind)
-  check(s.search_distribution(b,p) == C.OUTSIDE_SEARCH_WEIGHTS and s.search_loot(kind) == C.OUTSIDE_SEARCH_WEIGHTS.keys(),"Open ground uses the same street table and metadata: "+kind)
+  var expected = s.search_tables[kind] if kind in ["exercise_yard","training_ground"] else C.OUTSIDE_SEARCH_WEIGHTS
+  check(s.search_distribution(b,p) == expected and s.search_loot(kind) == expected.keys(),"Open ground uses its expected table and metadata: "+kind)
  for kind in ["fire_axe","crowbar","knife","length_of_pipe","baseball_bat","fuel_can","spray_can","flashlight","binoculars","newspaper"]:
   check(C.ITEMS.has(kind) and C.OUTSIDE_SEARCH_WEIGHTS.get(kind,0.0) > 0.0,"Street loot includes supported item: "+kind)
  var no_restricted = true
@@ -69,7 +70,21 @@ func _initialize() -> void:
  var same_rolls = true
  for attempt in range(1000): same_rolls = same_rolls and exterior_rolls[attempt] == s.roll_search(b,p)
  check(same_rolls,"Building exteriors and street squares produce identical seeded loot")
+ for yard in ["exercise_yard", "training_ground"]:
+  b.type = yard
+  b.generator = true
+  b.fuel_until = s.minute + 100
+  check(not s.can_host_generator(b) and is_equal_approx(s.search_chance(b,p),0.05), "Fort yard stays unpowered and has a five percent find rate: " + yard)
+  check(s.search_distribution(b,p) == s.search_tables[yard] and s.search_distribution(b,p) != C.OUTSIDE_SEARCH_WEIGHTS, "Fort yard has its own outdoor loot: " + yard)
+ check(s.search_tables.training_ground.has("pistol_clip") and not s.search_tables.exercise_yard.has("pistol_clip"), "Training ammunition is specific to the training ground")
  p.inside = true
+ b.type = "barracks"
+ b.ruin = 0
+ b.generator = false
+ check(s.item_search_chance(b,"radio",p) > 0 and s.item_search_chance(b,"first_aid_kit",p) > 0 and s.item_search_chance(b,"flashlight",p) > 0, "Barracks provide radios and survival supplies")
+ var unlit_radio = s.item_search_chance(b,"radio",p)
+ b.generator = true
+ check(is_equal_approx(s.item_search_chance(b,"radio",p),unlit_radio*1.5), "Barracks lighting improves supply odds")
  b.type = "hospital"
  b.ruin = 0
  b.generator = false

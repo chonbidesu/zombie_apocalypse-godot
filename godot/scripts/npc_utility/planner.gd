@@ -18,13 +18,20 @@ var _command: String
 var _target: int
 var _data: Dictionary
 var _focus: Dictionary[int, int] = {}
+var prepared: Dictionary = {}
+var _context: Dictionary = {}
+var _shelter_entry: int = -1
+var _preparing: bool = false
 
 
 func reset(width: int, height: int, count: int) -> void:
 	supplies.reset(width, height, count)
+	prepared = {}
+	_context = {}
 
 
 func _clear_choice() -> void:
+	_shelter_entry = -1
 	_score = 0.0
 	_command = ""
 	_target = -1
@@ -32,9 +39,11 @@ func _clear_choice() -> void:
 
 
 func _offer(s, a: Dictionary, value: float, command: String, target: int = -1, data: Dictionary = {}) -> void:
-	if value <= _score or a.ap < s.cost(a, command, target, data):
+	if value <= _score:
 		return
-	if not s.reason(a, command, target, data).is_empty():
+	var action_cost: int = s.cost(a, command, target, data)
+	if a.ap < action_cost: return
+	if not s.reason(a, command, target, data, false, action_cost).is_empty():
 		return
 	_score = value
 	_command = command
@@ -43,16 +52,25 @@ func _offer(s, a: Dictionary, value: float, command: String, target: int = -1, d
 
 
 func turn(s, a: Dictionary) -> int:
+	var rest_ap: int = _turn(s, a)
+	_context = {}
+	prepared = {}
+	return rest_ap
+
+
+func _turn(s, a: Dictionary) -> int:
 	if a.dormant or a.busy_until > s.now():
 		return 0
+	if s.npc_full_recovery and (a.ap <= 0 or (not str(a.get("recovery_mode", "")).is_empty() and a.ap < Catalog.AP_CAP)):
+		return Catalog.AP_CAP
 	if a.down:
 		s._try(a, "stand")
 		return 0
+	if s.npc_local_awareness: s.observe_npc_landmarks(a)
 	s._maybe_speak(a)
-	var skill: String = ""
-	if a.xp >= 75:
-		skill = Progression.target_skill(a, s.level(a), Supplies.weapon_track(s, a) if a.human else "", _clinician(s, a))
-		if not skill.is_empty() and not s.skill_reason(a, skill).is_empty(): skill = ""
+	_context = prepared
+	prepared = {}
+	var skill: String = _context.skill if not _context.is_empty() else _target_skill(s, a)
 	var here: Dictionary = s.current_block(a)
 	if a.ap == 0 and skill.is_empty():
 		var discounted: bool = a.human and a.inside and a.scout_site == here.id and (a.scout_day != s.minute / 1440 or a.scout_used < 5)
@@ -68,31 +86,39 @@ func turn(s, a: Dictionary) -> int:
 	return _zombie(s, a, here, present, skill)
 
 
-func _purchase(s, a: Dictionary, skill: String) -> bool:
-	if skill.is_empty() or not Gate.can_act(a.ap, 0, s.clock_step, ceili(a.busy_until * Catalog.CLOCK_STEPS_PER_MINUTE - 0.00001)):
-		return false
-	if not s.learn(skill, a.id).is_empty():
-		return false
-	a.last_action = "learn"
-	a.busy_until = float(Gate.ready_after_action(s.clock_step)) / Catalog.CLOCK_STEPS_PER_MINUTE
-	a.npc_purchases += 1
-	s.metrics.npc_actions += 1
-	return true
+func _target_skill(s, a: Dictionary) -> String:
+	if a.xp < 75: return ""
+	var skill: String = Progression.target_skill(a, s.level(a), Supplies.weapon_track(s, a) if a.human else "", _clinician(s, a))
+	return skill if skill.is_empty() or s.skill_reason(a, skill).is_empty() else ""
 
 
-func train_before_standing(s, a: Dictionary) -> bool:
-	if a.human or not a.wants_revive or a.xp < 100:
-		return false
-	return _purchase(s, a, Progression.target_skill(a, s.level(a), "", false))
+func prepare(s, a: Dictionary) -> Dictionary:
+	_preparing = true
+	supplies.memory = s.npc_planner.memory
+	var skill := _target_skill(s, a)
+	if a.ap == 0 and skill.is_empty(): return {}
+	_clear_choice()
+	var here: Dictionary = s.current_block(a)
+	if a.human:
+		var present: Array = s.occupants(here, a.inside)
+		var context := _human_context(s, a, here, present)
+		_human_choices(s, a, here, present, context)
+		# An unassigned roof entrance checks all home occupants city-wide.
+		var global_home: bool = a.inside and here.id == a.home and here.npc_entry < 0 and s.barricade_strength(here) >= 10 and s.has_skill(a, "free_running")
+		var result: Dictionary = {"skill": skill, "human": context, "score": _score, "command": _command,
+			"target": _target, "data": _data, "entry": _shelter_entry, "global_home": global_home}
+		if context.emergency or context.flee > _score or a.ap <= 10:
+			result.retreat = AI.retreat_target(s, a, here)
+		if context.danger < 0.55 and _score < 0.66 and context.allies == 1 and a.supply_goal < 0 and a.ap >= 16 and not _clinician(s, a) and (not a.inside or context.wall < 8):
+			result.group = _group_target(s, a, here)
+		if _score < 0.66:
+			result.observations = supplies.observations(s, a, here, context.enemies)
+		return result
+	return {}
 
 
-static func _clinician(s, a: Dictionary) -> bool:
-	return a.job in ["Scientist", "NecroTech Lab Assistant"] or (a.human and (s.has_skill(a, "lab_experience") or s.blocks[a.home].type == "necrotech_lab"))
-
-
-func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -> int:
-	if a.prefers_undead and AI.return_to_undeath(s, a):
-		return 0
+func _human_context(s, a: Dictionary, here: Dictionary, present: Array) -> Dictionary:
+	if s.managed_queries.planning_active: return s.managed_queries.human_context(s, a)
 	var enemies: int = 0
 	var allies: int = 0
 	var builders: int = 0
@@ -126,11 +152,56 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 	var exposed: bool = not a.inside and enemies > 0 and enemies >= allies and attack_efficiency < 1.0
 	var short_on_ap: bool = a.ap <= 7 and (not a.inside or enemies >= allies or wall < 3)
 	var emergency: bool = exposed or enemies >= 2.5 * allies or breach >= 0.85 or (enemies > 0 and (a.hp <= 22 or short_on_ap))
-	if emergency and a.ap > 0:
-		if a.infected and a.hp <= 5 and s._try(a, "heal", a.id): return 0
-		if AI.retreat(s, a, true, breach >= 0.85):
-			a.next_trip = s.minute + 60
-			return 0
+	return {"enemies": enemies, "allies": allies, "opponent": opponent, "outside": outside,
+		"wall": wall, "breach": breach, "danger": danger, "flee": flee,
+		"attack_efficiency": attack_efficiency, "emergency": emergency}
+
+
+func _human_choices(s, a: Dictionary, here: Dictionary, present: Array, context: Dictionary) -> void:
+	var danger: float = context.danger
+	var enemies: int = context.enemies
+	var outside: int = context.outside
+	var allies: int = context.allies
+	var breach: float = context.breach
+	_primary_choices(s, a, here, present, context)
+	if a.inside:
+		_indoor_work(s, a, here, present, outside, allies, breach)
+		if enemies == 0 and a.ap >= 10 and _score < 0.55:
+			_ready_weapon(s, a)
+		if s.has_skill(a, "lab_experience") and (here.type == "necrotech_lab" or here.id == a.home) and enemies == 0:
+			if here.type == "necrotech_lab" and outside == 0 and a.ap >= 32:
+				var needles: int = 0
+				for item in a.inventory:
+					if item.kind == "syringe": needles += 1
+				if needles < 2: _offer(s, a, 0.57, "search")
+			for other in s.occupants(here, false):
+				if not other.wants_revive or other.down or s.has_skill(other, "brain_rot"): continue
+				if s.item_kind(a, "syringe").is_empty():
+					if outside == 0 and a.ap >= 25 and s.item_search_chance(here, "syringe", a) <= 0.075:
+						_offer(s, a, 0.78, "manufacture")
+					if a.ap >= 5 and here.type == "necrotech_lab": _offer(s, a, 0.76, "search")
+				elif outside <= 1 and a.ap >= 4:
+					_offer(s, a, 0.89, "leave")
+				break
+	else:
+		if enemies == 0 and here.type == "necrotech_lab" and s.has_skill(a, "lab_experience") and s.item_kind(a, "syringe").is_empty():
+			_offer(s, a, 0.68, "enter")
+		if here.type in MARKERS and here.graffiti.is_empty() and not s.item_kind(a, "spray_can").is_empty() and s.has_skill(a, "lab_experience"):
+			_offer(s, a, 0.56, "tag", -1, {"text": "Revive point"})
+		elif here.graffiti.is_empty() and danger < 0.2 and Catalog.TAG_XP.has(here.type) and s.has_skill(a, "tagging"):
+			_offer(s, a, 0.36, "tag", -1, {"text": "Keep an escape route clear."})
+		if enemies == 0 and a.supply_goal < 0 and a.ap <= 9 and (s.npc_local_awareness or s.occupants(here, true).all(func(t): return t.human or t.down)):
+			_offer(s, a, 0.79, "enter")
+
+
+func _primary_choices(s, a: Dictionary, here: Dictionary, present: Array, context: Dictionary) -> void:
+	if s.managed_queries.planning_active:
+		_managed_primary(s, a, here)
+		return
+	var opponent: Dictionary = context.opponent
+	var attack_efficiency: float = context.attack_efficiency
+	var enemies: int = context.enemies
+	var danger: float = context.danger
 	if not opponent.is_empty():
 		var defense: float = 0.49 + 0.5 * Desire.defend(attack_efficiency, 1.0, danger)
 		_offer(s, a, defense, "attack", opponent.id)
@@ -160,34 +231,94 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 					if screening == s.BRAIN_ROT_EXTRACTION_BLOCKED and not (a.inside and here.type == "necrotech_lab" and s.powered(here) and s.has_skill(a, "necronet")):
 						continue
 				_offer(s, a, 0.92, "revive", other.id)
-	if a.inside:
-		_indoor_work(s, a, here, present, outside, allies, breach)
-		if enemies == 0 and a.ap >= 10 and _score < 0.55:
-			_ready_weapon(s, a)
-		if s.has_skill(a, "lab_experience") and (here.type == "necrotech_lab" or here.id == a.home) and enemies == 0:
-			if here.type == "necrotech_lab" and outside == 0 and a.ap >= 32:
-				var needles: int = 0
-				for item in a.inventory:
-					if item.kind == "syringe": needles += 1
-				if needles < 2: _offer(s, a, 0.57, "search")
-			for other in s.occupants(here, false):
-				if not other.wants_revive or other.down or s.has_skill(other, "brain_rot"): continue
-				if s.item_kind(a, "syringe").is_empty():
-					if outside == 0 and a.ap >= 25 and s.item_search_chance(here, "syringe", a) <= 0.075:
-						_offer(s, a, 0.78, "manufacture")
-					if a.ap >= 5 and here.type == "necrotech_lab": _offer(s, a, 0.76, "search")
-				elif outside <= 1 and a.ap >= 4:
-					_offer(s, a, 0.89, "leave")
-				break
+
+
+func _managed_primary(s, a: Dictionary, here: Dictionary) -> void:
+	var record: Array = s.managed_queries.primary_candidates(s, a)
+	var values: PackedFloat64Array = record[0]
+	var offset: int = record[1]
+	var extractor: bool = not s.item_kind(a, "dna_extractor").is_empty()
+	for index in range(int(values[offset + 15])):
+		var row: int = offset + 16 + index * 3
+		var command: int = int(values[row])
+		var target: int = int(values[row + 1])
+		var score: float = values[row + 2]
+		match command:
+			1: _offer(s, a, score, "attack", target)
+			2: _offer(s, a, score, "reload")
+			3: _offer(s, a, score, "extract", target)
+			4: _offer(s, a, score, "heal", target)
+			5:
+				var other: Dictionary = s.actors[target]
+				if extractor and not other.down and other.tagged_until <= s.minute:
+					var screening: String = s.reason(a, "extract", target)
+					if screening.is_empty():
+						_offer(s, a, 0.94, "extract", target)
+						continue
+					if screening == s.BRAIN_ROT_EXTRACTION_BLOCKED and not (a.inside and here.type == "necrotech_lab" and s.powered(here) and s.has_skill(a, "necronet")):
+						continue
+				_offer(s, a, score, "revive", target)
+
+
+func _purchase(s, a: Dictionary, skill: String) -> bool:
+	if skill.is_empty() or not Gate.can_act(a.ap, 0, s.clock_step, ceili(a.busy_until * Catalog.CLOCK_STEPS_PER_MINUTE - 0.00001)):
+		return false
+	if not s.learn(skill, a.id).is_empty():
+		return false
+	a.last_action = "learn"
+	a.busy_until = float(Gate.ready_after_action(s.clock_step)) / Catalog.CLOCK_STEPS_PER_MINUTE
+	a.npc_purchases += 1
+	s.metrics.npc_actions += 1
+	return true
+
+
+func train_before_standing(s, a: Dictionary) -> bool:
+	if a.human or not a.wants_revive or a.xp < 100:
+		return false
+	return _purchase(s, a, Progression.target_skill(a, s.level(a), "", false))
+
+
+static func _clinician(s, a: Dictionary) -> bool:
+	return a.job in ["Scientist", "NecroTech Lab Assistant"] or (a.human and (s.has_skill(a, "lab_experience") or s.blocks[a.home].type == "necrotech_lab"))
+
+
+func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -> int:
+	if a.prefers_undead and AI.return_to_undeath(s, a):
+		return 0
+	# Seek a nearby entrance while there is still AP to reach and enter it.
+	if s.npc_full_recovery and a.ap <= 8:
+		if AI.retreat(s, a, true): return 0
+		if a.inside or a.ap <= 2: return Catalog.AP_CAP
+	var context: Dictionary = _context.human if not _context.is_empty() else _human_context(s, a, here, present)
+	var enemies: int = context.enemies
+	var allies: int = context.allies
+	var opponent: Dictionary = context.opponent
+	var outside: int = context.outside
+	var wall: int = context.wall
+	var breach: float = context.breach
+	var danger: float = context.danger
+	var flee: float = context.flee
+	var emergency: bool = context.emergency
+	if emergency and a.ap > 0:
+		if a.infected and a.hp <= 5 and s._try(a, "heal", a.id): return 0
+		if AI.retreat(s, a, true, breach >= 0.85):
+			a.next_trip = s.minute + 60
+			return 0
+		# A failed route can still change the actor's shelter or route goal.
+		if s.managed_queries.planning_active: s.managed_queries.dirty(here, a.id)
+		_context = {}
+	if _context.is_empty():
+		_human_choices(s, a, here, present, context)
 	else:
-		if enemies == 0 and here.type == "necrotech_lab" and s.has_skill(a, "lab_experience") and s.item_kind(a, "syringe").is_empty():
-			_offer(s, a, 0.68, "enter")
-		if here.type in MARKERS and here.graffiti.is_empty() and not s.item_kind(a, "spray_can").is_empty() and s.has_skill(a, "lab_experience"):
-			_offer(s, a, 0.56, "tag", -1, {"text": "Revive point"})
-		elif here.graffiti.is_empty() and danger < 0.2 and Catalog.TAG_XP.has(here.type) and s.has_skill(a, "tagging"):
-			_offer(s, a, 0.36, "tag", -1, {"text": "Keep an escape route clear."})
-		if enemies == 0 and a.supply_goal < 0 and a.ap <= 9 and s.occupants(here, true).all(func(t): return t.human or t.down):
-			_offer(s, a, 0.79, "enter")
+		_score = _context.score
+		_command = _context.command
+		_target = _context.target
+		_data = _context.data
+		_shelter_entry = _context.entry
+	if _shelter_entry >= 0:
+		here.npc_entry = _shelter_entry
+		s.blocks[_shelter_entry].npc_ingress = true
+		if s.planning_batch.active: s.planning_batch.dirty(s.blocks[_shelter_entry])
 	if not opponent.is_empty() and _score < 0.73 and a.ap >= 1 and AI.equip_best(s, a, opponent):
 		return 0
 	if flee > _score and a.ap > 0 and AI.retreat(s, a, true):
@@ -199,7 +330,7 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 		return 0
 	if a.ap < 1 and _command.is_empty():
 		return 1
-	supplies.observe(s, a, here, enemies)
+	supplies.observe(s, a, here, enemies, _context.get("observations"))
 	var rest: float = Desire.rest(a.ap, (0.56 + wall / 50.0) if a.inside and enemies == 0 and here.ruin == 0 else 0.0, danger)
 	if danger < 0.55 and _score < 0.66:
 		# Well-rested armed survivors seek isolated nearby zombies for experience.
@@ -234,7 +365,7 @@ func _human(s, a: Dictionary, here: Dictionary, present: Array, skill: String) -
 		return 0 if a.ap >= 50 else mini(50, int(a.ap) + 2)
 	if a.ap <= 10 and AI.retreat(s, a, true):
 		return 0
-	if s.occupants(here, true).all(func(t): return t.human or t.down) and s._try(a, "enter"):
+	if (s.npc_local_awareness or s.occupants(here, true).all(func(t): return t.human or t.down)) and s._try(a, "enter"):
 		return 0
 	if a.ap >= 2: s._wander(a)
 	return 2
@@ -266,6 +397,8 @@ func _respond_to_radio(s, a: Dictionary, here: Dictionary, enemies: int, outside
 	var distance: int = s.scent_distance(a, site)
 	if distance > 3:
 		return false
+	if s.npc_local_awareness and distance > 1:
+		return AI.go(s, a, site)
 	var skilled: bool = s.has_skill(a, "construction") or not s.item_kind(a, "first_aid_kit").is_empty()
 	var pressure: int = _outside_hostiles(s, site)
 	var garrison: int = s.occupants(site, true).filter(func(t): return t.human and not t.down).size()
@@ -280,10 +413,35 @@ func _respond_to_radio(s, a: Dictionary, here: Dictionary, enemies: int, outside
 
 
 func _join_group(s, a: Dictionary, here: Dictionary) -> bool:
+	var best: Dictionary = _context.group if _context.has("group") else _group_target(s, a, here)
+	if best.is_empty() or not AI.go(s, a, best): return false
+	a.home = best.id
+	a.supply_goal = best.id
+	a.supply_kind = ""
+	return true
+
+
+func _group_target(s, a: Dictionary, here: Dictionary) -> Dictionary:
+	if s.npc_local_awareness:
+		for site: Dictionary in s.npc_local_sites(a):
+			if site.id == here.id or site.fort != here.fort or site.ruin > 0 or site.barricade < 2 or site.barricade > 4: continue
+			var friends: int = 0
+			var hostile: bool = false
+			for other: Dictionary in s.npc_seen_occupants(a, site):
+				if other.down: continue
+				if other.human: friends += 1
+				elif not other.wants_revive: hostile = true
+			if not hostile and friends >= 2 and friends <= 5: return site
+		return {}
+	if s.managed_queries.active:
+		var id: int = s.managed_queries.query(s, &"GroupTarget", [here.id])
+		return s.blocks[id] if id >= 0 else {}
 	var best: Dictionary = {}
 	var best_cost: int = 8
-	for y in range(maxi(0, a.y - 5), mini(s.height, a.y + 6)):
-		for x in range(maxi(0, a.x - 5), mini(s.width, a.x + 6)):
+	var radius: int = 1 if s.npc_local_awareness else 5
+	for y in range(maxi(0, a.y - radius), mini(s.height, a.y + radius + 1)):
+		for x in range(maxi(0, a.x - radius), mini(s.width, a.x + radius + 1)):
+			if not s.spatial.has(y * s.width + x): continue
 			var site: Dictionary = s.block_at(x, y)
 			if site.id == here.id or site.fort != here.fort or site.ruin > 0 or site.barricade < 2 or site.barricade > 4: continue
 			var distance: int = s.scent_distance(a, site)
@@ -298,11 +456,11 @@ func _join_group(s, a: Dictionary, here: Dictionary) -> bool:
 			if residents < 2 or residents > 5: continue
 			best = site
 			best_cost = distance
-	if best.is_empty() or not AI.go(s, a, best): return false
-	a.home = best.id
-	a.supply_goal = best.id
-	a.supply_kind = ""
-	return true
+	return best
+
+
+func retreat_target(s, a: Dictionary, here: Dictionary) -> Dictionary:
+	return _context.retreat if _context.has("retreat") else AI.retreat_target(s, a, here)
 
 
 func _ready_weapon(s, a: Dictionary) -> void:
@@ -326,43 +484,49 @@ func _ready_weapon(s, a: Dictionary) -> void:
 
 func _indoor_work(s, a: Dictionary, here: Dictionary, present: Array, outside: int, allies: int, breach: float) -> void:
 	var home: bool = a.home == here.id
-	if home or here.ruin > 0:
+	if here.ruin > 0:
 		_offer(s, a, 0.77 if here.ruin > 0 and a.ap > 8 else 0.38, "repair")
 	if not home:
 		if here.npc_ingress and a.ap >= 6 and s.barricade_strength(here) < 10:
 			_offer(s, a, 0.67, "barricade")
 		return
-	_offer(s, a, 0.68, "repair_generator")
+	if here.generator and here.generator_hp < Catalog.GENERATOR_HP:
+		_offer(s, a, 0.68, "repair_generator")
 	var can_defend_light: bool = outside < 2 or (breach < 0.35 and s.barricade_strength(here) >= 8 and allies > outside / 2)
 	if can_defend_light and not s.powered(here) and (not s.item_kind(a, "portable_generator").is_empty() or not s.item_kind(a, "fuel_can").is_empty()):
 		var local_pressure: int = 0
-		for y in range(maxi(0, a.y - 2), mini(s.height, a.y + 3)):
-			for x in range(maxi(0, a.x - 2), mini(s.width, a.x + 3)):
+		var radius: int = 1 if s.npc_local_awareness else 2
+		for y in range(maxi(0, a.y - radius), mini(s.height, a.y + radius + 1)):
+			for x in range(maxi(0, a.x - radius), mini(s.width, a.x + radius + 1)):
 				local_pressure += _outside_hostiles(s, s.block_at(x, y))
 		can_defend_light = local_pressure <= allies + 1 or (allies >= 3 and s.barricade_strength(here) >= 10)
 	var dark_repair: bool = here.ruin >= 3 and s.is_dark_building(here) and s.has_skill(a, "construction") and not s.item_kind(a, "toolbox").is_empty()
-	if can_defend_light: _offer(s, a, 0.79 if dark_repair else 0.73, "generator")
-	if can_defend_light and (not s.powered(here) or here.fuel_until - s.minute < 250):
+	if can_defend_light and not here.generator and not s.item_kind(a, "portable_generator").is_empty():
+		_offer(s, a, 0.79 if dark_repair else 0.73, "generator")
+	if can_defend_light and here.generator and here.generator_hp == Catalog.GENERATOR_HP and not s.item_kind(a, "fuel_can").is_empty() and (not s.powered(here) or here.fuel_until - s.minute < 250):
 		_offer(s, a, 0.78 if dark_repair else 0.69, "fuel")
 	if s.has_skill(a, "construction") or not s.item_kind(a, "length_of_pipe").is_empty():
 		var target: int = _shelter_target(s, a, here, present)
 		var strength: int = s.barricade_strength(here)
 		var build: float = Desire.barricade(strength, target, s.barricade_build_chance(here), 1.0, breach)
-		if strength < target:
+		if strength < target and here.ruin == 0:
 			var priority: float = 0.35 * build + (0.53 if strength < 4 else (0.29 if strength < 10 else 0.08))
 			if s.powered(here) and strength < 10: priority += 0.14
 			if outside > 0 and breach < 0.85: priority += 0.25
 			_offer(s, a, priority, "barricade")
-	_offer(s, a, 0.36, "close")
+	if not s.doors_closed(here) and s.has_doors(here): _offer(s, a, 0.36, "close")
+	var shareable: Array = []
+	for kind: String in SHARE:
+		var item: Dictionary = s.item_kind(a, kind)
+		if not item.is_empty() and not s.supply_needed_by(a, kind): shareable.append([kind, item])
 	for other in present:
 		if not other.human and other.down:
 			_offer(s, a, 0.53, "dump", other.id)
 			continue
 		if other.id == a.id or not other.human or other.down: continue
-		for kind in SHARE:
-			if not s.supply_needed_by(other, kind) or s.supply_needed_by(a, kind) or not s.item_kind(other, kind).is_empty(): continue
-			var item: Dictionary = s.item_kind(a, kind)
-			if not item.is_empty(): _offer(s, a, 0.54, "give", other.id, {"uid": item.uid})
+		for supply: Array in shareable:
+			if not s.supply_needed_by(other, supply[0]) or not s.item_kind(other, supply[0]).is_empty(): continue
+			_offer(s, a, 0.54, "give", other.id, {"uid": supply[1].uid})
 	if a.ap >= 45 and a.scout_site != here.id and s.barricade_strength(here) >= 8:
 		_offer(s, a, 0.24, "scout")
 	if a.ap >= 25 and s.minute >= a.npc_special_at:
@@ -385,7 +549,7 @@ func _shelter_target(s, a: Dictionary, here: Dictionary, present: Array) -> int:
 		return 10
 	for other in present:
 		if other.human and not other.down and not s.has_skill(other, "free_running"): return 10
-	if here.npc_entry < 0:
+	if here.npc_entry < 0 and not s.npc_local_awareness:
 		for other in s.actors:
 			if other.human and not other.down and other.home == here.id and not s.has_skill(other, "free_running"): return 10
 	var best: int = -1
@@ -395,15 +559,17 @@ func _shelter_target(s, a: Dictionary, here: Dictionary, present: Array) -> int:
 			var site: Dictionary = s.block_at(x, y)
 			if site.id == here.id or site.barricade > 4 or site.ruin > 0 or site.npc_entry >= 0 or site.fort != here.fort: continue
 			if not s.is_building(site) or not s.can_free_run_between(a, site, here): continue
-			if s.occupants(site, true).any(func(t): return not t.human and not t.down): continue
+			if not s.npc_local_awareness and s.occupants(site, true).any(func(t): return not t.human and not t.down): continue
 			var quality: int = s.barricade_strength(site) - 6 * _outside_hostiles(s, site) + (20 if site.npc_ingress else 0)
 			if site.id == int(here.npc_entry): quality += 12
 			if quality > value:
 				value = quality
 				best = site.id
 	if best >= 0:
-		here.npc_entry = best
-		s.blocks[best].npc_ingress = true
+		_shelter_entry = best
+		if not _preparing:
+			here.npc_entry = best
+			s.blocks[best].npc_ingress = true
 	return Desire.barricade_target(false, best >= 0 and s.barricade_strength(s.blocks[best]) == 10)
 
 
@@ -430,10 +596,12 @@ func _service_revive_point(s, a: Dictionary, here: Dictionary) -> bool:
 	if a.ap < 12 or not s.has_skill(a, "lab_experience") or s.item_kind(a, "syringe").is_empty(): return false
 	var best: Dictionary = {}
 	var distance: int = 7
-	for id in s.revive_site_ids():
-		var site: Dictionary = s.blocks[id]
+	var sites: Array = s.npc_local_sites(a) if s.npc_local_awareness else s.revive_site_ids().map(func(id): return s.blocks[id])
+	for site: Dictionary in sites:
+		if not site.revive_point: continue
 		var d: int = s.scent_distance(a, site)
-		if d >= distance or not s.occupants(site, false).any(func(t): return t.wants_revive and not t.down): continue
+		if s.npc_local_awareness and d > 1: continue
+		if d >= distance or not (s.npc_seen_occupants(a, site) if s.npc_local_awareness else s.occupants(site, false)).any(func(t): return t.wants_revive and not t.down): continue
 		best = site
 		distance = d
 	if best.is_empty(): return false
@@ -444,37 +612,14 @@ func _service_revive_point(s, a: Dictionary, here: Dictionary) -> bool:
 func _seek_revival(s, a: Dictionary, here: Dictionary) -> int:
 	if a.ap < s.cost(a, "move"): return s.cost(a, "move")
 	var best: Dictionary = {}
-	var distance: int = 9999
 	var rot: bool = s.has_skill(a, "brain_rot")
 	if a.memory >= 0 and a.memory_until > s.minute:
 		var site: Dictionary = s.blocks[a.memory]
-		if site.revive_point or site.type == "necrotech_lab" or _staffed(s, site): best = site
+		if s.npc_local_awareness and not s.npc_site_visible(a, site):
+			if a.memory in a.get("npc_known_clinics", []) or a.memory in a.get("npc_known_markers", []): best = site
+		elif site.revive_point or site.type == "necrotech_lab" or _staffed(s, site): best = site
 	if best.is_empty():
-		var avoid: int = a.avoid_site if a.avoid_until > s.minute else -1
-		for clinic in s.sites_by_type.get("necrotech_lab", []):
-			if clinic.id == avoid or (rot and not s.powered(clinic)): continue
-			var d: int = s.scent_distance(a, clinic)
-			if d >= distance: continue
-			var staff: bool = _staffed(s, clinic)
-			var cost: int = d + (0 if staff else 22)
-			if cost < distance:
-				distance = cost
-				best = clinic
-		if not rot:
-			# Field technicians can receive patients at their current shelter too.
-			for y in range(maxi(0, a.y - 8), mini(s.height, a.y + 9)):
-				for x in range(maxi(0, a.x - 8), mini(s.width, a.x + 9)):
-					var d: int = maxi(absi(x - a.x), absi(y - a.y)) + 2
-					var site: Dictionary = s.block_at(x, y)
-					if d >= distance or site.id == avoid or site.barricade > 4 or not _staffed(s, site): continue
-					best = site
-					distance = d
-			for id in s.revive_site_ids():
-				var site: Dictionary = s.blocks[id]
-				var d: int = s.scent_distance(a, site)
-				if id != avoid and d < distance:
-					best = site
-					distance = d
+		best = _revival_target(s, a, rot)
 		if not best.is_empty():
 			a.memory = best.id
 			a.memory_until = s.minute + 90
@@ -492,7 +637,89 @@ func _seek_revival(s, a: Dictionary, here: Dictionary) -> int:
 	return 0 if a.busy_until > s.now() else mini(50, int(a.ap) + 1)
 
 
+func _revival_target(s, a: Dictionary, rot: bool) -> Dictionary:
+	if s.npc_local_awareness: return _local_revival_target(s, a, rot)
+	if s.managed_queries.active:
+		var avoid: int = a.avoid_site if a.avoid_until > s.minute else -1
+		var id: int = s.managed_queries.query(s, &"RevivalTarget", [s.current_block(a).id, rot, avoid, s.minute])
+		return s.blocks[id] if id >= 0 else {}
+	var best: Dictionary = {}
+	var distance: int = 9999
+	var avoid: int = a.avoid_site if a.avoid_until > s.minute else -1
+	for clinic in s.sites_by_type.get("necrotech_lab", []):
+		if clinic.id == avoid or (rot and not s.powered(clinic)): continue
+		var d: int = s.scent_distance(a, clinic)
+		if d >= distance: continue
+		var staff: bool = _staffed(s, clinic)
+		var cost: int = d + (0 if staff else 22)
+		if cost < distance:
+			distance = cost
+			best = clinic
+	if not rot:
+		# Field technicians can receive patients at their current shelter too.
+		for y in range(maxi(0, a.y - 8), mini(s.height, a.y + 9)):
+			for x in range(maxi(0, a.x - 8), mini(s.width, a.x + 9)):
+				if not s.spatial.has(y * s.width + x): continue
+				var d: int = maxi(absi(x - a.x), absi(y - a.y)) + 2
+				var site: Dictionary = s.block_at(x, y)
+				if d >= distance or site.id == avoid or site.barricade > 4 or not _staffed(s, site): continue
+				best = site
+				distance = d
+		for id in s.revive_site_ids():
+			var site: Dictionary = s.blocks[id]
+			var d: int = s.scent_distance(a, site)
+			if id != avoid and d < distance:
+				best = site
+				distance = d
+	return best
+
+
+func _local_revival_target(s, a: Dictionary, rot: bool) -> Dictionary:
+	var best: Dictionary = {}
+	var score: int = 9999
+	var avoid: int = a.avoid_site if a.avoid_until > s.minute else -1
+	var local: Array[Dictionary] = s.npc_local_sites(a)
+	for site: Dictionary in local:
+		if site.id == avoid or s.visible_type(site, a) != "necrotech_lab" or (rot and not s.powered(site)): continue
+		var value: int = s.scent_distance(a, site) + (0 if _seen_staffed(s, a, site) else 22)
+		if value < score:
+			best = site
+			score = value
+	if not rot:
+		for site: Dictionary in local:
+			var value: int = s.scent_distance(a, site) + 2
+			if site.id == avoid or site.barricade > 4 or value >= score or not _seen_staffed(s, a, site): continue
+			best = site
+			score = value
+		for site: Dictionary in local:
+			var value: int = s.scent_distance(a, site)
+			if site.id != avoid and site.revive_point and value < score:
+				best = site
+				score = value
+	if not best.is_empty(): return best
+	# Remembered landmarks are leads, not live reports about staff or power.
+	var known: Array = a.get("npc_known_clinics", []).duplicate()
+	if not rot: known.append_array(a.get("npc_known_markers", []))
+	known.sort()
+	for id: int in known:
+		if id == avoid or s.npc_site_visible(a, s.blocks[id]): continue
+		var distance: int = s.scent_distance(a, s.blocks[id])
+		if distance < score:
+			best = s.blocks[id]
+			score = distance
+	return best
+
+
+static func _seen_staffed(s, a: Dictionary, site: Dictionary) -> bool:
+	for medic: Dictionary in s.npc_seen_occupants(a, site):
+		if medic.human and not medic.down and s.has_skill(medic, "lab_experience") and (site.type == "necrotech_lab" or (medic.home == site.id and not s.item_kind(medic, "syringe").is_empty())):
+			return true
+	return false
+
+
 static func _staffed(s, site: Dictionary) -> bool:
+	if s.managed_queries.active:
+		return s.managed_queries.query(s, &"IsStaffed", [site.id])
 	for id in s.spatial.get(site.id, []):
 		var medic: Dictionary = s.actors[id]
 		if medic.human and not medic.down and s.has_skill(medic, "lab_experience") and (site.type == "necrotech_lab" or (medic.home == site.id and not s.item_kind(medic, "syringe").is_empty())):

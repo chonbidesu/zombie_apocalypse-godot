@@ -88,6 +88,20 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'ruin_debt tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/sleep_test.gd --log-file sleep-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'sleep tests failed.' }
+        & $GodotPath --headless --max-fps 60 --path $projectDirectory --script res://tests/threaded_sleep_test.gd --log-file threaded-sleep-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Threaded sleep tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/npc_recovery_test.gd --log-file npc-recovery-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'NPC recovery and awareness tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/npc_narration_test.gd --log-file npc-narration-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'NPC narration tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/parallel_planner_test.gd --log-file parallel-planner-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Parallel planner tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/managed_queries_test.gd --log-file managed-query-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Managed query tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/managed_planner_test.gd --log-file managed-planner-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Managed planner tests failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/route_cache_test.gd --log-file route-cache-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Route cache tests failed.' }
         & $GodotPath --headless --path $projectDirectory --script res://tests/search_coverage_test.gd --log-file search_coverage-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'search_coverage tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/widescreen_test.gd --log-file widescreen-tests.log

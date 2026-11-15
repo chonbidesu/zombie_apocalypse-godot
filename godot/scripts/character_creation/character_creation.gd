@@ -15,17 +15,23 @@ const JOBS = [
  ["Corpse", 3, "Vigour Mortis • Begin as a zombie, without equipment", "corpse"]
 ]
 const GROUPS = ["MILITARY", "SCIENCE", "CIVILIAN", "UNDEAD"]
-const XP_RATES = [
- "Military skills 75 XP • Science 150 XP • Civilian 100 XP",
- "Science skills 75 XP • Military 150 XP • Civilian 100 XP",
- "Human skills cost 100 XP",
- "Zombie skills cost 100 XP"
+const DESCRIPTIONS = [
+ "A soldier trained to shoot pistols and shotguns more accurately.",
+ "A military medic whose first aid kits heal more damage.",
+ "A scout who can move between intact building interiors.",
+ "A doctor who can see nearby survivors' exact health.",
+ "A researcher who can identify NecroTech sites and use DNA extractors.",
+ "A shopper who can choose which mall store to search.",
+ "A police officer trained to shoot pistols and shotguns more accurately.",
+ "A firefighter trained to strike more accurately with a fire axe.",
+ "A zombie whose Vigour Mortis makes claw attacks more accurate."
 ]
 const ActorLayer = preload("res://scripts/character_creation/actor_layer.gd")
 const C = preload("res://scripts/catalog.gd")
 const ALTERNATE_SHEETS = ["private_female","medic_male","scout_male","doctor_male","necro_female","consumer_male","police_female","firefighter_male","corpse"]
 const ATLAS_PATH = "res://assets/character_creation/corrected/%s.png"
 const ROOM_SIZE = Vector2(1672, 941)
+const ENTRANCE_DURATION = 2.0
 const CINEMATIC_DURATION = 5.3
 const HINT = "Hover to explore • Click to select • Right-click / Esc to cancel"
 const FRONT_TO_BACK = [8, 4, 6, 7, 5, 1, 2, 0, 3]
@@ -40,13 +46,14 @@ const FOCUS = [Vector2(180,390),Vector2(427,347),Vector2(618,350),Vector2(835,24
 var actors: Array[ActorLayer] = []
 var world: Node2D
 var fade: ColorRect
+var entrance_time: float = -1.0
 var cinema_time: float = -1.0
 var material_room: ShaderMaterial
 var stage: Control
 var title_label: Label
 var subtitle_label: Label
 var hint: Label
-var details: Label
+var details: RichTextLabel
 var cancel: Button
 var confirm: Button
 var back: Button
@@ -94,8 +101,13 @@ func _ready() -> void:
  info_panel.color = Color(0.035,0.065,0.052,0.94)
  info_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
  stage.add_child(info_panel)
- details = make_label(22,Color("eee5c6"))
- details.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+ details = RichTextLabel.new()
+ details.bbcode_enabled = true
+ details.scroll_active = false
+ details.mouse_filter = Control.MOUSE_FILTER_IGNORE
+ details.add_theme_font_size_override("normal_font_size",20)
+ details.add_theme_color_override("default_color",Color("eee5c6"))
+ stage.add_child(details)
  confirm = make_button("CONFIRM", confirm_selection)
  cancel = make_button("CANCEL", deselect_character)
  var sex_group := ButtonGroup.new()
@@ -129,6 +141,8 @@ func _ready() -> void:
  resized.connect(layout)
  deselect_character()
  layout()
+ entrance_time = 0.0
+ fade.modulate.a = 1.0
 
 func make_label(font_size: int, tint: Color) -> Label:
  var label = Label.new()
@@ -170,7 +184,7 @@ func layout() -> void:
  info_panel.position = Vector2(20,795)
  info_panel.size = Vector2(1120,135)
  details.position = Vector2(35,805)
- details.size = Vector2(870,130)
+ details.size = Vector2(870,115)
  cancel.position = Vector2(1150,835)
  cancel.size = Vector2(225,65)
  confirm.position = Vector2(1400,835)
@@ -204,7 +218,7 @@ func select_character(index: int) -> void:
  selected = index
  var job: Array = JOBS[index]
  active_group = actors[index].group
- details.text = "%s  /  %s\n%s\n%s" % [job[0].to_upper(),GROUPS[active_group],job[2],XP_RATES[active_group]]
+ details.text = "[font_size=28][color=#d2bd8b]%s[/color][/font_size]  [font_size=18]%s[/font_size]\n%s\n%s" % [job[0].to_upper(),GROUPS[active_group],job[2],DESCRIPTIONS[index]]
  confirm.show()
  cancel.show()
  for i in sex_buttons.size():
@@ -229,6 +243,8 @@ func select_sex(sex: String) -> void:
 
 func confirm_selection() -> void:
  if selected < 0 or cinema_time >= 0.0: return
+ entrance_time = -1.0
+ fade.modulate.a = 0.0
  cinema_time = 0.0
  hovered = -1
  for control in [title_label,subtitle_label,hint,details,info_panel,confirm,cancel,back]: control.hide()
@@ -241,7 +257,7 @@ func deselect_character() -> void:
  hovered = -1
  world.scale = Vector2.ONE
  world.position = Vector2.ZERO
- fade.modulate.a = 0.0
+ fade.modulate.a = 1.0-smoothstep(0.0,ENTRANCE_DURATION,entrance_time) if entrance_time >= 0.0 else 0.0
  material_room.set_shader_parameter("exposure",1.0)
  for actor in actors:
   actor.modulate = Color.WHITE
@@ -283,6 +299,10 @@ func update_hover(uv: Vector2) -> void:
   active_group = -1 if over_ui else group_at_position(uv)
 
 func _process(delta: float) -> void:
+ if entrance_time >= 0.0:
+  entrance_time = minf(entrance_time+delta,ENTRANCE_DURATION)
+  fade.modulate.a = 1.0-smoothstep(0.0,ENTRANCE_DURATION,entrance_time)
+  if entrance_time >= ENTRANCE_DURATION: entrance_time = -1.0
  if cinema_time < 0.0:
   update_hover(stage.get_local_mouse_position()/ROOM_SIZE)
   hint.text = "%s  ·  Click to select" % JOBS[hovered][0] if hovered >= 0 else HINT

@@ -8,10 +8,11 @@ const INITIAL_THINK_WINDOW_STEPS: int = 7 * Catalog.CLOCK_STEPS_PER_MINUTE
 const SHELTER_RESIDENTS: int = 12
 
 
-static func start_city(sim: Sim, seed_value: int, count: int) -> String:
+static func start_city(sim: Sim, seed_value: int, count: int, human_count: int = -1) -> String:
 	var config: Dictionary = World.defaults(100, 100)
 	@warning_ignore("integer_division")
 	var survivors: int = count / 3
+	if human_count >= 0: survivors = human_count
 	config.survivors = survivors
 	config.zombies = count - survivors
 	var error: String = sim.start(seed_value, "Private", config)
@@ -37,8 +38,8 @@ static func awaken_npcs(sim: Sim, stagger: bool) -> void:
 			actor.next_think = float(sim.clock_step + offset) / Catalog.CLOCK_STEPS_PER_MINUTE
 
 
-static func prepare_shelter(sim: Sim, quiet: bool = false) -> Dictionary:
-	var radius: int = 5 if quiet else 3
+static func prepare_shelter(sim: Sim, quiet: bool = false, clear_radius: int = -1) -> Dictionary:
+	var radius: int = (5 if quiet else 3) if clear_radius < 0 else clear_radius
 	var interior: Rect2i = Rect2i(5, 5, sim.width - 10, sim.height - 10)
 	for site: Dictionary in sim.blocks:
 		if site.type != "office" or not site.fort.is_empty() or site.ruin > 0:
@@ -64,6 +65,9 @@ static func prepare_shelter(sim: Sim, quiet: bool = false) -> Dictionary:
 		sim.reindex()
 		sim.discover()
 		return site
+	# Dense populations can fill every three-block halo. Retain the full NPC
+	# population and place the same residents in an unoccupied office.
+	if radius > 0: return prepare_shelter(sim, quiet, 0)
 	return {}
 
 

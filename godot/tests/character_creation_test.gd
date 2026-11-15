@@ -20,8 +20,16 @@ func run() -> void:
 	scene.character_confirmed.connect(func(occupation: String): confirmed_jobs.append(occupation))
 	root.size = Vector2i(1920,1080)
 	root.add_child(scene)
-	await process_frame
 	scene.set_process(false)
+	check(scene.fade.modulate.a==1.0,"Chooser starts completely black before its first frame")
+	await process_frame
+	check(scene.fade.size==scene.size and scene.fade.z_index>scene.back.z_index and scene.fade.z_index>scene.info_panel.z_index,"Entrance fade covers the full room and interface")
+	scene._process(scene.ENTRANCE_DURATION*0.5)
+	check(is_equal_approx(scene.fade.modulate.a,0.5),"Whole scene fades in smoothly")
+	scene.deselect_character()
+	check(is_equal_approx(scene.fade.modulate.a,0.5),"Cancel during entrance preserves the fade")
+	scene._process(scene.ENTRANCE_DURATION)
+	check(scene.fade.modulate.a==0.0 and scene.entrance_time<0.0,"Entrance ends fully visible even across a long frame")
 	check(scene.back.visible and not scene.confirm.visible,"Character creation opens without Confirm")
 	check(scene.back.z_index>scene.actors[0].z_index and scene.info_panel.z_index>scene.actors[8].z_index,"Menu and details draw above room")
 	for i in range(scene.actors.size()):
@@ -46,6 +54,9 @@ func run() -> void:
 		root.push_input(click,true)
 		check(scene.selected==i and scene.confirm.visible,"Mouse selection %d" % i)
 		check(scene.details.text.contains(scene.JOBS[i][0].to_upper()),"Details match selection")
+		await process_frame
+		check(scene.details.get_content_height() <= scene.details.size.y,"Description fits the panel for %s" % scene.JOBS[i][0])
+		check(scene.details.position.x + scene.details.size.x <= scene.sex_buttons[0].position.x,"Description stays clear of body type buttons")
 		actor.tick(0.5,1.0)
 		check(actor.visual.animation=="idle","Hover plays idle")
 		var shown = {}

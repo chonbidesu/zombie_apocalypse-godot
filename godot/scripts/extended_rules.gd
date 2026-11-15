@@ -96,7 +96,7 @@ static func command_reason(s,a: Dictionary, command: String, target: int, data: 
   if a.inside: return "Fire signal flares outdoors."
  return ""
 
-static func perform(s,a: Dictionary, command: String, target: int, data: Dictionary) -> String:
+static func perform(s,a: Dictionary, command: String, target: int, data: Dictionary, narrate: bool = true) -> String:
  var b = s.current_block(a)
  var text_limit = C.FIELD_MESSAGE_LIMIT if command in ["tag","broadcast"] else 255
  var text = str(data.get("text","Keep together. Help the wounded and guard the entrance.")).strip_edges().left(text_limit)
@@ -104,14 +104,14 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
   "feed":
    s.actors[target].fed += 1
    a.hp = mini(max_hp(a),a.hp+4)
-   return "%s strength." % s.action_phrase(a,"feed on a corpse and regain","feeds on a corpse and regains")
+   return "%s strength." % s.action_phrase(a,"feed on a corpse and regain","feeds on a corpse and regains") if narrate else ""
   "drag":
    a.inside = false
    s.actors[target].inside = false
    s.secure_zombie_exit(a,b)
    s.clear_grasp(a)
    s.clear_grasp(s.actors[target])
-   return "%s %s into the street!" % [s.action_phrase(a,"drag","drags"),s.display_name(s.actors[target])]
+   return "%s %s into the street!" % [s.action_phrase(a,"drag","drags"),s.display_name(s.actors[target])] if narrate else ""
   "groan","bellow","flare":
    var radius = 10 if command == "bellow" else 6
    if command == "flare":
@@ -131,7 +131,7 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
       other.memory_until = s.minute+90
       other.npc_signal = "groan"
       s.wake_npc(other)
-   return "%s %s over the neighbourhood, calling attention to %s." % [s.action_phrase(a,"send","sends"),"a red flare" if command == "flare" else ("a thunderous bellow" if command == "bellow" else "a feeding groan"),b.name]
+   return "%s %s over the neighbourhood, calling attention to %s." % [s.action_phrase(a,"send","sends"),"a red flare" if command == "flare" else ("a thunderous bellow" if command == "bellow" else "a feeding groan"),b.name] if narrate else ""
   "gesture":
    if target >= 0:
     var prey = s._visible_human(a)
@@ -142,7 +142,7 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
       other.memory_until = s.minute+45
       other.npc_signal = "gesture"
       s.wake_npc(other)
-   return "%s towards %s." % [s.action_phrase(a,"gesture","gestures"),s.display_name(s.actors[target]) if target >= 0 else str(data.get("direction","the street"))]
+   return "%s towards %s." % [s.action_phrase(a,"gesture","gestures"),s.display_name(s.actors[target]) if target >= 0 else str(data.get("direction","the street"))] if narrate else ""
   "say":
    if not a.human:
     var zamgrh = ""
@@ -150,24 +150,24 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
     text = zamgrh
    if a.id > 0: s.speak(a,text)
    else: _set_speech(a,text,s.now())
-   return "%s: %s" % [s.action_phrase(a,"say","says"),text]
+   return "%s: %s" % [s.action_phrase(a,"say","says"),text] if narrate else ""
   "smell":
    if a.id == 0:
     s.scent_heatmap = s.scent_death_snapshot(a)
     s.sense_report = "SCENT DEATH"
    else: s.npc_planner.record_scent(s,a)
-   return "%s the scents of death around the neighbourhood." % s.action_phrase(a,"read","reads")
+   return "%s the scents of death around the neighbourhood." % s.action_phrase(a,"read","reads") if narrate else ""
   "scout":
    a.scout_site = b.id
    a.scout_day = s.minute/1440
    a.scout_used = 0
-   return "%s this shelter's routes. Five actions each day will cost one less AP." % s.action_phrase(a,"memorise","memorises")
+   return "%s this shelter's routes. Five actions each day will cost one less AP." % s.action_phrase(a,"memorise","memorises") if narrate else ""
   "extract":
    var t = s.actors[target]
    t.tagged_until = s.minute+1440
    t.tagged_skills = t.zombie_skills.duplicate()
    a.xp += 4
-   return "%s %s with a DNA sample. Zombie skills: %s. The tag lasts one day." % [s.action_phrase(a,"identify","identifies"),s.display_name(t),s.dna_profile(t)]
+   return "%s %s with a DNA sample. Zombie skills: %s. The tag lasts one day." % [s.action_phrase(a,"identify","identifies"),s.display_name(t),s.dna_profile(t)] if narrate else ""
   "tag":
    var previous = b.graffiti if not a.inside else b.graffiti_inside
    s.set_graffiti(b,text,not a.inside)
@@ -176,46 +176,46 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    can.sprays_left = s.paint_remaining(a,can)-1
    if can.sprays_left == 0: s.consume(a,can)
    if not a.inside and trained and previous != text: a.xp += C.TAG_XP.get(b.type,0)
-   return "%s a message: %s" % [s.action_phrase(a,"spray","sprays"),text]
+   return "%s a message: %s" % [s.action_phrase(a,"spray","sprays"),text] if narrate else ""
   "install_radio":
    b.radio = true
    b.radio_hp = 6
    b.frequency = C.PUBLIC_RADIO_FREQUENCY
    s.consume(a,s.action_item(a,"radio_transmitter",data))
-   return "%s a radio transmitter." % s.action_phrase(a,"install","installs")
+   return "%s a radio transmitter." % s.action_phrase(a,"install","installs") if narrate else ""
   "repair_radio":
    b.radio_hp = 6
    a.xp += 1
-   return "%s the radio transmitter." % s.action_phrase(a,"repair","repairs")
+   return "%s the radio transmitter." % s.action_phrase(a,"repair","repairs") if narrate else ""
   "destroy_radio":
    b.radio_hp = maxi(0,b.radio_hp-1)
    if b.radio_hp == 0:
     b.radio = false
     a.xp += 5
-   return "%s the radio transmitter's casing." % s.action_phrase(a,"smash","smashes")
+   return "%s the radio transmitter's casing." % s.action_phrase(a,"smash","smashes") if narrate else ""
   "tune_transmitter":
    b.frequency = snappedf(float(data.get("frequency",s.suggested_transmit_frequency(a))),0.01)
-   return "%s the transmitter to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),b.frequency]
+   return "%s the transmitter to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),b.frequency] if narrate else ""
   "broadcast":
    b.frequency = snappedf(float(data.get("frequency",b.frequency)),0.01)
    if bool(data.get("defense_call",false)) or text.to_lower() == "defend": s.record_defense_call(b)
-   return "[Radio %.2f MHz] %s: %s" % [b.frequency,s.display_name(a),text]
-  "phone": return "[Phone to %s] %s: %s" % [s.display_name(s.actors[target]),s.display_name(a),text]
+   return "[Radio %.2f MHz] %s: %s" % [b.frequency,s.display_name(a),text] if narrate else ""
+  "phone": return "[Phone to %s] %s: %s" % [s.display_name(s.actors[target]),s.display_name(a),text] if narrate else ""
   "tune":
    var receiver = s.action_item(a,"radio",data)
    receiver.frequency = snappedf(float(data.get("frequency",C.PUBLIC_RADIO_FREQUENCY)),0.01)
-   return "%s the receiver to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),receiver.frequency]
+   return "%s the receiver to %.2f MHz." % [s.action_phrase(a,"tune","tunes"),receiver.frequency] if narrate else ""
   "lookout":
    if a.id == 0: s.survey_binoculars(a,str(data.get("direction","")))
    if a.inside:
-    return "%s %s from the roof." % [s.action_phrase(a,"look","looks"),data.direction]
-   return "%s the surrounding streets and skyline." % s.action_phrase(a,"survey","surveys")
+    return "%s %s from the roof." % [s.action_phrase(a,"look","looks"),data.direction] if narrate else ""
+   return "%s the surrounding streets and skyline." % s.action_phrase(a,"survey","surveys") if narrate else ""
   "locate":
    for site in s.blocks:
     if maxi(absi(site.x-a.x),absi(site.y-a.y)) > 1: continue
     site.known = true
    s.sense_report = "Position [%d,%d]\n" % [a.x,a.y]
-   return "%s position on the map." % s.action_phrase(a,"check your","checks their")
+   return "%s position on the map." % s.action_phrase(a,"check your","checks their") if narrate else ""
   "read":
    var item = s.item_by_uid(a,int(data.uid))
    var prose = item.kind == "book"
@@ -223,9 +223,11 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    if prose and s.rng.randf() < 0.1:
     xp = 2 if C.occupation_category(a.job) == "science" else 1
    var passages = BOOK_LORE if prose else POETRY_LORE
-   var passage = passages[s.rng.randi_range(0,passages.size()-1)]
+   var passage_index: int = s.rng.randi_range(0,passages.size()-1)
+   var passage: String = passages[passage_index] if narrate else ""
    a.xp += xp
    s.consume(a,item)
+   if not narrate: return ""
    var message = "%s %s. “%s”" % [s.action_phrase(a,"read","reads"),"a book" if prose else "a poetry book",passage]
    if xp > 0: message += " (+%d XP)" % xp
    return message
@@ -233,21 +235,21 @@ static func perform(s,a: Dictionary, command: String, target: int, data: Diction
    var item = s.item_by_uid(a,int(data.uid))
    a.hp = mini(max_hp(a),a.hp+1)
    if command == "drink": s.consume(a,item)
-   return "%s one HP." % s.action_phrase(a,"take a small comfort and recover","takes a small comfort and recovers")
-  "inspect": return "%s %s." % [s.action_phrase(a,"inspect","inspects"),C.ITEMS[s.item_by_uid(a,int(data.uid)).kind].name]
+   return "%s one HP." % s.action_phrase(a,"take a small comfort and recover","takes a small comfort and recovers") if narrate else ""
+  "inspect": return "%s %s." % [s.action_phrase(a,"inspect","inspects"),C.ITEMS[s.item_by_uid(a,int(data.uid)).kind].name] if narrate else ""
   "wear":
    a.outfit = "A change of scavenged civilian clothing."
    s.consume(a,s.item_by_uid(a,int(data.uid)))
-   return "%s into scavenged clothes." % s.action_phrase(a,"change","changes")
+   return "%s into scavenged clothes." % s.action_phrase(a,"change","changes") if narrate else ""
   "decorate":
    var item = s.item_by_uid(a,int(data.uid))
    b.decorations.append(item.kind)
    s.consume(a,item)
-   return "%s %s." % [s.action_phrase(a,"set up","sets up"),C.ITEMS[item.kind].name]
+   return "%s %s." % [s.action_phrase(a,"set up","sets up"),C.ITEMS[item.kind].name] if narrate else ""
   "smash_decorations":
    b.decorations.pop_back()
    a.xp += 1
-   return "%s one of the decorations." % s.action_phrase(a,"smash","smashes")
+   return "%s one of the decorations." % s.action_phrase(a,"smash","smashes") if narrate else ""
  return ""
 
 static func _set_speech(a: Dictionary, text: String, now: float) -> void:

@@ -3,7 +3,7 @@ extends RefCounted
 const C = preload("res://scripts/catalog.gd")
 const POPULATION_PRESETS = {
  "easy": Vector2i(720,900),
- "medium": Vector2i(660,1500),
+ "medium": Vector2i(1500,1500),
  "hard": Vector2i(540,2400),
 }
 

@@ -1,7 +1,7 @@
 {
-  "checks": 3833,
+  "checks": 4153,
   "failures": [],
   "atlases": 18,
   "frames": 216,
-  "scope": "source hashes, complete fixed RGBA regions across frames/genders, idle body, cell boundaries, source drawing continuity, scouts, actions, doctor legs and light"
+  "scope": "source hashes, fixed RGBA furniture and lower bodies, native idle upper-body motion, cell boundaries, source drawing continuity, scouts, actions, doctor coat, legs and light"
 }

@@ -1,0 +1,50 @@
+{
+  "tool": "Built-in image_gen",
+  "silhouette_and_scale_revision": {
+    "prompt": "Precise correction to this existing 4-column x3-row female pool-player animation atlas. Keep same mature woman, short wavy ash-brown hair, brown shirt, concentrated gaze toward red balls, body pose, hands and cue. TWO CORRECTIONS in every one of the 12 cells: (1) head including hair is slightly too large; reduce the entire head and hair by about 12-15 percent, keeping the neck naturally attached and maintaining the current face direction, gaze and mature identity. Fill any newly exposed collar/neck naturally. Do not shrink body. (2) REMOVE THE DOUBLED OUTER CLOTHING CONTOUR. The upper-body silhouette must have exactly ONE crisp, clean continuous clothing edge against genuine transparency. Remove all old larger shoulder/sleeve outlines, ghost contours, thin halos, stray lines and doubled fabric ridges around the outside of the shoulders/back/sleeves. Render the body as one coherent silhouette, not a small body over a larger outline. Preserve body size and position, original clothes and anatomical pose. Preserve ALL bridge-hand fingers, both hands, cue, all six table pockets, table trim, red balls and exact cueball position in each frame. One white cueball per frame. Keep the first four subtle idle breathing frames and all eight action frames in exactly the same order and positions. Preserve original canvas EXACTLY 1448x1086 and twelve 362x362 cells. Same painted game-art style. Genuine transparency especially right against the outer clothing and hair, no halos. Change only head proportions and cleanup of the clothing silhouette; all table, hands, cues, balls and framing are locked.",
+    "integration": "Pillow replaced complete upper-body drawings including exterior transparency, reduced head proportions, and preserved the existing bridge hand, cue and playing surface. Gripping-hand and forearm joins are feathered within the body, never at its exterior silhouette. Both consumer atlas builds now retain their continuous source poses, eliminating first-frame remnants behind later poses.",
+    "validation": "3857 atlas checks passed; every pixel from row 128 downward in all twelve female frames remains unchanged."
+  },
+  "prompt": "Use case: precise-object-edit. Image 1 is the EDIT TARGET, a 4x3 character-creation animation atlas of a woman playing pool. Image 2 is the IDENTITY REFERENCE: her player portrait atlas, use the HEALTHY FIRST ROW ONLY. Update ONLY the pool woman's head, face and hair across ALL TWELVE frames to look clearly like the portrait woman: middle-aged, naturally mature facial features, wider softly angular face, slightly hooded brown eyes, subtle smile lines and under-eye texture, short loosely waved ash-brown hair in a practical chin-length bob with a loose center/side part and subtle grey strands. Replace the current glamorous young face and large golden curls with this recognizably mature portrait identity. Preserve exact original head size, placement, orientation and downward/slightly sideways gaze aimed at the racked balls. Keep concentrated expression and subtle idle breathing in frames 0-3. Do NOT change her pose, shoulders, arms, brown rolled-sleeve shirt, bridge hand/fingers, cue, table, six pockets, red balls, white cue ball or motion blur. Every existing cue-ball position must remain exactly the same, one white ball per frame. No portrait purple jacket: keep current brown shirt. Keep original painterly rendering style of the pool atlas; translate the pixel-art portrait identity naturally into that style. Render exposed shirt/neck naturally where shorter hair replaces large curls. Preserve EXACT original 1448x1086 canvas, 4 columns x3 rows of twelve 362x362 cells and exact frame positioning. Genuine transparent background, no labels, no additional objects. Change only head/face/hair and tiny neck/hair joins. The pose, gaze angle, hands and entire table artwork are locked.",
+  "reference": "godot/assets/portraits/consumer.png (healthy first row)",
+  "integration": "Pillow copied only the generated head/hair/neck polygon into all twelve female source frames, then rebuilt the corrected female atlas with repair_selection_atlases.py. All output pixels outside that polygon were compared byte-for-byte against the previous runtime atlas and remain unchanged. Male artwork and portrait unchanged.",
+  "head_polygon": [
+    [
+      117,
+      23
+    ],
+    [
+      192,
+      23
+    ],
+    [
+      211,
+      75
+    ],
+    [
+      211,
+      116
+    ],
+    [
+      185,
+      126
+    ],
+    [
+      147,
+      125
+    ],
+    [
+      124,
+      104
+    ],
+    [
+      117,
+      92
+    ]
+  ],
+  "outputs": [
+    "godot/assets/character_creation/consumer_female.png",
+    "godot/assets/character_creation/corrected/consumer_female.png"
+  ],
+  "validation": "3833 atlas checks passed; all 12 runtime frames updated only within the head/neck polygon."
+}

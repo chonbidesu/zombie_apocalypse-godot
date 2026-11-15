@@ -97,18 +97,9 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00147058823529412
+            "unpowered": 0.00533333333333333
           },
           "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00147058823529412
-          },
-          "type": "training_ground"
         },
         {
           "rates": {
@@ -225,10 +216,10 @@
         },
         {
           "rates": {
-            "powered": 0.1,
-            "powered_ruin": 0.0333333333333333,
-            "ransacked_or_ruined": 0.0333333333333333,
-            "unpowered": 0.0666666666666667
+            "powered": 0.067741935483871,
+            "powered_ruin": 0.0225806451612903,
+            "ransacked_or_ruined": 0.0225806451612903,
+            "unpowered": 0.0451612903225806
           },
           "type": "barracks"
         },
@@ -240,24 +231,6 @@
             "unpowered": 0.00392156862745098
           },
           "type": "wasteland"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00392156862745098
-          },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00392156862745098
-          },
-          "type": "training_ground"
         },
         {
           "rates": {
@@ -347,6 +320,15 @@
         },
         {
           "rates": {
+            "powered": 0.00967741935483871,
+            "powered_ruin": 0.0032258064516129,
+            "ransacked_or_ruined": 0.0032258064516129,
+            "unpowered": 0.00645161290322581
+          },
+          "type": "barracks"
+        },
+        {
+          "rates": {
             "powered": 0.0241935483870968,
             "powered_ruin": 0.00806451612903226,
             "ransacked_or_ruined": 0.00806451612903226,
@@ -368,16 +350,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
-          },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
+            "unpowered": 0.00273972602739726
           },
           "type": "training_ground"
         },
@@ -487,10 +460,10 @@
         },
         {
           "rates": {
-            "powered": 0.142857142857143,
-            "powered_ruin": 0.0476190476190476,
-            "ransacked_or_ruined": 0.0476190476190476,
-            "unpowered": 0.0952380952380952
+            "powered": 0.0967741935483871,
+            "powered_ruin": 0.032258064516129,
+            "ransacked_or_ruined": 0.032258064516129,
+            "unpowered": 0.0645161290322581
           },
           "type": "barracks"
         },
@@ -508,18 +481,9 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00490196078431373
+            "unpowered": 0.00666666666666667
           },
           "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00490196078431373
-          },
-          "type": "training_ground"
         },
         {
           "rates": {
@@ -588,6 +552,15 @@
             "unpowered": 0.0000674804688710431
           },
           "type": "mall"
+        },
+        {
+          "rates": {
+            "powered": 0.0290322580645161,
+            "powered_ruin": 0.00967741935483871,
+            "ransacked_or_ruined": 0.00967741935483871,
+            "unpowered": 0.0193548387096774
+          },
+          "type": "barracks"
         }
       ],
       "name": "Stale candy"
@@ -781,10 +754,10 @@
         },
         {
           "rates": {
-            "powered": 0.0571428571428571,
-            "powered_ruin": 0.019047619047619,
-            "ransacked_or_ruined": 0.019047619047619,
-            "unpowered": 0.0380952380952381
+            "powered": 0.0387096774193548,
+            "powered_ruin": 0.0129032258064516,
+            "ransacked_or_ruined": 0.0129032258064516,
+            "unpowered": 0.0258064516129032
           },
           "type": "barracks"
         },
@@ -856,7 +829,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00735294117647059
+            "unpowered": 0.0133333333333333
           },
           "type": "exercise_yard"
         },
@@ -865,7 +838,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00735294117647059
+            "unpowered": 0.0136986301369863
           },
           "type": "training_ground"
         },
@@ -1120,24 +1093,6 @@
             "ransacked_or_ruined": null,
             "unpowered": 0.00196078431372549
           },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00196078431372549
-          },
-          "type": "training_ground"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00196078431372549
-          },
           "type": "zoo_ground"
         },
         {
@@ -1370,24 +1325,6 @@
             "ransacked_or_ruined": null,
             "unpowered": 0.000980392156862745
           },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
-          },
-          "type": "training_ground"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
-          },
           "type": "zoo_ground"
         },
         {
@@ -1559,12 +1496,30 @@
         },
         {
           "rates": {
+            "powered": 0.0241935483870968,
+            "powered_ruin": 0.00806451612903226,
+            "ransacked_or_ruined": 0.00806451612903226,
+            "unpowered": 0.0161290322580645
+          },
+          "type": "barracks"
+        },
+        {
+          "rates": {
             "powered": 0.218181818181818,
             "powered_ruin": 0.0727272727272727,
             "ransacked_or_ruined": 0.0727272727272727,
             "unpowered": 0.145454545454545
           },
           "type": "infirmary"
+        },
+        {
+          "rates": {
+            "powered": null,
+            "powered_ruin": null,
+            "ransacked_or_ruined": null,
+            "unpowered": 0.002
+          },
+          "type": "exercise_yard"
         }
       ],
       "name": "First aid kit"
@@ -1682,6 +1637,15 @@
         },
         {
           "rates": {
+            "powered": 0.0193548387096774,
+            "powered_ruin": 0.00645161290322581,
+            "ransacked_or_ruined": 0.00645161290322581,
+            "unpowered": 0.0129032258064516
+          },
+          "type": "barracks"
+        },
+        {
+          "rates": {
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
@@ -1694,7 +1658,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00147058823529412
+            "unpowered": 0.00266666666666667
           },
           "type": "exercise_yard"
         },
@@ -1703,7 +1667,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00147058823529412
+            "unpowered": 0.00273972602739726
           },
           "type": "training_ground"
         },
@@ -1854,24 +1818,6 @@
             "ransacked_or_ruined": null,
             "unpowered": 0.00147058823529412
           },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00147058823529412
-          },
-          "type": "training_ground"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00147058823529412
-          },
           "type": "zoo_ground"
         },
         {
@@ -1947,7 +1893,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00490196078431373
+            "unpowered": 0.00666666666666667
           },
           "type": "exercise_yard"
         },
@@ -1956,7 +1902,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00490196078431373
+            "unpowered": 0.00684931506849315
           },
           "type": "training_ground"
         },
@@ -2096,18 +2042,9 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
+            "unpowered": 0.00333333333333333
           },
           "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
-          },
-          "type": "training_ground"
         },
         {
           "rates": {
@@ -2374,24 +2311,6 @@
             "ransacked_or_ruined": null,
             "unpowered": 0.00196078431372549
           },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00196078431372549
-          },
-          "type": "training_ground"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00196078431372549
-          },
           "type": "zoo_ground"
         },
         {
@@ -2512,16 +2431,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00196078431372549
-          },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00196078431372549
+            "unpowered": 0.00547945205479452
           },
           "type": "training_ground"
         },
@@ -2869,7 +2779,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00980392156862745
+            "unpowered": 0.01
           },
           "type": "exercise_yard"
         },
@@ -2878,7 +2788,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.00980392156862745
+            "unpowered": 0.0102739726027397
           },
           "type": "training_ground"
         },
@@ -3040,6 +2950,15 @@
             "unpowered": 0.0608695652173913
           },
           "type": "gatehouse"
+        },
+        {
+          "rates": {
+            "powered": null,
+            "powered_ruin": null,
+            "ransacked_or_ruined": null,
+            "unpowered": 0.00205479452054795
+          },
+          "type": "training_ground"
         }
       ],
       "name": "Pistol magazine"
@@ -3255,6 +3174,15 @@
             "unpowered": 0.000202441406613129
           },
           "type": "mall"
+        },
+        {
+          "rates": {
+            "powered": 0.0145161290322581,
+            "powered_ruin": 0.00483870967741935,
+            "ransacked_or_ruined": 0.00483870967741935,
+            "unpowered": 0.00967741935483871
+          },
+          "type": "barracks"
         }
       ],
       "name": "Radio receiver"
@@ -3374,6 +3302,15 @@
             "unpowered": 0.00269230769230769
           },
           "type": "armoury"
+        },
+        {
+          "rates": {
+            "powered": null,
+            "powered_ruin": null,
+            "ransacked_or_ruined": null,
+            "unpowered": 0.00205479452054795
+          },
+          "type": "training_ground"
         }
       ],
       "name": "Shotgun shell"
@@ -3430,16 +3367,7 @@
             "powered": null,
             "powered_ruin": null,
             "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
-          },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.000980392156862745
+            "unpowered": 0.00410958904109589
           },
           "type": "training_ground"
         },
@@ -3610,24 +3538,6 @@
             "unpowered": 0.00245098039215686
           },
           "type": "wasteland"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00245098039215686
-          },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00245098039215686
-          },
-          "type": "training_ground"
         },
         {
           "rates": {
@@ -3991,24 +3901,6 @@
             "ransacked_or_ruined": null,
             "unpowered": 0.00245098039215686
           },
-          "type": "exercise_yard"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00245098039215686
-          },
-          "type": "training_ground"
-        },
-        {
-          "rates": {
-            "powered": null,
-            "powered_ruin": null,
-            "ransacked_or_ruined": null,
-            "unpowered": 0.00245098039215686
-          },
           "type": "zoo_ground"
         },
         {
@@ -4222,22 +4114,52 @@
     "barracks": {
       "items": {
         "beer": {
-          "powered": 0.1,
-          "powered_ruin": 0.0333333333333333,
-          "ransacked_or_ruined": 0.0333333333333333,
-          "unpowered": 0.0666666666666667
+          "powered": 0.067741935483871,
+          "powered_ruin": 0.0225806451612903,
+          "ransacked_or_ruined": 0.0225806451612903,
+          "unpowered": 0.0451612903225806
+        },
+        "binoculars": {
+          "powered": 0.00967741935483871,
+          "powered_ruin": 0.0032258064516129,
+          "ransacked_or_ruined": 0.0032258064516129,
+          "unpowered": 0.00645161290322581
         },
         "book": {
-          "powered": 0.142857142857143,
-          "powered_ruin": 0.0476190476190476,
-          "ransacked_or_ruined": 0.0476190476190476,
-          "unpowered": 0.0952380952380952
+          "powered": 0.0967741935483871,
+          "powered_ruin": 0.032258064516129,
+          "ransacked_or_ruined": 0.032258064516129,
+          "unpowered": 0.0645161290322581
+        },
+        "candy": {
+          "powered": 0.0290322580645161,
+          "powered_ruin": 0.00967741935483871,
+          "ransacked_or_ruined": 0.00967741935483871,
+          "unpowered": 0.0193548387096774
         },
         "clothing": {
-          "powered": 0.0571428571428571,
-          "powered_ruin": 0.019047619047619,
-          "ransacked_or_ruined": 0.019047619047619,
-          "unpowered": 0.0380952380952381
+          "powered": 0.0387096774193548,
+          "powered_ruin": 0.0129032258064516,
+          "ransacked_or_ruined": 0.0129032258064516,
+          "unpowered": 0.0258064516129032
+        },
+        "first_aid_kit": {
+          "powered": 0.0241935483870968,
+          "powered_ruin": 0.00806451612903226,
+          "ransacked_or_ruined": 0.00806451612903226,
+          "unpowered": 0.0161290322580645
+        },
+        "flashlight": {
+          "powered": 0.0193548387096774,
+          "powered_ruin": 0.00645161290322581,
+          "ransacked_or_ruined": 0.00645161290322581,
+          "unpowered": 0.0129032258064516
+        },
+        "radio": {
+          "powered": 0.0145161290322581,
+          "powered_ruin": 0.00483870967741935,
+          "ransacked_or_ruined": 0.00483870967741935,
+          "unpowered": 0.00967741935483871
         }
       },
       "mode": "interior"
@@ -4613,106 +4535,52 @@
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00147058823529412
-        },
-        "beer": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00392156862745098
-        },
-        "binoculars": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
+          "unpowered": 0.00533333333333333
         },
         "book": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00490196078431373
+          "unpowered": 0.00666666666666667
         },
         "clothing": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00735294117647059
+          "unpowered": 0.0133333333333333
         },
-        "crowbar": {
+        "first_aid_kit": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00196078431372549
-        },
-        "fire_axe": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
+          "unpowered": 0.002
         },
         "flashlight": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00147058823529412
-        },
-        "fuel_can": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00147058823529412
+          "unpowered": 0.00266666666666667
         },
         "glass_piece": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00490196078431373
+          "unpowered": 0.00666666666666667
         },
         "golf_club": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
-        },
-        "knife": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00196078431372549
-        },
-        "length_of_pipe": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00196078431372549
+          "unpowered": 0.00333333333333333
         },
         "newspaper": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00980392156862745
-        },
-        "shovel": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
-        },
-        "spray_can": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00245098039215686
-        },
-        "wine": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00245098039215686
+          "unpowered": 0.01
         }
       },
-      "mode": "shared outdoors"
+      "mode": "fort yard"
     },
     "factory": {
       "items": {
@@ -6380,110 +6248,62 @@
     },
     "training_ground": {
       "items": {
-        "baseball_bat": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00147058823529412
-        },
-        "beer": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00392156862745098
-        },
         "binoculars": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
-        },
-        "book": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00490196078431373
+          "unpowered": 0.00273972602739726
         },
         "clothing": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00735294117647059
-        },
-        "crowbar": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00196078431372549
-        },
-        "fire_axe": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
+          "unpowered": 0.0136986301369863
         },
         "flashlight": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00147058823529412
-        },
-        "fuel_can": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00147058823529412
+          "unpowered": 0.00273972602739726
         },
         "glass_piece": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00490196078431373
-        },
-        "golf_club": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
-        },
-        "knife": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00196078431372549
+          "unpowered": 0.00684931506849315
         },
         "length_of_pipe": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00196078431372549
+          "unpowered": 0.00547945205479452
         },
         "newspaper": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.00980392156862745
+          "unpowered": 0.0102739726027397
+        },
+        "pistol_clip": {
+          "powered": null,
+          "powered_ruin": null,
+          "ransacked_or_ruined": null,
+          "unpowered": 0.00205479452054795
+        },
+        "shotgun_shell": {
+          "powered": null,
+          "powered_ruin": null,
+          "ransacked_or_ruined": null,
+          "unpowered": 0.00205479452054795
         },
         "shovel": {
           "powered": null,
           "powered_ruin": null,
           "ransacked_or_ruined": null,
-          "unpowered": 0.000980392156862745
-        },
-        "spray_can": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00245098039215686
-        },
-        "wine": {
-          "powered": null,
-          "powered_ruin": null,
-          "ransacked_or_ruined": null,
-          "unpowered": 0.00245098039215686
+          "unpowered": 0.00410958904109589
         }
       },
-      "mode": "shared outdoors"
+      "mode": "fort yard"
     },
     "vehicle_depot": {
       "items": {

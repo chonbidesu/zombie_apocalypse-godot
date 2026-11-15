@@ -8,8 +8,8 @@ const SPRAYS_PER_CAN = 2
 const PUBLIC_RADIO_FREQUENCY = 28.01
 const TAG_XP = {"armoury":2,"police_department":2,"monument":2,"bank":1,"school":1,"mansion":1,"power_station":1}
 const GAME_MINUTES_PER_SECOND = 1.0
-const REST_SPEED = 16.0
-const SLEEP_SPEED = 128.0
+const REST_SPEED = 8.0
+const SLEEP_SPEED = 32.0
 const DEATH_SPEED = 32.0
 const DAILY_REANIMATION_CHANCE = 0.20
 const GENERATOR_HP = 6
@@ -35,7 +35,7 @@ const SEARCH_OUTSIDE_CHANCE = 0.05
 const SEARCH_DARK_CHANCE = 0.01
 const DARK_SEARCH_BUILDINGS = DARK_BUILDINGS
 const INVENTORY_ITEM_LIMIT = 100
-# One shared, conditional grab bag for every exterior and open-ground square.
+# Shared grab bag for exteriors and open ground without a dedicated table.
 const OUTSIDE_SEARCH_WEIGHTS = {
  "newspaper":20.0,"clothing":15.0,"book":10.0,"glass_piece":10.0,
  "beer":8.0,"wine":5.0,"spray_can":5.0,"crowbar":4.0,"knife":4.0,

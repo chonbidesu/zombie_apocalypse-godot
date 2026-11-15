@@ -21,6 +21,8 @@ const CSV_HEADER: String = (
 )
 
 var interactive_sim: Sim
+var interactive_progress: Callable
+var interactive_access: Callable
 var frame_budget_usec: int = 0
 var max_steps_per_frame: int = 0
 var total_decisions: int = 0
@@ -84,6 +86,7 @@ func _input(event: InputEvent) -> void:
 	if _file != null:
 		_stop_requested = true
 	else:
+		if interactive_access.is_valid(): interactive_access.call()
 		start(interactive_sim)
 
 
@@ -126,9 +129,10 @@ func start(simulation: Sim, scenario: String = "gameplay", warp: float = 1.0, se
 	return true
 
 
-func stop() -> void:
+func stop(update_ui: bool = true) -> void:
 	if _file == null:
 		return
+	if interactive_access.is_valid(): interactive_access.call(update_ui)
 	_write_window("sample", _last_frame_usec)
 	_file.close()
 	_file = null
@@ -140,11 +144,12 @@ func stop() -> void:
 
 
 func _exit_tree() -> void:
-	stop()
+	stop(false)
 
 
 func _process(_delta: float) -> void:
 	var now: int = Time.get_ticks_usec()
+	if _stop_requested and interactive_access.is_valid(): interactive_access.call()
 	if _last_frame_usec == 0:
 		_start_usec = now
 	else:
@@ -195,8 +200,14 @@ func _accumulate(wall_usec: int) -> void:
 	total_decisions += _frame.decisions
 	total_steps += _frame.clock_steps
 	total_forced_queries += _frame.forced_path_queries
-	_end_minute = _sim.now()
-	var actions: int = int(_sim.metrics.npc_actions)
+	var actions: int
+	if interactive_progress.is_valid():
+		var progress: Dictionary = interactive_progress.call()
+		_end_minute = float(progress.clock_step) / Catalog.CLOCK_STEPS_PER_MINUTE
+		actions = progress.npc_actions
+	else:
+		_end_minute = _sim.now()
+		actions = int(_sim.metrics.npc_actions)
 	_window_actions += maxi(0, actions - _last_actions)
 	_last_actions = actions
 	_frame.reset()
@@ -218,8 +229,11 @@ func _write_window(sample: String, now: int) -> void:
 	var queries_per_frame: float = float(_window.path_queries) / _frame_count
 	var wall_s: float = (now - _start_usec) / 1_000_000.0
 	var achieved_warp: float = float(total_steps) / (Catalog.CLOCK_STEPS_PER_MINUTE * maxf(wall_s, 0.000001))
+	var world: Dictionary = interactive_progress.call() if interactive_progress.is_valid() else {
+		"seed": _sim.world_seed, "blocks": _sim.blocks.size(), "npcs": _sim.actors.size() - 1,
+	}
 	_file.store_csv_line(PackedStringArray([
-		sample, _scenario, str(_sim.world_seed), str(_sim.blocks.size()), str(_sim.actors.size() - 1),
+		sample, _scenario, str(world.seed), str(world.blocks), str(world.npcs),
 		str(_warp), "%.3f" % _setup_ms, "%.6f" % wall_s,
 		"%.1f" % _end_minute, str(_frame_count), str(fps), "%.3f" % engine_process_ms, "%.3f" % frame_ms,
 		"%.3f" % peak_ms, str(_peak_frame), "%.3f" % engine_physics_ms,

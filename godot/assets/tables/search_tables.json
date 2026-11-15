@@ -289,7 +289,33 @@
   "barracks": {
     "book": 0.1,
     "beer": 0.07,
-    "clothing": 0.04
+    "clothing": 0.04,
+    "radio": 0.015,
+    "first_aid_kit": 0.025,
+    "flashlight": 0.02,
+    "binoculars": 0.01,
+    "candy": 0.03
+  },
+  "exercise_yard": {
+    "clothing": 20,
+    "newspaper": 15,
+    "book": 10,
+    "glass_piece": 10,
+    "baseball_bat": 8,
+    "golf_club": 5,
+    "flashlight": 4,
+    "first_aid_kit": 3
+  },
+  "training_ground": {
+    "clothing": 20,
+    "newspaper": 15,
+    "glass_piece": 10,
+    "length_of_pipe": 8,
+    "shovel": 6,
+    "binoculars": 4,
+    "flashlight": 4,
+    "pistol_clip": 3,
+    "shotgun_shell": 3
   },
   "gatehouse": {
     "newspaper": 0.08,

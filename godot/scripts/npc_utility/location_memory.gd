@@ -119,6 +119,18 @@ func knows(actor_id: int, id: int) -> bool:
 	return _find(actor_id, id) >= 0
 
 
+func shelter_lanes(actor_id: int, now_minute: int) -> Array:
+	var ids := PackedInt32Array()
+	var values := PackedFloat64Array()
+	var row: int = _row_for(actor_id)
+	if row >= 0:
+		for slot in range(row * SITES_PER_ACTOR, (row + 1) * SITES_PER_ACTOR):
+			if _sites[slot] == NO_SITE: continue
+			ids.append(_sites[slot])
+			values.append(_quality(slot, Kind.SHELTER, now_minute))
+	return [ids, values]
+
+
 func _find(actor_id: int, id: int) -> int:
 	var row: int = _row_for(actor_id)
 	if row < 0 or id == NO_SITE:

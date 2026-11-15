@@ -26,6 +26,8 @@ const GameSounds = preload("res://scripts/game_sounds.gd")
 const SaveSlots = preload("res://scripts/save_slots.gd")
 const SettingsMenu = preload("res://scripts/settings_menu.gd")
 const PerformanceMonitor = preload("res://scripts/PerformanceMonitor.gd")
+const Counters = preload("res://scripts/performance_counters.gd")
+const SleepSimulation = preload("res://scripts/sleep_simulation.gd")
 const REST_BUDGET_USEC: int = 4_000
 const SLEEP_BUDGET_USEC: int = 8_000
 var slot_chooser: Control
@@ -47,8 +49,19 @@ const RED = Color("df8d77")
 const GREEN = Color("a9c69a")
 
 var sim: Sim
+var threaded_sleep_enabled: bool = OS.get_processor_count() > 1
+var threaded_rest_enabled: bool = OS.get_processor_count() > 1
+var rest_snapshots_enabled: bool = true
+var _recovery_view: Sim
+var _sleep_sim := SleepSimulation.new()
+var _sleep_progress: Dictionary = {}
+var _main_counters: Counters
+var _recovery_handoff_usec: int
 var simulation_backlog: float = 0.0
 var save_path: String = Sim.SAVE_PATH
+var last_save_slot: String = ""
+var quicksave_notice: Label
+var quicksave_notice_remaining := 0.0
 var page: Control
 var overlay: Control
 var selected_actor: int = -1
@@ -56,9 +69,9 @@ var selected_item: int = -1
 var paused: bool = false
 var modal: String = ""
 var resting: bool:
- get: return sim.resting
+ get: return _sleep_sim.is_started() or sim.resting
 var rest_target: int:
- get: return sim.rest_target
+ get: return int(_sleep_progress.target) if _sleep_sim.is_started() else sim.rest_target
 var feed := Feed.new()
 var log_view: RichTextLabel
 var log_filter: String = "All"
@@ -67,7 +80,6 @@ var refresh_timer: float = 0.0
 var action_controls: Array[Dictionary] = []
 var timing_label: Label
 var clock_label: Label
-var speed_label: Label
 var condition_label: Label
 var health_label: Label
 var energy_label: Label
@@ -136,32 +148,74 @@ func _ready() -> void:
  var effects_layer = CanvasLayer.new()
  effects_layer.layer = 20
  add_child(effects_layer)
+ quicksave_notice = label(effects_layer,"",Rect2(28,20,650,42),24,GOLD)
+ quicksave_notice.name = "QuicksaveNotice"
+ quicksave_notice.visible = false
  damage_overlay = DamageOverlay.new()
  damage_overlay.name = "DamageOverlay"
  effects_layer.add_child(damage_overlay)
  game_sounds = GameSounds.new()
  add_child(game_sounds)
- sim.player_damaged.connect(damage_overlay.add_damage)
- sim.sound_requested.connect(game_sounds.play_effect)
- sim.rest_finished.connect(_clear_simulation_backlog)
+ _connect_simulation_signals()
  _reset_session_view()
  if start_tutorial: modal = "tutorial"
  refresh()
  if OS.is_debug_build():
   var performance_monitor: PerformanceMonitor = PerformanceMonitor.new()
   performance_monitor.interactive_sim = sim
+  performance_monitor.interactive_progress = recovery_progress
+  performance_monitor.interactive_access = _join_sleep_thread
   add_child(performance_monitor)
 
+func _exit_tree() -> void:
+ _join_sleep_thread(false)
+
+func _connect_simulation_signals() -> void:
+ # These handlers touch scene nodes and are connected only on main ownership.
+ sim.player_damaged.connect(damage_overlay.add_damage)
+ sim.sound_requested.connect(game_sounds.play_effect)
+ sim.rest_finished.connect(_clear_simulation_backlog)
+
+func _frame_counters() -> Counters:
+ return _main_counters if _sleep_sim.is_started() else sim.performance_counters
+
 func _process(delta: float) -> void:
- var counters := sim.performance_counters
+ if quicksave_notice_remaining > 0.0:
+  quicksave_notice_remaining -= delta
+  if quicksave_notice_remaining <= 0.0: quicksave_notice.visible = false
+ var counters := _frame_counters()
  var started: int = Time.get_ticks_usec() if counters != null else 0
+ var elapsed: float = delta
+ if _sleep_sim.is_started() and ((not _sleep_progress.sleeping and not rest_snapshots_enabled) or not _sleep_sim.is_alive()):
+  _join_sleep_thread()
+  _recovery_handoff_usec = _sleep_sim.paused_at_usec if resting else 0
+  elapsed = 0.0
+  if not resting:
+   if counters != null: counters.gameplay_usec += Time.get_ticks_usec()-started
+   return
  _animate_scene(delta)
  if not (paused or context_open or not modal.is_empty() or is_instance_valid(slot_chooser)):
-  _advance_session(delta)
+  _advance_session(delta, elapsed)
+ else:
+  _recovery_handoff_usec = 0
  if counters != null:
   counters.gameplay_usec += Time.get_ticks_usec()-started
 
 func _animate_scene(delta: float) -> void:
+ if _sleep_sim.is_started():
+  if not _sleep_progress.sleeping and rest_snapshots_enabled and _recovery_view != null:
+   var owner := sim
+   sim = _recovery_view
+   _animate_world(delta)
+   sim = owner
+   return
+  animation_time += delta
+  if is_instance_valid(player_portrait):
+   player_portrait.texture.region = portrait_region(_sleep_progress, _sleep_progress.max_hp)
+  return
+ _animate_world(delta)
+
+func _animate_world(delta: float) -> void:
  _update_actor_tooltip()
  animation_time += delta
  _animate_scene_transition()
@@ -191,18 +245,33 @@ func _animate_scene(delta: float) -> void:
  if is_instance_valid(player_portrait):
   player_portrait.texture.region = portrait_region(sim.player())
 
-func _advance_session(delta: float) -> void:
+func _advance_session(delta: float, elapsed_seconds: float = -1.0) -> void:
+ var clock_elapsed: float = delta if elapsed_seconds < 0.0 else elapsed_seconds
+ if _sleep_sim.is_started():
+  if _sleep_progress.sleeping or rest_snapshots_enabled:
+   _update_threaded_sleep(delta)
+   return
+  _join_sleep_thread()
+  _recovery_handoff_usec = _sleep_sim.paused_at_usec if resting else 0
+  clock_elapsed = 0.0
  var was_resting := resting
  var was_down: bool = sim.player().down
- simulation_backlog += delta
+ simulation_backlog += clock_elapsed
  var elapsed := minf(simulation_backlog,0.25)
  simulation_backlog -= elapsed
+ var threaded: bool = threaded_sleep_enabled if sim.sleeping else threaded_rest_enabled
+ if sim.resting and threaded:
+  if not sim.sleeping: _update_session_view(delta, was_resting, was_down)
+  if _start_sleep_thread(elapsed): return
  var budget_usec: int = _recovery_budget_usec() if was_resting else 0
  if budget_usec > 0:
   var deferred: float = sim.elapse_budgeted(elapsed,budget_usec)
   if resting: simulation_backlog += deferred
  else:
   sim.elapse(elapsed)
+ _update_session_view(delta, was_resting, was_down)
+
+func _update_session_view(delta: float, was_resting: bool, was_down: bool) -> void:
  var recovery_ended: bool = was_resting and not resting
  if recovery_ended: notice = sim.last_rest_notice
  var feed_changed := feed.ingest(sim.messages)
@@ -223,6 +292,119 @@ func _advance_session(delta: float) -> void:
  _update_action_controls()
  if is_instance_valid(timing_label): timing_label.text = _timing_text()
 
+func recovery_progress() -> Dictionary:
+ if _sleep_sim.is_started(): return _sleep_progress
+ return SleepSimulation.progress(sim)
+
+func _start_sleep_thread(elapsed: float) -> bool:
+ _sleep_sim.rest_snapshots_enabled = rest_snapshots_enabled
+ if not sim.sleeping and rest_snapshots_enabled and _recovery_view == null:
+  _create_recovery_view()
+ _sleep_progress = SleepSimulation.progress(sim)
+ _main_counters = sim.performance_counters
+ if _main_counters != null: sim.performance_counters = Counters.new()
+ sim.player_damaged.disconnect(damage_overlay.add_damage)
+ sim.sound_requested.disconnect(game_sounds.play_effect)
+ sim.rest_finished.disconnect(_clear_simulation_backlog)
+ sim.player_damaged.connect(_sleep_sim.record_damage)
+ sim.sound_requested.connect(_sleep_sim.record_sound)
+ if _recovery_handoff_usec > 0:
+  elapsed += (Time.get_ticks_usec() - _recovery_handoff_usec) / 1_000_000.0
+  _recovery_handoff_usec = 0
+ if _sleep_sim.start(sim, elapsed + simulation_backlog) != OK:
+  _restore_simulation_signals()
+  threaded_sleep_enabled = false
+  threaded_rest_enabled = false
+  return false
+ _clear_simulation_backlog()
+ return true
+
+func _restore_simulation_signals() -> void:
+ sim.player_damaged.disconnect(_sleep_sim.record_damage)
+ sim.sound_requested.disconnect(_sleep_sim.record_sound)
+ sim.performance_counters = _main_counters
+ _main_counters = null
+ _sleep_progress = {}
+ if is_instance_valid(local_map): local_map.sim = sim
+ _recovery_view = null
+ _connect_simulation_signals()
+
+func _receive_sleep_update(update_ui: bool = true) -> void:
+ var update := _sleep_sim.take_update(_main_counters)
+ if update.is_empty() or not update_ui: return
+ _sleep_progress = update
+ feed.ingest(update.messages)
+ for effect in update.effects:
+  if effect is String: game_sounds.play_effect(effect)
+  else: damage_overlay.add_damage(effect[0],effect[1])
+ if update.has("view") and _recovery_view != null: _apply_recovery_view(update.view)
+
+func _create_recovery_view() -> void:
+ _recovery_view = Sim.new()
+ for property: String in ["width", "height", "world_mode", "world_title", "world_seed", "world_config",
+  "complex_bounds", "visited_neighbourhoods", "geography_source", "rest_target", "minute", "clock_step", "clock_fraction"]:
+  _recovery_view.set(property, sim.get(property))
+ _recovery_view.blocks = sim.blocks.duplicate(true)
+ _recovery_view.actors = sim.actors.duplicate(true)
+ _recovery_view.messages = []
+ _recovery_view.resting = true
+ _recovery_view.reindex()
+ if is_instance_valid(local_map): local_map.sim = _recovery_view
+
+func _apply_recovery_view(view: Dictionary) -> void:
+ for id: int in view.blocks: _recovery_view.blocks[id] = view.blocks[id]
+ for id: int in view.actors: _recovery_view.actors[id] = view.actors[id]
+ for property: String in ["minute", "clock_step", "clock_fraction", "resting", "rest_target"]:
+  _recovery_view.set(property, view[property])
+ _recovery_view.last_rest_notice = view.notice
+ _recovery_view.reindex()
+ var p: Dictionary = _recovery_view.player()
+ if _dashboard_layout(p, _recovery_view.current_block(p)) != dashboard_layout:
+  # A changed player form/location needs a structural rebuild under ownership.
+  _join_sleep_thread()
+  _refresh_dashboard()
+  return
+ var owner := sim
+ sim = _recovery_view
+ _refresh_dashboard()
+ sim = owner
+
+func _join_sleep_thread(update_ui: bool = true) -> void:
+ if not _sleep_sim.is_started(): return
+ var remaining := _sleep_sim.join()
+ _receive_sleep_update(update_ui)
+ _restore_simulation_signals()
+ if sim.resting:
+  simulation_backlog = remaining
+ else:
+  _clear_simulation_backlog()
+  refresh_timer = 0.0
+  notice = sim.last_rest_notice
+  if update_ui: _show_recovery_state()
+
+func _update_threaded_sleep(delta: float) -> void:
+ if not _sleep_sim.is_alive():
+  _join_sleep_thread()
+  return
+ _receive_sleep_update()
+ if not _sleep_sim.is_started(): return
+ var feed_changed: bool = feed.update(delta)
+ if not _sleep_progress.sleeping and (feed_changed or _recovery_view != null):
+  var owner := sim
+  if _recovery_view != null: sim = _recovery_view
+  _update_log()
+  sim = owner
+ refresh_timer += delta
+ if refresh_timer >= 0.25 and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) and not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+  var started: int = Time.get_ticks_usec() if _main_counters != null else 0
+  refresh_timer = 0.0
+  clock_label.text = _sleep_progress.time_text
+  _update_vitals(_sleep_progress, _sleep_progress.max_hp, _sleep_progress.sleeping)
+  if _main_counters != null:
+   _main_counters.periodic_refreshes += 1
+   _main_counters.periodic_refresh_usec += Time.get_ticks_usec()-started
+ timing_label.text = _sleep_timing_text(_sleep_progress.ap) if _sleep_progress.sleeping else "REST  ·  %d / %d AP" % [_sleep_progress.ap, _sleep_progress.target]
+
 func _update_action_controls() -> void:
  if sim.sleeping: return
  var p: Dictionary = sim.player()
@@ -237,6 +419,7 @@ func _recovery_budget_usec() -> int:
 
 func _clear_simulation_backlog() -> void:
  simulation_backlog = 0.0
+ _recovery_handoff_usec = 0
 
 func _unhandled_key_input(event: InputEvent) -> void:
  if not event is InputEventKey or not event.pressed or event.echo: return
@@ -245,6 +428,10 @@ func _unhandled_key_input(event: InputEvent) -> void:
   get_viewport().set_input_as_handled()
   return
  if context_open or is_instance_valid(slot_chooser): return
+ if event.keycode == KEY_F5:
+  _quicksave()
+  get_viewport().set_input_as_handled()
+  return
  if event.keycode == KEY_ESCAPE:
   if not modal.is_empty(): modal = ""
   elif resting:
@@ -379,6 +566,7 @@ func button(parent: Node, text: String, bounds: Rect2, callback: Callable, accen
  return node
 
 func refresh() -> void:
+ _join_sleep_thread()
  var p: Dictionary = sim.player()
  var b: Dictionary = sim.current_block(p)
  if sim.sleeping and not sleep_panels.is_empty() and _dashboard_layout(p,b) == dashboard_layout:
@@ -543,11 +731,7 @@ func _refresh_dashboard() -> void:
    action_nodes = _replace_dashboard_section(action_nodes,_actions.bind(options))
    dashboard_actions = options
  clock_label.text = sim.time_text()
- speed_label.text = "LIVE · %d×" % sim.time_speed()
- condition_label.text = _condition_text(p)
- health_label.text = "%d / %d HP · %d XP" % [p.hp,sim.max_hp(p),p.xp]
- energy_label.text = "%02d / 50 AP" % p.ap
- energy_bar.size.x = 334.0*clampf(float(p.ap)/C.AP_CAP,0.0,1.0)
+ _update_vitals(p, sim.max_hp(p), sim.sleeping)
  notice_label.text = _notice_text(p)
  pause_button.text = "Resume" if paused else "Pause"
  rest_button.text = _rest_button_text()
@@ -568,7 +752,6 @@ func _header() -> void:
  label(page, "MALTON", Rect2(22, 5, 210, 44), 39, CREAM)
  label(page, sim.world_title.to_upper()+"  /  SURVIVAL", Rect2(24, 47, 400, 22), 15, GOLD)
  clock_label = label(page, sim.time_text(), Rect2(270, 15, 270, 30), 24, GOLD)
- speed_label = label(page, "LIVE · %d×" % sim.time_speed(), Rect2(570, 15, 146, 40), 23, GOLD)
  pause_button = button(page, "Resume" if paused else "Pause", Rect2(726, 15, 95, 40), func(): paused = not paused; refresh())
  button(page, "Map [M]", Rect2(831, 15, 105, 40), open_city_map)
  button(page, "Skills", Rect2(946, 15, 90, 40), func(): open_modal("skills"))
@@ -648,7 +831,7 @@ func _update_minimap_caption(p: Dictionary) -> void:
 
 func _update_minimap_tile(tile: Button, b: Dictionary, p: Dictionary, inside: bool) -> void:
  tile.disabled = paused or resting or (b.x == p.x and b.y == p.y)
- var tooltip: String = map_site_tooltip(b) + "\nMove: %d AP" % sim.cost(p,"move")
+ var tooltip: String = map_site_tooltip(b, false) + "\nMove: %d AP" % sim.cost(p,"move")
  if b.type == "gatehouse" and not b.fort.is_empty(): tooltip += "\nOnly fort entrance: enter the gatehouse to access the grounds."
  var visible = sim.occupants(b,inside)
  var names: Array[String] = []
@@ -720,7 +903,7 @@ func _status() -> void:
  atlas.region = portrait_region(p)
  player_portrait = picture(page, atlas, Rect2(24,518,98,98))
  label(page, sim.display_name(p), Rect2(124,521,245,28), 24)
- condition_label = label(page,_condition_text(p),Rect2(124,550,245,24),16,GREEN if p.human else RED)
+ condition_label = label(page,_condition_text(p,sim.sleeping),Rect2(124,550,245,24),16,GREEN if p.human else RED)
  health_label = label(page,"%d / %d HP · %d XP" % [p.hp,sim.max_hp(p),p.xp],Rect2(124,578,245,28),18)
  health_label.name = "PlayerHealth"
  rect(page, Rect2(31,638,334,6), INK)
@@ -729,8 +912,14 @@ func _status() -> void:
  energy_label.name = "PlayerEnergy"
  label(page, "+1 AP / 30 min", Rect2(238,609,133,24), 14, MUTED)
 
-func _condition_text(p: Dictionary) -> String:
- return ("SURVIVOR" if p.human else "UNDEAD") + (" / ASLEEP" if sim.sleeping else (" / DOWN" if p.down else " / STANDING"))
+func _update_vitals(p: Dictionary, max_hp: int, sleeping: bool) -> void:
+ condition_label.text = _condition_text(p, sleeping)
+ health_label.text = "%d / %d HP · %d XP" % [p.hp,max_hp,p.xp]
+ energy_label.text = "%02d / 50 AP" % p.ap
+ energy_bar.size.x = 334.0*clampf(float(p.ap)/C.AP_CAP,0.0,1.0)
+
+func _condition_text(p: Dictionary, sleeping: bool) -> String:
+ return ("SURVIVOR" if p.human else "UNDEAD") + (" / ASLEEP" if sleeping else (" / DOWN" if p.down else " / STANDING"))
 
 func _notice_text(p: Dictionary) -> String:
  if sim.sleeping: return "You are asleep. Wake to return to the city."
@@ -749,7 +938,7 @@ func _rest_controls() -> void:
  rest_button.disabled = paused
  sleep_button = button(page,"Sleep",Rect2(203,658,171,30),begin_sleep)
  sleep_button.name = "SleepButton"
- sleep_button.tooltip_text = "Sleep until 50 AP at 128× speed. Barricades collapsing or sustained damage can wake you."
+ sleep_button.tooltip_text = "Sleep until 50 AP. Choose Wake or press Esc to wake early."
  sleep_button.add_theme_font_size_override("font_size",16)
  sleep_button.disabled = resting or paused
  timing_label = label(page,_timing_text(),Rect2(24,691,350,22),14,GOLD)
@@ -1107,12 +1296,15 @@ func _action_options() -> Array:
  return available
 
 func _timing_text() -> String:
- if sim.sleeping: return "SLEEP 128×  ·  %d / 50 AP" % sim.player().ap
- if sim.player().down and sim.time_speed() > 1: return "DOWN %d× · Recovering to stand" % sim.time_speed()
- if resting: return "REST %d×  ·  %d / %d AP" % [int(sim.time_speed()),sim.player().ap,rest_target]
+ if sim.sleeping: return _sleep_timing_text(sim.player().ap)
+ if sim.player().down and sim.time_speed() > 1: return "DOWN · Recovering to stand"
+ if resting: return "REST  ·  %d / %d AP" % [sim.player().ap,rest_target]
  var remaining = sim.player().busy_until-sim.now()
  if remaining > 0: return "Recovering: %.2fs  ·  %s" % [remaining,C.pretty(sim.player().last_action)]
- return "READY  ·  1 game minute / second"
+ return "READY"
+
+func _sleep_timing_text(ap: int) -> String:
+ return "SLEEP  ·  %d / 50 AP" % ap
 
 func _action_button(command: String, text: String, bounds: Rect2, target: int = -1, data: Dictionary = {}) -> void:
  if command == "broadcast" and not data.has("frequency"): data = {"frequency":sim.suggested_transmit_frequency(sim.player())}
@@ -1165,7 +1357,8 @@ func _log() -> void:
 
 func _update_log() -> void:
  if not is_instance_valid(log_view): return
- if sim.player().down or sim.sleeping:
+ var hidden: bool = _sleep_progress.down or _sleep_progress.sleeping if _sleep_sim.is_started() else sim.player().down or sim.sleeping
+ if hidden:
   log_view.text = ""
   log_view.visible = false
   return
@@ -1267,20 +1460,22 @@ func dispatch(command: String, target: int = -1, data: Dictionary = {}) -> void:
   else: previous_scene.queue_free()
 
 func begin_sleep() -> void:
- if paused or not modal.is_empty(): return
+ if paused or _sleep_sim.is_started() or not modal.is_empty(): return
  var rejection = sim.begin_sleep()
  if rejection.is_empty(): _clear_simulation_backlog()
  notice = rejection if not rejection.is_empty() else sim.last_rest_notice
  _show_recovery_state()
 
 func begin_rest(amount: int) -> void:
- if paused or not modal.is_empty(): return
+ if paused or _sleep_sim.is_started() or not modal.is_empty(): return
  var rejection = sim.begin_rest(amount)
  if rejection.is_empty(): _clear_simulation_backlog()
  notice = rejection if not rejection.is_empty() else sim.last_rest_notice
  _show_recovery_state()
 
 func _cancel_recovery() -> void:
+ _join_sleep_thread()
+ if not sim.resting: return
  sim.stop_rest("You wake up." if sim.sleeping else "Rest cancelled.")
  notice = sim.last_rest_notice
  _show_recovery_state()
@@ -1297,8 +1492,18 @@ func _save() -> void:
 func _load() -> void:
  _show_slots(false)
 
+func _quicksave() -> void:
+ var message := "Quicksave requires a save slot"
+ if not last_save_slot.is_empty():
+  _join_sleep_thread()
+  message = "Game saved" if sim.save_to(last_save_slot) == OK else "Could not save."
+ quicksave_notice.text = message
+ quicksave_notice.visible = true
+ quicksave_notice_remaining = 3.0
+
 func _show_slots(saving: bool) -> void:
  if is_instance_valid(slot_chooser): return
+ _join_sleep_thread()
  slot_chooser = SaveSlots.new()
  slot_chooser.base_path = save_path
  slot_chooser.saving = saving
@@ -1314,12 +1519,16 @@ func _select_slot(path: String, saving: bool) -> void:
  _close_slots()
  if saving:
   if resting: sim.stop_rest()
-  notice = "Game saved." if sim.save_to(path) == OK else "Could not save."
+  var error := sim.save_to(path)
+  if error == OK: last_save_slot = path
+  notice = "Game saved." if error == OK else "Could not save."
   refresh()
   return
  var result := sim.load_from(path)
  notice = "Loaded your neighbourhood." if result.is_empty() else result
- if result.is_empty(): _reset_session_view()
+ if result.is_empty():
+  last_save_slot = path
+  _reset_session_view()
  refresh()
 
 func _reset_session_view() -> void:
@@ -1327,7 +1536,7 @@ func _reset_session_view() -> void:
  if is_instance_valid(damage_overlay):
   damage_overlay.splashes.clear()
   damage_overlay.queue_redraw()
- simulation_backlog = 0.0
+ _clear_simulation_backlog()
  map_origin = Vector2i(-1,-1)
  city_overview = false
  inventory_page = 0
@@ -1338,6 +1547,7 @@ func _reset_session_view() -> void:
  if game_music: game_music.restart_playlist()
 
 func open_modal(which: String) -> void:
+ _join_sleep_thread()
  if resting and which != "settings": sim.stop_rest()
  if which == "help":
   tutorial_step = 0
@@ -1431,7 +1641,8 @@ func _modal() -> void:
  overlay.position = Vector2(240,60)
  rect(overlay, Rect2(-240,-60,1920,1080), Color(0.01,0.03,0.02,0.92))
  rect(overlay, Rect2(100,80,1240,800), PANEL, GOLD)
- label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "quit":"Embrace cowardice?", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
+ if modal != "quit":
+  label(overlay, {"tutorial":"AWAKENING / FIELD GUIDE" if tutorial_opening else "FIELD GUIDE", "map":sim.world_title.to_upper()+" / FIELD MAP", "skills":"SKILLS / " + ("HUMAN" if sim.player().human else "ZOMBIE"), "history":"EVENT HISTORY / PAUSED", "restart":"NEW GAME / WORLD SETUP", "jump":"LEAVE HUMAN LIFE BEHIND?","message":"COMMUNICATION","intelligence":"FIELD INTELLIGENCE","scent_death":"SCENT DEATH","necronet":"NECRONET SCAN","binocular_compass":"ROOFTOP BINOCULARS","binocular_survey":"BINOCULAR SURVEY"}[modal], Rect2(130,99,1050,48), 32, GOLD)
  button(overlay, "Close [Esc]", Rect2(1170,103,140,38), func(): modal = ""; refresh())
  if modal == "tutorial": _tutorial_modal()
  elif modal == "message": _message_modal()
@@ -1463,6 +1674,10 @@ func _modal() -> void:
   history.text = feed.format_rows(sim.messages,history_filter)
   overlay.add_child(history)
  elif modal == "quit":
+  var question = label(overlay,"EMBRACE COWARDICE?",Rect2(130,205,1180,90),64,GOLD)
+  question.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+  var warning = label(overlay,"Unsaved changes will be lost.",Rect2(130,300,1180,36),24,CREAM)
+  warning.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
   button(overlay,"Quit to Menu",Rect2(380,350,300,60),func():
    if get_tree().change_scene_to_file(ProjectSettings.get_setting("application/run/main_scene")) != OK:
     modal = ""
@@ -1604,9 +1819,13 @@ func _scent_death_modal() -> void:
  label(overlay,"Gold marker · Your block",Rect2(725,370,460,36),20,CREAM)
  label(overlay,"Brighter squares indicate higher counts.\nHover a square for the breakdown.",Rect2(725,427,530,70),20,MUTED)
 
-func map_site_tooltip(b: Dictionary) -> String:
+func map_site_tooltip(b: Dictionary, show_entrance: bool = true) -> String:
  var text = "%s\n%s" % [b.name,C.pretty(sim.visible_type(b,sim.player()))]
- if sim.is_building(b): text += "\n" + sim.exterior_building_clues(b)
+ if sim.is_building(b):
+  if show_entrance: text += "\n" + sim.exterior_building_clues(b)
+  else:
+   if b.ruin >= 3: text += "\nThe building has been ruined."
+   if sim.powered(b): text += "\nLights are on inside."
  return text
 
 func open_city_map() -> void:
@@ -1773,21 +1992,23 @@ func portrait_texture(p: Dictionary) -> Texture2D:
  var portrait = tex("portraits/"+key+".png")
  return portrait if portrait != null else tex("sprite_sheets/male1_sprite_sheet.png")
 
-func portrait_region(p: Dictionary) -> Rect2:
+func portrait_region(p: Dictionary, max_hp: int = 0) -> Rect2:
  if p.has("job") and tex("portraits/"+C.occupation_portrait(p.job,p.get("sex",""))+".png") != null:
   var texture = portrait_texture(p)
   var cell = Vector2(texture.get_width()/5.0,texture.get_height()/5.0)
   var frame = 15
   if not p.down and p.hp > 0:
-   if not p.human: frame = 16+zombie_pose(animation_time)%9
+   if not p.human: frame = 16+int(animation_time/0.35)%9
    else:
-    var start = 0 if float(p.hp)/sim.max_hp(p) > 0.7 else (5 if float(p.hp)/sim.max_hp(p) > 0.3 else 10)
+    if max_hp == 0: max_hp = sim.max_hp(p)
+    var health_fraction := float(p.hp)/max_hp
+    var start = 0 if health_fraction > 0.7 else (5 if health_fraction > 0.3 else 10)
     frame = start+int(animation_time/0.35)%5
   return Rect2(Vector2(frame%5,frame/5)*cell,cell)
  var start = 0 if p.hp > 35 else (6 if p.hp > 15 else 12)
  if not p.human: start = 19
  if p.hp <= 0 or p.down: return Rect2(18*66,0,66,66)
- if not p.human: return Rect2((start+zombie_pose(animation_time)%6)*66,0,66,66)
+ if not p.human: return Rect2((start+int(animation_time/0.35)%6)*66,0,66,66)
  return Rect2((start+int(animation_time/0.35)%6)*66,0,66,66)
 
 func appears_human(a: Dictionary) -> bool:
@@ -2050,6 +2271,7 @@ func _new_game_modal() -> void:
    config.erase("zombies")
   var why = sim.start(new_seed,new_occupation,config)
   if not why.is_empty(): new_game_error = why; refresh(); return
+  last_save_slot = ""
   _reset_session_view()
   new_game_error = ""
   tutorial_step = 0

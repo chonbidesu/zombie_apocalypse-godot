@@ -5,11 +5,20 @@ var sim
 var block: Dictionary
 var foreground = false
 var front_faces = true
+var _connections: Dictionary[Vector2i,bool] = {}
 static var surfaces: Array = []
 const DIRS = [Vector2i.UP,Vector2i.RIGHT,Vector2i.DOWN,Vector2i.LEFT]
 
 func _init() -> void:
  texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+
+func _ready() -> void:
+ # Redraws can run independently of the dashboard. Keep only static geometry
+ # here so a redraw never reads the live simulation during sleep.
+ if block.is_empty() or sim == null: return
+ for direction in DIRS: _connections[direction] = joined(direction)
+ block = {"x":block.x,"y":block.y,"type":block.type,"zoo":block.zoo,"fort":block.fort,"complex":block.complex}
+ sim = null
 
 static func surface(index: int) -> Texture2D:
  if surfaces.is_empty():
@@ -55,6 +64,7 @@ func neighbor(direction: Vector2i) -> Dictionary:
  return sim.block_at(x,y)
 
 func joined(direction: Vector2i) -> bool:
+ if _connections.has(direction): return _connections[direction]
  var other = neighbor(direction)
  if other.is_empty(): return false
  if not block.fort.is_empty(): return block.fort == other.fort

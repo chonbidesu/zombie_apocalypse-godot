@@ -144,7 +144,7 @@ func _initialize() -> void:
  s.begin_rest(10)
  var minute_before = s.minute
  s.elapse(1.0)
- check(s.minute == minute_before+16,"Rest is twice the previous eightfold speed")
+ check(s.minute == minute_before+8,"Rest advances at eight times normal speed")
  s = isolated()
  p = s.player()
  p.ap = 0

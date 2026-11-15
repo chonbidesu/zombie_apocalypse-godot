@@ -94,6 +94,10 @@ func run() -> void:
  check(close_line.size.x > distant_line.size.x and is_equal_approx((close_line.end.y - close_background.position.y) / close_background.size.y, street_row) and is_equal_approx(close_line.size.x / close_line.size.y, distant_line.size.x / distant_line.size.y) and corpse_intro._quarantine_rect(2).size.x > distant_people.size.x * 3.0, "Checkpoint advances with the security line planted and undistorted")
  click_at(corpse_intro.skip.get_global_rect().get_center())
  check(corpse_intro.page == Intro.Page.ORIGIN and not corpse_intro.eyes.visible, "The Skip button on the corpse intro presents the closed-eyed origin")
+ check(corpse_intro.layers[1].resource_path.ends_with("/body_closed.png") and corpse_intro.eyes.texture.resource_path.ends_with("/body_open.png"), "The default corpse uses the original morgue frames")
+ corpse_intro.sex = "female"
+ corpse_intro._show_page(Intro.Page.ORIGIN)
+ check(corpse_intro.layers[1].resource_path.ends_with("/body_female_closed.png") and corpse_intro.eyes.texture.resource_path.ends_with("/body_female_open.png"), "Body Type 2 uses its own resting and awakening frames")
  check(corpse_intro.line_labels[1].text.ends_with("It's time to claim Malton."), "Corpse text uses the revised line")
  check(corpse_intro.line_streams.size() == 3 and corpse_intro.line_streams[2] != null, "Corpse origin queues its narrated passages and Rise")
  var feet: Rect2 = corpse_intro._corpse_rect()
@@ -170,6 +174,7 @@ func run() -> void:
  var creation := menu.creation
  creation.set_process(false)
  creation.select_character(7)
+ creation.select_sex("female")
  creation._process(0.8)
  await capture("user://start-character-creation.png")
  creation.confirm.pressed.emit()
@@ -189,6 +194,7 @@ func run() -> void:
  menu.naming._accept()
  await process_frame
  check(is_instance_valid(menu.intro) and menu.intro.occupation == "Firefighter", "Confirmation opens the intro with the selected occupation")
+ check(menu.intro.sex == "female", "The selected body type reaches the intro after naming")
  menu.intro._skip_intro()
  menu.intro._process(1.3)
  await process_frame
@@ -210,6 +216,8 @@ func run() -> void:
  check(game.sim.has_skill(game.sim.player(),"axe_proficiency"),"Selected occupation has its starting skill")
  check(FileAccess.get_file_as_string(TEST_SAVE) == "{}","New Game does not overwrite the existing save")
  check(not is_instance_valid(menu),"Gameplay replaces the menu")
+ game._quicksave()
+ check(game.quicksave_notice.text == "Quicksave requires a save slot" and FileAccess.get_file_as_string(TEST_SAVE) == "{}", "Quicksave requires a slot for a new game")
  game.sim.player().xp = 123
  game._save()
  slots = slot_buttons(game.slot_chooser)
@@ -218,6 +226,14 @@ func run() -> void:
  var slot_b := SaveSlots.slot_path(TEST_SAVE,1)
  var slot_c := SaveSlots.slot_path(TEST_SAVE,2)
  check(game.notice == "Game saved." and FileAccess.file_exists(slot_b),"Selecting slot B saves the game")
+ game.sim.player().xp = 124
+ var quick_key := InputEventKey.new()
+ quick_key.keycode = KEY_F5
+ quick_key.pressed = true
+ game._unhandled_key_input(quick_key)
+ check(game.quicksave_notice.text == "Game saved" and JSON.parse_string(FileAccess.get_file_as_string(slot_b)).actors[0].xp == 124, "F5 saves to the selected slot and shows confirmation")
+ game.sim.player().xp = 123
+ game._quicksave()
  check(FileAccess.get_file_as_string(TEST_SAVE) == "{}" and not FileAccess.file_exists(slot_c),"Saving to B leaves slots A and C alone")
  var saved_actor := game.sim.player().duplicate(true)
  var saved_minute := game.sim.minute
@@ -248,6 +264,7 @@ func run() -> void:
  check(playlist.playing and playlist._next_index == 1,"Loading from the title starts the shuffled gameplay playlist")
  check(game.sim.player() == saved_actor and game.sim.minute == saved_minute,"Load Game preserves saved character and time without starting a new world")
  check(game.notice == "Loaded your neighbourhood.","Loaded game shows confirmation")
+ check(game.last_save_slot == slot_b, "Loading from the title selects the quicksave slot")
  check(game.modal != "tutorial", "Loading a save does not restart the field guide")
  playlist.finished.emit()
  var before_load := playlist.stream
@@ -257,6 +274,7 @@ func run() -> void:
  game._load()
  slot_buttons(game.slot_chooser)[2].pressed.emit()
  check(game.sim.player().xp == 246 and playlist.playing and playlist._next_index == 1 and playlist.stream != before_load,"Loading slot C restores its player and starts a fresh playlist")
+ check(game.last_save_slot == slot_c, "Loading in game selects the quicksave slot")
  playlist.finished.emit()
  var before_restart := playlist.stream
  game.new_world_mode = "sandbox"
@@ -267,6 +285,7 @@ func run() -> void:
    break
  check(game.sim.world_mode == "sandbox" and playlist.playing and playlist._next_index == 1 and playlist.stream != before_restart,"Restarting from world setup shuffles the playlist")
  check(game.modal == "tutorial" and game.tutorial_step == 0 and game.tutorial_opening, "Restarting opens the field guide at its beginning")
+ check(game.last_save_slot.is_empty(), "A new game clears the quicksave slot")
  game.modal = ""
  game.refresh()
  var quit_buttons = game.page.find_children("*", "Button", true, false).filter(func(node): return node.text == "Quit")
@@ -275,7 +294,7 @@ func run() -> void:
  check(game.modal == "quit", "Quit opens the confirmation")
  var quit_labels = game.overlay.find_children("*", "Label", true, false).map(func(node): return node.text)
  var quit_options = game.overlay.find_children("*", "Button", true, false)
- check("Embrace cowardice?" in quit_labels and quit_options.any(func(node): return node.text == "Quit to Desktop"), "Confirmation shows the question and desktop option")
+ check("EMBRACE COWARDICE?" in quit_labels and "Unsaved changes will be lost." in quit_labels and quit_options.any(func(node): return node.text == "Quit to Desktop"), "Confirmation shows the question, warning and desktop option")
  var return_buttons = quit_options.filter(func(node): return node.text == "Quit to Menu")
  check(return_buttons.size() == 1, "Confirmation offers Quit to Menu")
  return_buttons[0].pressed.emit()

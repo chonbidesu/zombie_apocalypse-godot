@@ -65,7 +65,8 @@ def frames(name):
 
 
 # Anatomical boundaries end in fabric folds or behind foreground furniture.
-# Idle changes are confined to existing facial expressions, not whole-body sway.
+# Head regions are retained for the older action assembly. Idle upper-body
+# regions below restore the original breathing without moving planted supports.
 HEADS = [
     [(148,0),(230,0),(230,62),(216,85),(194,92),(168,71),(148,66)],
     [(89,0),(181,0),(181,95),(159,116),(137,113),(112,94),(89,85)],
@@ -85,8 +86,18 @@ MOTION = [
     [(65,0),(239,0),(239,132),(211,142),(192,161),(169,166),(145,151),(130,136),(65,132)],
     [(85,0),(283,0),(283,123),(273,183),(229,190),(201,209),(122,209),(89,186),(85,133)],
     rectangle(98,0,302,200),
-    [(9,0),(350,0),(350,130),(330,142),(271,157),(190,176),(105,196),(39,210),(20,181)],
 ]
+
+# The rail passes in front of the bag. Follow its inner lip around both
+# corners so each pose supplies the fabric and straps right up to the metal.
+BODY_BAG = [(0,0),(362,0),(362,120),(323,120),(324,123),(331,130),
+            (341,141),(340,143),(339,147),(337,150),(335,150),
+            (334,152),(336,154),(320,158),(300,162.5),
+            (275,168.5),(250,174),(225,179.5),(200,185),(175,190),
+            (150,195),(125,200),(95,206),(80,209),(65,212),(59,213.5),
+            (53,213.5),(49,212),(45,210),(42,206),(40,202),(38,202),
+            (34,193.5),(28,184.5),(26,181),(28,178),(27,176),
+            (23,177),(30,169),(30,160),(33,155),(0,155)]
 
 def fix_doctor_legs(base):
     # Follow the surviving diagonal trouser to its own cuff. The shader-era
@@ -249,6 +260,65 @@ POLICE_ARMREST = [(243,167),(329,168),(330,351),(209,351),(199,327),
 DOCTOR_IDLE = [(107,0),(238,0),(238,72),(213,91),(194,101),(189,123),
                (169,126),(139,119),(113,112),(104,94)]
 
+# Complete upper poses, including the space vacated by moving sleeves. The
+# lower joins run through fabric; furniture and seated hips remain registered.
+# These apply only to idle frames 1-3. Keeping the existing first pose also
+# keeps the shared references and every confirmation frame unchanged.
+IDLE_UPPER = {
+    0: [(95,0),(267,0),(269,112),(265,145),(257,170),(234,182),
+        (215,174),(169,174),(152,144),(95,141)],
+    1: [(60,0),(220,0),(220,147),(210,161),(198,172),(176,178),
+        (158,181),(150,199),(94,201),(79,197),(74,178),(68,145),
+        (64,125),(60,110)],
+    2: [(115,0),(256,0),(257,99),(259,116),(263,139),(266,157),
+        (263,174),(249,187),(216,194),(170,190),(135,188),(127,166),(115,148)],
+    6: [(80,0),(280,0),(279,144),(272,167),(261,182),(241,191),
+        (232,214),(220,226),(205,220),(194,206),(157,203),(123,204),
+        (111,191),(94,186),(83,174),(80,150)],
+}
+
+
+def restore_idle_upper(frame, pose, job, alternate):
+    if job == 7:
+        return firefighter_pose(pose)
+    outline = IDLE_UPPER[job]
+    if job == 1 and not alternate:
+        # Her narrower sleeve exposes more of the stationary chair back.
+        outline = outline[:9] + [(85,197),(80,178),(77,145),(76,125),(75,110)]
+    if job == 6 and alternate:
+        # Keep the leather outside her elbow; his broader arm covers it.
+        outline = [(94,0)] + outline[1:13] + [(111,191),(99,187),
+                   (94,174),(94,150)]
+    mug = frame.crop((216,145,253,183)) if job == 1 else None
+    blend_pixels(frame, pose, outline, 3)
+    if mug is not None:
+        # Include the handle, which sits outside the old cup-only rectangle.
+        frame.paste(mug, (216,145))
+    return frame
+
+
+def repair_doctor_button_edge(frame, pose):
+    """Join the fourth idle lapel to the fixed placket without a two-pixel jog."""
+    donor = pose.copy()
+    # The original moving placket is two pixels left of the planted lower
+    # coat. Register it gradually in plain fabric below the lapel, then blend
+    # between buttons. Copying an unregistered strip just moves the seam down.
+    for y in range(133, 178):
+        shift = 2 * min(1., (y-132)/32)
+        strip = pose.crop((0,y,CELL,y+1)).transform(
+            (CELL,1), Image.Transform.AFFINE, (1,0,-shift,0,1,0),
+            resample=Image.Resampling.BICUBIC)
+        donor.paste(strip, (0,y))
+    mask = smooth_polygon([(146,108),(181,108),(181,137),(173,161),
+                           (169,177),(141,177),(141,153),(144,130)])
+    mask = mask.filter(ImageFilter.GaussianBlur(1))
+    # Full weight across the visible button edge, fading only in the cloth
+    # below the final moving button; all rows from 178 down stay untouched.
+    for y in range(164,CELL):
+        weight = max(0., (177-y)/13)
+        mask.paste(mask.crop((0,y,CELL,y+1)).point(lambda a: round(a*weight)), (0,y))
+    frame.paste(donor, (0,0), mask)
+
 
 def firefighter_pose(source):
     # The axe and hem end above row 232 in both sets. Through the short band
@@ -289,8 +359,9 @@ def pool_table_pockets():
 
 
 def furniture_manifest():
-    path = 'frames/consumer_table_pockets.png'
-    return [{'source': path, 'sha256': hashlib.sha256((ART/path).read_bytes()).hexdigest()}]
+    paths = ['frames/consumer_table_pockets.png', 'frames/medic_tabletop.png']
+    return [{'source': path, 'sha256': hashlib.sha256((ART/path).read_bytes()).hexdigest()}
+            for path in paths]
 
 
 def smooth_polygon(points):
@@ -372,12 +443,15 @@ def build_base(job, source, shared=None):
         blend_pixels(seated_officer, source[11], POLICE_CONFIRM_SEATED, 4)
 
     reference = frames('doctor_portrait' if job == 3 else PAIRS[job][0])[0]
+    bag_mask = smooth_polygon(BODY_BAG) if job == 8 else None
     result = []
     for i in range(12):
         frame = base.copy()
         if job < 8:
             replace_pixels(frame, source[i], HEADS[job])
-        if i >= 4 or job == 8:
+        if bag_mask is not None:
+            frame.paste(source[i], (0,0), bag_mask)
+        elif i >= 4:
             replace_pixels(frame, source[i], MOTION[job])
         if job == 0 and shared is not None and i >= 4:
             # The lower arm rests on the knee. Only update the turning shoulder.
@@ -447,21 +521,30 @@ def build_base(job, source, shared=None):
             replace_pixels(frame, reference, rectangle(216,178,282,213))
         if job == 5:
             replace_pixels(frame, reference, [(65,132),(129,132),(133,138),(65,143)])
-            if shared is not None:
-                # The male redraw is one continuous pose, including the bridge
-                # fingers, cue and playing surface. Never splice these through
-                # the older HEADS/MOTION/FELT boundaries: that produced a seam
-                # at the hand and could retain a second cue ball.
-                frame = source[i].copy()
-                for box in [(0,220,362,362),(0,151,37,216),
-                            (48,132,104,141),(285,0,362,145),
-                            (349,151,362,216),(117,218,280,227)]:
-                    frame.paste(reference.crop(box),box[:2])
+            # Both consumers use complete poses, including transparent pixels
+            # beyond the clothing edge. Keeping pieces of frame 0 underneath
+            # later poses can leave an older, larger silhouette behind them.
+            # Do not splice the bridge fingers, cue or felt through old masks.
+            frame = source[i].copy()
+            for box in [(0,220,362,362),(0,151,37,216),
+                        (48,132,104,141),(285,0,362,145),
+                        (349,151,362,216),(117,218,280,227)]:
+                frame.paste(reference.crop(box),box[:2])
             # Apply last so pose/felt assembly never covers the fixed pockets.
             for box in POOL_POCKET_BOXES:
                 frame.paste(pool_table_pockets().crop(box),box[:2])
         if job == 3:
             fix_doctor_legs(frame)
+            if shared is None and i == 3:
+                # The lowered-head pose shifted the sleeve across the old
+                # neck-only join. Carry its continuous coat through the cuff
+                # and pocket, ending in plain fabric below the hand.
+                blend_pixels(frame, source[i], [(92,75),(130,78),(146,94),
+                             (149,137),(151,151),(137,171),(119,169),
+                             (98,149),(88,126)], 3)
+                repair_doctor_button_edge(frame, source[i])
+        if 0 < i < 4 and job in (0,1,2,6,7):
+            frame = restore_idle_upper(frame, source[i], job, shared is not None)
         # Transparent RGB is normalized too, so equality means all four channels.
         pixels = frame.load()
         for y in range(CELL):
@@ -501,6 +584,36 @@ def save(name, cells):
         sheet = copied.convert('RGBA')
     for i, frame in enumerate(cells):
         sheet.paste(frame, (i % 4 * CELL, i // 4 * CELL))
+    if name in ('medic_female', 'medic_male'):
+        # Lay down the same wood and coins first. Each crop then restores
+        # the pose-specific cards, fingers and their occlusion of the table.
+        with Image.open(ART / 'frames/medic_tabletop.png') as table, \
+             Image.open(ART / 'frames' / (name + '_cards.png')) as cards:
+            assert table.mode == 'RGBA' and table.size == (167,60)
+            assert cards.mode == 'RGBA' and cards.size == (4*130, 3*56)
+            for i in range(12):
+                col, row = i%4, i//4
+                sheet.alpha_composite(table, (col*CELL+154,row*CELL+160))
+                left, top = (130,108) if i < 5 else (132,156)
+                patch = cards.crop((col*130,row*56,(col+1)*130,(row+1)*56))
+                sheet.paste(patch, (col*CELL+left,row*CELL+top))
+    if name == 'doctor_male':
+        with Image.open(ART / 'frames/doctor_male_flat_chest.png') as scrubs:
+            sheet.alpha_composite(scrubs)
+        with Image.open(ART / 'frames/doctor_male_upturned_eyes.png') as eyes:
+            sheet.paste(eyes, (CELL+155,23))
+    # Include the continuous shirt fabric above the lowered waistband.
+    tailoring = {'doctor_male': ('doctor_male_trousers',92,124,116,228),
+                 'private_female': ('private_female_shirt',166,91,71,66)}
+    if name in tailoring:
+        artwork, left, top, width, height = tailoring[name]
+        with Image.open(ART / 'frames' / (artwork+'.png')) as poses:
+            assert poses.size == (4*width,3*height) and poses.mode == 'RGBA'
+            for row in range(3):
+                for col in range(4):
+                    patch = poses.crop((col*width,row*height,(col+1)*width,(row+1)*height))
+                    # Replace RGBA, including space vacated by the old boots.
+                    sheet.paste(patch, (col*CELL+left,row*CELL+top))
     sheet.save(temporary, optimize=True)
     for attempt in range(20):
         try:

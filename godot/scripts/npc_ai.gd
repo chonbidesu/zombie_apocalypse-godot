@@ -39,9 +39,11 @@ static func go(s,a: Dictionary,goal: Dictionary) -> bool:
     var site = s.block_at(x,y)
     if site.id in [b.id,goal.id]: continue
     if s.occupants(site,false).any(func(t): return not t.human and not t.down):
-     s.navigation.set_point_disabled(site.id,true)
      avoided.append(site.id)
+  for id in avoided: s.navigation.set_point_disabled(id,true)
+  s.route_cache.constraints_active = true
   var safer = Array(s.query_route(b.id,goal.id))
+  s.route_cache.constraints_active = false
   for id in avoided: s.navigation.set_point_disabled(id,false)
   if safer.size() > 1:
    safer.pop_front()
@@ -72,11 +74,12 @@ static func return_to_undeath(s,a: Dictionary) -> bool:
   if s._try(a,"enter"): return true
  if not a.route.is_empty() and a.route_goal in range(s.blocks.size()):
   var goal = s.blocks[a.route_goal]
-  if goal.type in C.TALL_BUILDINGS and goal.barricade <= 4 and go(s,a,goal): return true
+  if goal.type in C.TALL_BUILDINGS and (not s.npc_site_visible(a, goal) or goal.barricade <= 4) and go(s,a,goal): return true
 
  var candidates: Array = []
  for kind in C.TALL_BUILDINGS:
-  for site in s.sites_by_type.get(kind,[]):
+  for site in (s.npc_local_sites(a) if s.npc_local_awareness else s.sites_by_type.get(kind,[])):
+   if site.type != kind: continue
    if site.id != here.id and site.barricade <= 4:
     candidates.append({"site":site,"distance":maxi(absi(site.x-a.x),absi(site.y-a.y))})
  candidates.sort_custom(func(left,right):
@@ -97,26 +100,31 @@ static func return_to_undeath(s,a: Dictionary) -> bool:
  return go(s,a,best)
 
 static func keeper(s,a: Dictionary) -> bool:
+ var known_people: Array = s.npc_local_people(a) if s.npc_local_awareness else s.actors
  if not s.has_skill(a,"construction"): return false
- if not s.actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false
- for other in s.actors:
+ if not known_people.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false
+ for other in known_people:
   if other.id == a.id: break
   if other.human and not other.down and other.home == a.home and s.has_skill(other,"construction"): return false
  return true
 
 static func regroup(s,a: Dictionary) -> bool:
- if s.actors.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false
+ var known_people: Array = s.npc_local_people(a) if s.npc_local_awareness else s.actors
+ if known_people.any(func(t): return t.id != a.id and t.human and not t.down and t.home == a.home): return false
  var here = s.current_block(a)
  var closest: Dictionary = {}
  var distance = 13
- for id in s.spatial:
-  var site = s.blocks[id]
+ var candidate_sites: Array = s.npc_local_sites(a) if s.npc_local_awareness else s.spatial.keys().map(func(id): return s.blocks[id])
+ for site: Dictionary in candidate_sites:
+  var id: int = site.id
+  if not s.spatial.has(id): continue
   var d = maxi(absi(site.x-a.x),absi(site.y-a.y))
   # Ties use actor order so rebuilding the spatial index after a load is deterministic.
+  if s.npc_local_awareness and d > 1: continue
   if d > distance or (d == distance and (closest.is_empty() or s.spatial[id][0] >= s.spatial[closest.id][0])): continue
   if d+2 > a.ap or not s.is_building(site) or site.ruin > 0 or site.barricade > 4: continue
   if site.fort != here.fort: continue
-  var others = s.occupants(site,true)
+  var others = s.npc_seen_occupants(a,site) if s.npc_local_awareness else s.occupants(site,true)
   if others.any(func(t): return not t.human and not t.down): continue
   var friends = others.filter(func(t): return t.id != a.id and t.human and not t.down).size()
   if friends < 1 or friends > 2: continue
@@ -130,8 +138,10 @@ static func regroup(s,a: Dictionary) -> bool:
  return go(s,a,closest)
 
 static func group_need(s,a: Dictionary) -> String:
+ var known_people: Array = s.npc_local_people(a) if s.npc_local_awareness else s.actors
  var home = s.blocks[a.home]
- var allies = s.actors.filter(func(t): return t.human and not t.down and t.home == a.home and t.id != a.id)
+ if s.npc_local_awareness and not s.npc_site_visible(a, home): return ""
+ var allies = known_people.filter(func(t): return t.human and not t.down and t.home == a.home and t.id != a.id)
  if allies.is_empty(): return ""
  var need = "portable_generator" if not home.generator else ("fuel_can" if home.fuel_until-s.minute < 360 else "")
  if need.is_empty(): return ""
@@ -143,22 +153,42 @@ static func retreat(s,a: Dictionary,forced: bool = false, siege: bool = false) -
  var here = s.current_block(a)
  var hostiles = s.occupants(here,a.inside).any(func(t): return not t.human and not t.down)
  if a.inside and not hostiles and not siege: return false
- if not a.inside and s.is_building(here) and here.ruin == 0 and here.barricade <= 4 and (not hostiles or here.barricade >= 2) and not s.occupants(here,true).any(func(t): return not t.human and not t.down):
+ if not a.inside and s.is_building(here) and here.ruin == 0 and here.barricade <= 4 and (not hostiles or here.barricade >= 2) and (s.npc_local_awareness or not s.occupants(here,true).any(func(t): return not t.human and not t.down)):
   a.home = here.id
   a.supply_goal = -1
   a.supply_kind = ""
   return s._try(a,"enter")
+ var best: Dictionary = s.npc_planner.retreat_target(s,a,here)
+ if best.is_empty(): return false
+ a.home = best.id
+ a.supply_goal = best.id
+ a.supply_kind = ""
+ return go(s,a,best)
+
+static func retreat_target(s,a: Dictionary,here: Dictionary) -> Dictionary:
+ if s.managed_queries.active:
+  var memory: Array = s.npc_planner.memory.shelter_lanes(a.id,s.minute)
+  var id: int = s.managed_queries.query(s,&"RetreatTarget",[here.id,a.ap,a.home,memory[0],memory[1]])
+  return s.blocks[id] if id >= 0 else {}
  var best: Dictionary = {}
  var best_score = INF
- var radius = mini(8,maxi(1,a.ap-1))
+ var radius = mini(1 if s.npc_local_awareness else 8,maxi(1,a.ap-1))
  for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
   for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
    var site = s.block_at(x,y)
    if not s.is_building(site) or site.ruin > 0 or site.barricade > 4 or site.id == here.id: continue
    if site.fort != here.fort: continue
-   if s.occupants(site,true).any(func(t): return not t.human and not t.down): continue
-   if s.occupants(site,false).any(func(t): return not t.human and not t.down and not t.wants_revive): continue
-   var friends = s.occupants(site,true).filter(func(t): return t.human and not t.down).size()
+   var friends: int = 0
+   var unsafe: bool = false
+   for id: int in s.spatial.get(site.id, []):
+    var other: Dictionary = s.actors[id]
+    if other.down: continue
+    if s.npc_local_awareness and other.inside: continue
+    if not other.human and (other.inside or not other.wants_revive):
+     unsafe = true
+     break
+    if other.human and other.inside: friends += 1
+   if unsafe: continue
    var distance = maxi(absi(x-a.x),absi(y-a.y))
    var score = distance+(4 if friends == 0 else 0)+(4 if site.barricade < 2 else 0)
    if site.id == a.home: score -= 2
@@ -166,11 +196,7 @@ static func retreat(s,a: Dictionary,forced: bool = false, siege: bool = false) -
    if score < best_score:
     best = site
     best_score = score
- if best.is_empty(): return false
- a.home = best.id
- a.supply_goal = best.id
- a.supply_kind = ""
- return go(s,a,best)
+ return best
 
 static func expected_damage(s,target: Dictionary,stats: Dictionary) -> float:
  return float(stats.hit)/100.0*mini(target.hp,s.attack_damage(target,stats))
@@ -227,6 +253,7 @@ static func can_call(s,a: Dictionary,people: Array) -> bool:
  var prey_count = people.filter(func(t): return t.human and not t.down).size()
  if a.next_groan > s.minute or not (s.has_skill(a,"feeding_groan") or s.has_skill(a,"bellow")): return false
  if prey_count == 0: return false
+ if s.npc_local_awareness: return true
  var radius = 10 if s.has_skill(a,"bellow") and (prey_count >= 25 or not s.has_skill(a,"feeding_groan")) else 6
  for y in range(maxi(0,a.y-radius),mini(s.height,a.y+radius+1)):
   for x in range(maxi(0,a.x-radius),mini(s.width,a.x+radius+1)):
@@ -237,6 +264,12 @@ static func can_call(s,a: Dictionary,people: Array) -> bool:
  return false
 
 static func seek_revival(s,a: Dictionary) -> void:
+ if s.npc_local_awareness:
+  var known: Dictionary = s.npc_planner._revival_target(s, a, s.has_skill(a, "brain_rot"))
+  if known.is_empty(): s._wander(a, true)
+  elif s.current_block(a).id != known.id: go(s, a, known)
+  elif a.inside: s._try(a, "leave")
+  return
  # Public clinic locations replace the multiplayer revive-point coordination.
  var clinic: Dictionary = {}
  var distance = INF

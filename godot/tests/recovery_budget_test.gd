@@ -42,6 +42,8 @@ func _run() -> void:
 	var game: Game = GameScene.instantiate() as Game
 	game.get_node("GameMusic").free()
 	game.sim = sim
+	game.threaded_sleep_enabled = false
+	game.threaded_rest_enabled = false
 	root.add_child(game)
 	game.set_process(false)
 	var rest_control: Button = game.rest_button

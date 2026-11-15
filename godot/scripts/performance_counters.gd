@@ -1,5 +1,5 @@
 extends RefCounted
-## Main-thread counters drained at the start of each monitored frame.
+## Per-thread counters merged when a simulation batch is published.
 
 var gameplay_usec: int = 0
 var periodic_refresh_usec: int = 0
@@ -15,6 +15,19 @@ var ap_grants: int = 0
 var ap_usec: int = 0
 var forced_path_queries: int = 0
 var forced_path_usec: int = 0
+
+
+func add_simulation(other: RefCounted) -> void:
+	simulation_usec += other.simulation_usec
+	clock_steps += other.clock_steps
+	decision_usec += other.decision_usec
+	decisions += other.decisions
+	path_queries += other.path_queries
+	ap_updates += other.ap_updates
+	ap_grants += other.ap_grants
+	ap_usec += other.ap_usec
+	forced_path_queries += other.forced_path_queries
+	forced_path_usec += other.forced_path_usec
 
 
 func reset() -> void:

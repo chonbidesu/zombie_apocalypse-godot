@@ -11,6 +11,9 @@ const AI = preload("res://scripts/npc_ai.gd")
 const NpcGate = preload("res://scripts/npc_utility/action_gate.gd")
 const NpcSchedule = preload("res://scripts/npc_utility/scheduler.gd")
 const NpcPlanner = preload("res://scripts/npc_utility/planner.gd")
+const PlanningBatch = preload("res://scripts/npc_utility/planning_batch.gd")
+const ManagedQueries = preload("res://scripts/npc_utility/managed_queries.gd")
+const RouteCache = preload("res://scripts/npc_utility/route_cache.gd")
 const PerformanceCounters = preload("res://scripts/performance_counters.gd")
 const SAVE_PATH = "user://prototype-save.json"
 const DEFAULT_SEED = 4815
@@ -56,6 +59,19 @@ const EMPTY_OCCUPANT_IDS: Array = []
 var npc_cursor: int = 0
 var npc_schedule = NpcSchedule.new()
 var npc_planner = NpcPlanner.new()
+var planning_batch := PlanningBatch.new()
+var managed_queries := ManagedQueries.new()
+var route_cache := RouteCache.new()
+var skip_unobserved_narration: bool = true
+var npc_full_recovery: bool = true
+var npc_plan_on_turn: bool = true
+var npc_local_awareness: bool = true
+var narrated_actions: int
+var unnarrated_actions: int
+var npc_recovery_entries: int
+var npc_recovery_skips: int
+var npc_landmark_version: int
+var _npc_landmark_views: Dictionary[int, Vector3i] = {}
 var revive_sites: Dictionary[int, bool] = {}
 var radio_defense: Dictionary = {}
 var next_dialogue: float = 500.0
@@ -350,9 +366,47 @@ func block_at(x: int, y: int) -> Dictionary:
 func current_block(a: Dictionary) -> Dictionary:
  return block_at(a.x, a.y)
 
+func npc_site_visible(a: Dictionary, site: Dictionary) -> bool:
+ return maxi(absi(a.x - site.x), absi(a.y - site.y)) <= 1
+
+func npc_local_sites(a: Dictionary) -> Array[Dictionary]:
+ var sites: Array[Dictionary] = []
+ for y in range(maxi(0, a.y - 1), mini(height, a.y + 2)):
+  for x in range(maxi(0, a.x - 1), mini(width, a.x + 2)):
+   sites.append(block_at(x, y))
+ return sites
+
+func npc_seen_occupants(a: Dictionary, site: Dictionary) -> Array:
+ if not npc_site_visible(a, site): return []
+ return occupants(site, a.inside if site.id == a.y * width + a.x else false)
+
+func npc_local_people(a: Dictionary) -> Array:
+ var people: Array = []
+ for site: Dictionary in npc_local_sites(a): people.append_array(npc_seen_occupants(a, site))
+ people.sort_custom(func(one, two): return one.id < two.id)
+ return people
+
+func observe_npc_landmarks(a: Dictionary) -> void:
+ var here: int = a.y * width + a.x
+ var view := Vector3i(here, npc_landmark_version, int(a.inside) + 2 * int(has_skill(a, "necro_employment")))
+ if _npc_landmark_views.get(a.id, Vector3i(-1, -1, -1)) == view: return
+ _npc_landmark_views[a.id] = view
+ if not a.has("npc_known_clinics"): a.npc_known_clinics = []
+ if not a.has("npc_known_markers"): a.npc_known_markers = []
+ for site: Dictionary in npc_local_sites(a):
+  if visible_type(site, a) == "necrotech_lab" and not a.npc_known_clinics.has(site.id):
+   a.npc_known_clinics.append(site.id)
+   if a.npc_known_clinics.size() > 8: a.npc_known_clinics.pop_front()
+  if site.revive_point:
+   if not a.npc_known_markers.has(site.id):
+    a.npc_known_markers.append(site.id)
+    if a.npc_known_markers.size() > 8: a.npc_known_markers.pop_front()
+  else:
+   a.npc_known_markers.erase(site.id)
+
 func query_route(from_id: int, to_id: int) -> PackedInt64Array:
  if performance_counters != null: performance_counters.path_queries += 1
- return navigation.get_id_path(from_id,to_id)
+ return route_cache.get_path(navigation,from_id,to_id)
 
 func is_building(b: Dictionary) -> bool:
  return b.type not in C.OUTDOORS
@@ -386,6 +440,7 @@ func has_skill(a: Dictionary, skill: String) -> bool:
  return skill in (a.human_skills if a.human else a.zombie_skills)
 
 func reindex() -> void:
+ managed_queries.reset()
  spatial.clear()
  scent_trackers.clear()
  for a in actors:
@@ -395,6 +450,9 @@ func reindex() -> void:
   spatial[key].append(a.id)
 
 func _reset_npc_runtime(saved_memory: Variant = []) -> void:
+ _npc_landmark_views.clear()
+ planning_batch.reset()
+ managed_queries.reset()
  npc_planner.reset(width,height,actors.size())
  npc_planner.memory.restore_records(saved_memory,minute)
  revive_sites.clear()
@@ -403,7 +461,10 @@ func _reset_npc_runtime(saved_memory: Variant = []) -> void:
  npc_schedule.clear()
  for a in actors:
   if a.id > 0 and not a.dormant:
-   _schedule_npc(a,_npc_due(a))
+   if npc_full_recovery and (a.ap <= 0 or (not str(a.get("recovery_mode", "")).is_empty() and a.ap < C.AP_CAP)):
+    _begin_npc_recovery(a)
+   else:
+    _schedule_npc(a,_npc_due(a))
   else:
    a.next_think = 0.0
 
@@ -417,16 +478,47 @@ func _schedule_npc(a: Dictionary, step: int) -> void:
  npc_schedule.add(a.id,due)
 
 func wake_npc(a: Dictionary) -> void:
+ if npc_full_recovery and not str(a.get("recovery_mode", "")).is_empty() and a.ap < C.AP_CAP: return
  var step = maxi(clock_step+1,ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001))
  if a.get("recovery_mode", "") == "sleep": return
  a.recovery_mode = ""
  if _npc_due(a) > step: _schedule_npc(a,step)
+
+func _begin_npc_recovery(a: Dictionary) -> void:
+ if a.id == 0 or a.dormant: return
+ if str(a.get("recovery_mode", "")).is_empty():
+  var safe: bool = a.human and a.inside and not a.down
+  if safe:
+   for other: Dictionary in occupants(current_block(a), a.inside):
+    if not other.human and not other.down and not other.wants_revive:
+     safe = false
+     break
+  a.recovery_mode = "sleep" if safe else "rest"
+  npc_recovery_entries += 1
+ var gain: int = 2 if a.recovery_mode == "sleep" else 1
+ var intervals: int = ceili(float(C.AP_CAP - int(a.ap)) / gain)
+ var due: int = (clock_step / NpcGate.AP_INTERVAL_STEPS + intervals) * NpcGate.AP_INTERVAL_STEPS
+ _schedule_npc(a, maxi(due, ceili(float(a.busy_until) * C.CLOCK_STEPS_PER_MINUTE)))
+
+func _ready_npcs(due: Array) -> Array:
+ var ready: Array = []
+ for id: int in due:
+  var a: Dictionary = actors[id]
+  if a.dormant or _npc_due(a) != clock_step: continue
+  if a.ap <= 0 or (not str(a.get("recovery_mode", "")).is_empty() and a.ap < C.AP_CAP):
+   npc_recovery_skips += 1
+   _begin_npc_recovery(a)
+   continue
+  a.recovery_mode = ""
+  ready.append(id)
+ return ready
 
 func set_graffiti(b: Dictionary, text: String, outside: bool) -> void:
  if not outside:
   b.graffiti_inside = text
   return
  b.graffiti = text
+ npc_landmark_version += 1
  b.revive_point = b.fort.is_empty() and text.strip_edges().to_lower() == "revive point"
  if b.revive_point: revive_sites[b.id] = true
  else: revive_sites.erase(b.id)
@@ -564,7 +656,7 @@ func cost(a: Dictionary, command: String, target_id: int = -1, data: Dictionary 
   if used < 5: return maxi(0,base-1)
  return base
 
-func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}, context_only: bool = false) -> String:
+func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}, context_only: bool = false, known_cost: int = -1) -> String:
  if command == "view_map":
   if a.down: return "Stand up before using the map."
   if item_kind(a,"map").is_empty(): return "You need a city map."
@@ -576,7 +668,7 @@ func reason(a: Dictionary, command: String, target_id: int = -1, data: Dictionar
   if not a.down: return "Already standing."
   if not context_only and minute < a.ready_at: return "You can stand in %d minutes." % (a.ready_at-minute)
  if not context_only:
-  var required_ap = cost(a,command,target_id,data)
+  var required_ap = known_cost if known_cost >= 0 else cost(a,command,target_id,data)
   if required_ap > 0 and a.ap < 1: return "Exhausted, you can go no further. Rest until AP is positive."
   if a.id != 0 and a.ap < required_ap and not bool(data.get("allow_ap_debt",false)): return "Not enough AP. Rest to recover."
  var b = current_block(a)
@@ -719,8 +811,33 @@ func act(command: String, target_id: int = -1, data: Dictionary = {}) -> Diction
  discover()
  return {"ok":true, "message":""}
 
+func _action_observable(a: Dictionary, command: String, target_id: int, data: Dictionary) -> bool:
+ if a.id == 0 or target_id == 0: return true
+ var p: Dictionary = player()
+ if nearby(a, p): return true
+ # Include destination visibility and noises across this block's doors.
+ if a.x == p.x and a.y == p.y:
+  if command in ["break", "barricade", "enter", "leave"]: return true
+  if not p.inside and command in ["drag", "jump"]: return true
+ if command == "move" and a.x + int(data.get("dx", 0)) == p.x and a.y + int(data.get("dy", 0)) == p.y: return true
+ if command == "dump" and within_fort(a, current_block(a)):
+  var gate: Dictionary = fort_gatehouse(current_block(a).fort)
+  if gate.x == p.x and gate.y == p.y and p.inside: return true
+ if command == "broadcast": return radio_receives(p, snappedf(float(data.get("frequency", current_block(a).frequency)), 0.01))
+ if command == "destroy_radio": return radio_receives(p, current_block(a).frequency)
+ if command in ["flare", "groan", "bellow"] and not p.down:
+  var radius: int = 14 if command == "flare" else (10 if command == "bellow" else 6)
+  return maxi(absi(a.x - p.x), absi(a.y - p.y)) <= radius
+ return false
+
 func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> void:
  # Internal callers must validate first. Effects happen before any time passes.
+ var narrate: bool = not skip_unobserved_narration or _action_observable(a, command, target_id, data)
+ if narrate: narrated_actions += 1
+ else: unnarrated_actions += 1
+ _dirty_planner_inputs(a)
+ if target_id >= 0: _dirty_planner_inputs(actors[target_id])
+
  var ap_spent = cost(a,command,target_id,data)
  if int(a.scout_day) != minute/1440:
   a.scout_day = minute/1440
@@ -736,9 +853,9 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  var attack_hit = false
  var initial_target_hp = actors[target_id].hp if target_id >= 0 else -1
  var initial_barricade_strength = barricade_strength(b)
- var attack_weapon = item_by_uid(a,a.equipped) if command == "attack" and not data.get("unarmed",false) else {}
+ var attack_weapon = item_by_uid(a,a.equipped) if narrate and command == "attack" and not data.get("unarmed",false) else {}
  var firearm_attack = not attack_weapon.is_empty() and C.ITEMS[attack_weapon.kind].has("capacity")
- var name = "You" if a.id == 0 else display_name(a)
+ var name = "You" if a.id == 0 else (display_name(a) if narrate else "")
  var text = ""
  match command:
   "move":
@@ -750,37 +867,37 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    a.x += data.dx
    a.y += data.dy
    _relocate(a,b.id,destination.id)
-   text = "%s to %s." % [action_phrase(a,"move","moves"),destination.name]
+   if narrate: text = "%s to %s." % [action_phrase(a,"move","moves"),destination.name]
    if ruined_free_run:
-    text += " You find your route blocked by a collapsed wall, and are forced to street level." if a.id == 0 else " A collapsed wall forces them to street level."
+    if narrate: text += " You find your route blocked by a collapsed wall, and are forced to street level." if a.id == 0 else " A collapsed wall forces them to street level."
     if roll_free_run_fall():
      var previous_hp: int = a.hp
      a.hp = maxi(1,a.hp-5)
      if a.id == 0 and a.hp < previous_hp: player_damaged.emit(previous_hp-a.hp,a.human)
      set_pose(a,"hurt")
      critical = true
-     text += " You lose your footing on the ruined building, and fall to the street below, injuring yourself." if a.id == 0 else " They lose their footing and fall to the street, injuring themselves."
+     if narrate: text += " You lose your footing on the ruined building, and fall to the street below, injuring yourself." if a.id == 0 else " They lose their footing and fall to the street, injuring themselves."
    if not b.fort.is_empty() and b.fort == destination.fort and destination.type == "armoury" and origin.inside and a.human and has_skill(a,"free_running"):
-    text += " The defensive design of the armoury prevents Free Running into it. Use the entrance."
+    if narrate: text += " The defensive design of the armoury prevents Free Running into it. Use the entrance."
    if b.type == "gatehouse" and not b.fort.is_empty() and b.fort != destination.fort and b.barricade > 4 and origin.inside:
-    text += " %s at ground level. The barricades prevent Free Running out." % action_phrase(a,"exit","exits")
+    if narrate: text += " %s at ground level. The barricades prevent Free Running out." % action_phrase(a,"exit","exits")
   "enter":
    clear_grasp(a)
    var opened = not a.human and doors_closed(b)
    a.inside = true
    if not a.human and has_doors(b): b.doors = false
-   text = "%s %s." % [action_phrase(a,"open the doors and enter","opens the doors and enters") if opened else action_phrase(a,"enter","enters"),b.name]
+   if narrate: text = "%s %s." % [action_phrase(a,"open the doors and enter","opens the doors and enters") if opened else action_phrase(a,"enter","enters"),b.name]
   "leave":
    clear_grasp(a)
    a.inside = false
    secure_zombie_exit(a,b)
-   text = "%s outside." % action_phrase(a,"step","steps")
+   if narrate: text = "%s outside." % action_phrase(a,"step","steps")
   "equip":
    a.equipped = data.uid if a.equipped != data.uid else -1
-   text = "Equipment changed."
+   if narrate: text = "Equipment changed."
   "drop":
    var item = item_by_uid(a, data.uid)
-   text = "%s %s." % [action_phrase(a,"discard","discards"),C.ITEMS[item.kind].name]
+   if narrate: text = "%s %s." % [action_phrase(a,"discard","discards"),C.ITEMS[item.kind].name]
    consume(a, item)
   "attack","bite":
    var t = actors[target_id]
@@ -799,9 +916,9 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    attack_hit = roll_attack_hit(stats.hit)
    if weapon.get("kind","") == "newspaper":
     if attack_hit:
-     text = "%s %s with a rolled-up newspaper. The only casualty is the classifieds." % [action_phrase(a,"swat","swats"),display_name(t)]
+     if narrate: text = "%s %s with a rolled-up newspaper. The only casualty is the classifieds." % [action_phrase(a,"swat","swats"),display_name(t)]
     else:
-     text = "%s a newspaper at %s. The weather page catches a draft." % [action_phrase(a,"swing","swings"),display_name(t)]
+     if narrate: text = "%s a newspaper at %s. The weather page catches a draft." % [action_phrase(a,"swing","swings"),display_name(t)]
    elif attack_hit:
     var damage = attack_damage(t,stats)
     var actual = mini(t.hp,damage)
@@ -809,39 +926,39 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     if t.id == 0 and actual > 0: player_damaged.emit(actual,t.human)
     a.xp += actual
     set_pose(t,"hurt")
-    text = "%s %s for %d damage." % [action_phrase(a,"bite","bites") if command == "bite" else action_phrase(a,"hit","hits"),display_name(t),actual]
+    if narrate: text = "%s %s for %d damage." % [action_phrase(a,"bite","bites") if command == "bite" else action_phrase(a,"hit","hits"),display_name(t),actual]
     if weapon.get("kind","") == "fuel_can":
      t.fuel_soaked = true
      consume(a,weapon)
-     text += " They are soaked in fuel."
+     if narrate: text += " They are soaked in fuel."
     elif weapon.get("kind","") == "flare_gun" and t.get("fuel_soaked",false):
      t.fuel_soaked = false
-     text += " The fuel ignites."
+     if narrate: text += " The fuel ignites."
     if not a.human:
      if command == "bite":
       if has_skill(a,"digestion"): a.hp = mini(max_hp(a),a.hp+actual)
       if t.human and has_skill(a,"infectious_bite"):
        t.infected = true
-       text += " The wound is infected."
+       if narrate: text += " The wound is infected."
      elif weapon.is_empty() and has_skill(a,"tangling_grasp") and t.hp > 0:
       claim_grasp(a,t)
-      text += " A grasp locks onto the victim."
+      if narrate: text += " A grasp locks onto the victim."
     if fragile: consume(a,weapon)
     elif not weapon.is_empty() and melee_break_chance(weapon) > 0.0 and rng.randf() < melee_break_chance(weapon):
      consume(a,weapon)
-     text += " The pool cue splinters and breaks."
+     if narrate: text += " The pool cue splinters and breaks."
     if t.hp <= 0:
      var penalty = 5 if not t.human and has_skill(a,"headshot") else 0
      a.xp += 10
      if t.human and has_skill(a,"scent_fear"): a.xp += 10
      die(t,penalty)
      critical = true
-     text += " They fall." + (" A Headshot delays their return." if penalty > 0 else "")
+     if narrate: text += " They fall." + (" A Headshot delays their return." if penalty > 0 else "")
    else:
-    text = "%s %s." % [action_phrase(a,"miss","misses"),display_name(t)]
+    if narrate: text = "%s %s." % [action_phrase(a,"miss","misses"),display_name(t)]
     if a.grasp_target == target_id and rng.randf() < 0.5:
      clear_grasp(a)
-     text += " The grasp slips free."
+     if narrate: text += " The grasp slips free."
   "heal":
    var t = actors[target_id]
    var healing = (10 if has_skill(a,"first_aid") else 5)+(5 if has_skill(a,"surgery") and a.inside and b.type in ["hospital","infirmary"] and powered(b) else 0)
@@ -852,7 +969,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     add_trust(t,a,amount*2)
     if amount > 0: a.xp += 5
    consume(a, item_kind(a, "first_aid_kit"))
-   text = "%s %s for %d HP." % [action_phrase(a,"heal","heals"),display_name(t), amount]
+   if narrate: text = "%s %s for %d HP." % [action_phrase(a,"heal","heals"),display_name(t), amount]
   "revive":
    critical = true
    var t = actors[target_id]
@@ -881,20 +998,20 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    a.xp += 10
    add_trust(t,a,25)
    metrics.revivals += 1
-   text = "%s %s. They can stand as a human." % [action_phrase(a,"revive","revives"),display_name(t)]
+   if narrate: text = "%s %s. They can stand as a human." % [action_phrase(a,"revive","revives"),display_name(t)]
   "stand":
    a.down = false
    a.headshot = 0
    set_pose(a,"idle")
    a.hp = max_hp(a)/2
-   text = "%s as %s." % [action_phrase(a,"rise","rises"),"a survivor" if a.human else "a zombie"]
-  "search": text = _search(a,b,name,str(data.get("store","")))
+   if narrate: text = "%s as %s." % [action_phrase(a,"rise","rises"),"a survivor" if a.human else "a zombie"]
+  "search": text = _search(a,b,name,str(data.get("store","")),narrate)
   "reload":
    var weapon = item_by_uid(a,a.equipped)
    var def = C.ITEMS[weapon.kind]
    weapon.ammo = mini(def.capacity,weapon.ammo+def.reload_amount)
    consume(a,item_kind(a,def.ammo_kind))
-   text = "%s a single shell into the shotgun." % action_phrase(a,"load","loads") if weapon.kind == "shotgun" else "%s the pistol with a magazine." % action_phrase(a,"reload","reloads")
+   if narrate: text = "%s a single shell into the shotgun." % action_phrase(a,"load","loads") if weapon.kind == "shotgun" else "%s the pistol with a magazine." % action_phrase(a,"reload","reloads")
   "barricade":
    var pipe = {} if has_skill(a,"construction") else item_kind(a,"length_of_pipe")
    var interference = barricade_interference(b)
@@ -904,17 +1021,22 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     set_barricade_strength(b,barricade_strength(b)+1)
     if not pipe.is_empty():
      consume(a,pipe)
-     text = "%s a length of pipe to put up a loose barricade." % action_phrase(a,"use","uses")
+     if narrate: text = "%s a length of pipe to put up a loose barricade." % action_phrase(a,"use","uses")
     elif barricade_strength(b) == 10:
-     text = "Using %s, %s the barricade. It is now very strong, and any further barricading will prevent survivors from climbing in." % [barricade_material(b),"you reinforce" if a.id == 0 else action_phrase(a,"reinforce","reinforces")]
+     var narration_material_1: String = barricade_material(b)
+     if narrate: text = "Using %s, %s the barricade. It is now very strong, and any further barricading will prevent survivors from climbing in." % [narration_material_1,"you reinforce" if a.id == 0 else action_phrase(a,"reinforce","reinforces")]
     elif interference:
-     text = "Dragging %s past the zombies, %s the barricade." % [barricade_material(b),"you reinforce" if a.id == 0 else action_phrase(a,"reinforce","reinforces")]
-    else: text = "%s the building." % action_phrase(a,"barricade","barricades")
+     var narration_material_2: String = barricade_material(b)
+     if narrate: text = "Dragging %s past the zombies, %s the barricade." % [narration_material_2,"you reinforce" if a.id == 0 else action_phrase(a,"reinforce","reinforces")]
+    else:
+     if narrate: text = "%s the building." % action_phrase(a,"barricade","barricades")
    elif not pipe.is_empty():
-    text = "%s to wedge a length of pipe into place, but it slips." % action_phrase(a,"try","tries")
+    if narrate: text = "%s to wedge a length of pipe into place, but it slips." % action_phrase(a,"try","tries")
    elif interference:
-    text = "%s %s towards the doors, but the zombies lurch into %s way." % [action_phrase(a,"drag","drags"),barricade_material(b),"your" if a.id == 0 else "their"]
-   else: text = "%s around for something to barricade the building with." % action_phrase(a,"look","looks")
+    var narration_material_3: String = barricade_material(b)
+    if narrate: text = "%s %s towards the doors, but the zombies lurch into %s way." % [action_phrase(a,"drag","drags"),narration_material_3,"your" if a.id == 0 else "their"]
+   else:
+    if narrate: text = "%s around for something to barricade the building with." % action_phrase(a,"look","looks")
   "break":
    if a.human: gain_local_trust(a,b,-5)
    if not a.human and not a.inside: b.last_pounding = minute
@@ -924,20 +1046,20 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    var possessive = "your" if a.id == 0 else "their"
    var hit = rng.randi_range(1,100) <= stats.hit
    if not hit:
-    text = "%s %s %s at the barricade." % [action_phrase(a,"swing","swings"),possessive,tool_name] if a.human else "%s at the barricade." % action_phrase(a,"swipe","swipes")
+    if narrate: text = "%s %s %s at the barricade." % [action_phrase(a,"swing","swings"),possessive,tool_name] if a.human else "%s at the barricade." % action_phrase(a,"swipe","swipes")
    elif stats.structural == 1.0 or rng.randf() < stats.structural:
     var previous_level = b.barricade
     set_barricade_strength(b,barricade_strength(b)-1)
     critical = b.barricade == 0
     if not a.human and b.barricade < previous_level: a.xp += 1
-    text = "%s the barricade with %s %s, damaging it." % [action_phrase(a,"hit","hits"),possessive,tool_name] if a.human else "%s at the barricade, damaging it." % action_phrase(a,"smash","smashes")
+    if narrate: text = "%s the barricade with %s %s, damaging it." % [action_phrase(a,"hit","hits"),possessive,tool_name] if a.human else "%s at the barricade, damaging it." % action_phrase(a,"smash","smashes")
    else:
-    text = "%s the barricade with %s %s; it creaks." % [action_phrase(a,"hit","hits"),possessive,tool_name] if a.human else "%s at the barricade; it creaks." % action_phrase(a,"smash","smashes")
+    if narrate: text = "%s the barricade with %s %s; it creaks." % [action_phrase(a,"hit","hits"),possessive,tool_name] if a.human else "%s at the barricade; it creaks." % action_phrase(a,"smash","smashes")
    if hit and not weapon.is_empty():
     if C.ITEMS[weapon.kind].get("fragile",false): consume(a,weapon)
     elif melee_break_chance(weapon) > 0.0 and rng.randf() < melee_break_chance(weapon):
      consume(a,weapon)
-     text += " The pool cue splinters and breaks."
+     if narrate: text += " The pool cue splinters and breaks."
   "dump":
    var body = actors[target_id]
    body.inside = false
@@ -955,24 +1077,26 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     _relocate(body,b.id,gate.id)
     a.route.clear()
     body.route.clear()
-    text = "%s a body through %s and %s it outside. %s inside the gatehouse." % [action_phrase(a,"carry","carries"),gate.name,"dump" if a.id == 0 else "dumps",action_phrase(a,"remain","remains")]
-   else: text = "%s." % action_phrase(a,"drag a body to the doorway and dump it outside","drags a body to the doorway and dumps it outside")
+    if narrate: text = "%s a body through %s and %s it outside. %s inside the gatehouse." % [action_phrase(a,"carry","carries"),gate.name,"dump" if a.id == 0 else "dumps",action_phrase(a,"remain","remains")]
+   else:
+    if narrate: text = "%s." % action_phrase(a,"drag a body to the doorway and dump it outside","drags a body to the doorway and dumps it outside")
   "repair_generator":
    b.generator_hp = mini(C.GENERATOR_HP,b.generator_hp+2)
    a.xp += 1
    gain_local_trust(a,b,5)
-   text = "%s the generator. It is %s." % [action_phrase(a,"repair","repairs"),generator_condition(b)]
+   if narrate: text = "%s the generator. It is %s." % [action_phrase(a,"repair","repairs"),generator_condition(b)]
   "destroy_generator":
    if rng.randf() < 0.65:
     b.generator_hp = maxi(0,b.generator_hp-1)
-    text = "%s the generator. It is %s." % [action_phrase(a,"batter","batters"),generator_condition(b)]
+    if narrate: text = "%s the generator. It is %s." % [action_phrase(a,"batter","batters"),generator_condition(b)]
     if b.generator_hp == 0:
      b.generator = false
      b.fuel_until = 0
      critical = true
      a.xp += 5
-     text = "%s the generator beyond repair. The lights go out." % action_phrase(a,"smash","smashes")
-   else: text = "%s at the generator's metal casing without damaging it." % action_phrase(a,"claw","claws")
+     if narrate: text = "%s the generator beyond repair. The lights go out." % action_phrase(a,"smash","smashes")
+   else:
+    if narrate: text = "%s at the generator's metal casing without damaging it." % action_phrase(a,"claw","claws")
   "repair":
    var structural = b.ruin >= 3
    b.ruin = 0
@@ -980,13 +1104,13 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
    b.ruined_at = -1
    if structural: a.xp += 1
    gain_local_trust(a,b,4)
-   text = "%s the ruined building for %d AP." % [action_phrase(a,"repair","repairs"),ap_spent] if structural else "%s the room." % action_phrase(a,"repair","repairs")
+   if narrate: text = "%s the ruined building for %d AP." % [action_phrase(a,"repair","repairs"),ap_spent] if structural else "%s the room." % action_phrase(a,"repair","repairs")
   "ransack":
    var first = b.ruin == 0
    b.ruin = 1
    b.ransack_hits = int(b.get("ransack_hits",0))+1
    if first: a.xp += 1
-   text = "%s the building." % action_phrase(a,"ransack","ransacks") if first else ("You ransack further rooms of the building." if a.id == 0 else "%s further rooms of the building." % action_phrase(a,"ransack","ransacks"))
+   if narrate: text = "%s the building." % action_phrase(a,"ransack","ransacks") if first else ("You ransack further rooms of the building." if a.id == 0 else "%s further rooms of the building." % action_phrase(a,"ransack","ransacks"))
   "ruin":
    b.ruin = 3
    b.ruined_at = minute
@@ -994,52 +1118,53 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
     if occupant.scout_site == b.id:
      occupant.scout_site = -1
      occupant.scout_used = 0
-   text = "You ransack further rooms of the building. The building is now ruined." if a.id == 0 else "%s the building." % action_phrase(a,"ruin","ruins")
+   if narrate: text = "You ransack further rooms of the building. The building is now ruined." if a.id == 0 else "%s the building." % action_phrase(a,"ruin","ruins")
   "close":
    b.doors = true
-   text = "%s the doors." % action_phrase(a,"close","closes")
+   if narrate: text = "%s the doors." % action_phrase(a,"close","closes")
   "generator":
    b.generator = true
    b.generator_hp = C.GENERATOR_HP
    consume(a, item_kind(a, "portable_generator"))
    gain_local_trust(a,b,8)
-   text = "%s a generator." % action_phrase(a,"install","installs")
+   if narrate: text = "%s a generator." % action_phrase(a,"install","installs")
   "fuel":
    var already_running = powered(b)
    b.fuel_until = minute+C.FUEL_MINUTES
    consume(a, item_kind(a, "fuel_can"))
    gain_local_trust(a,b,6)
-   text = "%s off the running generator to 24 hours. The remaining fuel in the can is wasted." % action_phrase(a,"top","tops") if already_running else "%s the generator. The lights come on for 24 hours." % action_phrase(a,"fuel","fuels")
+   if narrate: text = "%s off the running generator to 24 hours. The remaining fuel in the can is wasted." % action_phrase(a,"top","tops") if already_running else "%s the generator. The lights come on for 24 hours." % action_phrase(a,"fuel","fuels")
   "manufacture":
    give_item(a, "syringe")
-   text = "%s a syringe (20 AP)." % action_phrase(a,"manufacture","manufactures")
+   if narrate: text = "%s a syringe (20 AP)." % action_phrase(a,"manufacture","manufactures")
   "scan":
    if a.id == 0: record_necronet_scan(a)
    else: npc_planner.record_scan(self,a)
-   text = "%s a view of DNA-tagged zombies on NecroNet." % action_phrase(a,"open","opens")
+   if narrate: text = "%s a view of DNA-tagged zombies on NecroNet." % action_phrase(a,"open","opens")
   "request":
-   text = request_supplies(a,actors[target_id])
+   text = request_supplies(a,actors[target_id],narrate)
   "give":
    var t = actors[target_id]
    var item = item_by_uid(a, data.uid)
    if item_kind(t,item.kind).is_empty() and supply_needed_by(t,item.kind): add_trust(t,a,8)
    consume(a, item)
    t.inventory.append(item)
-   text = "%s %s to %s." % [action_phrase(a,"give","gives"),C.ITEMS[item.kind].name, display_name(t)]
+   if narrate: text = "%s %s to %s." % [action_phrase(a,"give","gives"),C.ITEMS[item.kind].name, display_name(t)]
   "jump":
    clear_grasp(a)
    a.inside = false
    secure_zombie_exit(a,b)
-   text = "%s from a window." % action_phrase(a,"jump","jumps")
+   if narrate: text = "%s from a window." % action_phrase(a,"jump","jumps")
    if a.human:
     critical = true
     if a.id == 0 and a.hp > 0: player_damaged.emit(a.hp,a.human)
     die(a)
-    text += " You die and can stand as a zombie." if a.id == 0 else " They die on impact."
+    if narrate: text += " You die and can stand as a zombie." if a.id == 0 else " They die on impact."
    else:
-    text += " You land unharmed." if a.id == 0 else " They land unharmed."
-  "wait": text = "%s." % action_phrase(a,"wait and watch","waits and watches")
-  _: text = Extended.perform(self,a,command,target_id,data)
+    if narrate: text += " You land unharmed." if a.id == 0 else " They land unharmed."
+  "wait":
+   if narrate: text = "%s." % action_phrase(a,"wait and watch","waits and watches")
+  _: text = Extended.perform(self,a,command,target_id,data,narrate)
  if command in ["attack","bite","extract","heal"] and target_id >= 0:
   var target: Dictionary = actors[target_id]
   if a.human: start_scent_trail(target,a)
@@ -1062,7 +1187,7 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
  var event_action = command
  if command == "break" and not a.human and not a.inside and p.inside and a.x == p.x and a.y == p.y:
   event_action = "breach_noise"
-  text = "Pounding fists and scraping claws batter the barricades outside. " + ("The last barricade gives way." if b.barricade == 0 else "The barricades shudder but hold.")
+  if narrate: text = "Pounding fists and scraping claws batter the barricades outside. " + ("The last barricade gives way." if b.barricade == 0 else "The barricades shudder but hold.")
  var visible = nearby(a,p) or nearby(origin,p)
  var station_destroyed = command == "destroy_radio" and not b.radio
  var remote = ((command == "broadcast" or station_destroyed) and radio_receives(p,b.frequency)) or (command == "phone" and target_id == 0) or (command == "flare" and not p.down and maxi(absi(a.x-p.x),absi(a.y-p.y)) <= 14)
@@ -1092,6 +1217,13 @@ func execute(a: Dictionary, command: String, target_id: int = -1, data: Dictiona
   if not text.is_empty(): log_event(text, category, a.id, event_action, critical or target_id == 0, attack_hit)
  if resting and not sleeping and ((target_id == 0 and (initial_target_hp > p.hp or command == "revive")) or (critical and audible) or threats()):
   stop_rest("Rest interrupted. Danger or a change in your condition brings you back to normal speed.")
+ if npc_full_recovery and a.id > 0 and a.ap <= 0: _begin_npc_recovery(a)
+ _dirty_planner_inputs(a)
+ if target_id >= 0: _dirty_planner_inputs(actors[target_id])
+
+func _dirty_planner_inputs(a: Dictionary, mirror: bool = true) -> void:
+ if planning_batch.active: planning_batch.dirty(a)
+ if mirror and managed_queries.is_ready(): managed_queries.dirty(current_block(a),a.id)
 
 func die(a: Dictionary, penalty: int = 0) -> void:
  if not sleeping and (a.id == 0 or nearby(a,player())): sound_requested.emit("human_death" if a.human else "zombie_death")
@@ -1125,17 +1257,22 @@ func die(a: Dictionary, penalty: int = 0) -> void:
  else: _schedule_npc(a,a.ready_at*C.CLOCK_STEPS_PER_MINUTE)
  metrics.deaths += 1
 
-func _search(a: Dictionary, b: Dictionary, name: String, store: String = "") -> String:
+func _search(a: Dictionary, b: Dictionary, name: String, store: String = "", narrate: bool = true) -> String:
  if not acquisition_reason(a).is_empty(): return acquisition_reason(a)
  var found = roll_search(b,a,store)
- if found == "dead_fir_tree" and item_kind(a,"fire_axe").is_empty(): return "You find a small fir tree, but need a fire axe to fell it." if a.id == 0 else "%s searches the area for supplies." % name
+ if found == "dead_fir_tree" and item_kind(a,"fire_axe").is_empty():
+  if not narrate: return ""
+  return "You find a small fir tree, but need a fire axe to fell it." if a.id == 0 else "%s searches the area for supplies." % name
  if not found.is_empty() and not acquisition_reason(a,found).is_empty():
+  if not narrate: return ""
   return "You find %s, but cannot carry another: %s" % [C.ITEMS[found].name,acquisition_reason(a,found)] if a.id == 0 else "%s searches for supplies." % name
  if not found.is_empty():
   give_item(a,found)
   if C.ITEMS[found].has("capacity"):
    var capacity = int(C.ITEMS[found].capacity)
    a.inventory.back().ammo = rng.randi_range(1,capacity-1) if rng.randf() < 0.75 else 0
+ # Loot rolls and inventory mutations happen even when no text is needed.
+ if not narrate: return ""
  # Other actors get the same loot rules without the player's detailed narration.
  if a.id != 0: return "%s searches the area for supplies." % name
  var outside = search_is_outside(b,a)
@@ -1159,6 +1296,7 @@ func search_is_outside(b: Dictionary, a: Dictionary = {}) -> bool:
 
 func search_distribution(b: Dictionary, a: Dictionary = {}, store: String = "") -> Dictionary:
  if search_is_outside(b,a):
+  if b.type in ["exercise_yard","training_ground"]: return search_tables.get(b.type,{})
   return C.OUTSIDE_SEARCH_WEIGHTS
  if b.type == "mall" and not a.is_empty() and has_skill(a,"shopping") and C.MALL_STORES.has(store):
   if C.MALL_STORE_WEIGHTS.has(store): return C.MALL_STORE_WEIGHTS[store]
@@ -1167,11 +1305,15 @@ func search_distribution(b: Dictionary, a: Dictionary = {}, store: String = "") 
   return targeted
  return search_tables.get(b.type,{})
 
-func item_search_chance(b: Dictionary, kind: String, a: Dictionary = {}, store: String = "") -> float:
- var table = search_distribution(b,a,store)
- var total = 0.0
+func search_profile(b: Dictionary, a: Dictionary = {}, store: String = "") -> Dictionary:
+ var table: Dictionary = search_distribution(b,a,store)
+ var total: float = 0.0
  for weight in table.values(): total += maxf(0.0,float(weight))
- return search_chance(b,a,store)*maxf(0.0,float(table.get(kind,0.0)))/total if total > 0.0 else 0.0
+ return {"weights":table,"total":total,"chance":search_chance(b,a,store) if total > 0.0 else 0.0}
+
+func item_search_chance(b: Dictionary, kind: String, a: Dictionary = {}, store: String = "", profile: Dictionary = {}) -> float:
+ if profile.is_empty(): profile = search_profile(b,a,store)
+ return profile.chance*maxf(0.0,float(profile.weights.get(kind,0.0)))/profile.total if profile.total > 0.0 else 0.0
 
 func search_chance(b: Dictionary, a: Dictionary = {}, _store: String = "") -> float:
  if search_is_outside(b,a): return C.SEARCH_OUTSIDE_CHANCE
@@ -1202,6 +1344,7 @@ func roll_search(b: Dictionary, a: Dictionary = {}, store: String = "") -> Strin
  return last
 
 func search_loot(kind: String) -> Array:
+ if kind in ["exercise_yard","training_ground"]: return search_tables.get(kind,{}).keys()
  if kind in C.OUTDOORS: return C.OUTSIDE_SEARCH_WEIGHTS.keys()
  return search_tables.get(kind,{}).keys()
 
@@ -1232,7 +1375,10 @@ func elapse(real_seconds: float) -> void:
 func elapse_budgeted(real_seconds: float, budget_usec: int) -> float:
  return _elapse(real_seconds,budget_usec)
 
-func _elapse(real_seconds: float, budget_usec: int) -> float:
+func elapse_sleep(real_seconds: float, budget_usec: int, stop_requested: Callable) -> float:
+ return _elapse(real_seconds,budget_usec,stop_requested)
+
+func _elapse(real_seconds: float, budget_usec: int, stop_requested: Callable = Callable()) -> float:
  var started: int = Time.get_ticks_usec() if performance_counters != null or budget_usec > 0 else 0
  var start_step: int = clock_step
  var budgeted_recovery: bool = budget_usec > 0 and resting
@@ -1240,6 +1386,7 @@ func _elapse(real_seconds: float, budget_usec: int) -> float:
  # since it may include time deferred from earlier accelerated frames.
  var remaining = real_seconds
  while remaining > 0.000000001:
+  if stop_requested.is_valid() and stop_requested.call(): break
   var rate = C.GAME_MINUTES_PER_SECOND*C.CLOCK_STEPS_PER_MINUTE*time_speed()
   var until_step = (1.0-clock_fraction)/rate
   if remaining+0.000000001 < until_step:
@@ -1292,13 +1439,20 @@ func _clock_step() -> void:
   for a in actors:
    if performance_counters != null: grants += int(a.ap < C.AP_CAP)
    a.ap = mini(C.AP_CAP,a.ap+(2 if a.id > 0 and a.get("recovery_mode", "") == "sleep" else 1))
+  if managed_queries.is_ready() and managed_queries.actor_mirror_enabled:
+   for a: Dictionary in actors: managed_queries.dirty_actor(a)
   if performance_counters != null:
    performance_counters.ap_usec += Time.get_ticks_usec()-started
    performance_counters.ap_updates += actors.size()
    performance_counters.ap_grants += grants
  var due = npc_schedule.take(clock_step)
+ if npc_full_recovery: due = _ready_npcs(due)
+ if not due.is_empty():
+  managed_queries.begin(self, due)
+  planning_batch.begin(self, due)
  var first = due.bsearch(npc_cursor)
  var has_due_npc := false
+ var decisions: int = 0
  for offset in range(due.size()):
   var id: int = due[(first+offset)%due.size()]
   var a: Dictionary = actors[id]
@@ -1309,6 +1463,7 @@ func _clock_step() -> void:
    _schedule_npc(a,recovery_step)
    continue
   if a.down:
+   _dirty_planner_inputs(a, false)
    if npc_planner.train_before_standing(self,a):
     _schedule_npc(a,NpcGate.ready_after_action(clock_step))
     continue
@@ -1319,15 +1474,26 @@ func _clock_step() -> void:
     continue
   if not str(a.get("recovery_mode", "")).is_empty():
    a.recovery_mode = ""
+  npc_planner.prepared = planning_batch.take(a) if planning_batch.active else {}
+  _dirty_planner_inputs(a, false)
   var rest_ap = _npc_turn(a)
-  if a.ap <= 0 and not a.down:
-   var nearby_danger = occupants(current_block(a),a.inside).any(func(other): return other.id != a.id and other.human != a.human and not other.down)
-   a.recovery_mode = "sleep" if a.human and a.inside and not nearby_danger else "rest"
-   var target_ap = C.AP_CAP if a.recovery_mode == "sleep" else 20
-   var intervals = ceili(float(target_ap-int(a.ap))/(2.0 if a.recovery_mode == "sleep" else 1.0))
-   var recovery_due = (clock_step/NpcGate.AP_INTERVAL_STEPS+intervals)*NpcGate.AP_INTERVAL_STEPS
-   _schedule_npc(a,recovery_due)
-   continue
+  decisions += 1
+  _dirty_planner_inputs(a, false)
+  if npc_full_recovery:
+   if a.ap <= 0 or a.ap < rest_ap:
+    # execute() already schedules exhaustion; avoid a second queue ticket.
+    if str(a.get("recovery_mode", "")).is_empty() or _npc_due(a) <= clock_step:
+     _begin_npc_recovery(a)
+    continue
+  else:
+   if a.ap <= 0 and not a.down:
+    var nearby_danger = occupants(current_block(a),a.inside).any(func(other): return other.id != a.id and other.human != a.human and not other.down)
+    a.recovery_mode = "sleep" if a.human and a.inside and not nearby_danger else "rest"
+    var target_ap = C.AP_CAP if a.recovery_mode == "sleep" else 20
+    var intervals = ceili(float(target_ap-int(a.ap))/(2.0 if a.recovery_mode == "sleep" else 1.0))
+    var recovery_due = (clock_step/NpcGate.AP_INTERVAL_STEPS+intervals)*NpcGate.AP_INTERVAL_STEPS
+    _schedule_npc(a,recovery_due)
+    continue
   if a.down and _npc_due(a) > clock_step: continue
   if a.busy_until > now():
    _schedule_npc(a,NpcGate.ready_after_action(clock_step)+10+(id+clock_step)%17)
@@ -1338,14 +1504,19 @@ func _clock_step() -> void:
    _schedule_npc(a,clock_step+70+(id+clock_step)%61)
  # A wake-up can leave an obsolete bucket entry that is absent after loading.
  if has_due_npc: npc_cursor = 1+(npc_cursor%maxi(1,actors.size()-1))
+ planning_batch.finish(decisions)
+ managed_queries.finish_tick(decisions)
+ managed_queries.active = false
+ managed_queries.planning_active = false
  if resting and ((player().ap >= rest_target and (not player().down or minute >= player().ready_at)) or clock_step >= rest_end_step):
   stop_rest(("You awaken rested. " if sleeping else "Rest complete. ")+"%d AP available." % player().ap)
 
 func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary = {}) -> bool:
  if command == "break" and not a.human: data = {"unarmed":true}
  var ready_step = ceili(float(a.busy_until)*C.CLOCK_STEPS_PER_MINUTE-0.00001)
- if not NpcGate.can_act(a.ap,cost(a,command,target_id,data),clock_step,ready_step): return false
- var rejection = reason(a, command, target_id, data)
+ var action_cost: int = cost(a,command,target_id,data)
+ if not NpcGate.can_act(a.ap,action_cost,clock_step,ready_step): return false
+ var rejection = reason(a, command, target_id, data, false, action_cost)
  if not rejection.is_empty():
   if rejection == BRAIN_ROT_REVIVAL_BLOCKED: start_scent_trail(actors[target_id],a)
   return false
@@ -1354,11 +1525,13 @@ func _try(a: Dictionary, command: String, target_id: int = -1, data: Dictionary 
  return true
 
 func _npc_turn(a: Dictionary) -> int:
- if performance_counters == null: return npc_planner.turn(self,a)
- var started: int = Time.get_ticks_usec()
+ var started: int = Time.get_ticks_usec() if performance_counters != null else 0
+ var home: int = a.home
  var rest_ap: int = npc_planner.turn(self,a)
- performance_counters.decision_usec += Time.get_ticks_usec()-started
- performance_counters.decisions += 1
+ if a.home != home and managed_queries.is_ready(): managed_queries.dirty(current_block(a),a.id)
+ if performance_counters != null:
+  performance_counters.decision_usec += Time.get_ticks_usec()-started
+  performance_counters.decisions += 1
  return rest_ap
 
 func start_scent_trail(tracker: Dictionary, survivor: Dictionary) -> void:
@@ -1472,6 +1645,9 @@ func sees_survivor_hp(observer: Dictionary, survivor: Dictionary) -> bool:
  return survivor.human and not survivor.down and (has_skill(observer,"diagnosis") or has_skill(observer,"scent_blood"))
 
 func _visible_human(a: Dictionary) -> Dictionary:
+ if managed_queries.active:
+  var id: int = managed_queries.query(self, &"VisibleHuman", [current_block(a).id, a.inside])
+  return actors[id] if id >= 0 else {}
  var origin_x: int = a.x
  var origin_y: int = a.y
  var inside: bool = a.inside
@@ -1497,6 +1673,12 @@ func _wander(a: Dictionary, ground_move: bool = false) -> void:
  if a.inside and not ground_move:
   _try(a, "leave")
   return
+ # These gates are identical for every neighbouring square. The committed
+ # move still passes through _try and the authoritative action validator.
+ if a.down or a.busy_until > now(): return
+ var move_cost: int = cost(a,"move")
+ if (move_cost > 0 and a.ap < 1) or (a.id != 0 and a.ap < move_cost): return
+ var origin: Dictionary = current_block(a)
  var options: Array = []
  for dy in range(-1, 2):
   for dx in range(-1, 2):
@@ -1504,7 +1686,7 @@ func _wander(a: Dictionary, ground_move: bool = false) -> void:
    if a.x+dx in range(width) and a.y+dy in range(height):
     var b = block_at(a.x+dx, a.y+dy)
     var move = {"dx":dx, "dy":dy, "free_run":not ground_move}
-    if not reason(a,"move",-1,move).is_empty(): continue
+    if not fort_move_reason(a,origin,b,move).is_empty(): continue
     options.append(move)
     if (not a.human and powered(b)) or (a.human and is_building(b) and b.barricade <= 4):
      options.append(move)
@@ -1524,6 +1706,8 @@ func learn(skill: String, actor_id: int = 0) -> String:
  var a = actors[actor_id]
  var why = skill_reason(a,skill)
  if not why.is_empty(): return why
+ _dirty_planner_inputs(a)
+ managed_queries.invalidate_actor(actor_id)
  var def = C.SKILLS[skill]
  a.xp -= skill_cost(a,skill)
  if def.side == "human": a.human_skills.append(skill)
@@ -1545,11 +1729,12 @@ func begin_rest(amount: int) -> String:
  if threats(): return "An enemy is within reach. Find shelter before resting."
  if player().busy_until > now(): return "Finish recovering before resting."
  if player().ap >= 50 and not player().down: return "Already at full AP. The world continues while you wait."
+ managed_queries.reset()
  resting = true
  sleeping = false
  rest_target = mini(50,player().ap+amount)
  rest_end_step = clock_step+maxi(1800,maxi(0,rest_target-player().ap)*30+30)*C.CLOCK_STEPS_PER_MINUTE
- last_rest_notice = "Resting at 16× speed. Danger cancels fast-forward."
+ last_rest_notice = "You rest. Danger interrupts your rest."
  log_event(last_rest_notice)
  return ""
 
@@ -1557,13 +1742,14 @@ func begin_sleep() -> String:
  if player().down: return "Stand up before sleeping."
  if player().busy_until > now(): return "Finish recovering before sleeping."
  if player().ap >= C.AP_CAP: return "Already at full AP."
+ managed_queries.reset()
  resting = true
  sleeping = true
  sleep_damage_hits = 0
  sleep_last_damage_at = -1000.0
  rest_target = C.AP_CAP
  rest_end_step = clock_step+(maxi(0,rest_target-player().ap)*30+30)*C.CLOCK_STEPS_PER_MINUTE
- last_rest_notice = "You fall asleep at 128× speed. You will sleep until fully rested."
+ last_rest_notice = "You fall asleep. You will sleep until fully rested."
  log_event(last_rest_notice)
  return ""
 
@@ -1670,6 +1856,9 @@ func load_from(path: String) -> String:
   for key in ["id", "x", "y", "hp", "ap", "xp", "equipped", "memory", "memory_until", "ready_at"]: a[key] = int(a[key])
   for key in ["home","supply_goal","next_trip"]: a[key] = int(a.get(key,{"home":int(a.y)*width+int(a.x),"supply_goal":-1,"next_trip":int(parsed.minute)+60}[key]))
   initialize_actor(a)
+  for key in ["npc_known_clinics", "npc_known_markers"]:
+   if a.has(key):
+    a[key] = a[key].map(func(id): return int(id))
   a.trust = a.get("trust",{})
   a.request_after = a.get("request_after",{})
   for key in a.trust: a.trust[key] = int(a.trust[key])
@@ -1906,6 +2095,7 @@ func time_speed() -> float:
  return C.REST_SPEED if resting else 1.0
 
 func reanimate_bodies() -> void:
+ managed_queries.reset()
  for a in actors:
   if a.id > 0 and a.get("dormant",false) and rng.randf() < C.DAILY_REANIMATION_CHANCE:
    a.dormant = false
@@ -1936,29 +2126,35 @@ func wanted_supply(a: Dictionary) -> String:
  if (a.hp < 43 or a.infected or a.job in ["Doctor","Medic"]) and item_kind(a,"first_aid_kit").is_empty(): return "first_aid_kit"
  if has_skill(a,"lab_experience") and item_kind(a,"syringe").is_empty(): return "syringe"
  var home = blocks[a.home]
+ var home_visible: bool = not npc_local_awareness or a.id == 0 or npc_site_visible(a, home)
  if item_kind(a,"toolbox").is_empty() and has_skill(a,"construction"): return "toolbox"
  if not item_kind(a,"pistol").is_empty() and item_kind(a,"pistol_clip").is_empty(): return "pistol_clip"
  if not item_kind(a,"shotgun").is_empty() and item_kind(a,"shotgun_shell").is_empty(): return "shotgun_shell"
  if a.job in ["Private","Police Officer","Guard","Medic"] and item_kind(a,"pistol").is_empty() and item_kind(a,"shotgun").is_empty(): return "pistol"
  if a.job == "Firefighter" and item_kind(a,"fire_axe").is_empty(): return "fire_axe"
- if AI.shelter_worker(self,a):
+ if home_visible and AI.shelter_worker(self,a):
   if not home.generator and item_kind(a,"portable_generator").is_empty(): return "portable_generator"
   if (not powered(home) or home.fuel_until-minute < 360) and item_kind(a,"fuel_can").is_empty(): return "fuel_can"
  var armed = a.inventory.any(func(item): return C.ITEMS[item.kind].has("damage") and not C.ITEMS[item.kind].get("fragile",false))
  if not armed:
   return "crowbar" if a.job == "Engineer" else "baseball_bat"
- if powered(home) and not home.radio and has_skill(a,"radio_operation") and item_kind(a,"radio_transmitter").is_empty(): return "radio_transmitter"
- if has_skill(a,"lab_experience") and not revive_sites.has(home.id) and home.type in ["church","cathedral"] and item_kind(a,"spray_can").is_empty(): return "spray_can"
+ if home_visible and powered(home) and not home.radio and has_skill(a,"radio_operation") and item_kind(a,"radio_transmitter").is_empty(): return "radio_transmitter"
+ if home_visible and has_skill(a,"lab_experience") and not revive_sites.has(home.id) and home.type in ["church","cathedral"] and item_kind(a,"spray_can").is_empty(): return "spray_can"
  return ""
 
 func nearby_light(a: Dictionary) -> Dictionary:
+ if managed_queries.active:
+  var method: StringName = &"LocalNearbyLight" if npc_local_awareness and a.get("id", -1) > 0 else &"NearbyLight"
+  var id: int = managed_queries.query(self, method, [current_block(a).id, minute])
+  return blocks[id] if id >= 0 else {}
  var origin_x: int = a.x
  var origin_y: int = a.y
- var start_x: int = maxi(0,origin_x-3)
- var end_x: int = mini(width,origin_x+4)
+ var radius: int = 1 if npc_local_awareness and a.get("id", -1) > 0 else 3
+ var start_x: int = maxi(0,origin_x-radius)
+ var end_x: int = mini(width,origin_x+radius+1)
  var best: Dictionary = {}
  var nearest: int = 4
- for y in range(maxi(0,origin_y-3),mini(height,origin_y+4)):
+ for y in range(maxi(0,origin_y-radius),mini(height,origin_y+radius+1)):
   var row: int = y*width
   var dy: int = absi(y-origin_y)
   if dy >= nearest: continue
@@ -2041,23 +2237,23 @@ func _spare_item(npc: Dictionary, requester: Dictionary) -> Dictionary:
   return item
  return {}
 
-func request_supplies(requester: Dictionary, npc: Dictionary) -> String:
+func request_supplies(requester: Dictionary, npc: Dictionary, narrate: bool = true) -> String:
  var key = str(requester.id)
  var prefix = display_name(npc)
  if int(npc.request_after.get(key,0)) > minute:
-  return supply_reply(npc,"Give me a moment. I have already answered you.","%s says: Give me a moment. I have already answered you." % prefix)
+  return supply_reply(npc,"Give me a moment. I have already answered you.","%s says: Give me a moment. I have already answered you." % prefix) if narrate else ""
  npc.request_after[key] = minute+10
  var trust = trust_level(npc,requester)
  if trust < 15:
-  return supply_reply(npc,"Help us first. I need to know I can count on you.","%s refuses: I need to know I can count on you first. Help us out around here." % prefix)
+  return supply_reply(npc,"Help us first. I need to know I can count on you.","%s refuses: I need to know I can count on you first. Help us out around here." % prefix) if narrate else ""
  var item = _spare_item(npc,requester)
- if item.is_empty(): return supply_reply(npc,"I need these supplies. I cannot spare them.","%s hesitates: I need to keep these supplies. I cannot spare anything right now." % prefix)
+ if item.is_empty(): return supply_reply(npc,"I need these supplies. I cannot spare them.","%s hesitates: I need to keep these supplies. I cannot spare anything right now." % prefix) if narrate else ""
  if rng.randf() > 0.30+0.006*trust:
-  return supply_reply(npc,"You have helped us, but I need to keep these for now.","%s hesitates: You have helped us, but I need to hold onto my supplies for now." % prefix)
+  return supply_reply(npc,"You have helped us, but I need to keep these for now.","%s hesitates: You have helped us, but I need to hold onto my supplies for now." % prefix) if narrate else ""
  npc.inventory.erase(item)
  requester.inventory.append(item)
  npc.trust[key] = maxi(0,trust-10)
- return supply_reply(npc,"You have earned a hand. Please make it count.","%s shares %s: You have earned a hand. Please make it count." % [prefix,C.ITEMS[item.kind].name])
+ return supply_reply(npc,"You have earned a hand. Please make it count.","%s shares %s: You have earned a hand. Please make it count." % [prefix,C.ITEMS[item.kind].name]) if narrate else ""
 
 func supply_reply(npc: Dictionary, line: String, message: String) -> String:
  npc.speech = line
@@ -2117,12 +2313,14 @@ func initialize_block(b: Dictionary) -> void:
  b.frequency = float(b.frequency)
 
 func clear_grasp(a: Dictionary) -> void:
+ if a.grasp_target >= 0 and a.grasp_target < actors.size(): managed_queries.dirty_actor(actors[a.grasp_target])
  if a.grasp_target >= 0 and a.grasp_target < actors.size(): actors[a.grasp_target].grasped_by = -1
  if a.grasped_by >= 0 and a.grasped_by < actors.size(): actors[a.grasped_by].grasp_target = -1
  a.grasp_target = -1
  a.grasped_by = -1
 
 func claim_grasp(a: Dictionary, target: Dictionary) -> void:
+ if a.grasp_target >= 0 and a.grasp_target != target.id: managed_queries.dirty_actor(actors[a.grasp_target])
  if target.grasped_by >= 0 and target.grasped_by != a.id: actors[target.grasped_by].grasp_target = -1
  if a.grasp_target >= 0 and a.grasp_target != target.id: actors[a.grasp_target].grasped_by = -1
  target.grasped_by = a.id

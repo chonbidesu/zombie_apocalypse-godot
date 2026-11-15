@@ -27,9 +27,21 @@ FIXED = [
      (349,151,362,216),(117,218,280,227)],
     [(0,258,183,362),(0,190,68,362),(342,183,362,362)],
     [(0,254,362,362)],
-    [(0,215,362,362),(310,160,362,362)],
+    [(0,215,362,362),(310,161,362,362),(313,160,362,161)],
 ]
-IDLE_BODY_START = [92,117,118,137,192,220,138,101]
+IDLE_BODY_START = [190,209,201,137,192,220,234,254]
+# Interior cloth below the neck must retain the source's breathing and shifts.
+IDLE_TORSO = {0:(181,98,233,161), 1:(108,116,149,166),
+              2:(182,115,237,159), 6:(139,116,219,163),
+              7:(162,117,211,170)}
+# Additional rigid details beside the moving upper bodies (within each sex).
+IDLE_FURNITURE = {
+    0:[(275,112,296,180),(268,190,281,215)],
+    1:[(44,128,60,154),(216,145,253,181),(186,184,318,226)],
+    2:[(275,126,293,179),(283,101,301,135)],
+    6:[(54,139,76,173),(50,195,91,260),(282,189,316,223)],
+    7:[],
+}
 checks = 0
 failures = []
 
@@ -65,15 +77,42 @@ def source_frames(name):
 def verify_repairs(job, name, sequence):
     original = source_frames('doctor_portrait' if name == 'doctor_female' else name)
     doctor_boot = source_frames('doctor_portrait')[0] if job == 3 else None
+    if name == 'doctor_male':
+        scrubs = source_frames('frames/doctor_male_flat_chest')
+        with Image.open(ART/'frames/doctor_male_upturned_eyes.png') as eyes:
+            original[1].paste(eyes, (155,23))
     if job == 5:
         with Image.open(ART/'frames/consumer_table_pockets.png') as donor:
             pockets = donor.convert('RGBA')
+    if job == 1:
+        with Image.open(ART/'frames'/(name+'_cards.png')) as artwork:
+            cards = artwork.convert('RGBA')
     for i, frame in enumerate(sequence):
         def native(box, detail, donor=i):
             check(same(frame,original[donor],box), f'{name} frame {i}: original {detail}')
+        if name in ('doctor_male','private_female'):
+            file, box = (('doctor_male_trousers',(92,124,208,352)) if name == 'doctor_male'
+                         else ('private_female_shirt',(166,91,237,157)))
+            width, height = box[2]-box[0], box[3]-box[1]
+            x, y = i%4*width, i//4*height
+            with Image.open(ART/'frames'/(file+'.png')) as tailoring:
+                check(frame.crop(box).tobytes() == tailoring.crop((x,y,x+width,y+height)).tobytes(),
+                      f'{name} frame {i}: registered uniform artwork')
         if name == 'private_female':
-            native((226,101,271,140), 'sleeve and revealed chair', 0 if i < 4 else i)
+            if 0 < i < 4:
+                native((237,101,257,140), 'breathing sleeve')
+            else:
+                native((237,101,271,140), 'sleeve and revealed chair')
         if job == 1:
+            x, y = i%4*130, i//4*56
+            left, top = (130,108) if i < 5 else (132,156)
+            check(frame.crop((left,top,left+130,top+56)).tobytes() ==
+                  cards.crop((x,y,x+130,y+56)).tobytes(), f'{name} frame {i}: four-card drawing')
+            if i >= 7:
+                # Interior of each individual card after both hands withdraw.
+                for x, y in [(206,201),(218,200),(231,199),(243,198)]:
+                    check(same(frame,sequence[7],(x-3,y-2,x+3,y+2)),
+                          f'{name} frame {i}: stationary card face at {x}')
             check(same(frame,sequence[0],(74,236,202,362)),
                   f'{name} frame {i}: planted lower thighs, legs and boots')
             if i >= 8:
@@ -82,8 +121,11 @@ def verify_repairs(job, name, sequence):
             if name == 'medic_male':
                 native((100,225,123,233), 'male cargo pocket', 0)
             if i in (5,6):
-                native((184,175,224,196), 'near hand')
-                native((224,185,249,197), 'fingers at mug')
+                # Check the hands themselves, excluding the newly exposed wood.
+                native((185,176,213,182), 'near hand above the spread')
+                native((225,182,229,185), 'fingers at mug')
+                if i == 6:
+                    native((212,196,225,199), 'fingers covering the card faces')
             if i == 11:
                 native((53,110,106,160), 'reclining back and chair')
         if job == 2:
@@ -106,7 +148,7 @@ def verify_repairs(job, name, sequence):
                       f'{name} frame {i}: shirt covers opening until lean at row {y}')
             check(same(frame,sequence[0],(275,126,293,179)),
                   f'{name} frame {i}: registered outer spindles')
-        if job == 3:
+        if name == 'doctor_female':
             alpha = frame.getchannel('A')
             for y, edge in [(257,153),(262,152),(269,150),(275,148),(281,147),
                             (285,145),(290,142),(295,140),(300,138)]:
@@ -114,8 +156,33 @@ def verify_repairs(job, name, sequence):
                       f'{name} frame {i}: clear to front trouser at row {y}')
             check(same(frame, doctor_boot, (146,305,178,330)),
                   f'{name} frame {i}: original front cuff and shoe')
+        if job == 3:
             native((133,21,205,85), 'face through jaw')
-            native((142,76,178,115), 'lapels and stethoscope')
+            box = (142,76,178,115)
+            if name == 'doctor_male':
+                expected = Image.alpha_composite(original[i].crop(box), scrubs[i].crop(box))
+                check(frame.crop(box).tobytes() == expected.tobytes(),
+                      f'{name} frame {i}: original lapels and stethoscope around revised shirt')
+                solid = scrubs[i].getchannel('A').point(lambda a: 255 if a == 255 else 0)
+                if i in (0,1,2,3,4,11):
+                    # This section now uses the continuous shirt-to-waist drawing.
+                    solid.paste(0, (155,125,196,145))
+                check(solid.getbbox() is not None and all(
+                      channel.getbbox() is None for channel in ImageChops.multiply(
+                      ImageChops.difference(frame.convert('RGB'), scrubs[i].convert('RGB')),
+                      solid.convert('RGB')).split()), f'{name} frame {i}: baked shirt fabric')
+            else:
+                native(box, 'lapels and stethoscope')
+            if name == 'doctor_female' and i == 3:
+                native((108,102,136,145), 'continuous coat across former sleeve seam')
+                native((155,115,174,132), 'continuous button edge below lapel')
+                # The light coat gives way to the teal shirt along this edge.
+                # A splice to frame 0 produced an outward step here.
+                edge = [next((x for x in range(152,180)
+                              if frame.getpixel((x,y))[0] < frame.getpixel((x,y))[1]), None)
+                        for y in range(113,138)]
+                check(None not in edge and all(-1 <= b-a <= 0 for a,b in zip(edge,edge[1:])),
+                      name+' fourth idle: uninterrupted sloping button edge')
             if i in (7,8,9):
                 native((209,146,231,157), 'hand at jukebox')
         if job == 4:
@@ -132,9 +199,8 @@ def verify_repairs(job, name, sequence):
                         (46+(y-149)*3//4,y,278+(y-149)*7//8,y+1))
                         for y in range(149,211))
             check(match, f'{name} frame {i}: original felt and balls outside authored pockets')
-            if name == 'consumer_male':
-                native((65,4,245,132), 'continuous head, shoulders and arms')
-                native((130,118,219,177), 'unspliced bridge hand and cue')
+            native((65,4,245,132), 'continuous head, shoulders and arms')
+            native((130,118,219,177), 'unspliced bridge hand and cue')
             if i == 9:
                 duplicate = frame.getpixel((184,184))
                 cue_ball = frame.getpixel((192,194))
@@ -148,20 +214,33 @@ def verify_repairs(job, name, sequence):
             native((276,250,320,339), 'chair edge down to boot', 0)
             check(same(frame,sequence[0],(0,258,362,362)),
                   f'{name} frame {i}: planted legs and chair front')
-            native((103,162,203,193), 'sleeves and belt', 0 if i < 4 else i)
+            native((109,162,203,188) if 0 < i < 4 else (103,162,203,193),
+                   'sleeves and belt')
             if i < 4:
-                native((205,174,222,213), 'entire hanging cloth', 0)
-                native((87,150,104,180), 'chair beside sleeve', 0)
+                native((205,174,222,213), 'entire hanging cloth')
+                check(same(frame,sequence[0],(69,150,87,173)),
+                      f'{name} idle {i}: chair beside moving sleeve')
             else:
                 native((289,201,311,225), 'cloth on right knee', 7)
         if job == 7:
-            native((99,167,295,232), 'coat, gloves and complete axe', 0 if i < 4 else i)
+            native((99,167,295,232), 'coat, gloves and complete axe')
+        if job == 8:
+            # Cross the former motion boundary at each strap, down to the
+            # last fabric pixels above the diagonal rail.
+            for box in [(118,172,141,196),(211,148,235,176),(287,132,305,160),
+                        (55,198,67,211),(155,174,174,189),(245,153,264,169)]:
+                native(box, 'moving bag and straps')
+            for box in [(46,216,60,220),(122,202,137,208),(212,184,230,190),
+                        (286,170,302,176),(10,165,21,175),(345,137,351,145)]:
+                native(box, 'stationary gurney rail', 0)
 
 
 def main():
     manifest = json.loads((OUT/'manifest.json').read_text())
     furniture = manifest['furniture_sources']
-    check(len(furniture) == 1, 'Shared consumer pocket furniture is recorded')
+    check({entry['source'] for entry in furniture} ==
+          {'frames/consumer_table_pockets.png', 'frames/medic_tabletop.png'},
+          'Shared consumer and medic table artwork is recorded')
     for entry in furniture:
         check(hashlib.sha256((ART/entry['source']).read_bytes()).hexdigest() == entry['sha256'],
               entry['source']+' furniture matches manifest')
@@ -177,21 +256,41 @@ def main():
             sequence = cells(name)
             verify_repairs(job, name, sequence)
             for i,frame in enumerate(sequence):
+                if job == 1:
+                    check(same(frame, reference, (260,170,301,200)),
+                          f'{name} frame {i}: shared coin stack, loose change and wood grain')
+                    if i >= 7:
+                        check(same(frame,sequence[7],(200,180,312,210)),
+                              f'{name} frame {i}: registered table and cards after release')
                 for box in FIXED[job]:
-                    check(same(reference,frame,box),f'{name} frame {i}: fixed RGBA area {box}')
+                    anchor = sequence[0] if name == 'doctor_male' and box == (0,253,362,362) else reference
+                    check(same(anchor,frame,box),f'{name} frame {i}: fixed RGBA area {box}')
                 # A frame's occupied content must not touch any cell boundary.
                 alpha=frame.getchannel('A')
                 for box in [(0,0,362,1),(0,361,362,362),(0,0,1,362),(361,0,362,362)]:
                     check(alpha.crop(box).getextrema()[1] == 0,f'{name} frame {i}: no cell-edge clipping {box}')
             if job < 8:
                 for i in range(1,4):
-                    check(same(sequence[0],sequence[i],(0,IDLE_BODY_START[job],362,362)),
-                          f'{name} idle {i}: stationary body and props')
+                    lower_start = 178 if name == 'doctor_female' and i == 3 else IDLE_BODY_START[job]
+                    check(same(sequence[0],sequence[i],(0,lower_start,362,362)),
+                          f'{name} idle {i}: planted lower body and props')
+                    if job in IDLE_TORSO:
+                        box = (189,157,220,165) if name == 'private_female' else IDLE_TORSO[job]
+                        if job == 1 and i == 3:
+                            box = (108,116,135,166)  # Stop before the redrawn grip.
+                        check(same(sequence[i],source_frames(name)[i],box),
+                              f'{name} idle {i}: native upper-body drawing')
+                        check(not same(sequence[0],sequence[i],box),
+                              f'{name} idle {i}: breathing below the neck')
+                        for rigid in IDLE_FURNITURE[job]:
+                            check(same(sequence[0],sequence[i],rigid),
+                                  f'{name} idle {i}: stationary adjacent furniture {rigid}')
             check(len({f.tobytes() for f in sequence[4:]}) >= 5,name+' retains distinct action drawings')
             if job == 3:
                 for i,frame in enumerate(sequence):
-                    check(frame.getchannel('A').crop((125,263,136,299)).getextrema()[1] == 0,
-                          f'{name} frame {i}: third calf removed')
+                    gap = (151,274,157,308) if name == 'doctor_male' else (125,263,136,299)
+                    check(frame.getchannel('A').crop(gap).getextrema()[1] < 10,
+                          f'{name} frame {i}: clear space beside calf')
                 for i in [9,10,11]:
                     # Every side of the window gets brighter; silhouette stays put.
                     for box in [(208,119,218,133),(228,108,243,123),(252,121,263,135)]:
@@ -203,7 +302,7 @@ def main():
     with Image.open(OUT/'doctor_portrait.png') as portrait, Image.open(OUT/'doctor_female.png') as doctor:
         check(portrait.tobytes()==doctor.tobytes(), 'Both default doctor atlases use the repaired drawing')
     report={'checks':checks,'failures':failures,'atlases':18,'frames':216,
-            'scope':'source hashes, complete fixed RGBA regions across frames/genders, idle body, cell boundaries, source drawing continuity, scouts, actions, doctor legs and light'}
+            'scope':'source hashes, fixed RGBA furniture and lower bodies, native idle upper-body motion, cell boundaries, source drawing continuity, scouts, actions, doctor coat, legs and light'}
     (OUT/'verification.json').write_text(json.dumps(report,indent=2)+'\n')
     print(f'Atlas pixels: {checks} checks, {len(failures)} failures')
     for failure in failures:

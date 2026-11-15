@@ -222,6 +222,7 @@ func show_intro(identity: Dictionary) -> void:
  music.volume_db = linear_to_db(0.1)
  intro = (load("res://intro.tscn") as PackedScene).instantiate() as Intro
  intro.occupation = chosen_occupation
+ intro.sex = chosen_sex
  intro.finished.connect(start_new_game)
  creation.queue_free()
  creation = null
@@ -259,12 +260,13 @@ func _load_slot(path: String) -> void:
   status.text = "Could not load game: " + error
   return
  _close_slots()
- enter_game(simulation,"Loaded your neighbourhood.")
+ enter_game(simulation,"Loaded your neighbourhood.",false,path)
 
-func enter_game(simulation: Sim, message: String, new_game: bool = false) -> void:
+func enter_game(simulation: Sim, message: String, new_game: bool = false, loaded_slot: String = "") -> void:
  var game := (load("res://main.tscn") as PackedScene).instantiate() as Game
  game.sim = simulation
  game.save_path = save_path
+ game.last_save_slot = loaded_slot
  game.notice = message
  game.start_tutorial = new_game
  if get_tree().change_scene_to_node(game) != OK:

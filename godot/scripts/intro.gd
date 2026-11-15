@@ -36,6 +36,7 @@ const SHARED_NARRATION := [
   ["8", "What happened in their laboratories—and what they knew before the outbreak—remains buried inside the city."]]
 ]
 var occupation := ""
+var sex := ""
 var page: Page = Page.OPENING
 var elapsed := 0.0
 var ending_time := -1.0
@@ -147,8 +148,12 @@ func _load_page_art() -> void:
    var origin: Array = ORIGINS.get(occupation, ORIGINS.Consumer)
    var folder := "05_corpse/" if occupation == "Corpse" else "04_origins/%s/" % origin[0]
    layers.append(_load_layer(folder + "background.png"))
-   layers.append(_load_layer(folder + ("body_closed.png" if occupation == "Corpse" else "foreground.png")))
-   if occupation == "Corpse": eyes.texture = _load_layer(folder + "body_open.png")
+   if occupation == "Corpse":
+    var body_prefix := "body_female_" if sex == "female" else "body_"
+    layers.append(_load_layer(folder + body_prefix + "closed.png"))
+    eyes.texture = _load_layer(folder + body_prefix + "open.png")
+   else:
+    layers.append(_load_layer(folder + "foreground.png"))
  facade_view.visible = page == Page.OPENING
  specimen.visible = page == Page.NECROTECH
  if specimen.visible: specimen_contents.play()

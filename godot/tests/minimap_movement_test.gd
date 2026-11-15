@@ -33,6 +33,21 @@ func run() -> void:
   game.sim.reindex()
   game.refresh()
   var tile: Button = game.local_map.get_node("MapTile_%d" % gate.id)
+  gate.type = "barracks"
+  var baseline := ""
+  for strength in [0,1,4,10,21]:
+   for closed in [false,true]:
+    gate.barricade = strength
+    gate.doors = closed
+    game._update_minimap_tile(tile,gate,player,false)
+    var tooltip := tile.tooltip_text.to_lower()
+    check(not tooltip.contains("barricad") and not tooltip.contains("door") and not tooltip.contains("secured") and not tooltip.contains("opening"), "Minimap hides entrance details: " + fort)
+    if baseline.is_empty(): baseline = tooltip
+    check(tooltip == baseline, "Minimap tooltip does not vary with entrance state: " + fort)
+  gate.barricade = 0
+  gate.doors = false
+  gate.type = "gatehouse"
+  game._update_minimap_tile(tile,gate,player,false)
   var motion := InputEventMouseMotion.new()
   motion.position = tile.get_global_rect().get_center()
   root.push_input(motion,true)

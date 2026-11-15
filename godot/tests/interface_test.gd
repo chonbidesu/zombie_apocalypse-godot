@@ -293,15 +293,15 @@ func run() -> void:
   var sheet = scene.C.occupation_sheet(job,job != "Corpse")
   var asset = scene.tex("sprite_sheets/"+sheet+"_sprite_sheet.png")
   check(asset != null and scene.actor_region(scene.sim.player(),asset).size.x > 0 and (asset.get_width() > asset.get_height()*8 or asset.get_width()*2 == asset.get_height()*3),"Complete original animation sheet: "+job)
- scene.animation_time = 0.0
- var zombie_pose = scene.portrait_region({"hp":25,"human":false,"down":false})
- scene.animation_time = 0.4
- check(scene.portrait_region({"hp":25,"human":false,"down":false}) == zombie_pose,"Zombie portrait holds rigid before lurching")
- var portrait_changes = false
- for step in range(1,101):
-  scene.animation_time = 0.55+step*0.05
-  if scene.portrait_region({"hp":25,"human":false,"down":false}) != zombie_pose: portrait_changes = true
- check(portrait_changes,"Zombie portrait eventually jerks to a different pose")
+ for sex in ["male","female"]:
+  var corpse = {"job":"Corpse","sex":sex,"hp":25,"human":false,"down":false}
+  var cell = scene.portrait_texture(corpse).get_size()/5.0
+  for step in range(10):
+   scene.animation_time = (step+0.1)*0.35
+   var frame = 16+step%9
+   check(scene.portrait_region(corpse).position == Vector2(frame%5,frame/5)*cell,"%s corpse portrait advances evenly and loops" % sex)
+ scene.animation_time = 0.36
+ check(scene.portrait_region({"hp":25,"human":false,"down":false}).position.x == 20*66,"Fallback zombie portrait advances at the same pace")
  scene.refresh()
  check(scene.page.get_node("LocationDescription").get_parsed_text() == scene.sim.location_description(player),"Full generated location description is displayed")
  scene.sim.blocks[45].ruin = 3
@@ -541,7 +541,7 @@ func run() -> void:
   check(scene.portrait_region(player) == dead and dead.position == Vector2(0,cell.y*3),"Dead portrait is static: "+occupation)
   player.down = false
   player.human = false
-  check(scene.portrait_region(player) != dead,"Undead portrait uses separate lurch frames: "+occupation)
+  check(scene.portrait_region(player) != dead,"Undead portrait uses separate animation frames: "+occupation)
  scene.animation_time = 100
  player.human = true
  scene.sim.set_pose(player,"attack")

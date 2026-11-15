@@ -20,7 +20,7 @@ func _initialize() -> void:
   p.inside = location in C.BUILDINGS
   var distribution = s.search_distribution(b,p)
   check(not distribution.is_empty(),"Search table exists: "+location)
-  report.locations[location] = {"mode":"interior" if p.inside else "shared outdoors","items":{}}
+  report.locations[location] = {"mode":"interior" if p.inside else ("fort yard" if location in ["exercise_yard","training_ground"] else "shared outdoors"),"items":{}}
   for kind in distribution:
    check(C.ITEMS.has(kind) and float(distribution[kind]) > 0,"Valid weighted item: "+location+"/"+kind)
    var powered_rate = s.item_search_chance(b,kind,p)

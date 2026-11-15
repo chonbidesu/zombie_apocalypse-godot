@@ -2,7 +2,7 @@
 
 All 54 items are obtainable; all 46 location types have nonempty runtime tables. These are **prototype probabilities**, not verified official Urban Dead rates. See [search rules](search-rules.md) and [provenance](../assets/tables/search_provenance.json). The [full JSON report](../assets/tables/search_coverage.json) includes every location, supported damage/light state and mall store.
 
-This table shows up to three locations with the best intact, unpowered search odds (no Shopping or Bargain Hunting). Outdoors share one table; each outdoor name represents the same street grab bag. Powered rates appear only where power is supported.
+This historical table shows up to three locations with the best intact, unpowered search odds (no Shopping or Bargain Hunting) before the later barracks and fort-yard loot changes. For current rates, consult the JSON report. Powered rates appear only where power is supported.
 
 | Item | Example locations: unpowered / powered chance per search |
 |---|---|
