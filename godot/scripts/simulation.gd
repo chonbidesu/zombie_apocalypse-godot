@@ -2079,7 +2079,12 @@ func location_description(a: Dictionary) -> String:
  if a.down: return "You are down. Everything is dark. Rest and stand up to see your surroundings again."
  var b = current_block(a)
  var first = "You are standing %s %s. %s" % ["outside" if is_building(b) and not a.inside else "in", b.name, environmental_description(b,a)]
- if is_building(b): first += " " + entrance_description(b)
+ if is_building(b):
+  first += " " + (entrance_description(b) if a.inside else exterior_building_clues(b))
+  if a.inside:
+   if b.ruin >= 3: first += " The building has been ruined. Its structural damage prevents you from barricading."
+   elif b.ruin > 0: first += " The building has been ransacked."
+   if is_dark_building(b) and not powered(b): first += " The building is pitch black inside."
  var names: Array[String] = []
  var zombies = 0
  var bodies = 0
@@ -2099,10 +2104,9 @@ func location_description(a: Dictionary) -> String:
   var power = "A portable generator is set up here. "
   if powered(b):
    power += "It is running, powering a radio transmitter that's currently set to %.2f MHz." % float(b.frequency) if b.radio and b.radio_hp > 0 else "It is running."
-  elif b.generator_hp <= 0: power += "It is damaged."
+  elif b.generator_hp < C.GENERATOR_HP: power += "It is %s." % generator_condition(b)
   else: power += "It is out of fuel."
   paragraphs.append(power)
- elif not a.inside and is_building(b) and powered(b): paragraphs.append("Lights are on inside.")
  var graffiti: String = b.graffiti_inside if a.inside else b.graffiti
  if not graffiti.is_empty(): paragraphs.append("Somebody has spraypainted %s onto a %s." % [graffiti, "tree" if not a.inside and b.type in ["park","cemetery","zoo"] else "wall"])
  if zombies > 0:

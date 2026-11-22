@@ -559,7 +559,7 @@ func perception_rules() -> void:
  b.ruin = 0
  p.inside = false
  var exterior = s.location_description(p)
- check(exterior.contains("Lights are on inside.") and not exterior.contains("portable generator") and not exterior.contains("has been ruined"),"Exterior sees light without revealing interior equipment")
+ check(exterior.contains("lights are on inside.") and not exterior.contains("portable generator") and not exterior.contains("has been ruined"),"Exterior sees light without revealing interior equipment")
  p.inside = true
  var interior = s.location_description(p)
  check(interior.contains("portable generator") and interior.contains("running"),"Standing inside observes generator state")

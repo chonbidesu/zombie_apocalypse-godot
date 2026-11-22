@@ -1,8 +1,8 @@
 # Environment, damage and recovery
 
-All 46 location types have randomized environmental descriptions. NecroTech interiors use fixed logo wording in the third sentence for each power state. A local seeded RNG preserves stable descriptions without advancing simulation randomness. Description version 6 migrates old saved prose.
+All 46 location types have single-sentence environmental descriptions. Ordinary locations choose one sentence from their pools; NecroTech interiors use fixed logo wording for each power state. A local seeded RNG preserves stable descriptions without advancing simulation randomness. Description version 7 migrates old saved prose.
 
-Outside NecroTech laboratories use the same three sentences as offices. NecroTech Employment replaces only the third sentence with logo recognition. Inside, everyone sees science equipment and computer rooms, with a third sentence identifying the logo. Running power selects the glowing logo sentence. Street descriptions and map tooltips describe the entrance first, reveal ransacking through an open entrance, and show ruins regardless of the entrance state. A powered building shows lights as the final building clue. Inside, running power is reported by the generator sentence, and only dark buildings describe an unpowered interior as pitch black.
+Outside NecroTech laboratories use the same sentence choices as offices. Inside, everyone sees the fixed sentence identifying the logo, science equipment and computer rooms. Running power selects the glowing logo sentence. Street descriptions and map tooltips describe the entrance first, reveal ransacking through an open entrance, and show ruins regardless of the entrance state. A powered building shows lights as the final building clue. Inside, running power is reported by the generator sentence, and only dark buildings describe an unpowered interior as pitch black.
 
 ## Damage and generators
 
@@ -18,7 +18,7 @@ Powered ruins use new artwork showing broken structures with surviving electric 
 
 A player with at least 1 AP may commit a multi-AP action even when it overdraws their current energy. Negative AP survives save/load and regenerates at 1 AP per 30 game minutes. Further positive-cost actions require AP above zero. NPCs normally reject unaffordable actions; explicit exceptional callers can opt into debt.
 
-Sleep replaces Rest to 50 AP, accelerates time to 128 times normal, and blacks out the scene, minimap, inventory and activity feed. It ends at 50 AP, on manual Wake/Escape, when the last barricade collapses locally, or after two successful injuries within ten game minutes. An isolated hit, nearby enemy, speech, ordinary pounding or partial barricade damage does not interrupt it. Death also ends sleep. Ordinary Rest +10 remains at 16 times speed with danger interruptions. Fast-forward stops spending its pending accelerated slice immediately after a wake-up.
+Sleep replaces Rest to 50 AP, targets 32 times normal speed, subject to simulation throughput, and blacks out the scene, minimap, inventory and activity feed. It ends at 50 AP, on manual Wake/Escape, when the last barricade collapses locally, or after two successful injuries within ten game minutes. An isolated hit, nearby enemy, speech, ordinary pounding or partial barricade damage does not interrupt it. Death also ends sleep. Ordinary Rest +10 remains at 8 times speed with danger interruptions. Fast-forward stops spending its pending accelerated slice immediately after a wake-up.
 
 ## Display
 

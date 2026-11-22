@@ -28,8 +28,12 @@ var naming: Naming
 var chosen_occupation := ""
 var chosen_sex := ""
 var chosen_identity := {}
+var _previous_auto_accept_quit := true
+var _quitting := false
 
 func _ready() -> void:
+ _previous_auto_accept_quit = get_tree().auto_accept_quit
+ get_tree().auto_accept_quit = false
  DisplayServer.window_set_title("Malton Reborn")
  title_page = Control.new()
  add_child(title_page)
@@ -62,7 +66,7 @@ func _ready() -> void:
  make_button("New Game",open_attribution)
  make_button("Load Game",load_game)
  make_button("Settings",_open_settings)
- make_button("Quit",func(): get_tree().quit())
+ make_button("Quit",_quit_game)
  status = Label.new()
  status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
  status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -82,6 +86,24 @@ func _ready() -> void:
  resized.connect(layout)
  layout()
  buttons[0].grab_focus()
+
+func _exit_tree() -> void:
+ get_tree().auto_accept_quit = _previous_auto_accept_quit
+ if is_instance_valid(music):
+  music.stop()
+  music.stream = null
+
+func _notification(what: int) -> void:
+ if what == NOTIFICATION_WM_CLOSE_REQUEST: _quit_game()
+
+func _quit_game() -> void:
+ if _quitting: return
+ _quitting = true
+ music.stop()
+ music.stream = null
+ # Give the audio thread time to release MP3 playback before engine shutdown.
+ await get_tree().create_timer(0.1).timeout
+ get_tree().quit()
 
 func menu_style(background: Color, border: Color) -> StyleBoxFlat:
  var style := StyleBoxFlat.new()

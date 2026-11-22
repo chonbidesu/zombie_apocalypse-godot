@@ -44,6 +44,8 @@ try {
     } elseif ($Test) {
         & $GodotPath --headless --path $projectDirectory --editor --import --quit --log-file import.log
         if ($LASTEXITCODE -ne 0) { throw 'Godot import failed.' }
+        & $GodotPath --headless --path $projectDirectory --script res://tests/save_data_test.gd --log-file save-data-tests.log
+        if ($LASTEXITCODE -ne 0) { throw 'Save data migration tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/start_screen_test.gd --log-file start-screen-tests.log
         if ($LASTEXITCODE -ne 0) { throw 'Start screen tests failed.' }
         & $GodotPath --path $projectDirectory --script res://tests/naming_screen_test.gd --log-file naming-screen-test.log

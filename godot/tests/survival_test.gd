@@ -79,7 +79,7 @@ func _initialize() -> void:
  p.inside = true
  b.ruin = 0
  var text = s.location_description(p)
- check(text.contains("A portable generator has been set up here. It is running.") and not text.contains("lights are on"),"Interior uses the running generator sentence")
+ check(text.contains("A portable generator is set up here. It is running.") and not text.contains("lights are on"),"Interior uses the running generator sentence")
  zombie.inside = true
  ready(s,zombie)
  check(s.reason(zombie,"ransack").contains("generator"),"Installed generator prevents ransacking")
@@ -158,12 +158,14 @@ func _initialize() -> void:
  s.start(4815)
  var dormant = s.actors.filter(func(a): return a.get("dormant",false))
  check(dormant.size() == 15 and dormant.filter(func(a): return a.inside).size() > 0,"New games start with most zombies dormant and some indoors")
- var small_groups = true
+ var opening_valid = true
+ var starting_sites = {}
  for a in s.actors:
   if not a.human: continue
-  var allies = s.occupants(s.current_block(a),true).filter(func(other): return other.human and not other.down)
-  small_groups = small_groups and allies.size() >= 2 and allies.size() <= 3
- check(small_groups,"Opening survivors work in groups of two or three")
+  var site = s.current_block(a)
+  opening_valid = opening_valid and a.home == site.id and (not a.inside or s.is_building(site)) and not a.down
+  starting_sites[site.id] = true
+ check(opening_valid and starting_sites.size() > 1,"Opening survivors have valid distributed positions and matching homes")
  s.reanimate_bodies()
  var remaining = s.actors.filter(func(a): return a.get("dormant",false)).size()
  check(remaining > 0 and remaining < 15,"Daily reanimation wakes a seeded fraction rather than every body")
@@ -180,7 +182,13 @@ func _initialize() -> void:
  check(JSON.stringify(s.actors) == JSON.stringify(loaded.actors) and JSON.stringify(s.blocks) == JSON.stringify(loaded.blocks),"Daily waking and survivor trips replay exactly after save/load")
  s = isolated()
  var engineer = s.actors[2]
+ engineer.job = "Engineer"
  engineer.human_skills = ["construction"]
+ engineer.human = true
+ engineer.home = 44
+ engineer.inventory.clear()
+ engineer.equipped = -1
+ s.give_item(engineer,"toolbox")
  engineer.x = 4
  engineer.y = 4
  engineer.inside = true
@@ -246,7 +254,15 @@ func _initialize() -> void:
  s = isolated()
  engineer = s.actors[2]
  var doctor = s.actors[1]
+ engineer.job = "Engineer"
+ engineer.human_skills = ["construction"]
+ engineer.inventory.clear()
+ engineer.equipped = -1
+ doctor.job = "Doctor"
+ doctor.human_skills = ["first_aid"]
  for ally in [engineer,doctor]:
+  ally.human = true
+  ally.home = 44
   ally.x = 4
   ally.y = 4
   ally.inside = true
@@ -273,6 +289,9 @@ func _initialize() -> void:
  s = isolated()
  p = s.player()
  doctor = s.actors[1]
+ doctor.job = "Doctor"
+ doctor.human_skills = ["first_aid"]
+ doctor.human = true
  doctor.x = p.x
  doctor.y = p.y
  doctor.inside = p.inside

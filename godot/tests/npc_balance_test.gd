@@ -445,6 +445,11 @@ func live_planner_rules() -> void:
  p.down = true
  var engineer = s.actors[2]
  engineer.x = p.x; engineer.y = p.y; engineer.inside = true; engineer.human = true; engineer.down = false
+ engineer.job = "Engineer"
+ engineer.home = b.id
+ engineer.human_skills = ["construction"]
+ engineer.inventory.clear()
+ engineer.equipped = -1
  b.generator = true
  s.set_barricade_strength(b,10)
  s.give_item(engineer,"fuel_can")
@@ -504,6 +509,8 @@ func live_planner_rules() -> void:
  s.set_barricade_strength(b,10)
  engineer = s.actors[2]
  engineer.x = 5; engineer.y = 4; engineer.inside = true; engineer.human = true; engineer.down = false
+ engineer.job = "Engineer"
+ engineer.human_skills = ["construction"]
  var station = s.current_block(engineer)
  station.radio = true; station.radio_hp = 6; station.frequency = 29.0
  s.reindex()

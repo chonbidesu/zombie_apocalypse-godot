@@ -15,11 +15,14 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Malton • Neighbourhood Prototype"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="Malton Reborn"
 run/main_scene="res://start_screen.tscn"
-config/features=PackedStringArray("4.7", "GL Compatibility")
+config/features=PackedStringArray("4.7", "C#", "GL Compatibility")
 
 [autoload]
 
+SaveData="*res://scripts/save_data.gd"
 PlayerSettings="*res://scripts/player_settings.gd"
 
 [display]

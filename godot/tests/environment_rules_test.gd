@@ -52,23 +52,19 @@ func necrotech() -> void:
  s.ensure_descriptions(b)
  var office = b.duplicate(true); office.type = "office"; office.description_version = 0
  check(hidden == s.environmental_description(office,p) and not hidden.contains("NecroTech"),"Untrained lab exterior is exactly its office counterpart")
- var original_parts: Array = b.outside_description_parts.duplicate()
  p.human_skills = ["necro_employment"]
- var recognized = s.environmental_description(b,p)
- check(recognized.begins_with(original_parts[0]+" "+original_parts[1]) and recognized.ends_with(b.necrotech_recognition),"Employment replaces only the third exterior sentence")
+ check(s.environmental_description(b,p) == hidden,"Single-sentence lab exteriors retain their office appearance")
  p.human = false
- check(s.environmental_description(b,p) == recognized,"Recognizing NecroTech survives death")
+ check(s.environmental_description(b,p) == hidden,"Exterior prose remains stable after death")
  p.human = true; p.human_skills = []; p.inside = true
  var inside = s.environmental_description(b,p)
- check(inside.contains("NecroTech logo") and inside.contains("computer") and inside.contains("lab"),"Untrained interiors identify NecroTech and laboratory equipment")
- check(inside.ends_with("The NecroTech logo is set in the wall behind the front desk, and doors open onto powered-down computer rooms and laboratories."),"Unpowered logo sentence matches the requested copy")
- var parts: Array = b.inside_description_parts.duplicate()
+ check(inside == "The NecroTech logo is set in the wall behind the front desk, and doors open onto powered-down computer rooms and laboratories.","Unpowered lab uses the fixed single-sentence description")
  b.generator = true; b.generator_hp = C.GENERATOR_HP; b.fuel_until = s.minute+100
  var lit = s.environmental_description(b,p)
- check(lit.begins_with(parts[0]+" "+parts[1]) and lit.ends_with("The NecroTech logo glows gently above the front desk, and doors open onto a number of brightly-lit laboratories and computer rooms."),"Power replaces only the third interior sentence with the requested copy")
+ check(lit == "The NecroTech logo glows gently above the front desk, and doors open onto a number of brightly-lit laboratories and computer rooms.","Powered lab uses the fixed single-sentence description")
  b.description_version = 5; b.inside_description = "Old generic description."
  s.ensure_descriptions(b)
- check(b.description_version == 6 and not b.inside_description.contains("Old generic"),"Older saved prose migrates to current descriptions")
+ check(b.description_version == 7 and not b.inside_description.contains("Old generic"),"Older saved prose migrates to current single-sentence descriptions")
  var before = s.location_description(p)
  check(s.save_to("user://environment-rules-test.json") == OK,"Description fields save")
  var loaded = Sim.new()
@@ -139,13 +135,13 @@ func state_text() -> void:
  b.ruin = 3; b.fuel_until = s.minute+100
  p.inside = true; b.generator_hp = 2
  text = s.location_description(p)
- check(text.contains("A portable generator has been set up here. It is running.") and not text.contains("The lights are on.") and not text.contains("badly damaged") and text.contains("The building has been ruined. Its structural damage prevents you from barricading."),"Powered interior uses the running generator sentence and explains structural limits")
+ check(text.contains("A portable generator is set up here. It is running.") and not text.contains("The lights are on.") and not text.contains("badly damaged") and text.contains("The building has been ruined. Its structural damage prevents you from barricading."),"Powered interior uses the running generator sentence and explains structural limits")
  b.fuel_until = 0
  text = s.location_description(p)
- check(text.contains("The building is pitch black inside.") and text.contains("A portable generator has been set up here. It is badly damaged."),"Dark interior reports generator damage")
+ check(text.contains("The building is pitch black inside.") and text.contains("A portable generator is set up here. It is badly damaged."),"Dark interior reports generator damage")
  b.generator_hp = C.GENERATOR_HP; b.ruin = 1; b.doors = true
  text = s.location_description(p)
- check(text.contains("A portable generator has been set up here. It is out of fuel.") and text.contains("The building has been ransacked."),"Inside sees empty fuel and ransacking behind closed doors")
+ check(text.contains("A portable generator is set up here. It is out of fuel.") and text.contains("The building has been ransacked."),"Inside sees empty fuel and ransacking behind closed doors")
  b.type = "office"
  text = s.location_description(p)
  check(not text.contains("pitch black") and not text.contains("The building is unlit."),"Ordinary unpowered interiors omit generic lighting")
